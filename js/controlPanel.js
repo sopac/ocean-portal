@@ -8,7 +8,7 @@ var win;
 //var basemapLegend;
 ////var countryCombo;
 
-var controls = ['selectionDiv', 'toggleDiv']
+var controls = ['selectionDiv', 'toggleDiv', 'sliderDiv']
 
 Ext.require(['*']);
 Ext.onReady(function() {
@@ -31,7 +31,7 @@ Ext.onReady(function() {
     Ext.define('Variable', {
         extend: 'Ext.data.Model',
         idProperty: 'id',
-        fields: ['name', 'id', 'periods', 'areas'],
+        fields: ['name', 'id', 'periods', 'areas', 'average'],
         belongsTo: 'Dataset'
     });
         
@@ -66,6 +66,7 @@ Ext.onReady(function() {
         autoLoad: true,
         model: 'Dataset'
     });
+    window.datasets.addListener('load', createCheckBoxes);
 
     window.regions = Ext.create('Ext.data.Store', {
         autoLoad: true,
@@ -172,8 +173,16 @@ Ext.onReady(function() {
         }
     });
 
+//    window.averageCheckboxGroup = Ext.create('Ext.form.CheckboxGroup', {
+////        fieldLabel: '',
+//        renderTo: 'toggleDiv',
+//        width: 300,
+//        height: 300,
+//        items: [{"boxLabel": "aaa", "name": "aaaname"}, {"boxLabel": "bbb", "name": "bbbname"}]
+//    }); 
+
     window.runningAveSlider = Ext.create('Ext.slider.Single', {
-        renderTo: 'toggleDiv',
+        renderTo: 'sliderDiv',
         hideLabel: true,
         width: 200,
         minValue: 2,
@@ -181,7 +190,61 @@ Ext.onReady(function() {
     });
 
     initialise();
-})
+});
+
+function createCheckBoxes(store, records, result, operation, eOpt) {
+    checkboxes = parseCheckBoxes(store);
+    var boxes = [
+                {boxLabel: 'Item 1', name: 'cb-col-1'},
+                {boxLabel: 'Item 2', name: 'cb-col-2', checked: true},
+                {boxLabel: 'Item 3', name: 'cb-col-3'}
+            ]
+    var bbb = [{"boxLabel": "aaa", "name": "aaaname"}, {"boxLabel": "bbb", "name": "bbbname"}]
+////    window.averageCheckboxGroup = Ext.create('Ext.form.CheckboxGroup', {
+////        fieldLabel: '',
+////        renderTo: 'toggleDiv',
+//        layout: 'vbox',
+//
+////        columns: 1,
+////        width: 300,
+////        height: 70,
+//        items: [{"boxLabel": "aaa", "name": "aaaname"}, {"boxLabel": "bbb", "name": "bbbname"}]
+////        items: checkboxes
+////    }); 
+////    window.averageCheckboxGroup.show();
+
+    //can't put here otherwise the rendering will have disabled 1 in front of the slider
+//    window.runningAveSlider = Ext.create('Ext.slider.Single', {
+//        renderTo: 'sliderDiv',
+//        hideLabel: true,
+//        width: 200,
+//        minValue: 2,
+//        maxValue: 15
+//    });
+}
+
+function parseCheckBoxes(store) {
+    data = [];
+    records = store.getById('reynolds').variables().getById('anom').get('average').checkboxes; 
+    Ext.each(records, function(rec) {
+        Ext.create('Ext.form.field.Checkbox', {
+            boxLabel: rec.boxLabel,
+            renderTo: 'toggleDiv',
+            width: 150,
+            name: rec.name,
+            id: rec.name});
+    });
+    
+    dataArray = new Array();
+    for (var i=0; i<records.length; i++) {
+        thisItem = new Array();
+        thisItem["boxLabel"] = records[i].boxLabel;
+        thisItem["name"] = records[i].name;
+        dataArray.push(thisItem);
+    }
+
+    return data;
+}
 
 function selectDataset(event, args) {
     hideControls();
@@ -205,25 +268,19 @@ function selectVariable(event, args) {
     periodCombo = Ext.getCmp('periodCombo');
     periodCombo.clearValue();
     var store = periodCombo.store;
-
-//    counter += 1
-//    if (counter == 2) {
-//        store.clearFilter(true);
-//    }
-//    store.load().filter();
-      store.clearFilter(true);
-      store.filter([periodFilter]);
-//    store.filter('id', /record.get('periods')/);
-//    periodCombo.bindStore(store);
+    store.clearFilter(true);
+    store.filter([periodFilter]);
     areaCombo = Ext.getCmp('areaCombo');
     areaCombo.clearValue();
     store = areaCombo.store;
     store.clearFilter(true);
     store.filter([regionFilter]);
-
     showControl('selectionDiv');
-//    areaCombo.bindStore(record.areas());
-//    showControl('areaDiv');
+
+    if (selection === 'anom') {
+        showControl('toggleDiv')
+        showControl('sliderDiv')
+    }
 };
 
 function selectPeriod(event, args) {
@@ -239,6 +296,10 @@ function hideControls() {
 }
 
 function showControl(control) {
+    document.getElementById(control).style.display = 'block';
+}
+
+function hideControl(control) {
     document.getElementById(control).style.display = 'block';
 }
 
