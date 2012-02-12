@@ -1,14 +1,12 @@
-
+var ocean = ocean || {};
 var dataset;
 var variable;
 var month;
 var year;
 
 var win;
-//var basemapLegend;
-////var countryCombo;
 
-var controls = ['selectionDiv', 'toggleDiv', 'sliderDiv']
+var controls = ['selectionDiv', 'toggleDiv', 'sliderDiv', 'yearMonthDiv']
 
 Ext.require(['*']);
 Ext.onReady(function() {
@@ -62,11 +60,11 @@ Ext.onReady(function() {
         }
     });
 
-    window.datasets = Ext.create('Ext.data.Store', {
+    ocean.datasets = Ext.create('Ext.data.Store', {
         autoLoad: true,
         model: 'Dataset'
     });
-    window.datasets.addListener('load', createCheckBoxes);
+    ocean.datasets.addListener('load', createCheckBoxes);
 
     window.regions = Ext.create('Ext.data.Store', {
         autoLoad: true,
@@ -76,16 +74,12 @@ Ext.onReady(function() {
     window.periods = Ext.create('Ext.data.Store', {
         autoLoad: true,
         model: 'Period'
-//        filters: [
-//            Ext.create('Ext.util.Filter', {
-//                filterFn: filterPeriod
-//        })]
     });
 
     periodFilter = Ext.create('Ext.util.Filter', {filterFn: filterPeriod});
     function filterPeriod(item){
-        if(variable) {
-            return Ext.Array.contains(variable.get('periods'), item.get('id'));
+        if(ocean.variable) {
+            return Ext.Array.contains(ocean.variable.get('periods'), item.get('id'));
         }
         else {
             return true;
@@ -94,20 +88,13 @@ Ext.onReady(function() {
 
     regionFilter = Ext.create('Ext.util.Filter', {filterFn: filterRegion});
     function filterRegion(item){
-        if(variable) {
-            return Ext.Array.contains(variable.get('areas'), item.get('id'));
+        if(ocean.variable) {
+            return Ext.Array.contains(ocean.variable.get('areas'), item.get('id'));
         }
         else {
             return true;
         }
     };
-//    window.datasets.load();
-//    window.regions.load();
-//    window.periods.load();
-
-//    window.datasets = new ext.data.store({
-//        model: 'dataset'
-//    });
 
     window.datasetCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'datasetCombo',
@@ -117,7 +104,7 @@ Ext.onReady(function() {
         displayField: 'name',
         valueField: 'id',
         renderTo: 'datasetDiv',
-        store: window.datasets,
+        store: ocean.datasets,
         queryMode: 'local',
         listeners: {
             'select': selectDataset
@@ -134,7 +121,7 @@ Ext.onReady(function() {
         renderTo: 'variableDiv',
         disabled: true,
         queryMode: 'local',
-        store: window.datasets,
+        store: ocean.datasets,
         listeners: {
             'select': selectVariable
         }
@@ -165,21 +152,12 @@ Ext.onReady(function() {
         displayField: 'name',
         valueField: 'id',
         renderTo: 'selectionDiv',
-//        renderTo: 'areaDiv',
         queryMode: 'local',
         store: window.regions,
         listeners: {
             'select': selectArea
         }
     });
-
-//    window.averageCheckboxGroup = Ext.create('Ext.form.CheckboxGroup', {
-////        fieldLabel: '',
-//        renderTo: 'toggleDiv',
-//        width: 300,
-//        height: 300,
-//        items: [{"boxLabel": "aaa", "name": "aaaname"}, {"boxLabel": "bbb", "name": "bbbname"}]
-//    }); 
 
     window.runningAveSlider = Ext.create('Ext.slider.Single', {
         renderTo: 'sliderDiv',
@@ -200,27 +178,6 @@ function createCheckBoxes(store, records, result, operation, eOpt) {
                 {boxLabel: 'Item 3', name: 'cb-col-3'}
             ]
     var bbb = [{"boxLabel": "aaa", "name": "aaaname"}, {"boxLabel": "bbb", "name": "bbbname"}]
-////    window.averageCheckboxGroup = Ext.create('Ext.form.CheckboxGroup', {
-////        fieldLabel: '',
-////        renderTo: 'toggleDiv',
-//        layout: 'vbox',
-//
-////        columns: 1,
-////        width: 300,
-////        height: 70,
-//        items: [{"boxLabel": "aaa", "name": "aaaname"}, {"boxLabel": "bbb", "name": "bbbname"}]
-////        items: checkboxes
-////    }); 
-////    window.averageCheckboxGroup.show();
-
-    //can't put here otherwise the rendering will have disabled 1 in front of the slider
-//    window.runningAveSlider = Ext.create('Ext.slider.Single', {
-//        renderTo: 'sliderDiv',
-//        hideLabel: true,
-//        width: 200,
-//        minValue: 2,
-//        maxValue: 15
-//    });
 }
 
 function parseCheckBoxes(store) {
@@ -249,7 +206,7 @@ function parseCheckBoxes(store) {
 function selectDataset(event, args) {
     hideControls();
     var selection = event.getValue();
-    var record = window.datasets.getById(selection);
+    var record = ocean.datasets.getById(selection);
     dataset = record;
     document.getElementById('datasettitle').innerHTML = record.get('title')
     varCombo = Ext.getCmp('variableCombo');
@@ -310,3 +267,90 @@ function initialise() {
     document.getElementById('variableDiv').visible = false;
     hideControls();
 };
+
+//**********************************************************
+//Datepicker setup
+//**********************************************************
+var average;
+$(function() {
+    $("#datepicker").datepick({
+        minDate: new Date(1981, 9 - 1, 1),
+        maxDate: '-4D',
+        yearRange: '1981:2013',
+        dateFormat: 'dd M yyyy',
+        firstDay: 1,
+        showTrigger: '#calImg',
+        renderer: $.extend({},
+                  $.datepick.weekOfYearRenderer,
+                      {picker: $.datepick.defaultRenderer.picker.
+                      replace(/\{link:clear\}/, '').
+                      replace(/\{link:close\}/, '')
+                   }),
+        showOtherMonths: true,
+//        onSelect: setDate,
+//        onShow: beforeShow,
+//        onDate: checkPeriod,
+//        onChangeMonthYear: monthOrYearChanged,
+//        onClose: closed,
+        showOnFocus: false
+    });
+    $( "#datepicker" ).datepick('setDate', -4);
+    $( "#datepicker" ).mousedown(function() {
+        $(this).datepick('show');
+    })
+});
+
+
+function setDate(dateObj) {
+//    dateInstance = dateObj
+//    if (average) {
+//        if (period == 'monthly'){
+//            date = $.datepick.formatDate('mm', dateInstance[0]);
+//        }
+//        else {
+//            date = $.datepick.formatDate('yyyy', dateInstance[0]);
+//        }
+//    }
+//    else {
+//        date = $.datepick.formatDate('yyyymmdd', dateInstance[0]);
+//    }
+}
+
+function beforeShow(picker, inst) {
+//    if (period == 'monthly' || period == '3monthly' || period == '6monthly') {
+//        monthOnly(picker, inst);
+//    }
+//    else if (period == 'yearly') {
+//        yearOnly(picker, inst);
+//    }
+//    else if (period == 'weekly'){
+//        weekOnly(picker, inst);
+//    }
+}
+
+function checkPeriod() {
+//    if (period == 'weekly') {
+//        return {selectable: false};
+//    }
+//    else {
+//        return {selectable: true};
+//    }
+}
+
+function monthOrYearChanged(year, month) {
+//    if(average || period == 'yearly') {
+//        var target = $('#datepicker');
+//        if(period == 'yearly') {
+//            target.datepick('setDate', $.datepick.newDate(
+//                parseInt(year, 10), 1, 1)).
+//                datepick('hide');
+//        }
+//        else {
+//            target.datepick('setDate', $.datepick.newDate(
+//                parseInt(year, 10), parseInt(month, 10), 1)).
+//                datepick('hide');
+//        }
+//    }
+}
+
+

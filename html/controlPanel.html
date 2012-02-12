@@ -8,8 +8,15 @@
 <link rel="stylesheet" type="text/css" href="lib/ext/resources/css/ext-all.css" />
 <link rel="stylesheet" type="text/css" href="css/controlPanel.css" />
 <script type="text/javascript" src="lib/ext/ext-all-debug.js"></script>
-<script language="JavaScript" type="text/javascript" src="js/controlPanel.js"></script> 
-<script language="javascript" type="text/javascript" src="js/sidemenu.js"></script>	
+<script type="text/javascript" src="js/sidemenu.js"></script>	
+
+<script type="text/javascript" src="js/jquery-1.6.4.js"></script>
+<style type="text/css">@import "css/jquery.datepick.css";</style>
+<script type="text/javascript" src="js/jquery.datepick.js"></script>
+<script type="text/javascript" src="js/jquery.datepick.ext.js"></script>
+
+<script type="text/javascript" src="js/controlPanel.js"></script> 
+
 <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/cupertino/ui.all.css" id="themeUI">
 
 </head> 
@@ -101,8 +108,11 @@
       <div class="centre" id="centre">
           <div class="selectionDiv" id="selectionDiv"></div>  
           <div class="toggleDiv" id="toggleDiv"></div>  
+          <div class="sliderDiv" id="sliderDiv"></div>  
       </div>
       <div class="right" id="right">
+          <div class="yearMonthDiv" id="yearMonthDiv">
+          </div>
           <div class="datepickerDiv" id="datepickerDiv">
               <input type="text" name="datepicker" id="datepicker" readonly="readonly" style="width: 80px"/>
           </div>
