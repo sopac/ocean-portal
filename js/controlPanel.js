@@ -1,5 +1,7 @@
 var ocean = ocean || {};
 ocean.controls = ['selectionDiv', 'toggleDiv', 'sliderDiv', 'yearMonthDiv']
+ocean.compare = false;
+ocean.average = false;
 
 Ext.require(['*']);
 Ext.onReady(function() {
@@ -204,6 +206,7 @@ function selectDataset(event, args) {
     varCombo.bindStore(record.variables());
     varCombo.clearValue();
     
+    $('#variableDiv').show();
     configCalendar(); 
 };
 
@@ -309,15 +312,11 @@ function showControl(control) {
     $('#' + control).show();
 }
 
-function hideControl(control) {
-    document.getElementById(control).style.display = 'block';
-}
-
 function setCompare() {
 }
 
 function initialise() {
-    document.getElementById('variableDiv').visible = false;
+    $('#variableDiv').hide();
     hideControls();
 };
 
@@ -379,3 +378,72 @@ function monthOrYearChanged(year, month) {
 }
 
 
+//**********************************************************
+//Ajax processing
+//**********************************************************
+function updatePage() {
+//var url = '';
+//
+
+var url =  "http://tuscany.bom.gov.au/cgi-bin/reynoldsSst.py?map=" + 'mean'
+                 + "&date=" + '20120201'
+                 + "&area=" + 'sh'
+                 + "&period=" + 'daily'
+                 + "&average=" + false
+                 + "&trend=" + false
+                 + "&runningAve=" + false
+                 + "&runningInterval=" + 2
+                 + "&timestamp=" + new Date().getTime() 
+
+$.ajax({
+    url:  url,
+    dataType: 'json',
+    success: function(data, textStatus, jqXHR){
+        if (data != null) {
+             var son = data;
+             if (ocean.compare){
+                 var imgDiv = document.getElementById('mainImg');
+                 var imgList = imgDiv.childNodes;
+                 imgDiv.removeChild(imgDiv.firstChild);
+                 if (imgList.length >= compareSize) {
+                     imgDiv.removeChild(imgDiv.lastChild);
+                 }
+                 var img = document.createElement("IMG");
+                 if(average) {
+                     img.src = son.aveImg;
+                     img.width = "680";
+                     document.getElementById('aveArea').innerHTML = '<div style="display:inline-block; width:341px; text-align:left">Download data from <a href="' + son.aveData + '" target="_blank">here</a></div>'
+                                                                  + '<div style="display:inline-block; width:341px; text-align:right"><b>Average(1981-2010)</b> ' + Math.round(son.mean*100)/100 + '\u00B0C</div>'
+                 }
+                 else if (son.img != null) {
+                     img.src = son.img;
+                     img.width = "680";
+                     document.getElementById('aveArea').innerHTML = ''
+                 }
+                 else {
+                     img.src = "images/notavail.png";
+                     document.getElementById('aveArea').innerHTML = ''
+                 }
+                     imgDiv.insertBefore(img, imgDiv.firstChild);
+             }
+             else {
+                 if (ocean.average) {
+                     document.getElementById('mainImg').innerHTML = '<img src="' + son.aveImg + '" width="680"/>'
+                     document.getElementById('aveArea').innerHTML = '<div style="display:inline-block; width:341px; text-align:left">Download data from <a href="' + son.aveData + '" target="_blank">here</a></div>'
+                                          + '<div style="display:inline-block; width:341px; text-align:right"><b>Average(1981-2010)</b> ' + Math.round(son.mean*100)/100 + '\u00B0C</div>'
+                 }
+                 else if (data.img != null) {
+                     $('#mainImg').html('<img src="' + data.img + '" width="680"/>')
+//                     document.getElementById('mainImg').innerHTML = '<img src="' + son.img + '" width="680"/>'
+//                     document.getElementById('aveArea').innerHTML = ''
+                 }
+                 else if (data.error != null) {
+                     $('#mainImg').html('<img src="images/notavail.png" />')
+//                     document.getElementById('mainImg').innerHTML = '<img src="images/notavail.png" />';
+                     document.getElementById('aveArea').innerHTML = ''
+                 }
+             }
+         }
+    }
+});
+}
