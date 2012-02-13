@@ -1,12 +1,5 @@
 var ocean = ocean || {};
-var dataset;
-var variable;
-var month;
-var year;
-
-var win;
-
-var controls = ['selectionDiv', 'toggleDiv', 'sliderDiv', 'yearMonthDiv']
+ocean.controls = ['selectionDiv', 'toggleDiv', 'sliderDiv', 'yearMonthDiv']
 
 Ext.require(['*']);
 Ext.onReady(function() {
@@ -14,7 +7,7 @@ Ext.onReady(function() {
 
     Ext.define('Dataset', {
         extend: 'Ext.data.Model',
-        fields: ['name', 'id', 'title'],
+        fields: ['name', 'id', 'title', 'dateRange'],
         idProperty: 'id',
         hasMany: {model:'Variable', name: 'variables'},
         proxy: {
@@ -66,12 +59,12 @@ Ext.onReady(function() {
     });
     ocean.datasets.addListener('load', createCheckBoxes);
 
-    window.regions = Ext.create('Ext.data.Store', {
+    ocean.regions = Ext.create('Ext.data.Store', {
         autoLoad: true,
         model: 'Region'
     });
 
-    window.periods = Ext.create('Ext.data.Store', {
+    ocean.periods = Ext.create('Ext.data.Store', {
         autoLoad: true,
         model: 'Period'
     });
@@ -96,7 +89,7 @@ Ext.onReady(function() {
         }
     };
 
-    window.datasetCombo = Ext.create('Ext.form.field.ComboBox', {
+    ocean.datasetCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'datasetCombo',
         fieldLabel: 'Dataset',
         labelWidth: 50,
@@ -111,7 +104,7 @@ Ext.onReady(function() {
         }
     });
 
-    window.mapCombo = Ext.create('Ext.form.field.ComboBox', {
+    ocean.mapCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'variableCombo',
         fieldLabel: 'Variable',
         labelWidth: 50,
@@ -127,7 +120,7 @@ Ext.onReady(function() {
         }
     });
 
-    window.periodCombo = Ext.create('Ext.form.field.ComboBox', {
+    ocean.periodCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'periodCombo',
         fieldLabel: 'Period',
         labelWidth: 50,
@@ -137,14 +130,14 @@ Ext.onReady(function() {
         renderTo: 'selectionDiv',
         triggerAction: 'all',
         queryMode: 'local',
-        store: window.periods,
+        store: ocean.periods,
         lastQuery: '',
         listeners: {
             'select': selectPeriod
         }
     });
 
-    window.areaCombo = Ext.create('Ext.form.field.ComboBox', {
+    ocean.areaCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'areaCombo',
         fieldLabel: 'Area',
         labelWidth: 50,
@@ -153,13 +146,14 @@ Ext.onReady(function() {
         valueField: 'id',
         renderTo: 'selectionDiv',
         queryMode: 'local',
-        store: window.regions,
+        store: ocean.regions,
+        lastQuery: '',
         listeners: {
             'select': selectArea
         }
     });
 
-    window.runningAveSlider = Ext.create('Ext.slider.Single', {
+    ocean.runningAveSlider = Ext.create('Ext.slider.Single', {
         renderTo: 'sliderDiv',
         hideLabel: true,
         width: 200,
@@ -167,20 +161,16 @@ Ext.onReady(function() {
         maxValue: 15
     });
 
+    ocean.plotComp = Ext.create('Ext.form.field.Checkbox', {
+            boxLabel: 'Plot Comparision',
+            renderTo: 'compDiv',
+            width: 150,
+            name: 'plotComp',
+            id: 'plotComp'});
     initialise();
 });
 
 function createCheckBoxes(store, records, result, operation, eOpt) {
-    checkboxes = parseCheckBoxes(store);
-    var boxes = [
-                {boxLabel: 'Item 1', name: 'cb-col-1'},
-                {boxLabel: 'Item 2', name: 'cb-col-2', checked: true},
-                {boxLabel: 'Item 3', name: 'cb-col-3'}
-            ]
-    var bbb = [{"boxLabel": "aaa", "name": "aaaname"}, {"boxLabel": "bbb", "name": "bbbname"}]
-}
-
-function parseCheckBoxes(store) {
     data = [];
     records = store.getById('reynolds').variables().getById('anom').get('average').checkboxes; 
     Ext.each(records, function(rec) {
@@ -207,21 +197,82 @@ function selectDataset(event, args) {
     hideControls();
     var selection = event.getValue();
     var record = ocean.datasets.getById(selection);
-    dataset = record;
+    ocean.dataset = record;
     document.getElementById('datasettitle').innerHTML = record.get('title')
     varCombo = Ext.getCmp('variableCombo');
     varCombo.setDisabled(false);
     varCombo.bindStore(record.variables());
     varCombo.clearValue();
     
+    configCalendar(); 
 };
 
-var counter = 0;
+function configCalendar() {
+    if(ocean.calendar) {
+        var dateRange = ocean.dataset.get('dateRange');
+        var minDate = ocean.dataset.get('dateRange').minDate;
+        ocean.calendar.datepick('option', {'minDate': new Date(minDate.year,
+                                                               minDate.month - 1,
+                                                               minDate.date),
+                                           'maxDate': dateRange.maxDate,
+                                           'yearRange': dateRange.minYear + ":" + dateRange.maxYear
+                                });
+    }
+    else {
+        createCalendars();
+    }
+}
+
+//Lazy creation of datepick and month and year combobox.
+function createCalendars() {
+    var dateRange = ocean.dataset.get('dateRange');
+    var minDate = ocean.dataset.get('dateRange').minDate;
+    ocean.calendar = $("#datepicker").datepick({
+        minDate: new Date(minDate.year,
+                          minDate.month - 1,
+                          minDate.date),
+        maxDate: dateRange.maxDate,
+        yearRange: dateRange.minYear + ":" + dateRange.maxYear,
+        dateFormat: 'dd M yyyy',
+        firstDay: 1,
+        showTrigger: '#calImg',
+        renderer: $.extend({},
+                  $.datepick.weekOfYearRenderer,
+                      {picker: $.datepick.defaultRenderer.picker.
+                      replace(/\{link:clear\}/, '').
+                      replace(/\{link:close\}/, '')
+                   }),
+        showOtherMonths: true,
+//        onSelect: setDate,
+//        onShow: beforeShow,
+//        onDate: checkPeriod,
+//        onChangeMonthYear: monthOrYearChanged,
+//        onClose: closed,
+        showOnFocus: false
+    });
+    $( "#datepicker" ).datepick('setDate', -4);
+    $( "#datepicker" ).mousedown(function() {
+        $(this).datepick('show');
+    })
+//    ocean.monthCombo = Ext.create('Ext.form.field.ComboBox', {
+//        id: 'monthCombo',
+//        fieldLabel: 'Month',
+//        labelWidth: 20,
+//        width: 100,
+//        rederTo: 'monthDiv',
+//        queryMode: 'local',
+//        lastQuery: '',
+//        store: ocean.dataset.
+//        listeners: {
+//        }
+//    });
+}
+
 function selectVariable(event, args) {
     hideControls()
     var selection = event.getValue();
-    var record = dataset.variables().getById(selection);
-    variable = record;
+    var record = ocean.dataset.variables().getById(selection);
+    ocean.variable = record;
     periodCombo = Ext.getCmp('periodCombo');
     periodCombo.clearValue();
     var store = periodCombo.store;
@@ -247,13 +298,15 @@ function selectArea(event, args) {
 };
 
 function hideControls() {
-   for (var control in controls) {
-       document.getElementById(controls[control]).style.display = 'none';
+   for (var control in ocean.controls) {
+//       document.getElementById(ocean.controls[control]).style.display = 'none';
+       $('#' + ocean.controls[control]).hide();
    }
 }
 
 function showControl(control) {
-    document.getElementById(control).style.display = 'block';
+//    document.getElementById(control).style.display = 'block';
+    $('#' + control).show();
 }
 
 function hideControl(control) {
@@ -272,34 +325,6 @@ function initialise() {
 //Datepicker setup
 //**********************************************************
 var average;
-$(function() {
-    $("#datepicker").datepick({
-        minDate: new Date(1981, 9 - 1, 1),
-        maxDate: '-4D',
-        yearRange: '1981:2013',
-        dateFormat: 'dd M yyyy',
-        firstDay: 1,
-        showTrigger: '#calImg',
-        renderer: $.extend({},
-                  $.datepick.weekOfYearRenderer,
-                      {picker: $.datepick.defaultRenderer.picker.
-                      replace(/\{link:clear\}/, '').
-                      replace(/\{link:close\}/, '')
-                   }),
-        showOtherMonths: true,
-//        onSelect: setDate,
-//        onShow: beforeShow,
-//        onDate: checkPeriod,
-//        onChangeMonthYear: monthOrYearChanged,
-//        onClose: closed,
-        showOnFocus: false
-    });
-    $( "#datepicker" ).datepick('setDate', -4);
-    $( "#datepicker" ).mousedown(function() {
-        $(this).datepick('show');
-    })
-});
-
 
 function setDate(dateObj) {
 //    dateInstance = dateObj
