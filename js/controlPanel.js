@@ -1,8 +1,91 @@
 var ocean = ocean || {};
 ocean.controls = ['selectionDiv', 'toggleDiv', 'sliderDiv', 'yearMonthDiv']
 ocean.compare = false;
-ocean.average = false;
+ocean.processing = false;
+//ocean.average = false;
+//ocean.trend = false;
+//ocean.runningAve = false;
+//ocean.runningAveLen = 2;
+ocean.MIN_YEAR = 1850;
+Date.prototype.getMonthString = function() {
+    var calMonth = this.getMonth() + 1;
+    return (calMonth < 10) ?  ('0' + calMonth) : calMonth + '';
+}
+ocean.dsConf = {
+    reynolds: {url: function() {return "/cgi-bin/portal.py?dataset=reynolds"
+                   + "&map=" + this.variable.get('id')
+                   + "&date=" + $.datepick.formatDate('yyyymmdd', ocean.date)
+                   + "&area=" + ocean.region
+                   + "&period=" + ocean.period
+                   + "&average=" + ocean.dsConf['reynolds'].aveCheck.average
+                   + "&trend=" + ocean.dsConf['reynolds'].aveCheck.trend
+                   + "&runningAve=" + ocean.dsConf['reynolds'].aveCheck.runningAve
+                   + "&runningInterval=" + ocean.dsConf['reynolds'].runningInterval
+                   + "&timestamp=" + new Date().getTime()},
+        data: null,
+        variable: null,
+        aveCheck: {},
+        mainCheck: 'average',
+        runningInterval: 2,
+        callback: function(data) {
+            var imgDiv = $('#mainImg')
+            if (ocean.compare){
+                var imgList = imgDiv.childNodes;
+                imgDiv.removeChild(imgDiv.firstChild);
+                if (imgList.length >= compareSize) {
+                    imgDiv.removeChild(imgDiv.lastChild);
+                }
+                var img = document.createElement("IMG");
+                if(average) {
+                    img.src = data.aveImg;
+                    img.width = "680";
+                    document.getElementById('aveArea').innerHTML = '<div style="display:inline-block; width:341px; text-align:left">Download data from <a href="' + data.aveData + '" target="_blank">here</a></div>'
+                                                                 + '<div style="display:inline-block; width:341px; text-align:right"><b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C</div>'
+                }
+                else if (data.img != null) {
+                    img.src = data.img;
+                    img.width = "680";
+                    document.getElementById('aveArea').innerHTML = ''
+                }
+                else {
+                    img.src = "images/notavail.png";
+                    document.getElementById('aveArea').innerHTML = ''
+                }
+                    imgDiv.insertBefore(img, imgDiv.firstChild);
+            }
+            else {
+                if (this.variable.get("id") == "anom" && this.aveCheck.average) {
+                    imgDiv.html('<img src="' + data.aveImg + '" width="680"/>')
+                    $('#aveArea').html('<div style="display:inline-block; width:341px; text-align:left">Download data from <a href="' 
+                        + data.aveData + '" target="_blank">here</a></div>'
+                        + '<div style="display:inline-block; width:341px; text-align:right"><b>Average(1981-2010)</b> ' 
+                        + Math.round(data.mean*100)/100 + '\u00B0C</div>')
+                }
+                else if (data.img != null) {
+                    imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="680"/>')
+                    document.getElementById('aveArea').innerHTML = ''
+                }
+                else if (data.error != null) {
+                    imgDiv.html('<img src="images/notavail.png" />')
+                    document.getElementById('aveArea').innerHTML = ''
+                }
+            }
+        }
+    },
+    ersst: {
+    }
+}
 
+function AveCheck(id, state) {
+    this.id = id;
+    this.state = state;
+}
+
+//*****************************************************
+//Initialise Datasets
+//*****************************************************
+//
+//Reynolds
 Ext.require(['*']);
 Ext.onReady(function() {
     Ext.Loader.setConfig({enabled:true});
@@ -73,8 +156,18 @@ Ext.onReady(function() {
 
     periodFilter = Ext.create('Ext.util.Filter', {filterFn: filterPeriod});
     function filterPeriod(item){
-        if(ocean.variable) {
-            return Ext.Array.contains(ocean.variable.get('periods'), item.get('id'));
+        if(ocean.dataset.variable) {
+            return Ext.Array.contains(ocean.dataset.variable.get('periods'), item.get('id'));
+        }
+        else {
+            return true;
+        }
+    };
+
+    avePeriodFilter = Ext.create('Ext.util.Filter', {filterFn: aveFilterPeriod});
+    function aveFilterPeriod(item){
+        if(ocean.dataset.variable.get("average")) {
+            return Ext.Array.contains(ocean.dataset.variable.get("average").periods, item.get('id'));
         }
         else {
             return true;
@@ -83,8 +176,8 @@ Ext.onReady(function() {
 
     regionFilter = Ext.create('Ext.util.Filter', {filterFn: filterRegion});
     function filterRegion(item){
-        if(ocean.variable) {
-            return Ext.Array.contains(ocean.variable.get('areas'), item.get('id'));
+        if(ocean.dataset.variable) {
+            return Ext.Array.contains(ocean.dataset.variable.get('areas'), item.get('id'));
         }
         else {
             return true;
@@ -151,16 +244,20 @@ Ext.onReady(function() {
         store: ocean.regions,
         lastQuery: '',
         listeners: {
-            'select': selectArea
+            'select': selectRegion
         }
     });
 
     ocean.runningAveSlider = Ext.create('Ext.slider.Single', {
         renderTo: 'sliderDiv',
         hideLabel: true,
+        id: 'runningAveSlider',
         width: 200,
         minValue: 2,
-        maxValue: 15
+        maxValue: 15,
+        listeners: {
+            'changecomplete': selectRunningInterval
+        }
     });
 
     ocean.plotComp = Ext.create('Ext.form.field.Checkbox', {
@@ -169,6 +266,64 @@ Ext.onReady(function() {
             width: 150,
             name: 'plotComp',
             id: 'plotComp'});
+    ocean.plotComp.setDisabled(true);
+
+    ocean.monthStore = Ext.create('Ext.data.Store', {
+        fields: ['name', 'id'],
+        data: [{'name': 'January', 'id': '01'},
+               {'name': 'Feburary', 'id': '02'},
+               {'name': 'March', 'id': '03'},
+               {'name': 'April', 'id': '04'},
+               {'name': 'May', 'id': '05'},
+               {'name': 'June', 'id': '06'},
+               {'name': 'July', 'id': '07'},
+               {'name': 'August', 'id': '08'},
+               {'name': 'September', 'id': '09'},
+               {'name': 'October', 'id': '10'},
+               {'name': 'November', 'id': '11'},
+               {'name': 'December', 'id': '12'}]
+    });
+
+    ocean.monthCombo = Ext.create('Ext.form.field.ComboBox', {
+        id: 'monthCombo',
+        fieldLabel: 'Month',
+        labelWidth: 40,
+        width: 140,
+        displayField: 'name',
+        valueField: 'id',
+        renderTo: 'monthDiv',
+        queryMode: 'local',
+        lastQuery: '',
+        store: ocean.monthStore,
+        listeners: {
+            'select': function(event, args) {
+                ocean.date.setMonth(event.getValue() - 1);
+            } 
+        }
+    });
+
+    var currentYear = new Date().getFullYear();
+    var minYear = ocean.MIN_YEAR;
+    var yearRange = [];
+    while(minYear <= currentYear){
+        yearRange.push(minYear++);
+    }
+    ocean.yearCombo = Ext.create('Ext.form.field.ComboBox', {
+        id: 'yearCombo',
+        fieldLabel: 'Year',
+        labelWidth: 40,
+        width: 140,
+        renderTo: 'yearDiv',
+        queryMode: 'local',
+        lastQuery: '',
+        store: yearRange,
+        listeners: {
+            'select': function(event, args) {
+                ocean.date.setFullYear(event.getValue());
+            } 
+        }
+    });
+
     initialise();
 });
 
@@ -176,12 +331,78 @@ function createCheckBoxes(store, records, result, operation, eOpt) {
     data = [];
     records = store.getById('reynolds').variables().getById('anom').get('average').checkboxes; 
     Ext.each(records, function(rec) {
+        var name = rec.name;
+//        ocean.dsConf['reynolds'].aveCheck.push(new AveCheck(name, false)); 
+        ocean.dsConf['reynolds'].aveCheck[name] = false; 
         Ext.create('Ext.form.field.Checkbox', {
             boxLabel: rec.boxLabel,
             renderTo: 'toggleDiv',
             width: 150,
-            name: rec.name,
-            id: rec.name});
+            name: name,
+            id: rec.name,
+            handler: function(checkbox, checked) {
+                if (checkbox.id == ocean.dataset.mainCheck) {
+                    ocean.dataset.aveCheck[checkbox.id] = checked;
+                    this.setValue(checked);
+                    for (var checkboxId in (ocean.dataset.aveCheck)) {
+                        if( checkboxId != checkbox.id) {
+                            var checkboxCmp = Ext.getCmp(checkboxId);
+                            checkboxCmp.setDisabled(!checked);
+                            checkboxCmp.setValue(ocean.dataset.aveCheck[checkboxId]);
+                        }
+                    }
+                    
+                    periodCombo = Ext.getCmp('periodCombo');
+                    periodCombo.clearValue();
+                    var store = periodCombo.store;
+                    store.clearFilter(true);
+                    if(checked) {
+                        store.filter([avePeriodFilter]);
+                    }
+                    else {
+                        store.filter([periodFilter]);
+                    }
+                    if (store.find('id', ocean.period) != -1) {
+                        periodCombo.select(ocean.period);
+                    }
+                    else {
+                        periodCombo.select(store.data.keys[0]);
+                        ocean.period = store.data.keys[0];
+                    } 
+                    updateCalDiv();
+                }
+                else {
+                    ocean.dsConf['reynolds'].aveCheck[checkbox.id] = checked;
+                    for (var checkboxId in ocean.dsConf['reynolds'].aveCheck) {
+                        if( checkboxId != checkbox.id && checkboxId != ocean.dsConf['reynolds'].mainCheck) {
+                            var checkboxCmp = Ext.getCmp(checkboxId);
+//                            checkboxCmp.setDisabled(!checked);
+                            if (checked) {
+                                ocean.dsConf['reynolds'].aveCheck[checkboxId] = !checked;
+                                checkboxCmp.setValue(!checked);
+                            }
+                        }
+                    }
+
+                }
+            },
+            listeners: {
+                'beforeshow' : function(event, args) {
+                    if (this.id == ocean.dsConf['reynolds'].mainCheck) {
+                        this.setValue(ocean.dsConf['reynolds'].aveCheck[this.id]);
+                    }
+                    else {
+                        if (ocean.dsConf['reynolds'].aveCheck[ocean.dsConf['reynolds'].mainCheck]){
+                            this.setValue(ocean.dsConf['reynolds'].aveCheck[this.id]);
+                        }
+                        else {
+                            this.setDisabled(true);
+//                            Ext.getCmp('runningAveSlider').setDisabled(true);
+                        }
+                    }
+                }
+            }
+        });
     });
     
     dataArray = new Array();
@@ -199,8 +420,9 @@ function selectDataset(event, args) {
     hideControls();
     var selection = event.getValue();
     var record = ocean.datasets.getById(selection);
-    ocean.dataset = record;
-    document.getElementById('datasettitle').innerHTML = record.get('title')
+    ocean.dsConf[selection].data = record;
+    ocean.dataset = ocean.dsConf[selection];
+    $('#datasettitle').html(record.get('title'))
     varCombo = Ext.getCmp('variableCombo');
     varCombo.setDisabled(false);
     varCombo.bindStore(record.variables());
@@ -212,8 +434,8 @@ function selectDataset(event, args) {
 
 function configCalendar() {
     if(ocean.calendar) {
-        var dateRange = ocean.dataset.get('dateRange');
-        var minDate = ocean.dataset.get('dateRange').minDate;
+        var dateRange = ocean.dataset.data.get('dateRange');
+        var minDate = ocean.dataset.data.get('dateRange').minDate;
         ocean.calendar.datepick('option', {'minDate': new Date(minDate.year,
                                                                minDate.month - 1,
                                                                minDate.date),
@@ -228,8 +450,8 @@ function configCalendar() {
 
 //Lazy creation of datepick and month and year combobox.
 function createCalendars() {
-    var dateRange = ocean.dataset.get('dateRange');
-    var minDate = ocean.dataset.get('dateRange').minDate;
+    var dateRange = ocean.dataset.data.get('dateRange');
+    var minDate = ocean.dataset.data.get('dateRange').minDate;
     ocean.calendar = $("#datepicker").datepick({
         minDate: new Date(minDate.year,
                           minDate.month - 1,
@@ -246,7 +468,7 @@ function createCalendars() {
                       replace(/\{link:close\}/, '')
                    }),
         showOtherMonths: true,
-//        onSelect: setDate,
+        onSelect: updateDate,
 //        onShow: beforeShow,
 //        onDate: checkPeriod,
 //        onChangeMonthYear: monthOrYearChanged,
@@ -257,47 +479,111 @@ function createCalendars() {
     $( "#datepicker" ).mousedown(function() {
         $(this).datepick('show');
     })
+    
 //    ocean.monthCombo = Ext.create('Ext.form.field.ComboBox', {
 //        id: 'monthCombo',
 //        fieldLabel: 'Month',
 //        labelWidth: 20,
 //        width: 100,
+//        height: 30,
 //        rederTo: 'monthDiv',
 //        queryMode: 'local',
 //        lastQuery: '',
-//        store: ocean.dataset.
-//        listeners: {
-//        }
+//        store: ['Jan', 'Feb']
+//    });
+
+//    ocean.yearCombo = Ext.create('Ext.form.field.ComboBox', {
+//        id: 'yearCombo',
+//        fieldLabel: 'Year',
+//        labelWidth: 20,
+//        width: 100,
+//        rederTo: 'yearDiv',
+//        queryMode: 'local',
+//        lastQuery: '',
+//        store: ['2011', '2012']
 //    });
 }
 
 function selectVariable(event, args) {
     hideControls()
     var selection = event.getValue();
-    var record = ocean.dataset.variables().getById(selection);
-    ocean.variable = record;
+    var record = ocean.dataset.data.variables().getById(selection);
+    ocean.dataset.variable = record;
+
+    //this should be in a callback for the combo
     periodCombo = Ext.getCmp('periodCombo');
     periodCombo.clearValue();
     var store = periodCombo.store;
     store.clearFilter(true);
     store.filter([periodFilter]);
+    if (store.find('id', ocean.period) != -1) {
+        periodCombo.select(ocean.period);
+    }
+    else {
+        periodCombo.select(store.data.keys[0]);
+        ocean.period = store.data.keys[0];
+    } 
+    updateCalDiv();
+//        select the first one
+
+    //this should be in a callback for the combo
     areaCombo = Ext.getCmp('areaCombo');
     areaCombo.clearValue();
     store = areaCombo.store;
     store.clearFilter(true);
     store.filter([regionFilter]);
+    if (store.find('id', ocean.region) != -1) {
+        areaCombo.select(ocean.region);
+    }
+    else {
+        areaCombo.select(store.data.keys[0]);
+        ocean.region = store.data.keys[0];
+    } 
     showControl('selectionDiv');
 
     if (selection === 'anom') {
         showControl('toggleDiv')
+//        Ext.each(ocean.dsConf['reynolds'].aveCheck, function(check) {
+//            checkCmp = Ext.getCmp(check);
+//            checkCmp.fireEvent('beforeshow', checkCmp);
+//        });
+        for (var check in ocean.dsConf['reynolds'].aveCheck) {
+            checkCmp = Ext.getCmp(check);
+            checkCmp.fireEvent('beforeshow', checkCmp);
+        }
+//        checkCmp = Ext.getCmp(ocean.dsConf['reynolds'].aveCheck);
+//        checkCmp.fireEvent('beforeshow', checkCmp);
         showControl('sliderDiv')
     }
 };
 
 function selectPeriod(event, args) {
+    ocean.period = event.getValue();
+    updateCalDiv();
 };
 
-function selectArea(event, args) {
+function updateCalDiv() {
+    if (ocean.period == 'daily' || ocean.period == 'weekly') {
+        showControl('datepickerDiv');
+        hideControl('yearMonthDiv');
+        $("#datepicker").datepick('setDate', new Date(ocean.date))
+    }
+    else {
+        hideControl('datepickerDiv');
+        showControl('yearMonthDiv');
+        ocean.monthCombo.select(ocean.date.getMonthString());
+        ocean.yearCombo.select(ocean.date.getFullYear());
+//        $('#yearDiv').val(ocean.date.getFullYear());
+    }
+
+}
+
+function selectRegion(event, args) {
+    ocean.region = event.getValue();
+};
+
+function selectRunningInterval(slider, value, thumb, args) {
+    ocean.dataset.runningInterval = value;
 };
 
 function hideControls() {
@@ -310,6 +596,10 @@ function hideControls() {
 function showControl(control) {
 //    document.getElementById(control).style.display = 'block';
     $('#' + control).show();
+}
+
+function hideControl(control) {
+    $('#' + control).hide();
 }
 
 function setCompare() {
@@ -325,19 +615,8 @@ function initialise() {
 //**********************************************************
 var average;
 
-function setDate(dateObj) {
-//    dateInstance = dateObj
-//    if (average) {
-//        if (period == 'monthly'){
-//            date = $.datepick.formatDate('mm', dateInstance[0]);
-//        }
-//        else {
-//            date = $.datepick.formatDate('yyyy', dateInstance[0]);
-//        }
-//    }
-//    else {
-//        date = $.datepick.formatDate('yyyymmdd', dateInstance[0]);
-//    }
+function updateDate(dateObj) {
+    ocean.date = dateObj.length? dateObj[0] : dateObj;
 }
 
 function beforeShow(picker, inst) {
@@ -382,68 +661,20 @@ function monthOrYearChanged(year, month) {
 //Ajax processing
 //**********************************************************
 function updatePage() {
-//var url = '';
-//
-
-var url =  "http://tuscany.bom.gov.au/cgi-bin/reynoldsSst.py?map=" + 'mean'
-                 + "&date=" + '20120201'
-                 + "&area=" + 'sh'
-                 + "&period=" + 'daily'
-                 + "&average=" + false
-                 + "&trend=" + false
-                 + "&runningAve=" + false
-                 + "&runningInterval=" + 2
-                 + "&timestamp=" + new Date().getTime() 
-
-$.ajax({
-    url:  url,
-    dataType: 'json',
-    success: function(data, textStatus, jqXHR){
-        if (data != null) {
-             var son = data;
-             if (ocean.compare){
-                 var imgDiv = document.getElementById('mainImg');
-                 var imgList = imgDiv.childNodes;
-                 imgDiv.removeChild(imgDiv.firstChild);
-                 if (imgList.length >= compareSize) {
-                     imgDiv.removeChild(imgDiv.lastChild);
-                 }
-                 var img = document.createElement("IMG");
-                 if(average) {
-                     img.src = son.aveImg;
-                     img.width = "680";
-                     document.getElementById('aveArea').innerHTML = '<div style="display:inline-block; width:341px; text-align:left">Download data from <a href="' + son.aveData + '" target="_blank">here</a></div>'
-                                                                  + '<div style="display:inline-block; width:341px; text-align:right"><b>Average(1981-2010)</b> ' + Math.round(son.mean*100)/100 + '\u00B0C</div>'
-                 }
-                 else if (son.img != null) {
-                     img.src = son.img;
-                     img.width = "680";
-                     document.getElementById('aveArea').innerHTML = ''
-                 }
-                 else {
-                     img.src = "images/notavail.png";
-                     document.getElementById('aveArea').innerHTML = ''
-                 }
-                     imgDiv.insertBefore(img, imgDiv.firstChild);
-             }
-             else {
-                 if (ocean.average) {
-                     document.getElementById('mainImg').innerHTML = '<img src="' + son.aveImg + '" width="680"/>'
-                     document.getElementById('aveArea').innerHTML = '<div style="display:inline-block; width:341px; text-align:left">Download data from <a href="' + son.aveData + '" target="_blank">here</a></div>'
-                                          + '<div style="display:inline-block; width:341px; text-align:right"><b>Average(1981-2010)</b> ' + Math.round(son.mean*100)/100 + '\u00B0C</div>'
-                 }
-                 else if (data.img != null) {
-                     $('#mainImg').html('<img src="' + data.img + '" width="680"/>')
-//                     document.getElementById('mainImg').innerHTML = '<img src="' + son.img + '" width="680"/>'
-//                     document.getElementById('aveArea').innerHTML = ''
-                 }
-                 else if (data.error != null) {
-                     $('#mainImg').html('<img src="images/notavail.png" />')
-//                     document.getElementById('mainImg').innerHTML = '<img src="images/notavail.png" />';
-                     document.getElementById('aveArea').innerHTML = ''
-                 }
-             }
-         }
+    if (!ocean.processing) {
+        ocean.processing = true;
+        $.ajax({
+            url:  ocean.dataset.url(),
+            dataType: 'json',
+            success: function(data, textStatus, jqXHR) {
+                ocean.processing = false;
+                if (data != null) {
+                    ocean.dataset.callback(data);
+                }
+            },
+            beforeSend: function(jqXHR, settings) {
+                $('#mainImg').html('<img src="images/loading.gif" />' + $('#mainImg').html());
+            }
+        });
     }
-});
 }
