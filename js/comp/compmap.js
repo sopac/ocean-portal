@@ -2,26 +2,11 @@
 //    OpenLayers.ImgPath = "http://js.mapbox.com/theme/dark/";
     var popup;
     var map = new OpenLayers.Map("map", {
-//        scales: [80000000, 50000000, 20000000, 10000000, 5000000, 2000000, 1000000],
         resolutions: [0.17578125,0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
-//        maxResolution: 1.40625,
-//        maxResolution: 0.703125,
-//        maxResolution: 0.3515625,
-//        maxResolution: 0.9,
-//        maxResolution: auto,
-//        minResolution: auto,
-//       numZoomLevels: 7,
         maxResolution: 0.17578125, 
         minExtent: new OpenLayers.Bounds(-1, -1, -1, -1),
         maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
-//        maxExtent: new OpenLayers.Bounds(0, -90, 360, 90),
-//        maxExtent: new OpenLayers.Bounds(-250, -50, -150, 10),
-//        numZoomLevels:7,
-//        restrictedExtent: new OpenLayers.Bounds(108.24697, -51.78606, 213.50869, 10.13191),
-//        restrictedExtent: new OpenLayers.Bounds(108.24697, -51.78606, -156.49131, 10.13191),
         restrictedExtent: new OpenLayers.Bounds(-254.75303, -51.78606, -144.49137, 20.13191),
-//        restrictedExtent: new OpenLayers.Bounds(-254.75303, -51.78606, -144.49137, 1.0000),
-//        panDuration: 100,
         controls: [
             new OpenLayers.Control.PanZoomBar(),
             new OpenLayers.Control.MousePosition(),
@@ -35,49 +20,19 @@
         }
     });
 
-    var wmsLayer = new OpenLayers.Layer.WMS("Site map",
-        "http://tuscany/cgi-bin/mapserv?map=maps/sitemap.map",
-        {
-            layers: "land"
-        },{
-            wrapDateLine: true,
-            transitionEffect: 'resize'
-        }
-    );
-//    map.addLayer(wmsLayer);
 
     var wmsLayer = new OpenLayers.Layer.WMS("Plain World",
         "http://tuscany/cgi-bin/mapserv?map=maps/plainworld.map",
         {
             layers: "land,urban,ocean,maritime,country_line,major_countries,minor_countries,cities,towns,minor_islands"
-//            layers: "land,urban,ocean,country_line,major_countries,minor_countries,cities,towns,minor_islands"
         },{
             wrapDateLine: true,
             transitionEffect: 'resize'
         }
     );
-    map.addLayer(wmsLayer);
 
-    var bathymetryLayer = new OpenLayers.Layer.WMS("Bathymetry",
-        "http://tuscany/cgi-bin/mapserv?map=maps/bathymetry.map",
-        {
-            layers: "bathymetry_10000,bathymetry_9000,bathymetry_8000,bathymetry_7000,bathymetry_6000,bathymetry_5000,bathymetry_4000,bathymetry_3000,bathymetry_2000,bathymetry_1000,bathymetry_200,bathymetry_0,coastline,ocean,land"
-        },{
-            wrapDateLine: true
-        });
-//    map.addLayer(bathymetryLayer);
 
 ////Below are the MapServer layers
-    var mapservLayer = new OpenLayers.Layer.MapServer("Plain World",
-        "http://tuscany/cgi-bin/mapserv", {
-            map: "maps/world.map",
-            layers: ["populated_places", "eez"]
-        }, {
-            'buffer': 4,
-//            gutter: '2',
-            wrapDateLine: true
-        });
-//    map.addLayer(mapservLayer);
 
     var bathymetryLayer = new OpenLayers.Layer.MapServer("Bathymetry",
         "http://tuscany/cgi-bin/mapserv", {
@@ -92,7 +47,6 @@
             wrapDateLine: true
 //            maxResolution: 0.0000453613
         });
-    map.addLayer(bathymetryLayer);
 
     var sstLayer = new OpenLayers.Layer.MapServer("SST",
         "http://tuscany/cgi-bin/mapserv", {
@@ -103,29 +57,14 @@
             wrapDateLine: true
 //            maxResolution: 0.0000453613
         });
-    map.addLayer(sstLayer);
 
     function centerMap() {
         if (map) {
             map.setCenter(new OpenLayers.LonLat(-178.48551, -13.11418), 0);
-//            map.setCenter(new OpenLayers.LonLat(-178.48551, -13.11418), 0);
-//            map.setCenter(new OpenLayers.LonLat(178.62740, -17.93307), 7);
-//            map.setCenter(new OpenLayers.LonLat(167.29775, -11.97161), 2);
+            gaugesLayer.setVisibility(true);
         }
     }
     
-    var eezLayer = new OpenLayers.Layer.WMS("EEZ",
-        "http://tuscany/cgi-bin/mapserv?map=maps/eez.map",
-        {
-            layers: "maritime"
-        },{
-            isBaseLayer: false,
-            wrapDateLine: true,
-            transitionEffect: 'resize'
-        }
-    );
-//    map.addLayer(eezLayer);
-
     //Add gauge points
     var gaugesLayer = new OpenLayers.Layer.Vector("Tidal gauges", {
         strategies: [new OpenLayers.Strategy.BBOX({resFactor: 1.1})],
@@ -135,8 +74,9 @@
         }),
         'calculateInRange' : function() { return true;}
     });
-    map.addLayer(gaugesLayer);
+    gaugesLayer.setVisibility(false);
 
+    map.addLayers([wmsLayer, bathymetryLayer, sstLayer, gaugesLayer]);
 
     var gaugeControl = new OpenLayers.Control.SelectFeature(gaugesLayer, {
         clickout: true,
@@ -340,11 +280,23 @@ Ext.onReady(function() {
         width: 1,
         height: 1
     });
+    
+    countryPanel = Ext.create('Ext.panel.Panel', {
+        title: 'Country',
+        items: [countryCombo],
+        height: '10%'
+    });
+   
+    datasetPanel = Ext.create('Ext.panel.Panel', {
+        title: 'Dataset',
+        height: '60%',
+        contentEl: 'wrapper'
+    });
 
     legendPanel = Ext.create('Ext.panel.Panel', {
         title: 'Legend',
         html: '',
-        height: '40%'
+        height: '30%'
     });
 
     Ext.create('Ext.Viewport', {
@@ -361,6 +313,7 @@ Ext.onReady(function() {
         items: [{
             xtype: 'tabpanel',
             region: 'west',
+            id: 'westDiv',
             collapsible: true,
             title: 'Control Panel',
             split: false,
@@ -369,7 +322,8 @@ Ext.onReady(function() {
                 title: 'Maps',
                 padding: 2,
                 items: [
-                    countryCombo,
+                    countryPanel,
+                    datasetPanel,
                     legendPanel
 //                    {
 //                        title: 'Legend',
@@ -387,13 +341,16 @@ Ext.onReady(function() {
             padding: 2,
             width: '82%',
             height: '90%',
-            contentEl: 'map' 
-        },
-        {
-            region: 'south',
-            html: '<b>Pacific Ocean Demo Project</b><br/> More information will be available soon.',
-            height: '10%'
+            items:[
+                Ext.create('Ext.panel.Panel', {contentEl: 'map', height: '80%'}),
+                Ext.create('Ext.panel.Panel', {contentEl: 'imgDiv', height: '20%'})
+            ] 
         }
+//        {
+//            region: 'south',
+//            html: '<b>Pacific Ocean Demo Project</b><br/> More information will be available soon.',
+//            height: '0%'
+//        }
        ]
     });
 

@@ -1,0 +1,43 @@
+#wrapper {
+    width: 200px;
+}
+
+#centre {
+    width: 200px;
+    padding-left: 10px;
+    display: inline;
+}
+
+#right {
+    width: 230px;
+}
+
+#left {
+    width: 150px;
+}
+
+#bottom {
+    clear: both;
+}
+
+#header {
+    clear: both;
+    padding-bottom: 10px;
+}
+
+#title {
+    float: left;
+    text-align: left;
+}
+
+#help {
+    text-align: right;
+}
+
+#datepickerDiv {
+    padding-bottom: 10px;
+}
+
+#compDiv {
+    padding-bottom: 10px;
+}

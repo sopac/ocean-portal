@@ -5,9 +5,17 @@
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
 <title>Pacific Ocean Maps</title> 
 <link rel="stylesheet" type="text/css" href="lib/ext/resources/css/ext-all.css" />
-<script type="text/javascript" src="lib/ext/ext-all.js"></script>
+<script type="text/javascript" src="lib/ext/ext-all-debug.js"></script>
 <!--<script src='lib/OpenLayers/lib/OpenLayers.js'></script>-->
 <script src='lib/OpenLayers/OpenLayers.js'></script>
+
+<link rel="stylesheet" type="text/css" href="css/comp/controlPanel.css" />
+<script type="text/javascript" src="js/jquery-1.6.4.js"></script>
+<style type="text/css">@import "css/redmond.datepick.css";</style>
+<script type="text/javascript" src="js/jquery.datepick.js"></script>
+<script type="text/javascript" src="js/jquery.datepick.ext.js"></script>
+
+<script type="text/javascript" src="js/comp/controlPanel.js"></script>
 
 <style>
  #map {
@@ -20,7 +28,39 @@
 </head> 
 
 <body>
-<div id="map" style="width: 100%, height:100%"></div>
-<script type="text/javascript" src="js/compmap.js"></script>
+<div id="map"></div>
+<div id="imgDiv"></div>
+<div class="wrapper" id="wrapper">
+      <form name="theform" id="theform" method="get" action="index.jsp?">
+      <div class="header" id="header">
+          <div class="title" id="title" ><h1 id="datasettitle"></h1></div>
+          <div class="help" id="help" ><a href="doc/ReynoldsSSTv2.doc" target="_blank" class="navlink">Help File</a></div>
+      </div>
+      <div class="left" id="left" style="width=150px">
+          <div class="categoryDiv" id="categoryDiv"></div>
+          <div class="datasetDiv" id="datasetDiv"></div>
+          <div class="variableDiv" id="variableDiv"></div>
+      </div>
+      <div class="centre" id="centre">
+          <div class="selectionDiv" id="selectionDiv"></div>
+          <div class="toggleDiv" id="toggleDiv"></div>
+          <div class="sliderDiv" id="sliderDiv"></div>
+      </div>
+      <div class="right" id="right">
+          <div class="yearMonthDiv" id="yearMonthDiv">
+              <div class="monthDiv" id="monthDiv"></div>
+              <div class="yearDiv" id="yearDiv"></div>
+          </div>
+          <div class="datepickerDiv" id="datepickerDiv">
+              <input type="text" name="datepicker" id="datepicker" readonly="readonly" style="width: 80px"/>
+          </div>
+          <div class="compDiv" id="compDiv"></div>
+          <input type="button" name="submitbtn" value="Submit" style="width: 55px" onClick="updatePage()"/>
+      </div>
+      <div class="bottom" id="bottom"></div>
+      </form>
+</div>
+
+<script type="text/javascript" src="js/comp/compmap.js"></script>
 </body> 
 </html>
