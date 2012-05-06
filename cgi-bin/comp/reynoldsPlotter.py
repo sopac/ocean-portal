@@ -6,19 +6,21 @@ import dataextractor
 
 from netCDF4 import Dataset
 import numpy as np
-
+import reynoldsConfig as rc
 
 class ReynoldsPlotter ():
     """ Reynolds plotter is specifically designed to plot the reynolds
     netcdf data
     """
+    config = None
+
     def __init__(self):
        """Does nothing""" 
+       self.config = rc.ReynoldsConfig()
 
-
-    def plot(self):
-        dataset = Dataset('/home/sguo/data/avhrr-only-v2.20120116.nc')
-        sst = dataset.variables['sst'][0][0]
+    def plot(self, filename, variable, date):
+        dataset = Dataset(filename)
+        sst = dataset.variables[self.config.getVariableType(variable)][0][0]
         lats = dataset.variables['lat'][:]
         lons = dataset.variables['lon'][:]
         
@@ -34,11 +36,11 @@ class ReynoldsPlotter ():
         
 #        data = dataextractor.extract('/home/sguo/data/avhrr-only-v2.20120116.nc', 23, -26, 134, 214)
         plot = plotter.Plotter()
-        plot.plot(sst, lats, lons, 'aaa.png')
+        plot.plot(sst, lats, lons, variable, self.config, 'aaa.png')
         dataset.close()
 
 if __name__ == "__main__":
     plt = ReynoldsPlotter()
-    plt.plot()
+    plt.plot('/data/sst/reynolds/monthly/2012/avhrr-only-v2.201201ave.nc', 'anom', '20120101')
 
 
