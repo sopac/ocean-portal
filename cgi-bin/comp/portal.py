@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys
-import reynolds
+import reynolds.reynolds as reynolds
 import cgi
 import cgitb
 

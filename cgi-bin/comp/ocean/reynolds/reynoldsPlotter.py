@@ -1,8 +1,7 @@
 #!/usr/bin/python
 
 
-import netcdf.plotter as plotter
-import dataextractor
+from ..netcdf import plotter
 
 from netCDF4 import Dataset
 import numpy as np
