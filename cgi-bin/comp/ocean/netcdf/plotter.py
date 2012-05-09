@@ -10,8 +10,10 @@ Author: Sheng Guo
 from mpl_toolkits.basemap import Basemap
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 import shutil
 from ..util import serverConfig
+
 
 class Plotter:
     """The base class for plotting netCDF files."""
@@ -53,12 +55,12 @@ class Plotter:
 
 
     def plotBasemapWest(self, data, lats, lons, variable, config, outputFile,\
-                    proj=_DEFAULT_PROJ, lllat=-90, lllon=180, urlat=90, urlon=360):
+                        lllat=-90, lllon=180, urlat=90, urlon=360, proj=_DEFAULT_PROJ):
         """
         Plot the input data using the specified project and save the plot to the output file.
         """ 
         #left part
-        m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=llon,\
+        m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
                    urcrnrlat=urlat, urcrnrlon=urlon, resolution=None)
         x, y = m(*np.meshgrid(lons, lats))
 
@@ -72,15 +74,15 @@ class Plotter:
         #Save the figure with no white padding around the map.
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '_west.png', dpi=150, bbox_inches='tight', pad_inches=0) 
         plt.close()
-        shutil("../resource/west.pgw", self.serverConfig["outputDir"] + outputFile + '_west.pgw')
+        shutil.copyfile('ocean/resource/west.pgw', self.serverConfig["outputDir"] + outputFile + '_west.pgw')
  
     def plotBasemapEast(self, data, lats, lons, variable, config, outputFile,\
-                    proj=_DEFAULT_PROJ, lllat=-90, lllon=0, urlat=90, urlon=180):
+                        lllat=-90, lllon=0, urlat=90, urlon=180, proj=_DEFAULT_PROJ):
         """
         Plot the input data using the specified project and save the plot to the output file.
         """ 
         #right part
-        m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=llon,\
+        m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
                    urcrnrlat=urlat, urcrnrlon=urlon, resolution=None)
         x, y = m(*np.meshgrid(lons, lats))
 
@@ -94,4 +96,4 @@ class Plotter:
         #Save the figure with no white padding around the map.
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '_east.png', dpi=150, bbox_inches='tight', pad_inches=0) 
         plt.close()
-        shutil("../resource/east.pgw", self.serverConfig["outputDir"] + outputFile + '_east.pgw')
+        shutil.copyfile('ocean/resource/east.pgw', self.serverConfig["outputDir"] + outputFile + '_east.pgw')

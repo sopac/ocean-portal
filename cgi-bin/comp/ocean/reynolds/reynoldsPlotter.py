@@ -67,6 +67,9 @@ class ReynoldsPlotter ():
                   regionConfig.regions[area][1]["llcrnrlon"],\
                   regionConfig.regions[area][1]["urcrnrlat"],\
                   regionConfig.regions[area][1]["urcrnrlon"])
+        plot.plotBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
+        plot.plotBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
+
         dataset.close()
         
         return 0
