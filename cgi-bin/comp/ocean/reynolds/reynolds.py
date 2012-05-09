@@ -119,14 +119,14 @@ def process(form):
                 fileName = aveSstGraph % (reynoldsProduct["6monthly"], mapStr, areaStr, dateStr[:6])
             elif periodStr == 'weekly':
                 fileName = aveSstGraph % (reynoldsProduct["weekly"], mapStr, areaStr, dateStr)
-            outputFileName = serverCfg["outputDir"] + fileName + ".png"
-            if not os.path.exists(outputFileName):
+            outputFileName = serverCfg["outputDir"] + fileName 
+            if not os.path.exists(outputFileName + ".png"):
                 plotter.plot(fileName, mapStr, dateStr, areaStr, periodStr)
-            if not os.path.exists(outputFileName):
+            if not os.path.exists(outputFileName + ".png"):
                 responseObj["error"] = "Requested image is not available at this time."
             else:
                 responseObj["img"] = serverCfg["baseURL"]\
-                                   + outputFileName
+                                   + outputFileName + ".png"
                 responseObj["mapeast"] = serverCfg["baseURL"]\
                                        + outputFileName + "_east.png"
                 responseObj["mapeastw"] = serverCfg["baseURL"]\
