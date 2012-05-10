@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 import os
 import shutil
 from ..util import serverConfig
+from matplotlib.transforms import offset_copy
 
 
 class Plotter:
@@ -27,11 +28,12 @@ class Plotter:
 
 #    def plot(inputFile, outputFile, projection=__DEFAULT_PROJ):
         """
-        Plot the input file using the specified projection and save thei
+        Plot the input file using the specified projection and save the
         plot to the output file.
         """
+    def contour(self, ):
 
-    def plot(self, data, lats, lons, variable, config, outputFile, lllat, lllon, urlat, urlon, proj=_DEFAULT_PROJ):
+    def plot(self, data, lats, lons, variable, config, outputFile, lllat, lllon, urlat, urlon, proj=_DEFAULT_PROJ, centerLabel = False):
         """
         Plot the input data using the specified project and save the plot to the output file.
         """ 
@@ -42,12 +44,25 @@ class Plotter:
                     urcrnrlat=urlat, urcrnrlon=urlon, resolution='l')
         x, y = m(*np.meshgrid(lons, lats))
         m.pcolormesh(x, y, data, shading='flat', cmap=config.getColorMap(variable))
-        m.drawcoastlines(linewidth=0.1)
-        m.fillcontinents(color='#F1EBB7')
+        m.drawcoastlines(linewidth=0.1, zorder=6)
+        m.fillcontinents(color='#F1EBB7', zorder=7)
         plt.title(config.getTitle(variable), fontsize=8)
         plt.clim(*config.getColorBounds(variable))
         cax = plt.axes([0.93, 0.18, 0.02, 0.65])
         cbar = plt.colorbar(format=config.getValueFormat(variable), cax=cax, extend='both')
+
+        colorbarStrings = config.getColorbarStrings(variable)
+        if len(colorbarStrings) != 0:
+#        if labels != None:
+            cbar.ax.set_yticklabels(colorbarStrings))
+     
+        if centerLabel:
+            try:
+                for tick in cbar.ax.get_yticklabels():
+                    tick.set_fontsize(6)
+                    tick.set_transform(offset_copy(cax.transData, x=10, y=-40, units='dots'))
+            except KeyError:
+                pass
 
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=.3)  
         plt.close()
@@ -97,3 +112,5 @@ class Plotter:
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '_east.png', dpi=150, bbox_inches='tight', pad_inches=0) 
         plt.close()
         shutil.copyfile('ocean/resource/east.pgw', self.serverConfig["outputDir"] + outputFile + '_east.pgw')
+
+
