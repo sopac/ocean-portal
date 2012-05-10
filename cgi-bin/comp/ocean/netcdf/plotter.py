@@ -31,7 +31,7 @@ class Plotter:
         Plot the input file using the specified projection and save the
         plot to the output file.
         """
-    def contour(self, ):
+#    def contour(self, ):
 
     def plot(self, data, lats, lons, variable, config, outputFile, lllat, lllon, urlat, urlon, proj=_DEFAULT_PROJ, centerLabel = False):
         """
@@ -51,10 +51,9 @@ class Plotter:
         cax = plt.axes([0.93, 0.18, 0.02, 0.65])
         cbar = plt.colorbar(format=config.getValueFormat(variable), cax=cax, extend='both')
 
-        colorbarStrings = config.getColorbarStrings(variable)
-        if len(colorbarStrings) != 0:
-#        if labels != None:
-            cbar.ax.set_yticklabels(colorbarStrings))
+        colorbarLabels = config.getColorbarLabels(variable)
+        if len(colorbarLabels) != 0:
+            cbar.ax.set_yticklabels(colorbarLabels)
      
         if centerLabel:
             try:

@@ -99,12 +99,23 @@ def process(form):
                                                + '_ave_%s.txt"' % (areaStr)
                         responseObj["mean"] = str(areaMean.yearlyMean[areaStr])
         elif mapStr == "dec":
-            fileName = decGraph % (decileMonthlyProductId, areaStr, dateStr[:6])
-            outputFileName = outputDir + "/" + fileName
-            if not os.path.exists(outputFileName):
+            fileName = decGraph % (reynoldsProduct["monthlyDec"], areaStr, dateStr[:6])
+            outputFileName = serverCfg["outputDir"] + fileName
+            if not os.path.exists(outputFileName + ".png"):
+                plotter.plot(fileName, mapStr, dateStr, areaStr, periodStr)
+            if not os.path.exists(outputFileName + ".png"):
                 responseObj["error"] = "Requested image is not available at this time."
             else:
-                responseObj["img"] = '"%s/images/%s"' % (sstDir, fileName)
+                responseObj["img"] = serverCfg["baseURL"]\
+                                   + outputFileName + ".png"
+                responseObj["mapeast"] = serverCfg["baseURL"]\
+                                       + outputFileName + "_east.png"
+                responseObj["mapeastw"] = serverCfg["baseURL"]\
+                                       + outputFileName + "_east.pgw"
+                responseObj["mapwest"] = serverCfg["baseURL"]\
+                                       + outputFileName + "_west.png"
+                responseObj["mapwestw"] = serverCfg["baseURL"]\
+                                       + outputFileName + "_west.pgw"
         else:
         ####current xml html response
             if periodStr == 'daily':

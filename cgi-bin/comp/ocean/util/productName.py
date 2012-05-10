@@ -13,7 +13,7 @@ products = {"reynolds": {"daily":     "REY00001",
                          "weekly":    "REY00006",
                          "yearlyAve": "REY00101",
                          "monthlyAve":"REY00102",
-                         "monthlyDev":"REY00201"
+                         "monthlyDec":"REY00201"
                         },
             "ersst": {
                      },

@@ -24,7 +24,17 @@ class ReynoldsConfig ():
                                         "unit": ur'\u00b0' + 'C',
                                         "format": '%5.1f'
                                       },
-                                      "anom")
+                                      "anom"),
+                              "dec": ("Monthly Average Reynolds Sea Surface Temperature Deciles",
+                                      {"colorbounds": [0, 11],
+                                       "colormap": plt.cm.RdBu_r,
+                                       "unit": ur'\u00b0' + 'C',
+                                       "format": '%d',
+                                       "labels": ['Lowest on \nrecord', 'Very much \nbelow \naverage \n[1]', 'Below \naverage \n[2-3]', 
+                                                  'Average \n[4-7]', 'Above \naverage \n[8-9]', 'Very much \nabove \naverage \n[10]',
+                                                  'Highest on \nrecord']
+                                      }, 
+                                      "decile")
                              }
 
 
@@ -45,6 +55,14 @@ class ReynoldsConfig ():
  
     def getVariableType(self, variableName):
         return self.variableConfig[variableName][2]
+ 
+    def getColorbarLabels(self, variableName):
+        labels = []
+        try:
+            labels = self.variableConfig[variableName][1]['labels']
+        except:
+            pass
+        return labels
 
 
 if __name__ == "__main__":

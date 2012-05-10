@@ -2,7 +2,7 @@
 #This cgi script is to generate tidal gauge pages
 
 import os
-import os.path
+import os.path as path
 import re
 import cgi
 import cgitb
@@ -10,6 +10,8 @@ import sys
 import subprocess
 import urlparse
 import urllib
+import string
+import ocean.util.serverConfig as serverCfg
 
 #The following line is for debugging
 #cgitb.enable(display=0, logdir="/tmp")
@@ -22,28 +24,35 @@ maps = {'plainworld': MAPFILE_PATH + 'plainworld.map',
         'bathymetry': MAPFILE_PATH + 'bathymetry.map',
         'sst': MAPFILE_PATH + 'sst.map',
         'reynolds': MAPFILE_PATH + 'reynolds.map'}
-
+MAP_EAST_PATTERN = re.compile('east.png$')
+MAP_WEST_PATTERN = re.compile('west.png$')
 
 def main():
     form = cgi.FieldStorage()
+ 
     if "map" in form:
-
-#    print "Content-type: text/html\r\n\r\n";
-#    print "<font size=+1>Environment</font><\br>";
-#    for param in os.environ.keys():
-#        print "<b>%20s</b>: %s<\br>" % (param,os.environ[param])
-#    print os.environ["QUERY_STRING"]
-#    print '\n'
         queryMap = urlparse.parse_qs(os.environ["QUERY_STRING"])
         queryMap["map"] = maps[form["map"].value]
+        
+        if form["map"].value == 'reynolds':
+            raster = form["raster"].value
+            rasters = string.split(raster, " ")
+            for file in rasters:
+                url, filename = path.split(file)
+                #copy file into the location that is specified in the map file
+                #TODO
+                #path = serverCfg.servers[serverCfg.currentServer]["mapImageDir"]
+                #urllib.urlretrieve(file, path + filename)
+                
+
+                #detect the image file and add to the URL for the map variable substitution.
+                if MAP_EAST_PATTERN.search(filename):
+                    queryMap["eastFileName"] = filename
+                elif MAP_WEST_PATTERN.search(filename):
+                    queryMap["westFileName"] = filename
+
         queryString = urllib.urlencode(queryMap, True)
-#    print queryString
-#    print urllib.unquote(queryString)
-#    os.environ["QUERY_STRING"] = urllib.unquote(queryString)
         os.environ["QUERY_STRING"] = queryString
         subprocess.call(['/var/www/cgi-bin/mapserv'])
-#    os.execl('/var/www/cgi-bin/mapserv')
-#    subprocess.call(['/var/www/cgi-bin/mapserv', 'QUERY_STRING=' + urllib.unquote(queryString)])
-
 main()
 

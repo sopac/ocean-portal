@@ -27,25 +27,28 @@ class ReynoldsPlotter ():
         """
         Plot the thumbnail image and also the east and west map images.
         """
-        if period=='daily':
-            filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date
-        elif period=='predaily':
-            filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date + "_preliminary"
-        elif period=='weekly':
-            filename = self.serverCfg["dataDir"] + period + "/" + "avhrr-only-v2." + date + "ave"
-            startDate, endDate = daterange.generateWeekly(date)
-        elif period=='monthly':
-            filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6] + "ave"
-        elif period=='3monthly':
-            filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6] + "ave"
-            startDate = daterange.generate3Month(date)
-        elif period=='6monthly':
-            filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6] + "ave"
-            startDate = daterange.generate6Month(date)
-        elif period=='yearly':
-            filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:4] + "ave"
+        if variable == 'dec':
+            filename = self.serverCfg["dataDir"] + "decile/" + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6]  + "dec"
         else:
-            return -1
+            if period=='daily':
+                filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date
+            elif period=='predaily':
+                filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date + "_preliminary"
+            elif period=='weekly':
+                filename = self.serverCfg["dataDir"] + period + "/" + "avhrr-only-v2." + date + "ave"
+                startDate, endDate = daterange.generateWeekly(date)
+            elif period=='monthly':
+                filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6] + "ave"
+            elif period=='3monthly':
+                filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6] + "ave"
+                startDate = daterange.generate3Month(date)
+            elif period=='6monthly':
+                filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6] + "ave"
+                startDate = daterange.generate6Month(date)
+            elif period=='yearly':
+                filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:4] + "ave"
+            else:
+                return -1
         
         filename = filename + ".nc" 
         dataset = Dataset(filename, 'r')
@@ -66,7 +69,8 @@ class ReynoldsPlotter ():
                   regionConfig.regions[area][1]["llcrnrlat"],\
                   regionConfig.regions[area][1]["llcrnrlon"],\
                   regionConfig.regions[area][1]["urcrnrlat"],\
-                  regionConfig.regions[area][1]["urcrnrlon"])
+                  regionConfig.regions[area][1]["urcrnrlon"],\
+                  centerLabel = True)
         plot.plotBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
         plot.plotBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
 
