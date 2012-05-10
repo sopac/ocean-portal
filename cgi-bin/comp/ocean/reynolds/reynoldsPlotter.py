@@ -27,8 +27,10 @@ class ReynoldsPlotter ():
         """
         Plot the thumbnail image and also the east and west map images.
         """
+        cntLabel = False
         if variable == 'dec':
             filename = self.serverCfg["dataDir"] + "decile/" + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6]  + "dec"
+            cntLabel = True
         else:
             if period=='daily':
                 filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date
@@ -70,7 +72,7 @@ class ReynoldsPlotter ():
                   regionConfig.regions[area][1]["llcrnrlon"],\
                   regionConfig.regions[area][1]["urcrnrlat"],\
                   regionConfig.regions[area][1]["urcrnrlon"],\
-                  centerLabel = True)
+                  centerLabel = cntLabel)
         plot.plotBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
         plot.plotBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
 
