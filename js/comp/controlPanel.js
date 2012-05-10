@@ -12,11 +12,12 @@ Date.prototype.getMonthString = function() {
     return (calMonth < 10) ?  ('0' + calMonth) : calMonth + '';
 }
 ocean.dsConf = {
-    reynolds: {url: function() {return "/cgi-bin/portal.py?dataset=reynolds"
+    reynolds: {url: function() {return "/cgi-bin/comp/portal.py?dataset=reynolds"
                    + "&map=" + this.variable.get('id')
                    + "&date=" + $.datepick.formatDate('yyyymmdd', ocean.date)
-                   + "&area=" + ocean.region
                    + "&period=" + ocean.period
+//                   + "&area=aus"
+                   + "&area=" + ocean.area
                    + "&average=" + ocean.dsConf['reynolds'].aveCheck.average
                    + "&trend=" + ocean.dsConf['reynolds'].aveCheck.trend
                    + "&runningAve=" + ocean.dsConf['reynolds'].aveCheck.runningAve
@@ -28,7 +29,9 @@ ocean.dsConf = {
         mainCheck: 'average',
         runningInterval: 2,
         callback: function(data) {
-            var imgDiv = $('#imgDiv')
+            var imgDiv = $('#imgDiv');
+            var dataDiv = $('#dataDiv');
+            var enlargeDiv = $('#enlargeDiv');
             if (ocean.compare){
                 var imgList = imgDiv.childNodes;
                 imgDiv.removeChild(imgDiv.firstChild);
@@ -44,35 +47,45 @@ ocean.dsConf = {
                 }
                 else if (data.img != null) {
                     img.src = data.img;
-                    img.width = "680";
-//                    document.getElementById('aveArea').innerHTML = ''
+                    img.width = "150";
+                    dataDiv.html('')
                 }
                 else {
                     img.src = "images/notavail.png";
-//                    document.getElementById('aveArea').innerHTML = ''
+                    dataDiv.html('')
                 }
                     imgDiv.insertBefore(img, imgDiv.firstChild);
             }
             else {
-                if (this.variable.get("id") == "anom" && this.aveCheck.average) {
-                    imgDiv.html('<img src="' + data.aveImg + '" width="680"/>')
-                    $('#aveArea').html('<div style="display:inline-block; width:341px; text-align:left">Download data from <a href="' 
-                        + data.aveData + '" target="_blank">here</a></div>'
-                        + '<div style="display:inline-block; width:341px; text-align:right"><b>Average(1981-2010)</b> ' 
-                        + Math.round(data.mean*100)/100 + '\u00B0C</div>')
+                if (this.variable.get("id") == "anom" && this.aveCheck.average && data.aveImg != null) {
+                    imgDiv.html('<img src="' + data.aveImg + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
+                    dataDiv.html('<b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C<br>'
+                        + '<a href="'+ data.aveData + '" target="_blank"><img src="images/download.png"/></a>')
+
                 }
                 else if (data.img != null) {
-                    imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="380"/>')
-//                    document.getElementById('aveArea').innerHTML = ''
+                    imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
+                    updateMap(data)
+                    dataDiv.html('')
                 }
                 else if (data.error != null) {
                     imgDiv.html('<img src="images/notavail.png" />')
-//                    document.getElementById('aveArea').innerHTML = ''
+                    dataDiv.html(data.error)
                 }
             }
         }
     },
     ersst: {
+    }
+}
+
+function enlargeImg(img, show) {
+    var enlargeDiv = $('#enlargeDiv');
+    if (show) {
+        enlargeDiv.html('<img src="' + img.src + ' "width="650"/>');
+    }
+    else {
+        enlargeDiv.html('');
     }
 }
 
@@ -105,12 +118,12 @@ Ext.onReady(function() {
 
     Ext.define('Dataset', {
         extend: 'Ext.data.Model',
-        fields: ['name', 'id', 'title', 'dateRange'],
+        fields: ['name', 'id', 'title', 'help', 'dateRange'],
         idProperty: 'id',
         hasMany: {model:'Variable', name: 'variables'},
         proxy: {
             type: 'ajax',
-            url: 'config/datasets.json',
+            url: 'config/comp/datasets.json',
             reader: {
                 type: 'json'
             }
@@ -124,26 +137,13 @@ Ext.onReady(function() {
         belongsTo: 'Dataset'
     });
 
-    Ext.define('Region', {
-        extend: 'Ext.data.Model',
-        idProperty: 'id',
-        fields: ['name', 'id'],
-        proxy: {
-            type: 'ajax',
-            url: 'config/regions.json',
-            reader: {
-                type: 'json'
-            }
-        }
-    });
-
     Ext.define('Period', {
         extend: 'Ext.data.Model',
         idProperty: 'id',
         fields: ['name', 'id'],
         proxy: {
             type: 'ajax',
-            url: 'config/period.json',
+            url: 'config/comp/period.json',
             reader: {
                 type: 'json'
             }
@@ -160,11 +160,6 @@ Ext.onReady(function() {
         model: 'Dataset'
     });
     ocean.datasets.addListener('load', createCheckBoxes);
-
-    ocean.regions = Ext.create('Ext.data.Store', {
-        autoLoad: true,
-        model: 'Region'
-    });
 
     ocean.periods = Ext.create('Ext.data.Store', {
         autoLoad: true,
@@ -265,22 +260,6 @@ Ext.onReady(function() {
         }
     });
 
-    ocean.areaCombo = Ext.create('Ext.form.field.ComboBox', {
-        id: 'areaCombo',
-        fieldLabel: 'Area',
-        labelWidth: 50,
-        width: 250,
-        displayField: 'name',
-        valueField: 'id',
-        renderTo: 'selectionDiv',
-        queryMode: 'local',
-        store: ocean.regions,
-        lastQuery: '',
-        listeners: {
-            'select': selectRegion
-        }
-    });
-
     ocean.runningAveSlider = Ext.create('Ext.slider.Single', {
         renderTo: 'sliderDiv',
         hideLabel: true,
@@ -293,13 +272,13 @@ Ext.onReady(function() {
         }
     });
 
-    ocean.plotComp = Ext.create('Ext.form.field.Checkbox', {
-            boxLabel: 'Plot Comparision',
-            renderTo: 'compDiv',
-            width: 150,
-            name: 'plotComp',
-            id: 'plotComp'});
-    ocean.plotComp.setDisabled(true);
+//    ocean.plotComp = Ext.create('Ext.form.field.Checkbox', {
+//            boxLabel: 'Plot Comparision',
+//            renderTo: 'compDiv',
+//            width: 150,
+//            name: 'plotComp',
+//            id: 'plotComp'});
+//    ocean.plotComp.setDisabled(true);
 
     ocean.monthStore = Ext.create('Ext.data.Store', {
         fields: ['name', 'id'],
@@ -458,7 +437,9 @@ function selectDataset(event, args) {
     var record = ocean.datasets.getById(selection);
     ocean.dsConf[selection].data = record;
     ocean.dataset = ocean.dsConf[selection];
-    $('#datasettitle').html(record.get('title'))
+    $('#dstitle').html(record.get('title'))
+    $('#dshelp').html('Help File')
+    $('#dshelp').attr('href', record.get('help'))
     varCombo = Ext.getCmp('variableCombo');
     varCombo.setDisabled(false);
     varCombo.bindStore(record.variables());
@@ -563,18 +544,6 @@ function selectVariable(event, args) {
 //        select the first one
 
     //this should be in a callback for the combo
-    areaCombo = Ext.getCmp('areaCombo');
-    areaCombo.clearValue();
-    store = areaCombo.store;
-    store.clearFilter(true);
-    store.filter([regionFilter]);
-    if (store.find('id', ocean.region) != -1) {
-        areaCombo.select(ocean.region);
-    }
-    else {
-        areaCombo.select(store.data.keys[0]);
-        ocean.region = store.data.keys[0];
-    } 
     showControl('selectionDiv');
 
     if (selection === 'anom') {
@@ -613,10 +582,6 @@ function updateCalDiv() {
     }
 
 }
-
-function selectRegion(event, args) {
-    ocean.region = event.getValue();
-};
 
 function selectRunningInterval(slider, value, thumb, args) {
     ocean.dataset.runningInterval = value;

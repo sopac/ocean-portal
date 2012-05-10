@@ -1,0 +1,30 @@
+lat	lon	title	description	icon	iconSize	iconOffset	
+-18.1325	178.4275	Fiji - Viti Levu - Suva	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70063" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-17.6053	177.4381	Fiji - Viti Levu - Lautoka	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70054" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-21.2048	200.2147	Cook Islands - Rarotonga - Avatiu	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70051" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+1.3625	172.9300	Kiribati - Tarawa - Betio	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70060" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+7.1060	171.3725	Marshall Islands - Majuro - Uliga	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70052" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-0.5319	166.9092	Nauru - Nauru - Aiwo	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70055" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-2.0420	147.3737	Papua New Guinea - Manus - Lombrum	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70058" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-9.4289	159.9555	Solomon Islands - Guadalcanal - Honiara	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70061" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-13.8267	188.2389	Somoa - Upolu - Apia	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70062" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-21.1380	184.8185	Tonga - Tongatapu - Nuku'alofa	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70053" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-8.5025	179.1949	Tuvalu - Funafuti - Fongafale	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70056" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-17.7569	168.3002	Vanuatu - Efate - Port Vila	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70059" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+6.9806	158.2001	Federated States of Micronesia - Pohnpei - Dekehtik	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70057" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+
+#the following is to mirror the tidal gauges so that they are displayed no matter where the IDL is.
+-18.1325	-181.5725	Fiji - Viti Levu - Suva	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70063" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-17.6053	-182.5619	Fiji - Viti Levu - Lautoka	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70054" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-21.2048	-159.7853	Cook Islands - Rarotonga - Avatiu	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70051" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+1.3625	-187.0700	Kiribati - Tarawa - Betio	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70060" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+7.1060	-188.6275	Marshall Islands - Majuro - Uliga	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70052" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-0.5319	-193.0908	Nauru - Nauru - Aiwo	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70055" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-2.0420	-212.6263	Papua New Guinea - Manus - Lombrum	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70058" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-9.4289	-200.0445	Solomon Islands - Guadalcanal - Honiara	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70061" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-13.8267	-171.7611	Somoa - Upolu - Apia	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70062" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-21.1380	-175.1815	Tonga - Tongatapu - Nuku'alofa	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70053" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-8.5025	-180.8051	Tuvalu - Funafuti - Fongafale	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70056" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+-17.7569	-191.6998	Vanuatu - Efate - Port Vila	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70059" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+6.9806	-201.7999	Federated States of Micronesia - Pohnpei - Dekehtik	<a href="http://tuscany.bom.gov.au/cgi-bin/tidalGaugeGen.py?stationId=IDO70057" target="_blank">Show time series data</a>	resources/img/dot.png	10,10	-5,-5
+

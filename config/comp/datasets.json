@@ -1,0 +1,68 @@
+[{
+    "id":"reynolds",
+    "name":"Reynolds",
+    "title": "Sea Surface Temperature - Reynolds [BETA]",
+    "help": "doc/ReynoldsSSTv2.doc",
+    "variables": [{
+        "id":"mean",
+        "name":"Mean SST",
+        "periods": ["daily", "weekly", "monthly", "3monthly", "6monthly", "yearly"],
+        "areas" : ["aus", "eca", "wca", "cor", "nws", "ntr", "swr", "sth", "tas", "glob", "ind", "pac", "sh"]
+    },{
+        "id":"anom",
+        "name":"SST Anomaly",
+        "periods": ["daily", "weekly", "monthly", "3monthly", "6monthly", "yearly"],
+        "areas" : ["aus", "eca", "wca", "cor", "nws", "ntr", "swr", "sth", "tas", "glob", "ind", "pac", "sh"],
+        "average" : {
+            "checkboxes" : [{
+                "boxLabel" : "Average",
+                "name" : "average"
+            }, {
+                "boxLabel" : "Trend",
+                "name" : "trend"
+            }, {
+                "boxLabel" : "Running Average",
+                "name" : "runningAve"
+            }],
+            "periods" : ["monthly", "yearly"]
+        }
+    },{
+        "id":"dec",
+        "name":"SST Deciles",
+        "periods": ["monthly"],
+        "areas" : ["aus", "eca", "wca", "cor", "nws", "ntr", "swr", "sth", "tas", "glob", "ind", "pac", "sh"]
+    }],
+    "dateRange" : {
+        "minYear": "1981",
+        "maxYear": "0+",
+        "minDate": {"year": 1981, "month": 9, "date": 1},
+        "maxDate": "-4D"
+    }
+},{
+    "id":"ersst",
+    "name":"ERSST",
+    "title": "Sea Surface Temperature - ERSST [BETA]",
+    "variables": {
+    }
+},{
+    "id":"bran",
+    "name":"BRAN",
+    "title": "BRAN [BETA]",
+    "variables": {
+    }
+},{
+    "id":"wwiii",
+    "name":"WaveWatchIII",
+    "title": "WaveWatch III [BETA]",
+    "variables": {
+    }
+},{
+    "id":"mesowam",
+    "name":"Meso-WAM",
+    "title": "Meso-WAM [BETA]",
+    "variables": {
+    }
+}]    
+
+    
+
