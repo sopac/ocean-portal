@@ -31,7 +31,8 @@ class Plotter:
         Plot the input file using the specified projection and save the
         plot to the output file.
         """
-    def contour(self, data, lats, lons, variable, config, outputFile, title, lllat, lllon, urlat, urlon, proj=_DEFAULT_PROJ, centerLabel = False):
+    def contour(self, data, lats, lons, variable, config, outputFile, title, lllat, lllon, urlat, urlon, proj=_DEFAULT_PROJ,\
+	contourLines = False, centerLabel = False):
 	"""
 	Plot the input data with contours using the specified project and save the plot to the output file.
 	"""
@@ -41,7 +42,8 @@ class Plotter:
 	m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
                     urcrnrlat=urlat, urcrnrlon=urlon, resolution='l')
         x, y = m(*np.meshgrid(lons, lats))
-	m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4,)
+	if contourLines:
+	    m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4,)
 	m.contourf(x, y, data, levels=config.getContourLevels(variable), shading='flat', cmap=config.getColorMap(variable))
 	m.drawcoastlines(linewidth=0.1, zorder=6)
         m.fillcontinents(color='#F1EBB7', zorder=7)
