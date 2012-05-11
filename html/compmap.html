@@ -28,13 +28,19 @@
 </head> 
 
 <body>
-<div id="map"></div>
-<div id="imgDiv"></div>
+<div id="map">
+    <div id="legendDiv"></div>
+    <div id="enlargeDiv"></div>
+</div>
+<div id="outputDiv">
+    <div id="dataDiv"></div>
+    <div id="imgDiv"></div>
+</div>
 <div class="wrapper" id="wrapper">
       <form name="theform" id="theform" method="get" action="index.jsp?">
       <div class="header" id="header">
-          <div class="title" id="title" ><h1 id="datasettitle"></h1></div>
-          <div class="help" id="help" ><a href="doc/ReynoldsSSTv2.doc" target="_blank" class="navlink">Help File</a></div>
+          <div class="title" id="title" ><h1 id="dstitle" class="dstitle"></h1></div>
+          <div class="help" id="help" ><a href="" target="_blank" id="dshelp" class="dshelp"></a></div>
       </div>
       <div class="left" id="left" style="width=150px">
           <div class="categoryDiv" id="categoryDiv"></div>

@@ -1,0 +1,109 @@
+[{
+    "name":"Pacific Region",
+    "abbr":"pac",
+    "zoom":"0",
+    "lat":"-17.000",
+    "long":"172.000",
+    "extent":""
+},{
+    "name":"Cook Islands",
+    "abbr":"cook",
+    "zoom":"6",
+    "lat":"-21.2048",
+    "long":"-159.7853",
+    "extent":""
+},{
+    "name":"Federated States of Micronesia",
+    "abbr":"fsm",
+    "zoom":"6",
+    "lat":"6.9806",
+    "long":"158.2001",
+    "extent":""
+},{
+    "name":"Fiji",
+    "abbr":"fiji",
+    "zoom":"5",
+    "lat":"-18.1325",
+    "long":"178.4275",
+    "extent":""
+},{
+    "name":"Kiribati",
+    "abbr":"kiribati",
+    "zoom":"5",
+    "lat":"1.3625",
+    "long":"172.9300",
+    "extent":""
+},{
+    "name":"Marshall Islands",
+    "abbr":"marshall",
+    "zoom":"6",
+    "lat":"7.1060",
+    "long":"171.3725",
+    "extent":""
+},{
+    "name":"Nauru",
+    "abbr":"nauru",
+    "zoom":"6",
+    "lat":"-0.5319",
+    "long":"166.9092",
+    "extent":""
+},{
+    "name":"Niue",
+    "abbr":"niue",
+    "zoom":"6",
+    "lat":"-19.1100",
+    "long":"-169.9700",
+    "extent":""
+},{
+    "name":"Palau",
+    "abbr":"palau",
+    "zoom":"6",
+    "lat":"7.3500",
+    "long":"134.4667",
+    "extent":""
+},{
+    "name":"Papua New Guinea",
+    "abbr":"png",
+    "zoom":"6",
+    "lat":"-2.0420",
+    "long":"147.3737",
+    "extent":""
+},{
+    "name":"Samoa",
+    "abbr":"samoa",
+    "zoom":"6",
+    "lat":"-13.8267",
+    "long":"-171.7611",
+    "extent":""
+},{
+    "name":"Solomon Islands",
+    "abbr":"solomon",
+    "zoom":"6",
+    "lat":"-9.4289",
+    "long":"159.9555",
+    "extent":""
+},{
+    "name":"Tonga",
+    "abbr":"tonga",
+    "zoom":"6",
+    "lat":"-21.1380",
+    "long":"-175.1815",
+    "extent":""
+},{
+    "name":"Tuvalu",
+    "abbr":"tuvalu",
+    "zoom":"6",
+    "lat":"-8.5025",
+    "long":"179.1949",
+    "extent":""
+},{
+    "name":"Vanuatu",
+    "abbr":"vanuatu",
+    "zoom":"6",
+    "lat":"-17.7569",
+    "long":"168.3002",
+    "extent":""
+}]    
+
+    
+

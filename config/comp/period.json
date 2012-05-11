@@ -1,0 +1,19 @@
+[{
+    "id" : "daily",
+    "name" : "daily"
+}, {
+    "id" : "weekly",
+    "name" : "weekly"
+}, {
+    "id" : "monthly",
+    "name" : "monthly"
+}, {
+    "id" : "3monthly",
+    "name" : "3-month"
+}, {
+    "id" : "6monthly",
+    "name" : "6-month"
+}, {
+    "id" : "yearly",
+    "name" : "yearly"
+}]

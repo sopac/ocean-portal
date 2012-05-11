@@ -2,8 +2,8 @@
 //    OpenLayers.ImgPath = "http://js.mapbox.com/theme/dark/";
     var popup;
     var map = new OpenLayers.Map("map", {
-        resolutions: [0.17578125,0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
-        maxResolution: 0.17578125, 
+        resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
+        maxResolution: 0.087890625, 
         minExtent: new OpenLayers.Bounds(-1, -1, -1, -1),
         maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
         restrictedExtent: new OpenLayers.Bounds(-254.75303, -51.78606, -144.49137, 20.13191),
@@ -41,7 +41,7 @@
                      "bathymetry_7000", "bathymetry_6000", "bathymetry_5000",
                      "bathymetry_4000", "bathymetry_3000", "bathymetry_2000",
                      "bathymetry_1000", "bathymetry_200", "bathymetry_0",
-                     "coastline", "ocean", "land", "towns"]
+                     "coastline", "ocean", "land", "towns", "maritime"]
 //            layers: ["coastline", "populated_places", "ocean"]
         }, {
             wrapDateLine: true
@@ -50,9 +50,9 @@
 
     var sstLayer = new OpenLayers.Layer.MapServer("SST",
         "http://tuscany/cgi-bin/mapserv", {
-            map: "maps/sst.map",
-            layers: ["sst",
-                     "coastline", "land"]
+//            map: "maps/sst.map",
+            map: "maps/reynolds.map",
+            layers: ["sst_left", "sst_right", "land", "coastline"]
         }, {
             wrapDateLine: true
 //            maxResolution: 0.0000453613
@@ -60,8 +60,9 @@
 
     function centerMap() {
         if (map) {
-            map.setCenter(new OpenLayers.LonLat(-178.48551, -13.11418), 0);
-            gaugesLayer.setVisibility(true);
+//            map.setCenter(new OpenLayers.LonLat(-178.48551, -13.11418), 0);
+            map.setCenter(new OpenLayers.LonLat(173.00000, -13.11418), 0);
+//            gaugesLayer.setVisibility(true);
         }
     }
     
@@ -69,14 +70,15 @@
     var gaugesLayer = new OpenLayers.Layer.Vector("Tidal gauges", {
         strategies: [new OpenLayers.Strategy.BBOX({resFactor: 1.1})],
         protocol: new OpenLayers.Protocol.HTTP({
-            url: "config/tidalGauges.txt",
+            url: "config/comp/tidalGauges.txt",
             format: new OpenLayers.Format.Text()
         }),
         'calculateInRange' : function() { return true;}
     });
-    gaugesLayer.setVisibility(false);
 
-    map.addLayers([wmsLayer, bathymetryLayer, sstLayer, gaugesLayer]);
+    map.addLayers([wmsLayer, bathymetryLayer, gaugesLayer]);
+    map.setBaseLayer(bathymetryLayer)
+    gaugesLayer.setVisibility(false);
 
     var gaugeControl = new OpenLayers.Control.SelectFeature(gaugesLayer, {
         clickout: true,
@@ -143,19 +145,23 @@
    // map.panTo(new OpenLayers.LonLat(178.62740, -17.93307));
     function mapBaseLayerChanged(evt) {
         layerName = evt.layer.name;
+        var legendDiv = $('#legendDiv')
         if (window.basemapLegend) {
             if (layerName == 'Bathymetry') {
-                legendPanel.update("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='200'/>");
+//                legendPanel.update("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='200'/>");
+                legendDiv.html("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='200'/>")
            //     basemapLegend.setSrc('images/bathymetry_ver.png'); 
            //     basemapLegend.setSize(40, 250);
             }     
             else if (layerName == 'SST') {
-                legendPanel.update("<p><b>Temperature (&deg;C)</b></p><br/><img src='images/sst.png' height='200'/>");
+//                legendPanel.update("<p><b>Temperature (&deg;C)</b></p><br/><img src='images/sst.png' height='200'/>");
+                legendDiv.html("<p><b>Temperature (&deg;C)</b></p><br/><img src='images/sst.png' height='200'/>")
            //     basemapLegend.setSrc('images/sst.png');
            //     basemapLegend.setSize(40, 250);
             }
             else {
-                legendPanel.update("<p></p>");
+//                legendPanel.update("<p></p>");
+                legendDiv.html("<p></p>")
           //      basemapLegend.html="<p>hello</p>";
           //      basemapLegend.setSrc('images/blank.png');
          //       basemapLegend.setSize(1, 1);
@@ -169,12 +175,44 @@ function selectCountry(event, args) {
     var zoom = record.get('zoom');
     map.zoomTo(zoom);
     map.panTo(new OpenLayers.LonLat(record.get('long'), record.get('lat')));
+
+
+    ocean.area = selection;
 };
 
 //this is a callback funtion, invoked when Extjs loading is finished
 function setupControls() {
     window.countryCombo.on('select', selectCountry, this);
+//    window.countryCombo.select('pac');
 };
+
+function updateMap(data){
+    if (map.getLayersByName("Reynolds").length != 0) {
+        layer = map.getLayersByName("Reynolds")[0]
+        map.setBaseLayer(layer)
+        layer.params["raster"] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
+        layer.redraw(true)
+    }
+    else{
+        var sstLayer = new OpenLayers.Layer.MapServer("Reynolds",
+            "http://tuscany/cgi-bin/comp/getMap?map=reynolds", {
+//            "http://tuscany/cgi-bin/mapserv", {
+            layers: ["sst_left", "sst_right", "land", "coastline"],
+            raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
+        }, {
+            wrapDateLine: true
+        });
+
+//        var sstLayer = new OpenLayers.Layer.Image("SST",
+//            "http://tuscany/dev/data/comp/raster/left.png",
+//            new OpenLayers.Bounds(180, -90, 360, 90),
+//            new OpenLayers.Size(720, 720),
+//            {numZoomLevels: 5});
+
+        map.addLayer(sstLayer)
+        map.setBaseLayer(sstLayer)
+    }
+}
 /*
 This file is part of Ext JS 4
 
@@ -223,56 +261,68 @@ Ext.onReady(function() {
         }); 
     }
 
-    var regionsGroup = {
-        xtype: 'fieldset',
-        title: 'Regions',
-        collapsible: true,
-        items: [
-            {xtype: 'radiogroup',
+//    var regionsGroup = {
+//        xtype: 'fieldset',
+ //       title: 'Regions',
+//        collapsible: true,
+//        items: [
+//            {xtype: 'radiogroup',
 //             fieldLabel: 'Regions',
-             columns: 1,
-             items: [
-                 {boxLabel: 'Cook Islands', name: 'regions', inputValue: 'cookislands'},
-                 {boxLabel: 'Federated States of Micronesia', name: 'regions', inputValue: 'fsm'},
-                 {boxLabel: 'Fiji', name: 'regions', inputValue: 'fiji', checked: true},
-                 {boxLabel: 'Kiribati', name: 'regions', inputValue: 'kiribati'},
-                 {boxLabel: 'Marshall Islands', name: 'regions', inputValue: 'marshall'},
-                 {boxLabel: 'Nauru', name: 'regions', inputValue: 'nauru'},
-                 {boxLabel: 'Niue', name: 'regions', inputValue: 'niue'},
-                 {boxLabel: 'Palau', name: 'regions', inputValue: 'palau'},
-                 {boxLabel: 'Papua New Guinea', name: 'regions', inputValue: 'png'},
-                 {boxLabel: 'Somoa', name: 'regions', inputValue: 'somoa'},
-                 {boxLabel: 'Solomon Islands', name: 'regions', inputValue: 'solomonislands'},
-                 {boxLabel: 'Tonga', name: 'regions', inputValue: 'tonga'},
-                 {boxLabel: 'Tuvalu', name: 'regions', inputValue: 'tuvalu'},
-                 {boxLabel: 'Vanuatu', name: 'regions', inputValue: 'vanuatu'}
-              ]} 
-         ]};               
+//             columns: 1,
+//             items: [
+//                 {boxLabel: 'Cook Islands', name: 'regions', inputValue: 'cookislands'},
+//                 {boxLabel: 'Federated States of Micronesia', name: 'regions', inputValue: 'fsm'},
+//                 {boxLabel: 'Fiji', name: 'regions', inputValue: 'fiji', checked: true},
+//                 {boxLabel: 'Kiribati', name: 'regions', inputValue: 'kiribati'},
+//                 {boxLabel: 'Marshall Islands', name: 'regions', inputValue: 'marshall'},
+//                 {boxLabel: 'Nauru', name: 'regions', inputValue: 'nauru'},
+//                 {boxLabel: 'Niue', name: 'regions', inputValue: 'niue'},
+//                 {boxLabel: 'Palau', name: 'regions', inputValue: 'palau'},
+//                 {boxLabel: 'Papua New Guinea', name: 'regions', inputValue: 'png'},
+//                 {boxLabel: 'Somoa', name: 'regions', inputValue: 'somoa'},
+//                 {boxLabel: 'Solomon Islands', name: 'regions', inputValue: 'solomonislands'},
+//                 {boxLabel: 'Tonga', name: 'regions', inputValue: 'tonga'},
+//                 {boxLabel: 'Tuvalu', name: 'regions', inputValue: 'tuvalu'},
+//                 {boxLabel: 'Vanuatu', name: 'regions', inputValue: 'vanuatu'}
+//              ]} 
+//         ]};               
 
     Ext.define('Country', {
         extend: 'Ext.data.Model',
         fields: ['name', 'abbr', 'zoom', 'lat', 'long', 'extend'],
-        idProperty: 'abbr'
-    });  
-
-    window.countryStore = new Ext.data.Store({
-        model: 'Country',
+        idProperty: 'abbr',
         proxy: {
             type: 'ajax',
-            url: 'config/countryList.json',
+            url: 'config/comp/countryList.json',
             reader: {
                 type: 'json'
             }
         }
+    });  
+
+    window.countryStore = new Ext.data.Store({
+        autoLoad: true,
+        model: 'Country'
     });    
+    window.countryStore.addListener('load', selectDefaultCountry);
+
+    function selectDefaultCountry(store, records, result, operation, eOpt) {
+//        window.countryCombo.setValue('pac');
+    }
 
     window.countryCombo = Ext.create('Ext.form.field.ComboBox', {
-        fieldLabel: 'Select a country',
+        fieldLabel: 'Select a country/region',
         displayField: 'name',
         valueField: 'abbr',
         store: window.countryStore,
+        padding: 5,
         height: '60%',
-        width: '100%'
+        width: '100%',
+        listeners: {
+            afterrender: function(combo) {
+                this.setValue('pac')
+            }
+        }
     });
         
     window.basemapLegend = Ext.create('Ext.Img', {
@@ -283,21 +333,31 @@ Ext.onReady(function() {
     
     countryPanel = Ext.create('Ext.panel.Panel', {
         title: 'Country',
+        autoScroll: true,
         items: [countryCombo],
-        height: '10%'
+        height: '15%'
     });
    
     datasetPanel = Ext.create('Ext.panel.Panel', {
         title: 'Dataset',
-        height: '60%',
+        autoScroll: true,
+        height: '50%',
         contentEl: 'wrapper'
     });
 
-    legendPanel = Ext.create('Ext.panel.Panel', {
-        title: 'Legend',
-        html: '',
-        height: '30%'
+    thumbnailPanel = Ext.create('Ext.panel.Panel', {
+        title: 'Thumbnail',
+        contentEl: 'outputDiv',
+        autoScroll: true,
+        height: '35%'
     });
+
+//    legendPanel = Ext.create('Ext.panel.Panel', {
+//        title: 'Legend',
+//        html: '',
+//        autoScroll: true,
+//        height: '20%'
+//    });
 
     Ext.create('Ext.Viewport', {
         layout: {
@@ -324,16 +384,19 @@ Ext.onReady(function() {
                 items: [
                     countryPanel,
                     datasetPanel,
-                    legendPanel
+                    thumbnailPanel
+//                    legendPanel
 //                    {
 //                        title: 'Legend',
 //                        items: [
 //                            window.basemapLegend
 //                        ]
 //                    }
-                ]},{               
-                title: 'Events'
-            }]
+                ]}
+//            {               
+//                title: 'Pilot Projects'
+//            }
+            ]
         }, {
             region: 'center',
             border: false,
@@ -342,8 +405,8 @@ Ext.onReady(function() {
             width: '82%',
             height: '90%',
             items:[
-                Ext.create('Ext.panel.Panel', {contentEl: 'map', height: '80%'}),
-                Ext.create('Ext.panel.Panel', {contentEl: 'imgDiv', height: '20%'})
+                Ext.create('Ext.panel.Panel', {contentEl: 'map', height: '100%'}),
+//                Ext.create('Ext.panel.Panel', {contentEl: 'imgDiv', height: '20%'})
             ] 
         }
 //        {
