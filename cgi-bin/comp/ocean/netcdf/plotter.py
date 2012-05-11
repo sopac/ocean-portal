@@ -31,7 +31,38 @@ class Plotter:
         Plot the input file using the specified projection and save the
         plot to the output file.
         """
-#    def contour(self, ):
+    def contour(self, data, lats, lons, variable, config, outputFile, title, lllat, lllon, urlat, urlon, proj=_DEFAULT_PROJ, centerLabel = False):
+	"""
+	Plot the input data with contours using the specified project and save the plot to the output file.
+	"""
+	#*******************************************
+        #* Generate image for the thumbnail and download
+        #*******************************************
+	m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
+                    urcrnrlat=urlat, urcrnrlon=urlon, resolution='l')
+        x, y = m(*np.meshgrid(lons, lats))
+	m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4,)
+	m.contourf(x, y, data, levels=config.getContourLevels(variable), shading='flat', cmap=config.getColorMap(variable))
+	m.drawcoastlines(linewidth=0.1, zorder=6)
+        m.fillcontinents(color='#F1EBB7', zorder=7)
+        plt.title(config.getTitle(variable), fontsize=8)
+        plt.clim(*config.getColorBounds(variable))
+        cax = plt.axes([0.93, 0.18, 0.02, 0.65])
+        cbar = plt.colorbar(format=config.getValueFormat(variable), cax=cax, extend='both')
+	colorbarLabels = config.getColorbarLabels(variable)
+	if len(colorbarLabels) != 0:
+            cbar.ax.set_yticklabels(colorbarLabels)
+
+        if centerLabel:
+            try:
+                for tick in cbar.ax.get_yticklabels():
+                    tick.set_fontsize(6)
+                    tick.set_transform(offset_copy(cax.transData, x=10, y=-40, units='dots'))
+            except KeyError:
+                pass
+
+        plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=.3)
+        plt.close()
 
     def plot(self, data, lats, lons, variable, config, outputFile, lllat, lllon, urlat, urlon, proj=_DEFAULT_PROJ, centerLabel = False):
         """
@@ -44,8 +75,8 @@ class Plotter:
                     urcrnrlat=urlat, urcrnrlon=urlon, resolution='l')
         x, y = m(*np.meshgrid(lons, lats))
         m.pcolormesh(x, y, data, shading='flat', cmap=config.getColorMap(variable))
-        m.drawcoastlines(linewidth=0.1, zorder=6)
-        m.fillcontinents(color='#F1EBB7', zorder=7)
+        m.drawcoastlines(linewidth=0.1)
+        m.fillcontinents(color='#F1EBB7')
         plt.title(config.getTitle(variable), fontsize=8)
         plt.clim(*config.getColorBounds(variable))
         cax = plt.axes([0.93, 0.18, 0.02, 0.65])
