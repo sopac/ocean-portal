@@ -102,7 +102,7 @@ class Plotter:
 
 
     def plotBasemapWest(self, data, lats, lons, variable, config, outputFile,\
-                        lllat=-90, lllon=180, urlat=90, urlon=360, proj=_DEFAULT_PROJ):
+                        lllat=-90, lllon=180, urlat=90, urlon=360, proj=_DEFAULT_PROJ, worldfile='ocean/resource/west.pgw'):
         """
         Plot the input data using the specified project and save the plot to the output file.
         """ 
@@ -121,10 +121,10 @@ class Plotter:
         #Save the figure with no white padding around the map.
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '_west.png', dpi=150, bbox_inches='tight', pad_inches=0) 
         plt.close()
-        shutil.copyfile('ocean/resource/west.pgw', self.serverConfig["outputDir"] + outputFile + '_west.pgw')
+        shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_west.pgw')
  
     def plotBasemapEast(self, data, lats, lons, variable, config, outputFile,\
-                        lllat=-90, lllon=0, urlat=90, urlon=180, proj=_DEFAULT_PROJ):
+                        lllat=-90, lllon=0, urlat=90, urlon=180, proj=_DEFAULT_PROJ, worldfile='ocean/resource/east.pgw'):
         """
         Plot the input data using the specified project and save the plot to the output file.
         """ 
@@ -139,10 +139,10 @@ class Plotter:
         
         #Do not draw the black border around the map by setting the linewidth to 0
         m.drawmapboundary(linewidth=0.0)
-
+       
         #Save the figure with no white padding around the map.
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '_east.png', dpi=150, bbox_inches='tight', pad_inches=0) 
         plt.close()
-        shutil.copyfile('ocean/resource/east.pgw', self.serverConfig["outputDir"] + outputFile + '_east.pgw')
+        shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_east.pgw')
 
 

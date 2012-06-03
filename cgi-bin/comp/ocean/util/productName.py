@@ -19,7 +19,11 @@ products = {"reynolds": {"daily":     "REY00001",
                      },
             "bran": {
                     },
-            "wwiii": {
-                     }
+            "ww3": {"point":  "WAV00001",
+                    "rect": "WAV00002"
+                     },
+            "sealevel": {"point": "SEA00001",
+                         "monthly": "SEA00002"
+                        }
                         
 }

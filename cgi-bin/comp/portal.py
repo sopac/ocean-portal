@@ -5,6 +5,8 @@ import cgi
 import cgitb
 
 import ocean.reynolds.reynolds as reynolds
+import ocean.ww3.ww3 as ww3
+import ocean.sealevel.seaLevel as sealevel
 
 sys.stderr = sys.stdout
 cgitb.enable()
@@ -24,12 +26,12 @@ if "dataset" in form:
         response = reynolds.process(form)
     elif datasetStr == "ersst":
         response = "{error: building}"
-    elif datasetStr == "wwiii":
-        response = "{error: building}"
+    elif datasetStr == "ww3":
+        response = ww3.process(form)
     elif datasetStr == "bran":
         response = "{error: building}"
     elif datasetStr == "sealevel":
-        response = "{error: building}"
+        response = sealevel.process(form)
     print response
 else:
     print "{}"

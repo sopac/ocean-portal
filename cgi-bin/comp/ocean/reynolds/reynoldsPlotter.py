@@ -29,26 +29,26 @@ class ReynoldsPlotter ():
         """
         cntLabel = False
         if variable == 'dec':
-            filename = self.serverCfg["dataDir"] + "decile/" + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6]  + "dec"
+            filename = self.serverCfg["dataDir"]["reynolds"] + "decile/" + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6]  + "dec"
             cntLabel = True
         else:
             if period=='daily':
-                filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date
+                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date
             elif period=='predaily':
-                filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date + "_preliminary"
+                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date + "_preliminary"
             elif period=='weekly':
-                filename = self.serverCfg["dataDir"] + period + "/" + "avhrr-only-v2." + date + "ave"
+                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + "avhrr-only-v2." + date + "ave"
                 startDate, endDate = daterange.generateWeekly(date)
             elif period=='monthly':
-                filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6] + "ave"
+                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6] + "ave"
             elif period=='3monthly':
-                filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6] + "ave"
+                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6] + "ave"
                 startDate = daterange.generate3Month(date)
             elif period=='6monthly':
-                filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6] + "ave"
+                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6] + "ave"
                 startDate = daterange.generate6Month(date)
             elif period=='yearly':
-                filename = self.serverCfg["dataDir"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:4] + "ave"
+                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:4] + "ave"
             else:
                 return -1
         

@@ -23,7 +23,8 @@ MAPFILE_PATH = '/var/www/cgi-bin/maps/'
 maps = {'plainworld': MAPFILE_PATH + 'plainworld.map',
         'bathymetry': MAPFILE_PATH + 'bathymetry.map',
         'sst': MAPFILE_PATH + 'sst.map',
-        'reynolds': MAPFILE_PATH + 'reynolds.map'}
+        'reynolds': MAPFILE_PATH + 'reynolds.map',
+        'sealevel': MAPFILE_PATH + 'sealevel.map'}
 MAP_EAST_PATTERN = re.compile('east.png$')
 MAP_WEST_PATTERN = re.compile('west.png$')
 
@@ -34,7 +35,7 @@ def main():
         queryMap = urlparse.parse_qs(os.environ["QUERY_STRING"])
         queryMap["map"] = maps[form["map"].value]
         
-        if form["map"].value == 'reynolds':
+        if form["map"].value == 'reynolds' or form["map"].value == 'sealevel':
             raster = form["raster"].value
             rasters = string.split(raster, " ")
             for file in rasters:
