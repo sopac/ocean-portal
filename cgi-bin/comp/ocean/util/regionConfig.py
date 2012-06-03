@@ -2,7 +2,8 @@
 #
 #
 #
-
+#
+#
 regions = {"pi": ("pi",
                   {"llcrnrlat": -26,
                    "llcrnrlon": 134,
@@ -15,12 +16,12 @@ regions = {"pi": ("pi",
                    "urcrnrlat": -8,
                    "urcrnrlon": 203
                   }),
-#           "fsm": ("pi", 
-#                  {"llcrnrlat": ,
-#                   "llcrnrlon": ,
-#                   "urcrnrlat": ,
-#                   "urcrnrlon": 
-#                  }),
+           "fsm": ("pi", 
+                  {"llcrnrlat": 5,
+                   "llcrnrlon": 137,
+                   "urcrnrlat": 11,
+                   "urcrnrlon": 164
+                  }),
            "fiji": ("pi", 
                   {"llcrnrlat": -20,
                    "llcrnrlon": 176.5,
@@ -33,30 +34,30 @@ regions = {"pi": ("pi",
                    "urcrnrlat": 5,
                    "urcrnrlon": 210
                   }),
-#           "marshall": ("pi",
-#                  {"llcrnrlat": ,
-#                   "llcrnrlon": ,
-#                   "urcrnrlat": ,
-#                   "urcrnrlon": 
-#                  }),
-#           "nauru": ("pi", 
-#                  {"llcrnrlat": ,
-#                   "llcrnrlon": ,
-#                   "urcrnrlat": ,
-#                   "urcrnrlon": 
-#                  }),
+           "marshall": ("pi",
+                  {"llcrnrlat": 4,
+                   "llcrnrlon": 160,
+                   "urcrnrlat": 16,
+                   "urcrnrlon": 173
+                  }),
+           "nauru": ("pi", 
+                  {"llcrnrlat": -1,
+                   "llcrnrlon": 166,
+                   "urcrnrlat": 0,
+                   "urcrnrlon": 168
+                  }),
            "niue": ("pi",
                   {"llcrnrlat": -20,
                    "llcrnrlon": 189,
                    "urcrnrlat": -18,
                    "urcrnrlon": 191
                   }),
-#           "palau": ("pi", 
-#                  {"llcrnrlat": ,
-#                   "llcrnrlon": ,
-#                   "urcrnrlat": ,
-#                   "urcrnrlon": 
-#                  }),
+           "palau": ("pi", 
+                  {"llcrnrlat": 2,
+                   "llcrnrlon": 131,
+                   "urcrnrlat": 9,
+                   "urcrnrlon": 135
+                  }),
            "png": ("pi",
                   {"llcrnrlat": -12,
                    "llcrnrlon": 128,
@@ -170,3 +171,4 @@ regions = {"pi": ("pi",
                    "lon0": 0
                   })
           }
+
