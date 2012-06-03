@@ -6,8 +6,8 @@
 <title>Pacific Ocean Maps</title> 
 <link rel="stylesheet" type="text/css" href="lib/ext/resources/css/ext-all.css" />
 <script type="text/javascript" src="lib/ext/ext-all-debug.js"></script>
-<!--<script src='lib/OpenLayers/lib/OpenLayers.js'></script>-->
-<script src='lib/OpenLayers/OpenLayers.js'></script>
+<script src='lib/OpenLayers/lib/OpenLayers.js'></script>
+<!--<script src='lib/OpenLayers/OpenLayers.js'></script>-->
 
 <link rel="stylesheet" type="text/css" href="css/comp/controlPanel.css" />
 <script type="text/javascript" src="js/jquery-1.6.4.js"></script>
@@ -61,6 +61,19 @@
               <input type="text" name="datepicker" id="datepicker" readonly="readonly" style="width: 80px"/>
           </div>
           <div class="compDiv" id="compDiv"></div>
+          <div class="tidalGaugeDiv" id="tidalGaugeDiv">
+              Selected Tidal Gauge: <input type="text" name="tidalgauge" id="tidalgauge" disabled="disabled" style="width: 150px"/>
+              <input type="hidden" name="tgId" id="tgId"/>
+          </div>
+          <div class="latlonDiv" id="latlonDiv">
+              <div class="latDiv" id="latDiv">
+                  Latitude: <input type="text" name="latitude" id="latitude" style="width: 80px"/>
+              </div>
+              <div class="lonDiv" id="lonDiv">
+                  Longitude: <input type="text" name="longitude" id="longitude" style="width: 80px"/>
+              </div>
+              </div>
+          </div>
           <input type="button" name="submitbtn" value="Submit" style="width: 55px" onClick="updatePage()"/>
       </div>
       <div class="bottom" id="bottom"></div>

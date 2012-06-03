@@ -1,5 +1,6 @@
     <!-- this is a test to use different navigate control-->
 //    OpenLayers.ImgPath = "http://js.mapbox.com/theme/dark/";
+    var ocean = ocean || {};
     var popup;
     var map = new OpenLayers.Map("map", {
         resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
@@ -19,6 +20,7 @@
            "changebaselayer": mapBaseLayerChanged
         }
     });
+    ocean.mapObj = map;
 
 
     var wmsLayer = new OpenLayers.Layer.WMS("Plain World",
@@ -41,7 +43,7 @@
                      "bathymetry_7000", "bathymetry_6000", "bathymetry_5000",
                      "bathymetry_4000", "bathymetry_3000", "bathymetry_2000",
                      "bathymetry_1000", "bathymetry_200", "bathymetry_0",
-                     "coastline", "ocean", "land", "towns", "maritime"]
+                     "land", "maritime", "capitals", "countries"]
 //            layers: ["coastline", "populated_places", "ocean"]
         }, {
             wrapDateLine: true
@@ -67,81 +69,8 @@
     }
     
     //Add gauge points
-    var gaugesLayer = new OpenLayers.Layer.Vector("Tidal gauges", {
-        strategies: [new OpenLayers.Strategy.BBOX({resFactor: 1.1})],
-        protocol: new OpenLayers.Protocol.HTTP({
-            url: "config/comp/tidalGauges.txt",
-            format: new OpenLayers.Format.Text()
-        }),
-        'calculateInRange' : function() { return true;}
-    });
-
-    map.addLayers([wmsLayer, bathymetryLayer, gaugesLayer]);
+    map.addLayers([wmsLayer, bathymetryLayer]);
     map.setBaseLayer(bathymetryLayer)
-    gaugesLayer.setVisibility(false);
-
-    var gaugeControl = new OpenLayers.Control.SelectFeature(gaugesLayer, {
-        clickout: true,
-        multiple: false,
-        toggle: true,
-        hover: true,
-        highlightOnly: false
-    });
-    map.addControl(gaugeControl);
-    gaugeControl.activate();
-    gaugesLayer.events.on({
-        'featureselected': onGaugeSelected
-//        'featureunselected': onGaugeUnselected
-    });
- 
-//    map.setCenter(new OpenLayers.LonLat(-178.48551, -13.11418), 2);
-//    map.zoomToMaxExtent();
-//    map.zoomToScale(1);
-
-    function onGaugeSelected(evnt){
-        if(popup) {
-            onGaugeUnselected();
-        }
-        gauge = evnt.feature;
-        popup = new OpenLayers.Popup.FramedCloud("gauge popup",
-            gauge.geometry.getBounds().getCenterLonLat(),
-            new OpenLayers.Size(200,60),
-            "<h2>" + gauge.attributes.title + "</h2>"
-            + gauge.attributes.description,
-            null,
-            true,
-            onGaugeUnselected
-       //     onPopupClose 
-        );
-        popup.autoSize = false;
-        gauge.popup = popup;
-        popup.feature = gauge;
-        map.addPopup(popup, true);
-    };
-    
-    function onPopupClose(evt) {
-        var feature = this.feature;
-        if (feature.layer) { // The feature is not destroyed
-            gaugeControl.unselect(feature);
-        } else { // After "moveend" or "refresh" events on POIs layer all 
-            this.destroy();
-        }
-    }
-    
-    function onGaugeUnselected(evt) {
-        feature = popup.feature;
-        if (feature) {
-            popup.hide();
-        }
-        if (feature.popup) {
-            popup.feature = null;
-            map.removePopup(feature.popup);
-            feature.popup.destroy();
-            feature.popup = null;
-            popup = null;
-        }
-    }
-    
    // map.panTo(new OpenLayers.LonLat(178.62740, -17.93307));
     function mapBaseLayerChanged(evt) {
         layerName = evt.layer.name;
@@ -183,6 +112,7 @@ function selectCountry(event, args) {
 //this is a callback funtion, invoked when Extjs loading is finished
 function setupControls() {
     window.countryCombo.on('select', selectCountry, this);
+    window.countryCombo.on('change', selectCountry, this);
 //    window.countryCombo.select('pac');
 };
 
@@ -211,6 +141,35 @@ function updateMap(data){
 
         map.addLayer(sstLayer)
         map.setBaseLayer(sstLayer)
+    }
+}
+
+
+function updateSeaLevelMap(data){
+    if (map.getLayersByName("Sea Level").length != 0) {
+        layer = map.getLayersByName("Sea Level")[0]
+        map.setBaseLayer(layer)
+        layer.params["raster"] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
+        layer.redraw(true)
+    }
+    else{
+        var slLayer = new OpenLayers.Layer.MapServer("Sea Level",
+            "http://tuscany/cgi-bin/comp/getMap?map=sealevel", {
+//            "http://tuscany/cgi-bin/mapserv", {
+            layers: ["sl_left", "sl_right", "land", "coastline"],
+            raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
+        }, {
+            wrapDateLine: true
+        });
+
+//        var sstLayer = new OpenLayers.Layer.Image("SST",
+//            "http://tuscany/dev/data/comp/raster/left.png",
+//            new OpenLayers.Bounds(180, -90, 360, 90),
+//            new OpenLayers.Size(720, 720),
+//            {numZoomLevels: 5});
+
+        map.addLayer(slLayer)
+        map.setBaseLayer(slLayer)
     }
 }
 /*
@@ -308,6 +267,8 @@ Ext.onReady(function() {
 
     function selectDefaultCountry(store, records, result, operation, eOpt) {
 //        window.countryCombo.setValue('pac');
+        
+        window.countryCombo.select('pac');
     }
 
     window.countryCombo = Ext.create('Ext.form.field.ComboBox', {
@@ -315,14 +276,15 @@ Ext.onReady(function() {
         displayField: 'name',
         valueField: 'abbr',
         store: window.countryStore,
+        queryMode: 'local',
         padding: 5,
         height: '60%',
-        width: '100%',
-        listeners: {
-            afterrender: function(combo) {
-                this.setValue('pac')
-            }
-        }
+        width: '100%'
+//        listeners: {
+//            afterrender: function(combo) {
+//                this.setValue('pac')
+//            }
+//        }
     });
         
     window.basemapLegend = Ext.create('Ext.Img', {

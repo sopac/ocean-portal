@@ -51,17 +51,45 @@
     "variables": {
     }
 },{
-    "id":"wwiii",
+    "id":"ww3",
     "name":"WaveWatchIII",
     "title": "WaveWatch III [BETA]",
-    "variables": {
-    }
-},{
-    "id":"mesowam",
-    "name":"Meso-WAM",
-    "title": "Meso-WAM [BETA]",
-    "variables": {
-    }
+    "variables": [{
+        "id": "swh",
+        "name": "Significatn Wave Height"
+    }, {
+        "id": "mwp",
+        "name": "Mean Wave Period"
+    }, {
+        "id": "mwd",
+        "name": "Mean Wave Direction"
+    }]
+}, {
+    "id":"sealevel",
+    "name":"Sea Level",
+    "title": "Sea Level",
+    "help": "doc/ReynoldsSSTv2.doc",
+    "variables": [{
+        "id":"alt",
+        "name":"Altimetry",
+        "periods": ["monthly"],
+        "dateRange" : {
+            "minYear": "1993",
+            "maxYear": "2011",
+            "minDate": {"year": 1993, "month": 1, "date": 1},
+            "maxDate": {"year": 2011, "month": 2, "date": 1},
+        }
+    },{
+        "id":"rec",
+        "name":"Reconstruction",
+        "periods": ["monthly"],
+        "dateRange" : {
+            "minYear": "1950",
+            "maxYear": "2009",
+            "minDate": {"year": 1950, "month": 1, "date": 1},
+            "maxDate": {"year": 2009, "month": 12, "date": 1}
+        }
+    }]
 }]    
 
     
