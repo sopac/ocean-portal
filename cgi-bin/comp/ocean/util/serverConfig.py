@@ -6,14 +6,9 @@ Author: Sheng Guo
 """
 servers = {"tuscany": {"hostname": "tuscany.bom.gov.au",
                        "baseURL": "http://tuscany.bom.gov.au/dev",
-                       "outputDir": "/data/comp/raster/",
-                       "cacheDir": {"reynolds": "/data/comp/raster/cache/reynolds/"
-                                   },
-                       "dataDir": {"reynolds": "/data/sst/reynolds/",
-                                   "ww3": "/data/wavewatch3/",
-                                   "sealevel": "/data/sea_level/"
-                                  },
-                       "mapImageDir": "/var/www/cgi-bin/data/maps/raster/"
+                       "outputDir": "/home/mhowie/portal/images/",
+                       "cacheDir": "/data/comp/raster/cache/ersst/",
+                       "dataDir": "/data/sst/ersst/data/"
                       },
            "wdev": {
                    },
@@ -26,3 +21,4 @@ servers = {"tuscany": {"hostname": "tuscany.bom.gov.au",
 
 
 currentServer = "tuscany"
+
