@@ -32,11 +32,11 @@ size is the size of the window i.e size by size-must be odd
 def smooth(data, size):
 
     shape = data.shape
-    print shape
+#    print shape
     xlen = shape[0]
     ylen = shape[1]
-    print xlen
-    print ylen
+#    print xlen
+#    print ylen
 
     
     half = (size-1)/2
@@ -45,8 +45,8 @@ def smooth(data, size):
     x, y = np.mgrid[-half:half+1, -half:half+1]
     w = np.exp(-(x**2/float(half) + y**2/float(half)))
     weights = w / w.sum()
-    print weights
-    print weights.sum()
+#    print weights
+#    print weights.sum()
 
     if size % 2==0:
         print "\nEven window size chosen-choose odd size\n"

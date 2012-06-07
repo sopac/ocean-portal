@@ -7,8 +7,8 @@ def nameformat(lat,lon):
     #if lon >= 0:
       #  lonst = '%s%s' % ('+',lon)
 
-    latstr = '%+08.3f' % lat
-    lonstr = '%+08.3f' % lon
+    latstr = '%+08.3f' % float(lat)
+    lonstr = '%+08.3f' % float(lon)
 
     return latstr, lonstr
 

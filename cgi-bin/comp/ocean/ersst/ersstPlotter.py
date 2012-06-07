@@ -1,16 +1,19 @@
 #!/usr/bin/python
 
 
-from ..netcdf import plotter
 
+import datetime
 from netCDF4 import Dataset
 import numpy as np
+import glob
+
 import ersstConfig as ec
+import smooth as sm
+
+from ..netcdf import plotter
 from ..util import serverConfig
 from ..util import regionConfig
-import smooth as sm
-import datetime
-from dateutil.relativedelta import *
+from ..util import dateRange
 
 
 class ErsstPlotter ():
@@ -22,116 +25,106 @@ class ErsstPlotter ():
     serverCfg = None
 
     def __init__(self):
-       """Does nothing""" 
+       """Initialise the configurations""" 
        self.config = ec.ErsstConfig()
        self.serverCfg = serverConfig.servers[serverConfig.currentServer]
 
-    def plot(self, outputFilename, variable, date, area, period, baseYear=None):
+    def plot(self, outputFilename, **args):
         """
         Plot the thumbnail image and also the east and west map images.
         """
-	titlehead = []
+        variable = args["variable"]
+        date = args["date"] 
+        area = args["area"]
+        period = args["period"]
+ 
+        year = int(date[0:4])
+        month = int(date[4:6])
+        day = int(date[6:8])
 
-	#**args = (variable, date, area, period)
+        inputDate = datetime.date(year, month, day)
+ 
+	centerLabel = False
 
-	year = int(date[0:4])
-    	month = int(date[4:6])
-    	day = int(date[6:8])
-
-    	initDate = datetime.date(year, month, day)
-	
-
-	if period=='monthly':
-	    titlehead = "Monthly Average "
-	elif period=='3monthly':
-	    titlehead = "Three Month Average "
-	    startDate = initDate + relativedelta(months=-2)
-	elif period=='6monthly':
-	    titlehead = "Six Month Average "
-	    startDate = initDate + relativedelta(months=-5)
-	elif period=='12monthly':
-	    titlehead = "Twelve Month Average "
-	    dateTwelve = initDate + relativedelta(months=-11)
-	
-	firstmonth = "%02d" % (startDate.month)
-	monthmap = {'01':'January', '02':'February', \
-            '03': 'March', '04': 'April', \
-            '05': 'May', '06': 'June', \
-            '07': 'July', '08': 'August', \
-            '09': 'September', '10': 'October', \
-            '11': 'November', '12': 'December'}
-	cmonth = monthmap[date[4:6]]
-	smonth = monthmap[firstmonth]
-
-	if variable=='mean':
-	    centerLabel = False
+	if variable == 'mean' or variable == 'anom':
             if period=='monthly':
-                filename = self.serverCfg["dataDir"] + period + "/" + "ersst." + date[:6]
-		title = titlehead + self.config.getTitle(variable) + cmonth + ' ' + date[0:4]
-            elif period=='3monthly': 
-            	filename = self.serverCfg["dataDir"] + period + "/" + "ersst." + date[:6] + "ave"
-		title = titlehead + self.config.getTitle(variable) + smonth + " %s" % (startDate.year) + ' to ' + cmonth + ' ' + date[0:4]
-            elif period=='6monthly':
-             	filename = self.serverCfg["dataDir"] + period + "/" + "ersst." + date[:6] + "ave"
-		title = titlehead + self.config.getTitle(variable) + smonth + " %s" % (startDate.year) + ' to ' + cmonth + ' ' + date[0:4]
-            elif period=='12monthly':
-            	filename = self.serverCfg["dataDir"] + period + "/" + "ersst." + date[:6] + "ave"
-	    	title = titlehead + self.config.getTitle(variable) + smonth + " %s" % (startDate.year) + ' to ' + cmonth + ' ' + date[0:4]
-	elif variable=='anom':
-	    centerLabel = False
-	    if period=='monthly':
-                filename = self.serverCfg["dataDir"] + period + "/" + "ersst." + date[:6]
-		title = titlehead + self.config.getTitle(variable) + cmonth + ' ' + date[0:4]
-            elif period=='3monthly':
-                filename = self.serverCfg["dataDir"] + period + "/" + "ersst." + date[:6] + "ave"
-		title = titlehead + self.config.getTitle(variable) + smonth + " %s" % (startDate.year) + ' to ' + cmonth + ' ' + date[0:4]
-            elif period=='6monthly':
-                filename = self.serverCfg["dataDir"] + period + "/" + "ersst." + date[:6] + "ave"
-		title = titlehead + self.config.getTitle(variable) + smonth + " %s" % (startDate.year) + ' to ' + cmonth + ' ' + date[0:4]
-            elif period=='12monthly':
-                filename = self.serverCfg["dataDir"] + period + "/" + "ersst." + date[:6] + "ave"
-	    	title = titlehead + self.config.getTitle(variable) + smonth + " %s" % (startDate.year) + ' to ' + cmonth + ' ' + date[0:4]	
+                filename = self.serverCfg["dataDir"]["ersst"] + period + "/" + "ersst." + date[:6]
+		title = self.config.getPeriodPrefix(period)\
+                      + self.config.getTitle(variable)\
+                      + inputDate.strftime('%B %Y') 
+            elif period=='3monthly' or period == '6monthly': 
+            	filename = self.serverCfg["dataDir"]["ersst"] + "/" + period + "/ersst." + date[:6] + "ave"
+		title = self.config.getPeriodPrefix(period)\
+                      + self.config.getTitle(variable)\
+                      + dateRange.getMonths(date, period[:1])[0].strftime('%B %Y')\
+                      + " to "\
+                      + inputDate.strftime('%B %Y') 
+            elif period == '12monthly': 
+            	filename = self.serverCfg["dataDir"]["ersst"] + "/" + period + "/ersst." + date[:6] + "ave"
+		title = self.config.getPeriodPrefix(period)\
+                      + self.config.getTitle(variable)\
+                      + dateRange.getMonths(date, period[:2])[0].strftime('%B %Y')\
+                      + " to "\
+                      + inputDate.strftime('%B %Y') 
 	elif variable=='dec':
 	    centerLabel = True
-	    if period=='monthly':
-                filename = self.serverCfg["dataDir"] + "decile" + "/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
-		title = titlehead + self.config.getTitle(variable) + cmonth + ' ' + date[0:4]
-	    elif period=='3monthly':
-		filename = self.serverCfg["dataDir"] + "decile" + "/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
-		title = titlehead + self.config.getTitle(variable) + smonth + " %s" % (startDate.year) + ' to ' + cmonth + ' ' + date[0:4]
-	    elif period=='6monthly':
-                filename = self.serverCfg["dataDir"] + "decile" + "/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
-		title = titlehead + self.config.getTitle(variable) + smonth + " %s" % (startDate.year) + ' to ' + cmonth + ' ' + date[0:4]
-	    elif period=='12monthly':
-                filename = self.serverCfg["dataDir"] + "decile" + "/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
-	    	title = titlehead + self.config.getTitle(variable) + smonth + " %s" % (startDate.year) + ' to ' + cmonth + ' ' + date[0:4]
+            baseYear = args["baseYear"]
+            if period=='monthly':
+                filename = self.serverCfg["dataDir"]["ersst"] + "decile/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
+		title = self.config.getPeriodPrefix(period)\
+                      + self.config.getTitle(variable)\
+                      + inputDate.strftime('%B %Y') 
+            elif period=='3monthly' or period == '6monthly': 
+                filename = self.serverCfg["dataDir"]["ersst"] + "decile/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
+		title = self.config.getPeriodPrefix(period)\
+                      + self.config.getTitle(variable)\
+                      + dateRange.getMonths(date, period[:1])[0].strftime('%B %Y')\
+                      + " to "\
+                      + inputDate.strftime('%B %Y') 
+            elif period == '12monthly': 
+                filename = self.serverCfg["dataDir"]["ersst"] + "decile/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
+		title = self.config.getPeriodPrefix(period)\
+                      + self.config.getTitle(variable)\
+                      + dateRange.getMonths(date, period[:2])[0].strftime('%B %Y')\
+                      + " to "\
+                      + inputDate.strftime('%B %Y') 
+
 	elif variable=='trend':
-	    centerLabel = False
-	    if period=='monthly':
-		filename = self.serverCfg["dataDir"] + "trend" + "/" + period + "/" + baseYear + "/" + "ersst." + period\
-		+ "_" + baseYear + "_2011lin" + date[4:6]
-		title = titlehead + self.config.getTitle(variable) + cmonth + ' (' + baseYear + '-' + date[0:4] + ')'
-	    if period=='3monthly':
-                filename = self.serverCfg["dataDir"] + "trend" + "/" + period + "/" + baseYear + "/" + "ersst." + period\
-                + "_" + baseYear + "_2011lin" + date[4:6]
-		title = titlehead + self.config.getTitle(variable) + smonth + ' to ' + cmonth + ' (' + baseYear + '-' + date[0:4] + ')'
-	    if period=='6monthly':
-                filename = self.serverCfg["dataDir"] + "trend" + "/" + period + "/" + baseYear + "/" + "ersst." + period\
-                + "_" + baseYear + "_2011lin" + date[4:6]
-		title = titlehead + self.config.getTitle(variable) + smonth + ' to ' + cmonth + ' (' + baseYear + '-' + date[0:4] + ')'
-	    if period=='12monthly':
-                filename = self.serverCfg["dataDir"] + "trend" + "/" + period + "/" + baseYear + "/" + "ersst." + period\
-                + "_" + baseYear + "_2011lin" + date[4:6]	
-	    	title = titlehead + self.config.getTitle(variable) + smonth + ' to ' + cmonth + ' (' + baseYear + '-' + date[0:4] + ')'
+            baseYear = args["baseYear"]
+            if period=='monthly':
+                filename = self.serverCfg["dataDir"]["ersst"] + "trend/" + period\
+                         + "/" + baseYear + "/"  + "ersst." + period\
+                         + "_[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9]lin" + date[4:6]
+		title = self.config.getPeriodPrefix(period)\
+                      + self.config.getTitle(variable)\
+                      + inputDate.strftime('%B')\
+                      + " (" + baseYear + " - " + inputDate.strftime('%Y') + ")"
+            elif period=='3monthly' or period == '6monthly': 
+                filename = self.serverCfg["dataDir"]["ersst"] + "trend/" + period\
+                         + "/" + baseYear + "/"  + "ersst." + period\
+                         + "_[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9]lin" + date[4:6]
+		title = self.config.getPeriodPrefix(period)\
+                      + self.config.getTitle(variable)\
+                      + dateRange.getMonths(date, period[:1])[0].strftime('%B')\
+                      + " to "\
+                      + inputDate.strftime('%B')\
+                      + " (" + baseYear + " - " + inputDate.strftime('%Y') + ")"
+            elif period == '12monthly': 
+                filename = self.serverCfg["dataDir"]["ersst"] + "trend/" + period\
+                         + "/" + baseYear + "/"  + "ersst." + period\
+                         + "_[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9]lin" + date[4:6]
+		title = self.config.getPeriodPrefix(period)\
+                      + self.config.getTitle(variable)\
+                      + dateRange.getMonths(date, period[:2])[0].strftime('%B')\
+                      + " to "\
+                      + inputDate.strftime('%B')\
+                      + " (" + baseYear + " - " + inputDate.strftime('%Y') + ")"
         else:
             return -1
 	
         filename = filename + ".nc" 
+        filename = glob.glob(filename)[0]
         dataset = Dataset(filename, 'r')
-
-	#formatted_title = 
-	#title = titlehead + self.config.getTitle(variable) + "%s %04d%02d" % (area, date
-
 
         sst = dataset.variables[self.config.getVariableType(variable)][0][0]
         lats = dataset.variables['lat'][:]
@@ -151,8 +144,8 @@ class ErsstPlotter ():
                   regionConfig.regions[area][1]["urcrnrlat"],\
                   regionConfig.regions[area][1]["urcrnrlon"],\
 		  "cyl", contourLines, centerLabel)
-        #plot.plotBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
-        #plot.plotBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
+        plot.contourBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
+        plot.contourBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
 
         dataset.close()
         

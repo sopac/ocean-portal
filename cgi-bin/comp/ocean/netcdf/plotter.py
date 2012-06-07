@@ -31,8 +31,9 @@ class Plotter:
         Plot the input file using the specified projection and save the
         plot to the output file.
         """
-    def contour(self, data, lats, lons, variable, config, outputFile, title, lllat, lllon, urlat, urlon, proj=_DEFAULT_PROJ,\
-	contourLines = False, centerLabel = False):
+    def contour(self, data, lats, lons, variable, config, outputFile,\
+                title, lllat, lllon, urlat, urlon, proj=_DEFAULT_PROJ,\
+                contourLines = False, centerLabel = False):
 	"""
 	Plot the input data with contours using the specified project and save the plot to the output file.
 	"""
@@ -43,8 +44,8 @@ class Plotter:
                     urcrnrlat=urlat, urcrnrlon=urlon, resolution='l')
         x, y = m(*np.meshgrid(lons, lats))
 	if contourLines:
-	    m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4,)
-	m.contourf(x, y, data, levels=config.getContourLevels(variable), shading='flat', cmap=config.getColorMap(variable))
+	    m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4)
+        m.contourf(x, y, data, levels=config.getContourLevels(variable), shading='flat', cmap=config.getColorMap(variable))
 	m.drawcoastlines(linewidth=0.1, zorder=6)
         m.fillcontinents(color='#F1EBB7', zorder=7)
         plt.title(config.getTitle(variable), fontsize=8)
@@ -65,6 +66,56 @@ class Plotter:
 
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=.3)
         plt.close()
+
+    def contourBasemapWest(self, data, lats, lons, variable, config, outputFile,\
+                           lllat=-90, lllon=180, urlat=90, urlon=360, proj=_DEFAULT_PROJ,\
+                           contourLines=False,  worldfile='ocean/resource/west.pgw'):
+        """
+        Plot the input data using the specified project and save the plot to the output file.
+        """ 
+        #left part
+        m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
+                   urcrnrlat=urlat, urcrnrlon=urlon, resolution=None)
+        x, y = m(*np.meshgrid(lons, lats))
+
+        #Plot the data
+	if contourLines:
+	    m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4)
+        m.contourf(x, y, data, levels=config.getContourLevels(variable), shading='flat', cmap=config.getColorMap(variable))
+        plt.clim(*config.getColorBounds(variable))
+        
+        #Do not draw the black border around the map by setting the linewidth to 0
+        m.drawmapboundary(linewidth=0.0)
+
+        #Save the figure with no white padding around the map.
+        plt.savefig(self.serverConfig["outputDir"] + outputFile + '_west.png', dpi=150, bbox_inches='tight', pad_inches=0) 
+        plt.close()
+        shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_west.pgw')
+ 
+    def contourBasemapEast(self, data, lats, lons, variable, config, outputFile,\
+                        lllat=-90, lllon=0, urlat=90, urlon=180, proj=_DEFAULT_PROJ,\
+                        contourLines=False,  worldfile='ocean/resource/east.pgw'):
+        """
+        Plot the input data using the specified project and save the plot to the output file.
+        """ 
+        m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
+                   urcrnrlat=urlat, urcrnrlon=urlon, resolution=None)
+        x, y = m(*np.meshgrid(lons, lats))
+
+        #Plot the data
+	if contourLines:
+	    m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4)
+        m.contourf(x, y, data, levels=config.getContourLevels(variable), shading='flat', cmap=config.getColorMap(variable))
+        plt.clim(*config.getColorBounds(variable))
+        
+        #Do not draw the black border around the map by setting the linewidth to 0
+        m.drawmapboundary(linewidth=0.0)
+       
+        #Save the figure with no white padding around the map.
+        plt.savefig(self.serverConfig["outputDir"] + outputFile + '_east.png', dpi=150, bbox_inches='tight', pad_inches=0) 
+        plt.close()
+        shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_east.pgw')
+
 
     def plot(self, data, lats, lons, variable, config, outputFile, lllat, lllon, urlat, urlon, proj=_DEFAULT_PROJ, centerLabel = False):
         """

@@ -9,6 +9,8 @@ class ErsstConfig ():
     """
 
     variableConfig = None
+ 
+    periodPrefix = None
 
     def __init__(self):
        """Does nothing"""
@@ -48,7 +50,11 @@ class ErsstConfig ():
 				     },
 				     "linear_trend")	
                              }
-
+       self.periodPrefix = {"monthly": "Monthly Average ",
+                            "3monthly": "3 Monthly Average ",
+                            "6monthly": "6 Monthly Average ",
+                            "12monthly": "12 Monthly Average "
+                            }
 
     def getTitle(self, variableName):
         return self.variableConfig[variableName][0]
@@ -79,6 +85,8 @@ class ErsstConfig ():
     def getVariableType(self, variableName):
         return self.variableConfig[variableName][2]
 
+    def getPeriodPrefix(self, period):
+        return self.periodPrefix[period]
 
 if __name__ == "__main__":
     conf = ErsstConfig()

@@ -15,6 +15,9 @@ class Extractor ():
         """
 
     def getGridPoint(self, inputLat, inputLon, lats, lons):
+        """
+        Align the input lat/lon to the grid lat/lon. Also returns the index of the grid lat/lon.
+        """
         gridPointColIndex = 0
         inputLat = float(inputLat)
         inputLon = float(inputLon)        
@@ -41,3 +44,18 @@ class Extractor ():
 
         return  (gridLat, gridLon), (gridLatIndex, gridLonIndex)
 
+    def extract(self, data, lats, lons, latTop, latBottom, lonLeft, lonRight):
+        """
+        Extract an area of data from the gridded data.
+        """
+        latmin = lats >= latBottom
+        latmax = lats <= latTop
+        lonmin = lons >= lonLeft
+        lonmax = lons <= lonRight
+
+        latrange = latmin & latmax
+        lonrange = lonmin & lonmax 
+
+        latSlice = sst[latrange]
+        extracted = latSlice[:, lonrange]
+        return extracted

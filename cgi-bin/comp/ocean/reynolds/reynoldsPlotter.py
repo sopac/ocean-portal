@@ -61,7 +61,7 @@ class ReynoldsPlotter ():
         delon = lons[1]-lons[0]; delat = lats[1]-lats[0]
         lons = (lons - 0.5*delon).tolist()
         lons.append(lons[-1]+delon)
-        lons = np.array(lons,np.float64)
+        lons = np.array(lons,np.float64) #TODO check necessariness 
         lats = (lats - 0.5*delat).tolist()
         lats.append(lats[-1]+delat)
         lats = np.array(lats,np.float64)

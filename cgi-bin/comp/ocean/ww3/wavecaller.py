@@ -15,7 +15,7 @@ from WavePlots import HistPlot
 from WavePlots import RosePlot
 from formatter import nameformat
 
-def wavecaller(opath, productId, gridLat, gridLon, pointValues):
+def wavecaller(opath, var, gridLat, gridLon, pointValues):
     
     #convert lat,lon to floats
     lat = float(gridLat)
@@ -23,7 +23,7 @@ def wavecaller(opath, productId, gridLat, gridLon, pointValues):
     #convert lat,lon to consistant format
     latstr,lonstr = nameformat(lat,lon)
     #set output path and label for product
-    opath = "/data/wavewatch3/extracted_data/"
+#    opath = "/data/wavewatch3/extracted_data/"
     #make a numpy array for extracted data for calculations
     extdata = np.array(pointValues)
     #determine which plot module to call based on variable input

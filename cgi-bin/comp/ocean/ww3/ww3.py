@@ -58,7 +58,7 @@ def process(form):
 
         if not os.path.exists(outputFileName + ".png"):
             timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr)
-            wc.wavecaller(outputFileName, gridLat, gridLon, latLonValues)
+            wc.wavecaller(outputFileName, varStr, gridLat, gridLon, latLonValues)
         if not os.path.exists(outputFileName + ".png"):
             responseObj["imgerror"] = "Error occured during the extraction.  Image could not be generated."
         else:

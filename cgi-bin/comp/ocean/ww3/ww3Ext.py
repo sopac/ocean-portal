@@ -96,7 +96,7 @@ class WaveWatch3Extraction ():
             latLonValues.append(var[gridLatIndex, gridLonIndex])
             nc.close()
 
-        return timeseries, latsLons, latLonValues, gridValues
+        return timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon)
 
     def writeOutput(self, fileName, latsLons, timeseries, gridValues):
     
