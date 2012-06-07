@@ -16,14 +16,11 @@ from WavePlots import RosePlot
 from formatter import nameformat
 
 def wavecaller(opath, var, gridLat, gridLon, pointValues):
-    
     #convert lat,lon to floats
     lat = float(gridLat)
     lon = float(gridLon)
     #convert lat,lon to consistant format
     latstr,lonstr = nameformat(lat,lon)
-    #set output path and label for product
-#    opath = "/data/wavewatch3/extracted_data/"
     #make a numpy array for extracted data for calculations
     extdata = np.array(pointValues)
     #determine which plot module to call based on variable input
@@ -48,8 +45,8 @@ def wavecaller(opath, var, gridLat, gridLon, pointValues):
     	binwd = 0.2
     	HistPlot(extdata,units,gridLat,gridLon,xstr,title,var,binwd)
 
-        #define image name
-	imgname = opath + productId + '_' + latstr + '_' + lonstr + '_' + var + '_graph.png'
-        #write image file
-        plt.savefig(imgname)
-   
+    #define image name
+    imgname = opath + '.png'
+    #write image file
+    plt.savefig(imgname)
+
