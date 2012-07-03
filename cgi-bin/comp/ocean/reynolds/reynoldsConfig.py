@@ -11,24 +11,24 @@ class ReynoldsConfig ():
 
     def __init__(self):
        """Does nothing"""
-       self.variableConfig = {"mean": ("Monthly Average Reynolds Sea Surface Temperature", 
+       self.variableConfig = {"mean": ("Monthly Average Reynolds Sea Surface Temperature: ", 
                                        {"colorbounds": [-2, 34],
                                         "colormap": plt.cm.jet,
                                         "unit": ur'\u00b0' + 'C',
                                         "format": '%d'
                                       },
                                       "sst"),
-                              "anom": ("Monthly Average Reynolds Sea Surface Temperature Anomaly",
+                              "anom": ("Monthly Average Reynolds Sea Surface Temperature Anomaly: ",
                                        {"colorbounds": [-2, 2],
                                         "colormap": plt.cm.RdBu_r,
                                         "unit": ur'\u00b0' + 'C',
                                         "format": '%5.1f'
                                       },
                                       "anom"),
-                              "dec": ("Monthly Average Reynolds Sea Surface Temperature Deciles",
+                              "dec": ("Monthly Average Reynolds Sea Surface Temperature Deciles: ",
                                       {"colorbounds": [0, 11],
                                        "colormap": plt.cm.RdBu_r,
-                                       "unit": ur'\u00b0' + 'C',
+                                       "unit": '',
                                        "format": '%d',
                                        "labels": ['Lowest on \nrecord', 'Very much \nbelow \naverage \n[1]', 'Below \naverage \n[2-3]', 
                                                   'Average \n[4-7]', 'Above \naverage \n[8-9]', 'Very much \nabove \naverage \n[10]',
