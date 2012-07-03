@@ -24,13 +24,13 @@ plotter = branPlotter.branPlotter()
 
 def process(form):
     responseObj = {} #this object will be encoded into a json string
-    if "map" in form and "date" in form and "period" in form and "area" in form:
-        mapStr = form["map"].value
+    if "variable" in form and "date" in form and "period" in form and "area" in form:
+        mapStr = form["variable"].value
         dateStr = form["date"].value
         areaStr = form["area"].value
         periodStr = form["period"].value
 
-        args = {"map": mapStr,
+        args = {"variable": mapStr,
                 "date": dateStr,
                 "area": areaStr,
                 "period": periodStr}
