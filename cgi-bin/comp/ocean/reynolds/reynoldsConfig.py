@@ -11,7 +11,7 @@ class ReynoldsConfig ():
 
     def __init__(self):
        """Does nothing"""
-       self.variableConfig = {"mean": ("Monthly Average Reynolds Sea Surface Temperature", 
+       self.variableConfig = {"mean": ("Monthly Average Reynolds Sea Surface Temperature",
                                        {"colorbounds": [-2, 34],
                                         "colormap": plt.cm.jet,
                                         "unit": ur'\u00b0' + 'C',
@@ -30,17 +30,17 @@ class ReynoldsConfig ():
                                        "colormap": plt.cm.RdBu_r,
                                        "unit": ur'\u00b0' + 'C',
                                        "format": '%d',
-                                       "labels": ['Lowest on \nrecord', 'Very much \nbelow \naverage \n[1]', 'Below \naverage \n[2-3]', 
+                                       "labels": ['Lowest on \nrecord', 'Very much \nbelow \naverage \n[1]', 'Below \naverage \n[2-3]',
                                                   'Average \n[4-7]', 'Above \naverage \n[8-9]', 'Very much \nabove \naverage \n[10]',
                                                   'Highest on \nrecord']
-                                      }, 
+                                      },
                                       "decile")
                              }
 
 
     def getTitle(self, variableName):
         return self.variableConfig[variableName][0]
-    
+
     def getColorBounds(self, variableName):
         return self.variableConfig[variableName][1]['colorbounds']
 
@@ -52,10 +52,10 @@ class ReynoldsConfig ():
 
     def getValueFormat(self, variableName):
         return self.variableConfig[variableName][1]['format']
- 
+
     def getVariableType(self, variableName):
         return self.variableConfig[variableName][2]
- 
+
     def getColorbarLabels(self, variableName):
         labels = []
         try:
@@ -66,7 +66,7 @@ class ReynoldsConfig ():
 
 
 if __name__ == "__main__":
-    conf = RyenoldsConfig()
+    conf = ReynoldsConfig()
     conf.getTitle('mean')
     conf.getColorBounds('mean')
     conf.getColorMap('mean')
