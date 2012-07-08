@@ -17,7 +17,7 @@ from meanbearing import meanbearing
 import angleconv as conv
 from formatter import NESWformat
 
-def RosePlot(wdir,units,lat,lon,xstr,title,var,binwd):
+def RosePlot(opath,wdir,units,lat,lon,xstr,title,var,binwd):
     '''Plots a windrose of angular values in wdir, with annotations
 
        Arguments:
@@ -30,16 +30,16 @@ def RosePlot(wdir,units,lat,lon,xstr,title,var,binwd):
        var -- the variable that is measured by wdir. (string)
        binwd -- width of histogram bins. (float)
 
-       Returns: 
+       Returns:
        rosefig -- An annotated windrose of wdir values.
        '''
-  
+
     #set number of bins and max bin value.
     N,wdnbin,wdmax = 8,8,2*np.pi
     degree = ur'\u00b0'
-    if wdir[1] == -999.0:
-        print "Specified location is out of bounds or lies on land."
-        exit()
+    #if wdir[1] == -999.0:
+    #   print "Specified location is out of bounds or lies on land."
+    #   exit()
     #flip directions as WWIII direction are given in meteorological convention.
     if var == "Dm":
         wdir = conv.dirflip(wdir)
@@ -70,7 +70,7 @@ def RosePlot(wdir,units,lat,lon,xstr,title,var,binwd):
     for i in range(0,N):
 	prob[i] = float(whist[0][i])*normalizer
         perc[i] = round(100*prob[i],2)
-    
+
     units = '%'
     theta = np.linspace(-2*np.pi/(2*N), 2*np.pi-2*np.pi/(2*N), N, endpoint=False)
     #some basic settings for graphics
@@ -82,7 +82,7 @@ def RosePlot(wdir,units,lat,lon,xstr,title,var,binwd):
     bars = ax.bar(theta, prob, width, bottom=0.0)
     my_cmap = hc.decile_rose()
     #plot a line to indicate mean bearing
-    ax.arrow(0, 0, meanb, max(prob)+0.1, edgecolor = 'r', facecolor = 'r', lw='3')    
+    ax.arrow(0, 0, meanb, max(prob)+0.1, edgecolor = 'r', facecolor = 'r', lw='3')
     #plot bar chart of histogram in theta space
     for r,bar in zip(prob, bars):
         bar.set_facecolor(my_cmap(r))
@@ -102,7 +102,7 @@ def RosePlot(wdir,units,lat,lon,xstr,title,var,binwd):
     plt.figtext(0.76, 0.4, 'Bin Width: %s %s' % (binwd, degree), fontsize=10)
 
     plt.figtext(0.76, 0.3, 'Mean True Bearing: %s %s' % (meanbr, degree), color='r', fontsize=10)
-    #display wave direction percentages for 8 primary compass points in the windrose 
+    #display wave direction percentages for 8 primary compass points in the windrose
     plt.figtext(0.76, 0.35, 'Directional Statistics:', fontsize=10, weight=550)
     plt.figtext(0.76, 0.25, 'North: %s %s' % (perc[0], units), fontsize=10)
     plt.figtext(0.76, 0.225, 'North East: %s %s' % (perc[1], units), fontsize=10)
@@ -113,11 +113,14 @@ def RosePlot(wdir,units,lat,lon,xstr,title,var,binwd):
     plt.figtext(0.76, 0.1, 'West: %s %s' % (perc[6], units), fontsize=10)
     plt.figtext(0.76, 0.075, 'North West: %s %s' % (perc[7], units), fontsize=10)
 
-    #plt.savefig('testrose.png')
+    #define image name
+    imgname = opath + '.png'
+     #write image file
+    plt.savefig(imgname)
 
-    return rosefig
+    return
 
-def HistPlot(wheight,units,lat,lon,xstr,title,var,binwd):
+def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
     '''Returns a normalized, annotated histogram for values of wheight
 
        Arguments:
@@ -132,7 +135,7 @@ def HistPlot(wheight,units,lat,lon,xstr,title,var,binwd):
 
        Returns:
        histfig -- An annotated histogram of wheight values.
-       '''     
+       '''
     #calculate the values of some pertinent statistical quantities
     wavg = np.average(wheight)
     wavgr = round(wavg,2)
@@ -145,9 +148,9 @@ def HistPlot(wheight,units,lat,lon,xstr,title,var,binwd):
     #calculate range of data
     #binthresh = maxwave - minwave
     #Error message if selected coordinates are out of range or on land
-    if maxwave == -999.0:
-       print "Specified data point is out of bounds, or lies on land."
-       exit()
+    #if maxwave == -999.0:
+       #print "Specified data point is out of bounds, or lies on land."
+       #exit()
     #alter bin width depending on range of data
     #if binthresh < 10:
      #  binwd = 0.1
@@ -155,13 +158,12 @@ def HistPlot(wheight,units,lat,lon,xstr,title,var,binwd):
       # binwd = 0.2
     #else:
       # print "Error"
-
     #bins per unit and total number of bins
     binperunit = 1/binwd
     binnum = Nmax*binperunit
     initial = round(0.001,3)
     final = round(Nmax+0.001,3)
- 
+
     #histogram of selected variable
     whist,wbins = np.histogram(wheight,Nmax*binperunit,(initial,final),density=True)
     #print wbins
@@ -185,28 +187,28 @@ def HistPlot(wheight,units,lat,lon,xstr,title,var,binwd):
     #set up bar chart properties
     bars=plt.bar(wbins[:-1],whistnorm,binwd,0)
     if debug == True:
-        
+
         FILE = open('/home/jsmith/Test/verification/WW3' + '_' + str(lat) + '_' + str(lon) + '_' + var + '_array.txt', "w")
         FILE.writelines(list( "%s \n" % i for i in whist))
         FILE.close()
 
     my_cmap = hc.quartile_colors(wheight,wavg,Nmax,binwd)
-    
+
     #bar chart of histogram
     for r,bar in zip(wbins[:-1], bars):
         bar.set_facecolor(my_cmap(r/Nmax))
         bar.set_alpha(0.5)
-    
+
     #specify plot properties and plot guassian kde and average line
     plt.xlim(minx-0.5,maxx+0.5)
     plt.ylim(0,maxy+0.01)
     #histax.plot(x, approximate_pdf(x), color = 'black', linewidth=3, alpha=1)
     histax.axvline(wavg, color='r', lw='3')
-    
+
     #choose which legend to display based on variable
     if var == 'Hs':
         lpack.heightpack(wavg)
-        plt.figtext(0.79,0.175, 'Rogue Wave Height: %s %s' % (2*wavgr,units), fontsize = 10, color = 'm') 
+        plt.figtext(0.79,0.175, 'Rogue Wave Height: %s %s' % (2*wavgr,units), fontsize = 10, color = 'm')
     elif var == 'Tm':
 	lpack.timepack()
 
@@ -237,7 +239,10 @@ def HistPlot(wheight,units,lat,lon,xstr,title,var,binwd):
     plt.figtext(0.79, 0.275,'Lower Quartile: %s %s' % (q1,units), fontsize=10)
     plt.figtext(0.79, 0.25,'Upper Quartile:  %s %s' % (q3,units), fontsize=10)
     plt.figtext(0.79, 0.225, 'Interquartile Range: %s %s' % (q3 - q1,units), fontsize=10)
- 
-    #plt.savefig('testhist.png')
 
-    return histfig
+     #define image name
+    imgname = opath + '.png'
+     #write image file
+    plt.savefig(imgname)
+
+    return

@@ -22,7 +22,6 @@ ww3Product = productName.products["ww3"]
 #get the plotter
 extractor = ww3Ext.WaveWatch3Extraction()
 
-
 def process(form):
     responseObj = {} #this object will be encoded into a json string
     if "variable" in form and "lllat" in form and "lllon" in form\
