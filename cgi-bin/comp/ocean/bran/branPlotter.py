@@ -180,3 +180,43 @@ class branPlotter ():
 
         return 0
 
+
+    def plotSubsurface(self, outputFilename, **args):
+        """
+        Plot the thumbnail image and also the east and west map images.
+        """
+        if period=='monthly':
+            if variable == 'temp':
+                filename = self.serverCfg["dataDir"]["bran"] + period + "/temp/" + "temp_" + date[:4]  + "_" + date[4:6]
+        else:
+            return -1
+
+        print filename
+#        filename = filename + ".nc"
+#        dataset = Dataset(filename, 'r')
+#        Var = dataset.variables[self.config.getVariableType(variable)][0][0]
+#        lats = dataset.variables['lat'][:]
+#        lons = dataset.variables['lon'][:]
+#
+#        delon = lons[1]-lons[0]; delat = lats[1]-lats[0]
+#        lons = (lons - 0.5*delon).tolist()
+#        lons.append(lons[-1]+delon)
+#        lons = np.array(lons,np.float64) #TODO check necessariness
+#        lats = (lats - 0.5*delat).tolist()
+#        lats.append(lats[-1]+delat)
+#        lats = np.array(lats,np.float64)
+#
+#        plot = plotter.Plotter()
+#        plot.plot(Var, lats, lons, variable, self.config, outputFilename,\
+#                  regionConfig.regions[area][1]["llcrnrlat"],\
+#                  regionConfig.regions[area][1]["llcrnrlon"],\
+#                  regionConfig.regions[area][1]["urcrnrlat"],\
+#                  regionConfig.regions[area][1]["urcrnrlon"],\
+#                  centerLabel = cntLabel)
+#        plot.plotBasemapEast(Var, lats, lons, variable, self.config, outputFilename)
+#        plot.plotBasemapWest(Var, lats, lons, variable, self.config, outputFilename)
+#
+#        dataset.close()
+
+        return 0
+

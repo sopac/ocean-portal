@@ -1,13 +1,15 @@
 #!/usr/bin/python
 
-
-from ..netcdf import plotter
-
 from netCDF4 import Dataset
 import numpy as np
+import datetime
+
 import reynoldsConfig as rc
+import reynoldsSpatialMean as spatialMean
 from ..util import serverConfig
 from ..util import regionConfig
+from ..util import dateRange
+from ..netcdf import plotter
 
 
 class ReynoldsPlotter ():
@@ -23,35 +25,54 @@ class ReynoldsPlotter ():
        self.config = rc.ReynoldsConfig()
        self.serverCfg = serverConfig.servers[serverConfig.currentServer]
 
-    def plot(self, outputFilename, variable, date, area, period):
+    def plot(self, outputFilename, **args):
         """
         Plot the thumbnail image and also the east and west map images.
         """
+        variable = args['map']
+        date = args['date']
+        area = args['area']
+        period = args['period']
+        
+        dateObj = datetime.date(int(date[:4]), int(date[4:6]), int(date[6:]))
+        formattedDate = ''
         cntLabel = False
         if variable == 'dec':
+            formattedDate = dateObj.strftime('%B %Y')
             filename = self.serverCfg["dataDir"]["reynolds"] + "decile/" + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6]  + "dec"
             cntLabel = True
         else:
             if period=='daily':
+                formattedDate = dateObj.strftime('%d %B %Y')
                 filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date
             elif period=='predaily':
+                formattedDate = dateObj.strftime('%d %B %Y')
                 filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date + "_preliminary"
             elif period=='weekly':
-                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + "avhrr-only-v2." + date + "ave"
-                startDate, endDate = daterange.generateWeekly(date)
+                weekdays = dateRange.getWeekDays(date)
+                formattedDate = weekdays[0].strftime('%d %B %Y') + ' to ' + weekdays[-1].strftime('%d %B %Y') 
+                spatialMean.generateWeekly(weekdays)
+                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + "avhrr-only-v2." + weekdays[0].strftime('%Y%m%d') + "ave"
             elif period=='monthly':
+                formattedDate = dateObj.strftime('%B %Y')
                 filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6] + "ave"
             elif period=='3monthly':
-                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6] + "ave"
-                startDate = daterange.generate3Month(date)
+                months = dateRange.getMonths(date, 3)
+                formattedDate = months[0].strftime('%B %Y') + ' to ' + months[-1].strftime('%B %Y') 
+                spatialMean.generate3Monthly(months)
+                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/avhrr-only-v2." + date[:6] + "ave"
             elif period=='6monthly':
-                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6] + "ave"
-                startDate = daterange.generate6Month(date)
+                months = dateRange.getMonths(date, 6)
+                formattedDate = months[0].strftime('%B %Y') + ' to ' + months[-1].strftime('%B %Y') 
+                spatialMean.generate6Monthly(months)
+                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/avhrr-only-v2." + date[:6] + "ave"
             elif period=='yearly':
-                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:4] + "ave"
+                formattedDate = date[:4]
+                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/avhrr-only-v2." + date[:4] + "ave"
             else:
                 return -1
         
+        args['formattedDate'] = formattedDate
         filename = filename + ".nc" 
         dataset = Dataset(filename, 'r')
         sst = dataset.variables[self.config.getVariableType(variable)][0][0]
@@ -72,7 +93,7 @@ class ReynoldsPlotter ():
                   regionConfig.regions[area][1]["llcrnrlon"],\
                   regionConfig.regions[area][1]["urcrnrlat"],\
                   regionConfig.regions[area][1]["urcrnrlon"],\
-                  centerLabel = cntLabel)
+                  centerLabel = cntLabel, **args)
         plot.plotBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
         plot.plotBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
 

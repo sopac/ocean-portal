@@ -38,7 +38,7 @@ class SeaLevelPlotter ():
         Plot the thumbnail image and also the east and west map images.
         """
         cntLabel = False
-        variable = args["variable"]
+        variable = args["var"]
         area = args["area"]
         if variable == 'alt':
             filename = self.serverCfg["dataDir"]["sealevel"] + "grids/" + "CSIRO_SatAlt_199301_201112"
@@ -63,6 +63,8 @@ class SeaLevelPlotter ():
         lats = (lats - 0.5*delat).tolist()
         lats.append(lats[-1]+delat)
         lats = np.array(lats,np.float64)
+ 
+        args['formattedDate'] = ''
 
         plot = plotter.Plotter()
         plot.plot(height, lats, lons, variable, self.config, outputFilename,\
@@ -70,7 +72,7 @@ class SeaLevelPlotter ():
                   regionConfig.regions[area][1]["llcrnrlon"],\
                   regionConfig.regions[area][1]["urcrnrlat"],\
                   regionConfig.regions[area][1]["urcrnrlon"],\
-                  centerLabel = cntLabel)
+                  centerLabel = cntLabel, **args)
         plot.plotBasemapEast(height, lats, lons, variable, self.config, outputFilename, lllat=-65, lllon=60, urlat=15, worldfile='ocean/resource/subeast.pgw')
         plot.plotBasemapWest(height, lats, lons, variable, self.config, outputFilename, lllat=-65, urlat=15, urlon=210, worldfile='ocean/resource/subwest.pgw')
 
@@ -133,7 +135,7 @@ class SeaLevelPlotter ():
         Plot altimetry/reconstruction timeseries 
         """
         tidalGaugeName = args["tidalGaugeName"]
-        variable = args["variable"]
+        variable = args["var"]
         lat = args["lat"]
         lon = args["lon"]
         titlePrefix = None

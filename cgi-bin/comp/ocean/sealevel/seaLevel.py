@@ -30,7 +30,7 @@ def process(form):
         areaStr = form["area"].value
         periodStr = form["period"].value
 
-        args = {"variable": variableStr,
+        args = {"var": variableStr,
                 "date": dateStr,
                 "area": areaStr,
                 "period": periodStr}
@@ -64,7 +64,7 @@ def process(form):
 
         #plot altimetry 
         var = "tid"
-        args["variable"] = var
+        args["var"] = var
         fileName = seaChart % (seaLevelProduct["monthly"], tidalGaugeId, var)
         outputFileName = serverCfg["outputDir"] + fileName 
         if not os.path.exists(outputFileName + ".png"):
@@ -78,7 +78,7 @@ def process(form):
                                + outputFileName + ".txt"
         #plot altimetry 
         var = "alt"
-        args["variable"] = var
+        args["var"] = var
         fileName = seaChart % (seaLevelProduct["monthly"], tidalGaugeId, var)
         outputFileName = serverCfg["outputDir"] + fileName 
         if not os.path.exists(outputFileName + ".png"):
@@ -93,7 +93,7 @@ def process(form):
 
         #plot reconstruction
         var = "rec"
-        args["variable"] = var
+        args["var"] = var
         fileName = seaChart % (seaLevelProduct["monthly"], tidalGaugeId, var)
         outputFileName = serverCfg["outputDir"] + fileName 
         if not os.path.exists(outputFileName + ".png"):

@@ -8,6 +8,7 @@ import ocean.reynolds.reynolds as reynolds
 import ocean.ww3.ww3 as ww3
 import ocean.sealevel.seaLevel as sealevel
 import ocean.ersst.ersst as ersst
+#import ocean.bran.bran as bran
 
 sys.stderr = sys.stdout
 cgitb.enable()
@@ -30,7 +31,8 @@ if "dataset" in form:
     elif datasetStr == "ww3":
         response = ww3.process(form)
     elif datasetStr == "bran":
-        response = "{error: building}"
+#        response = bran.process(form)
+        response = {"error": "building"} 
     elif datasetStr == "sealevel":
         response = sealevel.process(form)
     print response

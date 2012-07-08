@@ -36,74 +36,74 @@ def process(form):
                 "period": periodStr}
 
     
-        if mapStr == 'anom':
-            if "average" in form and form["average"].value == "true":
-                dateStr = dateStr[4:6] #extract month value
-                if form["trend"].value == "true":
-                    if periodStr == 'monthly':
+#        if mapStr == 'anom':
+        if "average" in form and form["average"].value == "true":
+            dateStr = dateStr[4:6] #extract month value
+            if form["trend"].value == "true":
+                if periodStr == 'monthly':
+                    responseObj["aveImg"] = serverCfg["baseURL"]\
+                                          + serverCfg["cacheDir"]["reynolds"]\
+                                          + reynoldsProduct["monthlyAve"]\
+                                          + "_%s_ave_%s_trend.png" % (dateStr, areaStr)
+                    responseObj["aveData"] = serverCfg["baseURL"]\
+                                          + serverCfg["cacheDir"]["reynolds"]\
+                                          + reynoldsProduct["monthlyAve"]\
+                                          + '_%s_ave_%s.txt"' % (dateStr, areaStr)
+                    responseObj["mean"] = str(areaMean.monthlyMean[dateStr][areaStr])
+                elif periodStr == 'yearly':
+                    responseObj["aveImg"] = serverCfg["baseURL"]\
+                                          + serverCfg["cacheDir"]["reynolds"]\
+                                          + reynoldsProduct["yearlyAve"]\
+                                          + '_ave_%s_trend.png"' % (areaStr)
+                    responseObj["aveData"] = serverCfg["baseURL"]\
+                                          + serverCfg["cacheDir"]["reynolds"]\
+                                          + reynoldsProduct["yearlyAve"] \
+                                          + '"_ave_%s.txt"' % (areaStr)
+                    responseObj["mean"] = str(areaMean.yearlyMean[areaStr])
+            elif form["runningAve"].value == "true":
+                if periodStr == 'monthly':
+                    if "runningInterval" in form:
+                        runningInterval = int(form["runningInterval"].value)
                         responseObj["aveImg"] = serverCfg["baseURL"]\
                                               + serverCfg["cacheDir"]["reynolds"]\
                                               + reynoldsProduct["monthlyAve"]\
-                                              + "_%s_ave_%s_trend.png" % (dateStr, areaStr)
-                        responseObj["aveData"] = serverCfg["baseURL"]\
-                                              + serverCfg["cacheDir"]["reynolds"]\
-                                              + reynoldsProduct["monthlyAve"]\
-                                              + '_%s_ave_%s.txt"' % (dateStr, areaStr)
-                        responseObj["mean"] = str(areaMean.monthlyMean[dateStr][areaStr])
-                    elif periodStr == 'yearly':
-                        responseObj["aveImg"] = serverCfg["baseURL"]\
-                                              + serverCfg["cacheDir"]["reynolds"]\
-                                              + reynoldsProduct["yearlyAve"]\
-                                              + '_ave_%s_trend.png"' % (areaStr)
-                        responseObj["aveData"] = serverCfg["baseURL"]\
-                                              + serverCfg["cacheDir"]["reynolds"]\
-                                              + reynoldsProduct["yearlyAve"] \
-                                              + '"_ave_%s.txt"' % (areaStr)
-                        responseObj["mean"] = str(areaMean.yearlyMean[areaStr])
-                elif form["runningAve"].value == "true":
-                    if periodStr == 'monthly':
-                        if "runningInterval" in form:
-                            runningInterval = int(form["runningInterval"].value)
-                            responseObj["aveImg"] = serverCfg["baseURL"]\
-                                                  + serverCfg["cacheDir"]["reynolds"]\
-                                                  + reynoldsProduct["monthlyAve"]\
-                                                  + '_%s_ave_%s_%02dmoving.png"' % (dateStr, areaStr, runningInterval)
-                            responseObj["aveData"] = serverCfg["baseURL"]\
-                                                   + serverCfg["cacheDir"]["reynolds"]\
-                                                   + reynoldsProduct["monthlyAve"]\
-                                                   + '_%s_ave_%s.txt"' % (dateStr, areaStr)
-                            responseObj["mean"] = str(areaMean.monthlyMean[dateStr][areaStr])
-                    elif periodStr == 'yearly':
-                        responseObj["aveImg"] = serverCfg["baseURL"]\
-                                              + serverCfg["cacheDir"]["reynolds"]\
-                                              + reynoldsProduct["yearlyAve"]\
-                                              + '_ave_%s_%02dmoving.png"' % (areaStr, runningInterval)
-                        responseObj["aveData"] = serverCfg["baseURL"]\
-                                              + serverCfg["cacheDir"]["reynolds"]\
-                                              + reynoldsProduct["yearlyAve"]\
-                                              + '_ave_%s.txt' % (areaStr)
-                        responseObj["mean"] = str(areaMean.yearlyMean[areaStr])
-                else:
-                    if periodStr == 'monthly':
-                        responseObj["aveImg"] = serverCfg["baseURL"]\
-                                              + serverCfg["cacheDir"]["reynolds"]\
-                                              + reynoldsProduct["monthlyAve"]\
-                                              + '_%s_ave_%s.png"' % (dateStr, areaStr)
+                                              + '_%s_ave_%s_%02dmoving.png"' % (dateStr, areaStr, runningInterval)
                         responseObj["aveData"] = serverCfg["baseURL"]\
                                                + serverCfg["cacheDir"]["reynolds"]\
                                                + reynoldsProduct["monthlyAve"]\
                                                + '_%s_ave_%s.txt"' % (dateStr, areaStr)
                         responseObj["mean"] = str(areaMean.monthlyMean[dateStr][areaStr])
-                    elif periodStr == 'yearly':
-                        responseObj["aveImg"] = serverCfg["baseURL"]\
-                                              + serverCfg["cacheDir"]["reynolds"]\
-                                              + reynoldsProduct["yearlyAve"]\
-                                              + '_ave_%s.png"' % (areaStr)
-                        responseObj["aveData"] = serverCfg["baseURL"]\
-                                               + serverCfg["cacheDir"]["reynolds"]\
-                                               + reynoldsProduct["yearlyAve"]\
-                                               + '_ave_%s.txt"' % (areaStr)
-                        responseObj["mean"] = str(areaMean.yearlyMean[areaStr])
+                elif periodStr == 'yearly':
+                    responseObj["aveImg"] = serverCfg["baseURL"]\
+                                          + serverCfg["cacheDir"]["reynolds"]\
+                                          + reynoldsProduct["yearlyAve"]\
+                                          + '_ave_%s_%02dmoving.png"' % (areaStr, runningInterval)
+                    responseObj["aveData"] = serverCfg["baseURL"]\
+                                          + serverCfg["cacheDir"]["reynolds"]\
+                                          + reynoldsProduct["yearlyAve"]\
+                                          + '_ave_%s.txt' % (areaStr)
+                    responseObj["mean"] = str(areaMean.yearlyMean[areaStr])
+            else:
+                if periodStr == 'monthly':
+                    responseObj["aveImg"] = serverCfg["baseURL"]\
+                                          + serverCfg["cacheDir"]["reynolds"]\
+                                          + reynoldsProduct["monthlyAve"]\
+                                          + '_%s_ave_%s.png"' % (dateStr, areaStr)
+                    responseObj["aveData"] = serverCfg["baseURL"]\
+                                           + serverCfg["cacheDir"]["reynolds"]\
+                                           + reynoldsProduct["monthlyAve"]\
+                                           + '_%s_ave_%s.txt"' % (dateStr, areaStr)
+                    responseObj["mean"] = str(areaMean.monthlyMean[dateStr][areaStr])
+                elif periodStr == 'yearly':
+                    responseObj["aveImg"] = serverCfg["baseURL"]\
+                                          + serverCfg["cacheDir"]["reynolds"]\
+                                          + reynoldsProduct["yearlyAve"]\
+                                          + '_ave_%s.png"' % (areaStr)
+                    responseObj["aveData"] = serverCfg["baseURL"]\
+                                           + serverCfg["cacheDir"]["reynolds"]\
+                                           + reynoldsProduct["yearlyAve"]\
+                                           + '_ave_%s.txt"' % (areaStr)
+                    responseObj["mean"] = str(areaMean.yearlyMean[areaStr])
         elif mapStr == "dec":
             fileName = decGraph % (reynoldsProduct["monthlyDec"], areaStr, dateStr[:6])
             outputFileName = serverCfg["outputDir"] + fileName
@@ -138,7 +138,7 @@ def process(form):
                 fileName = aveSstGraph % (reynoldsProduct["weekly"], mapStr, areaStr, dateStr)
             outputFileName = serverCfg["outputDir"] + fileName 
             if not os.path.exists(outputFileName + ".png"):
-                plotter.plot(fileName, mapStr, dateStr, areaStr, periodStr)
+                plotter.plot(fileName, **args)
             if not os.path.exists(outputFileName + ".png"):
                 responseObj["error"] = "Requested image is not available at this time."
             else:

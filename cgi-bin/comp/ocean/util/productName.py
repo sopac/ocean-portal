@@ -32,7 +32,7 @@ products = {"reynolds": {"daily":     "REY00001",
                       "6monthlyTre":   "ERA00303",
                       "12monthlyTre":  "ERA00304"
                      },
-            "bran": {
+            "bran": {"monthly":      "BRN00001"
                     },
             "ww3": {"point":  "WAV00001",
                     "rect": "WAV00002"

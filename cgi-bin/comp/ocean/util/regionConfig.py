@@ -76,11 +76,25 @@ regions = {"pi": ("pi",
                   "Papua New Guinea"),
            "samoa": ("pi",
                   {"llcrnrlat": -15,
-                   "llcrnrlon": 186,
-                   "urcrnrlat": -13,
+                   "llcrnrlon": 186.5,
+                   "urcrnrlat": -12,
                    "urcrnrlon": 189
                   },
                   "Samoa"),
+           "wsm_nor": ("pi",                     #Samoa Northern Coast. wsm is the ISO code of Samoa
+                  {"llcrnrlat": -14,
+                   "llcrnrlon": 186.5,
+                   "urcrnrlat": -12,
+                   "urcrnrlon": 189
+                  },
+                  "Samoa Northern Coast"),
+           "wsm_sou": ("pi",                     #Samoa Southern Coast
+                  {"llcrnrlat": -15,
+                   "llcrnrlon": 186.5,
+                   "urcrnrlat": -13.3,
+                   "urcrnrlon": 189
+                  },
+                  "Samoa Southern Coast"),
            "solomon": ("pi", 
                   {"llcrnrlat": -12,
                    "llcrnrlon": 155,

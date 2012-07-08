@@ -13,7 +13,8 @@ servers = {"tuscany": {"hostname": "tuscany.bom.gov.au",
                        "dataDir": {"reynolds": "/data/sst/reynolds/",
                                    "ww3": "/data/wavewatch3/",
                                    "sealevel": "/data/sea_level/",
-                                   "ersst": "/data/sst/ersst/data/"
+                                   "ersst": "/data/sst/ersst/data/",
+                                   "bran": "/data/blue_link/data/"
                                   },
                        "mapImageDir": "/var/www/cgi-bin/data/maps/raster/"
                       },
