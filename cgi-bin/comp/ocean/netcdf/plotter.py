@@ -353,6 +353,6 @@ class Plotter:
     def getCopyright(self):
         return ur'\u00A9' + "Commonwealth of Australia "\
                + datetime.date.today().strftime('%Y')\
-               + "\nAustralian Bureau of Meteorology, COSPPac Project"
+               + "\nAustralian Bureau of Meteorology, COSPPac COMP"
 
 
