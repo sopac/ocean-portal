@@ -212,6 +212,8 @@ class Plotter:
 
 
 #        plt.pcolormesh(lons,(-1*dep),data, shading='flat', cmap=config.getColorMap(variable))
+        levels=pl.arange(10,31,1)
+        #levels=pl.arange(35,37,0.5)
         plt.pcolormesh(lons,(-1*dep),data, shading='flat', cmap=plt.cm.jet)
         plt.contour(lons,(-1*dep),data,levels, colors='k')
 
