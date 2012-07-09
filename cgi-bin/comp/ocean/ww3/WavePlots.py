@@ -3,6 +3,7 @@
 import scipy as sci
 import scipy.stats
 import numpy as np
+import datetime
 import matplotlib.cm as cm
 from matplotlib.pyplot import figure, show, rc
 import matplotlib.pyplot as plt
@@ -112,7 +113,10 @@ def RosePlot(opath,wdir,units,lat,lon,xstr,title,var,binwd):
     plt.figtext(0.76, 0.125, 'South West: %s %s' % (perc[5], units), fontsize=10)
     plt.figtext(0.76, 0.1, 'West: %s %s' % (perc[6], units), fontsize=10)
     plt.figtext(0.76, 0.075, 'North West: %s %s' % (perc[7], units), fontsize=10)
-
+    #Bureau of Meteorology Copyright
+    plt.figtext(0.02, 0.02, ur'\u00A9' + "Commonwealth of Australia "\
+               + datetime.date.today().strftime('%Y')\
+               + "\nAustralian Bureau of Meteorology, COSPPac COMP", fontsize=8)
     #define image name
     imgname = opath + '.png'
      #write image file
@@ -239,7 +243,10 @@ def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
     plt.figtext(0.79, 0.275,'Lower Quartile: %s %s' % (q1,units), fontsize=10)
     plt.figtext(0.79, 0.25,'Upper Quartile:  %s %s' % (q3,units), fontsize=10)
     plt.figtext(0.79, 0.225, 'Interquartile Range: %s %s' % (q3 - q1,units), fontsize=10)
-
+    #Bureau of Meteorology Copyright
+    plt.figtext(0.02, 0.02, ur'\u00A9' + "Commonwealth of Australia "\
+               + datetime.date.today().strftime('%Y')\
+               + "\nAustralian Bureau of Meteorology, COSPPac COMP", fontsize=8)
      #define image name
     imgname = opath + '.png'
      #write image file
