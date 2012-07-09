@@ -22,7 +22,6 @@ ww3Product = productName.products["ww3"]
 #get the plotter
 extractor = ww3Ext.WaveWatch3Extraction()
 
-
 def process(form):
     responseObj = {} #this object will be encoded into a json string
     if "variable" in form and "lllat" in form and "lllon" in form\
@@ -58,7 +57,7 @@ def process(form):
 
         if not os.path.exists(outputFileName + ".png"):
             timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr)
-            wc.wavecaller(outputFileName, gridLat, gridLon, latLonValues)
+            wc.wavecaller(outputFileName, varStr, gridLat, gridLon, latLonValues)
         if not os.path.exists(outputFileName + ".png"):
             responseObj["imgerror"] = "Error occured during the extraction.  Image could not be generated."
         else:
