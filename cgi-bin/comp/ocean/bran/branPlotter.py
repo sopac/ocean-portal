@@ -185,13 +185,41 @@ class branPlotter ():
         """
         Plot the thumbnail image and also the east and west map images.
         """
+
         if period=='monthly':
             if variable == 'temp':
                 filename = self.serverCfg["dataDir"]["bran"] + period + "/temp/" + "temp_" + date[:4]  + "_" + date[4:6]
         else:
             return -1
 
-        print filename
+        dataset = Dataset(filename, 'r')
+        data = dataset.variables[self.config.getVariableType(variable)][0]
+        lats = dataset.variables['lat'][:]
+        lons = dataset.variables['lon'][:]
+        dep = dataset.variables['zt_ocean'][:]
+    #    print filename
+        inputLat1 = float(args['xlat1'])
+        inputLon1 = float(args['xlon1'])
+        inputLat2 = float(args['xlat2'])
+        inputLon2 = float(args['xlon2'])
+
+        gridLatIndex1 = bisect.bisect_left(lats, inputLat1)
+        gridLonIndex1 = bisect.bisect_left(lons, inputLon1)
+        gridLonIndex2 = bisect.bisect_left(lons, inputLon2)
+
+        subsurface = data[:25, gridLatIndex1, gridLonIndex1: gridLonIndex2]
+
+        plot = plotter.Plotter()
+        if args['xlat1'] == args['xlat2']:
+            plot.plotlatx(subsurface, dep[0:25], lons[gridLonIndex1:gridLonIndex2], variable, self.config, outputFilename, centerLabel = cntLabel)
+
+        #if args['xlon1'] == args['xlon2']:
+        #    plot.plotlonx(data, lats, dep, variable, self.config, outputFilename,\
+        #              centerLabel = cntLabel)
+        dataset.close()
+
+        return 0
+
 #        filename = filename + ".nc"
 #        dataset = Dataset(filename, 'r')
 #        Var = dataset.variables[self.config.getVariableType(variable)][0][0]

@@ -70,6 +70,10 @@ def process(form):
         xlon1 = form["xlon1"].value
         xlat2 = form["xlat2"].value
         xlon2 = form["xlon2"].value
+        args['xlat1']=xlat1
+        args['xlon1']=xlon1
+        args['xlat2']=xlat2
+        args['xlon2']=xlon2
 
         #plot subsurface
         if periodStr == 'monthly':

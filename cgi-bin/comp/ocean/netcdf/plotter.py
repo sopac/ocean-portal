@@ -12,6 +12,7 @@ from matplotlib.offsetbox import AnchoredOffsetbox, TextArea
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import bisect
 import math
 import shutil
 import datetime
@@ -24,7 +25,7 @@ class Plotter:
 
     _DEFAULT_PROJ = "cyl" #Equidistant Cylindrical Projection
     serverConfig = None
-    
+
     def __init__(self):
         """The simple constructor of Plotter"""
         self.serverConfig = serverConfig.servers[serverConfig.currentServer]
@@ -48,7 +49,7 @@ class Plotter:
         x, y = m(*np.meshgrid(lons, lats))
 	if contourLines:
 	    m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4)
- 
+
         delon = lons[1]-lons[0]; delat = lats[1]-lats[0]
         lons = (lons - 0.5*delon).tolist()
         lons.append(lons[-1]+delon)
@@ -99,7 +100,7 @@ class Plotter:
                            contourLines=False,  worldfile='ocean/resource/west.pgw'):
         """
         Plot the input data using the specified project and save the plot to the output file.
-        """ 
+        """
         #left part
         m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
                    urcrnrlat=urlat, urcrnrlon=urlon, resolution=None)
@@ -110,21 +111,21 @@ class Plotter:
 	    m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4)
         m.contourf(x, y, data, levels=config.getContourLevels(variable), shading='flat', cmap=config.getColorMap(variable))
         plt.clim(*config.getColorBounds(variable))
-        
+
         #Do not draw the black border around the map by setting the linewidth to 0
         m.drawmapboundary(linewidth=0.0)
 
         #Save the figure with no white padding around the map.
-        plt.savefig(self.serverConfig["outputDir"] + outputFile + '_west.png', dpi=150, bbox_inches='tight', pad_inches=0) 
+        plt.savefig(self.serverConfig["outputDir"] + outputFile + '_west.png', dpi=150, bbox_inches='tight', pad_inches=0)
         plt.close()
         shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_west.pgw')
- 
+
     def contourBasemapEast(self, data, lats, lons, variable, config, outputFile,\
                         lllat=-90, lllon=0, urlat=90, urlon=180, proj=_DEFAULT_PROJ,\
                         contourLines=False,  worldfile='ocean/resource/east.pgw'):
         """
         Plot the input data using the specified project and save the plot to the output file.
-        """ 
+        """
         m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
                    urcrnrlat=urlat, urcrnrlon=urlon, resolution=None)
         x, y = m(*np.meshgrid(lons, lats))
@@ -134,12 +135,12 @@ class Plotter:
 	    m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4)
         m.contourf(x, y, data, levels=config.getContourLevels(variable), shading='flat', cmap=config.getColorMap(variable))
         plt.clim(*config.getColorBounds(variable))
-        
+
         #Do not draw the black border around the map by setting the linewidth to 0
         m.drawmapboundary(linewidth=0.0)
-       
+
         #Save the figure with no white padding around the map.
-        plt.savefig(self.serverConfig["outputDir"] + outputFile + '_east.png', dpi=150, bbox_inches='tight', pad_inches=0) 
+        plt.savefig(self.serverConfig["outputDir"] + outputFile + '_east.png', dpi=150, bbox_inches='tight', pad_inches=0)
         plt.close()
         shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_east.pgw')
 
@@ -147,7 +148,7 @@ class Plotter:
     def plot(self, data, lats, lons, variable, config, outputFile, lllat, lllon, urlat, urlon, proj=_DEFAULT_PROJ, centerLabel = False, **args):
         """
         Plot the input data using the specified project and save the plot to the output file.
-        """ 
+        """
         #*******************************************
         #* Generate image for the thumbnail and download
         #*******************************************
@@ -174,7 +175,7 @@ class Plotter:
         plt.title(config.getTitle(variable) + args['formattedDate'], fontsize=8)
         plt.clim(*config.getColorBounds(variable))
         ax = plt.gca()
-        box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))        
+        box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))
         copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.15), frameon=False, bbox_transform=ax.transAxes)
         ax.add_artist(copyrightBox)
 
@@ -188,7 +189,7 @@ class Plotter:
         colorbarLabels = config.getColorbarLabels(variable)
         if len(colorbarLabels) != 0:
             cbar.ax.set_yticklabels(colorbarLabels)
-     
+
         for tick in cbar.ax.get_yticklabels():
             tick.set_fontsize(6)
             if centerLabel:
@@ -198,14 +199,118 @@ class Plotter:
                     pass
 
 
-        plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.8, bbox_extra_artists=[copyrightBox])  
+        plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.8, bbox_extra_artists=[copyrightBox])
         plt.close()
+
+    def plotlatx(self, data, dep, lons, variable, config, outputFile, **args):
+        """
+        Plot the input data using the specified project and save the plot to the output file.
+        """
+        #*******************************************
+        #* Generate image for the thumbnail and download
+        #*******************************************
+
+
+        m.pcolormesh(lons,(-1*dep),data, shading='flat', cmap=config.getColorMap(variable))
+        pl.contour(lons,(-1*dep),data,levels, colors='k')
+
+        plt.title(config.getTitle(variable) + args['formattedDate'], fontsize=8)
+        plt.clim(*config.getColorBounds(variable))
+        ax = plt.gca()
+        box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))
+        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.15), frameon=False, bbox_transform=ax.transAxes)
+        ax.add_artist(copyrightBox)
+
+#        cax = plt.axes([0.93, 0.18, 0.02, 0.65])
+#        cbar = plt.colorbar(format=config.getValueFormat(variable), cax=cax, extend='both')
+#        cbar = plt.colorbar(format=config.getValueFormat(variable), cax=cax, extend='both')
+        cbar = plt.colorbar(format=config.getValueFormat(variable), extend='both')
+        cbar.set_label(config.getUnit(variable), rotation='horizontal', fontsize=6)
+#        cbar.set_label(ax.get_window_extent(), rotation='horizontal')
+
+        colorbarLabels = config.getColorbarLabels(variable)
+        if len(colorbarLabels) != 0:
+            cbar.ax.set_yticklabels(colorbarLabels)
+
+        for tick in cbar.ax.get_yticklabels():
+            tick.set_fontsize(6)
+            if centerLabel:
+                try:
+                    tick.set_transform(offset_copy(cbar.ax.transData, x=10, y=40, units='dots'))
+                except KeyError:
+                    pass
+
+
+        plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.8, bbox_extra_artists=[copyrightBox])
+        plt.close()
+        nc.close()
+##    def plotlonx(self, Var_sect, lats, dep, variable, config, outputFile, lllat, lldep, urlat, urdep, proj=_DEFAULT_PROJ, centerLabel = False, **args):
+##        """
+##        Plot the input data using the specified project and save the plot to the output file.
+##        """
+##        #*******************************************
+##        #* Generate image for the thumbnail and download
+##        #*******************************************
+##        m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lldep,\
+##                    urcrnrlat=urlat, urcrnrlon=urdep, resolution='h')
+##
+##        I=pl.nonzero(lons=='lon')
+##
+##        Var_sect = variable[:,:,I[0],:]
+##        Var_sect = N.reshape(Var_sect,(len(lats),len(dep)))
+##
+##        m.pcolormesh(lats,(-1*dep),Var_sect, shading='flat', cmap=config.getColorMap(variable))
+##        m.drawcoastlines(linewidth=0.1, zorder=6)
+###        m.fillcontinents(color='#F1EBB7', zorder=7)
+##        m.fillcontinents(color='#cccccc', zorder=7)
+##
+##        if math.fabs(lllat - urlat) < 5:
+##            parallels = np.linspace(lllat, urlat, 4)
+##        else:
+##            parallels = np.linspace(lllat, urlat, 9)
+##        m.drawparallels(parallels, labels=[True, False, False, False], fmt='%.2f', fontsize=6, dashes=[3, 3], color='gray')
+##        if math.fabs(lldep - urdep) < 5:
+##            meridians = np.linspace(lldep, urdep, 4)
+##        else:
+##            meridians = np.linspace(lldep, urdep, 9)
+##        m.drawmeridians(meridians, labels=[False, False, False, True], fmt='%.2f', fontsize=6, dashes=[3, 3], color='gray')
+##
+##
+##        plt.title(config.getTitle(variable) + args['formattedDate'], fontsize=8)
+##        plt.clim(*config.getColorBounds(variable))
+##        ax = plt.gca()
+##        box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))
+##        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.15), frameon=False, bbox_transform=ax.transAxes)
+##        ax.add_artist(copyrightBox)
+##
+###        cax = plt.axes([0.93, 0.18, 0.02, 0.65])
+###        cbar = plt.colorbar(format=config.getValueFormat(variable), cax=cax, extend='both')
+###        cbar = plt.colorbar(format=config.getValueFormat(variable), cax=cax, extend='both')
+##        cbar = plt.colorbar(format=config.getValueFormat(variable), extend='both')
+##        cbar.set_label(config.getUnit(variable), rotation='horizontal', fontsize=6)
+###        cbar.set_label(ax.get_window_extent(), rotation='horizontal')
+##
+##        colorbarLabels = config.getColorbarLabels(variable)
+##        if len(colorbarLabels) != 0:
+##            cbar.ax.set_yticklabels(colorbarLabels)
+##
+##        for tick in cbar.ax.get_yticklabels():
+##            tick.set_fontsize(6)
+##            if centerLabel:
+##                try:
+##                    tick.set_transform(offset_copy(cbar.ax.transData, x=10, y=40, units='dots'))
+##                except KeyError:
+##                    pass
+##
+##
+##        plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.8, bbox_extra_artists=[copyrightBox])
+##        plt.close()
 
     def plotBasemapWest(self, data, lats, lons, variable, config, outputFile,\
                         lllat=-90, lllon=180, urlat=90, urlon=360, proj=_DEFAULT_PROJ, worldfile='ocean/resource/west.pgw'):
         """
         Plot the input data using the specified project and save the plot to the output file.
-        """ 
+        """
         #left part
         m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
                    urcrnrlat=urlat, urcrnrlon=urlon, resolution=None)
@@ -214,20 +319,20 @@ class Plotter:
         #Plot the data
         m.pcolormesh(x, y, data, shading='flat', cmap=config.getColorMap(variable))
         plt.clim(*config.getColorBounds(variable))
-        
+
         #Do not draw the black border around the map by setting the linewidth to 0
         m.drawmapboundary(linewidth=0.0)
 
         #Save the figure with no white padding around the map.
-        plt.savefig(self.serverConfig["outputDir"] + outputFile + '_west.png', dpi=150, bbox_inches='tight', pad_inches=0) 
+        plt.savefig(self.serverConfig["outputDir"] + outputFile + '_west.png', dpi=150, bbox_inches='tight', pad_inches=0)
         plt.close()
         shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_west.pgw')
- 
+
     def plotBasemapEast(self, data, lats, lons, variable, config, outputFile,\
                         lllat=-90, lllon=0, urlat=90, urlon=180, proj=_DEFAULT_PROJ, worldfile='ocean/resource/east.pgw'):
         """
         Plot the input data using the specified project and save the plot to the output file.
-        """ 
+        """
         #right part
         m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
                    urcrnrlat=urlat, urcrnrlon=urlon, resolution=None)
@@ -236,12 +341,12 @@ class Plotter:
         #Plot the data
         m.pcolormesh(x, y, data, shading='flat', cmap=config.getColorMap(variable))
         plt.clim(*config.getColorBounds(variable))
-        
+
         #Do not draw the black border around the map by setting the linewidth to 0
         m.drawmapboundary(linewidth=0.0)
-       
+
         #Save the figure with no white padding around the map.
-        plt.savefig(self.serverConfig["outputDir"] + outputFile + '_east.png', dpi=150, bbox_inches='tight', pad_inches=0) 
+        plt.savefig(self.serverConfig["outputDir"] + outputFile + '_east.png', dpi=150, bbox_inches='tight', pad_inches=0)
         plt.close()
         shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_east.pgw')
 
@@ -250,4 +355,4 @@ class Plotter:
                + datetime.date.today().strftime('%Y')\
                + "\nAustralian Bureau of Meteorology, COSPPac Project"
 
-  
+
