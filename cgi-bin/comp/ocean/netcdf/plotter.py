@@ -211,8 +211,9 @@ class Plotter:
         #*******************************************
 
 
-        m.pcolormesh(lons,(-1*dep),data, shading='flat', cmap=config.getColorMap(variable))
-        pl.contour(lons,(-1*dep),data,levels, colors='k')
+#        plt.pcolormesh(lons,(-1*dep),data, shading='flat', cmap=config.getColorMap(variable))
+        plt.pcolormesh(lons,(-1*dep),data, shading='flat', cmap=plt.cm.jet)
+        plt.contour(lons,(-1*dep),data,levels, colors='k')
 
         plt.title(config.getTitle(variable) + args['formattedDate'], fontsize=8)
         plt.clim(*config.getColorBounds(variable))

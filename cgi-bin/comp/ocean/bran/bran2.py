@@ -31,7 +31,7 @@ def process(form):
         areaStr = form["area"].value
         periodStr = form["period"].value
 
-        args = {"variable": mapStr,
+        args = {"var": mapStr,
                 "date": dateStr,
                 "area": areaStr,
                 "period": periodStr}
@@ -49,21 +49,21 @@ def process(form):
         elif periodStr == 'weekly':
             fileName = branGraph % (branProduct["weekly"], mapStr, areaStr, dateStr)
         outputFileName = serverCfg["outputDir"] + fileName
-        if not os.path.exists(outputFileName + ".png"):
-            plotter.plot(fileName, mapStr, dateStr, areaStr, periodStr)
-        if not os.path.exists(outputFileName + ".png"):
-            responseObj["error"] = "Requested image is not available at this time."
-        else:
-            responseObj["img"] = serverCfg["baseURL"]\
-                               + outputFileName + ".png"
-            responseObj["mapeast"] = serverCfg["baseURL"]\
-                                   + outputFileName + "_east.png"
-            responseObj["mapeastw"] = serverCfg["baseURL"]\
-                                   + outputFileName + "_east.pgw"
-            responseObj["mapwest"] = serverCfg["baseURL"]\
-                                   + outputFileName + "_west.png"
-            responseObj["mapwestw"] = serverCfg["baseURL"]\
-                                   + outputFileName + "_west.pgw"
+#        if not os.path.exists(outputFileName + ".png"):
+#            plotter.plot(fileName, mapStr, dateStr, areaStr, periodStr)
+#        if not os.path.exists(outputFileName + ".png"):
+#            responseObj["error"] = "Requested image is not available at this time."
+#        else:
+#            responseObj["img"] = serverCfg["baseURL"]\
+#                               + outputFileName + ".png"
+#            responseObj["mapeast"] = serverCfg["baseURL"]\
+#                                   + outputFileName + "_east.png"
+#            responseObj["mapeastw"] = serverCfg["baseURL"]\
+#                                   + outputFileName + "_east.pgw"
+#            responseObj["mapwest"] = serverCfg["baseURL"]\
+#                                   + outputFileName + "_west.png"
+#            responseObj["mapwestw"] = serverCfg["baseURL"]\
+#                                   + outputFileName + "_west.pgw"
 
     if "xlat1" in form and "xlon1" in form and "xlon2" in form:
         xlat1 = form["xlat1"].value

@@ -3,6 +3,7 @@
 
 from ..netcdf import plotter
 
+import bisect
 from netCDF4 import Dataset
 import numpy as np
 import branConfig as rc
@@ -10,7 +11,7 @@ from ..util import serverConfig
 from ..util import regionConfig
 
 
-class branPlotter ():
+class BranPlotter ():
     """
     BRAN plotter is specifically designed to plot the BRAN
     netcdf data
@@ -185,33 +186,44 @@ class branPlotter ():
         """
         Plot the thumbnail image and also the east and west map images.
         """
-
+        period = args['period']
+        variable = args['var']
+        date = args['date']
         if period=='monthly':
             if variable == 'temp':
                 filename = self.serverCfg["dataDir"]["bran"] + period + "/temp/" + "temp_" + date[:4]  + "_" + date[4:6]
         else:
             return -1
 
-        dataset = Dataset(filename, 'r')
-        data = dataset.variables[self.config.getVariableType(variable)][0]
-        lats = dataset.variables['lat'][:]
-        lons = dataset.variables['lon'][:]
+        dataset = Dataset(filename + '.nc', 'r')
+        data = dataset.variables[self.config.getVariableType(variable)][0, :, :, :]
+        lats = dataset.variables['yt_ocean'][:]
+        lons = dataset.variables['xt_ocean'][:]
         dep = dataset.variables['zt_ocean'][:]
     #    print filename
         inputLat1 = float(args['xlat1'])
         inputLon1 = float(args['xlon1'])
+        if inputLon1 < 0:
+            inputLon1 = 360 + inputLon1
         inputLat2 = float(args['xlat2'])
         inputLon2 = float(args['xlon2'])
+        if inputLon2 < 0:
+            inputLon2 = 360 + inputLon2
 
         gridLatIndex1 = bisect.bisect_left(lats, inputLat1)
         gridLonIndex1 = bisect.bisect_left(lons, inputLon1)
         gridLonIndex2 = bisect.bisect_left(lons, inputLon2)
 
-        subsurface = data[:25, gridLatIndex1, gridLonIndex1: gridLonIndex2]
-
+        print data.shape
+#        subsurface = data[:25, gridLatIndex1, gridLonIndex1: gridLonIndex2]
+        print lons
+        print inputLon1, inputLon2
+        print gridLonIndex1, gridLonIndex2
+        subsurface = data[:25, gridLatIndex1, :]
+        print subsurface.shape
         plot = plotter.Plotter()
         if args['xlat1'] == args['xlat2']:
-            plot.plotlatx(subsurface, dep[0:25], lons[gridLonIndex1:gridLonIndex2], variable, self.config, outputFilename, centerLabel = cntLabel)
+            plot.plotlatx(subsurface, dep[0:25], lons[gridLonIndex1:gridLonIndex2], variable, self.config, outputFilename, **args)
 
         #if args['xlon1'] == args['xlon2']:
         #    plot.plotlonx(data, lats, dep, variable, self.config, outputFilename,\
