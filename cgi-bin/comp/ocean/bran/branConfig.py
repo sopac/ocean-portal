@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 class branConfig ():
@@ -11,9 +12,10 @@ class branConfig ():
 
     def __init__(self):
        """Does nothing"""
-       self.variableConfig = {"temp": ("Monthly Average BRAN2.1 Temperature",
+       self.variableConfig = {"temp": ("Monthly Average BRAN2.1 Temperature ",
                                        {"colorbounds": [-2, 34],
                                         "colormap": plt.cm.jet,
+                                        "contourlevels": np.arange(10,31,1),
                                         "unit": ur'\u00b0' + 'C',
                                         "format": '%d'
                                       },
@@ -101,6 +103,9 @@ class branConfig ():
 
     def getColorMap(self, variableName):
         return self.variableConfig[variableName][1]['colormap']
+
+    def getContourLevels(self, variableName):
+        return self.variableConfig[variableName][1]['contourlevels'] 
 
     def getUnit(self, variableName):
         return self.variableConfig[variableName][1]['unit']

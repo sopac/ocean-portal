@@ -21,7 +21,7 @@ serverCfg = serverConfig.servers[serverConfig.currentServer]
 branProduct = productName.products["bran"]
 
 #get the plotter
-plotter = branPlotter.branPlotter()
+plotter = branPlotter.BranPlotter()
 
 def process(form):
     responseObj = {} #this object will be encoded into a json string
@@ -81,12 +81,12 @@ def process(form):
                                               float(xlat1), float(xlon1), float(xlat2), float(xlon2))
             outputFileName = serverCfg["outputDir"] + fileName
             if not os.path.exists(outputFileName + ".png"):
-                plotter.plotSubsurface(outputFileName, **args)
+                plotter.plotSubsurface(fileName, **args)
             if not os.path.exists(outputFileName + ".png"):
                 responseObj["error"] = "Requested image is not available at this time."
             else:
-                responseObj["img"].append(serverCfg["baseURL"]\
-                               + outputFileName + ".png")
+                responseObj["img"] = serverCfg["baseURL"]\
+                               + outputFileName + ".png"
 #            var = "temp_ano"
 #            args["variable"] = var
 #            fileName = seaChart % (seaLevelProduct["monthly"], tidalGaugeId, var)

@@ -1,14 +1,16 @@
 #!/usr/bin/python
 
 
-from ..netcdf import plotter
 
 import bisect
 from netCDF4 import Dataset
 import numpy as np
+import datetime
+
 import branConfig as rc
 from ..util import serverConfig
 from ..util import regionConfig
+from ..netcdf import plotter
 
 
 class BranPlotter ():
@@ -189,7 +191,10 @@ class BranPlotter ():
         period = args['period']
         variable = args['var']
         date = args['date']
+        dateObj = datetime.date(int(date[:4]), int(date[4:6]), int(date[6:]))
+        formattedDate = ''
         if period=='monthly':
+            formattedDate = dateObj.strftime('%B %Y')
             if variable == 'temp':
                 filename = self.serverCfg["dataDir"]["bran"] + period + "/temp/" + "temp_" + date[:4]  + "_" + date[4:6]
         else:
@@ -214,13 +219,8 @@ class BranPlotter ():
         gridLonIndex1 = bisect.bisect_left(lons, inputLon1)
         gridLonIndex2 = bisect.bisect_left(lons, inputLon2)
 
-        print data.shape
-#        subsurface = data[:25, gridLatIndex1, gridLonIndex1: gridLonIndex2]
-        print lons
-        print inputLon1, inputLon2
-        print gridLonIndex1, gridLonIndex2
-        subsurface = data[:25, gridLatIndex1, :]
-        print subsurface.shape
+        args['formattedDate'] = formattedDate
+        subsurface = data[:25, gridLatIndex1, gridLonIndex1:gridLonIndex2]
         plot = plotter.Plotter()
         if args['xlat1'] == args['xlat2']:
             plot.plotlatx(subsurface, dep[0:25], lons[gridLonIndex1:gridLonIndex2], variable, self.config, outputFilename, **args)

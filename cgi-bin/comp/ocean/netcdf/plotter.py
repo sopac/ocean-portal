@@ -202,113 +202,6 @@ class Plotter:
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.8, bbox_extra_artists=[copyrightBox])
         plt.close()
 
-    def plotlatx(self, data, dep, lons, variable, config, outputFile, **args):
-        """
-        Plot the input data using the specified project and save the plot to the output file.
-        """
-        #*******************************************
-        #* Generate image for the thumbnail and download
-        #*******************************************
-
-
-#        plt.pcolormesh(lons,(-1*dep),data, shading='flat', cmap=config.getColorMap(variable))
-        levels=pl.arange(10,31,1)
-        #levels=pl.arange(35,37,0.5)
-        plt.pcolormesh(lons,(-1*dep),data, shading='flat', cmap=plt.cm.jet)
-        plt.contour(lons,(-1*dep),data,levels, colors='k')
-
-        plt.title(config.getTitle(variable) + args['formattedDate'], fontsize=8)
-        plt.clim(*config.getColorBounds(variable))
-        ax = plt.gca()
-        box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))
-        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.15), frameon=False, bbox_transform=ax.transAxes)
-        ax.add_artist(copyrightBox)
-
-#        cax = plt.axes([0.93, 0.18, 0.02, 0.65])
-#        cbar = plt.colorbar(format=config.getValueFormat(variable), cax=cax, extend='both')
-#        cbar = plt.colorbar(format=config.getValueFormat(variable), cax=cax, extend='both')
-        cbar = plt.colorbar(format=config.getValueFormat(variable), extend='both')
-        cbar.set_label(config.getUnit(variable), rotation='horizontal', fontsize=6)
-#        cbar.set_label(ax.get_window_extent(), rotation='horizontal')
-
-        colorbarLabels = config.getColorbarLabels(variable)
-        if len(colorbarLabels) != 0:
-            cbar.ax.set_yticklabels(colorbarLabels)
-
-        for tick in cbar.ax.get_yticklabels():
-            tick.set_fontsize(6)
-            if centerLabel:
-                try:
-                    tick.set_transform(offset_copy(cbar.ax.transData, x=10, y=40, units='dots'))
-                except KeyError:
-                    pass
-
-
-        plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.8, bbox_extra_artists=[copyrightBox])
-        plt.close()
-        nc.close()
-##    def plotlonx(self, Var_sect, lats, dep, variable, config, outputFile, lllat, lldep, urlat, urdep, proj=_DEFAULT_PROJ, centerLabel = False, **args):
-##        """
-##        Plot the input data using the specified project and save the plot to the output file.
-##        """
-##        #*******************************************
-##        #* Generate image for the thumbnail and download
-##        #*******************************************
-##        m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lldep,\
-##                    urcrnrlat=urlat, urcrnrlon=urdep, resolution='h')
-##
-##        I=pl.nonzero(lons=='lon')
-##
-##        Var_sect = variable[:,:,I[0],:]
-##        Var_sect = N.reshape(Var_sect,(len(lats),len(dep)))
-##
-##        m.pcolormesh(lats,(-1*dep),Var_sect, shading='flat', cmap=config.getColorMap(variable))
-##        m.drawcoastlines(linewidth=0.1, zorder=6)
-###        m.fillcontinents(color='#F1EBB7', zorder=7)
-##        m.fillcontinents(color='#cccccc', zorder=7)
-##
-##        if math.fabs(lllat - urlat) < 5:
-##            parallels = np.linspace(lllat, urlat, 4)
-##        else:
-##            parallels = np.linspace(lllat, urlat, 9)
-##        m.drawparallels(parallels, labels=[True, False, False, False], fmt='%.2f', fontsize=6, dashes=[3, 3], color='gray')
-##        if math.fabs(lldep - urdep) < 5:
-##            meridians = np.linspace(lldep, urdep, 4)
-##        else:
-##            meridians = np.linspace(lldep, urdep, 9)
-##        m.drawmeridians(meridians, labels=[False, False, False, True], fmt='%.2f', fontsize=6, dashes=[3, 3], color='gray')
-##
-##
-##        plt.title(config.getTitle(variable) + args['formattedDate'], fontsize=8)
-##        plt.clim(*config.getColorBounds(variable))
-##        ax = plt.gca()
-##        box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))
-##        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.15), frameon=False, bbox_transform=ax.transAxes)
-##        ax.add_artist(copyrightBox)
-##
-###        cax = plt.axes([0.93, 0.18, 0.02, 0.65])
-###        cbar = plt.colorbar(format=config.getValueFormat(variable), cax=cax, extend='both')
-###        cbar = plt.colorbar(format=config.getValueFormat(variable), cax=cax, extend='both')
-##        cbar = plt.colorbar(format=config.getValueFormat(variable), extend='both')
-##        cbar.set_label(config.getUnit(variable), rotation='horizontal', fontsize=6)
-###        cbar.set_label(ax.get_window_extent(), rotation='horizontal')
-##
-##        colorbarLabels = config.getColorbarLabels(variable)
-##        if len(colorbarLabels) != 0:
-##            cbar.ax.set_yticklabels(colorbarLabels)
-##
-##        for tick in cbar.ax.get_yticklabels():
-##            tick.set_fontsize(6)
-##            if centerLabel:
-##                try:
-##                    tick.set_transform(offset_copy(cbar.ax.transData, x=10, y=40, units='dots'))
-##                except KeyError:
-##                    pass
-##
-##
-##        plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.8, bbox_extra_artists=[copyrightBox])
-##        plt.close()
-
     def plotBasemapWest(self, data, lats, lons, variable, config, outputFile,\
                         lllat=-90, lllon=180, urlat=90, urlon=360, proj=_DEFAULT_PROJ, worldfile='ocean/resource/west.pgw'):
         """
@@ -352,6 +245,37 @@ class Plotter:
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '_east.png', dpi=150, bbox_inches='tight', pad_inches=0)
         plt.close()
         shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_east.pgw')
+
+    def plotlatx(self, data, dep, lons, variable, config, outputFile, **args):
+        """
+        Plot the input data using the specified project and save the plot to the output file.
+        """
+        #*******************************************
+        #* Generate image for the thumbnail and download
+        #*******************************************
+        plt.pcolormesh(lons,(-1*dep),data, shading='flat', cmap=config.getColorMap(variable))
+        plt.ylabel('m', rotation='horizontal')
+        plt.title(config.getTitle(variable) + args['formattedDate'], fontsize=8)
+        plt.clim(*config.getColorBounds(variable))
+        ax = plt.gca()
+        box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))
+        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.15), frameon=False, bbox_transform=ax.transAxes)
+        ax.add_artist(copyrightBox)
+
+        cbar = plt.colorbar(format=config.getValueFormat(variable), extend='both')
+        cbar.set_label(config.getUnit(variable), rotation='horizontal', fontsize=6)
+
+        colorbarLabels = config.getColorbarLabels(variable)
+        if len(colorbarLabels) != 0:
+            cbar.ax.set_yticklabels(colorbarLabels)
+
+        for tick in cbar.ax.get_yticklabels():
+            tick.set_fontsize(6)
+
+        contourPlt = plt.contour(lons,(-1*dep), data, levels=config.getContourLevels(variable), colors='k')
+        plt.clabel(contourPlt, inline=True, fmt='%3.0f', fontsize=8)
+        plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.8, bbox_extra_artists=[copyrightBox])
+        plt.close()
 
     def getCopyright(self):
         return ur'\u00A9' + "Commonwealth of Australia "\
