@@ -1,5 +1,14 @@
 #!/usr/bin/env python
 
+rpm_deps = [
+    'basemap >= 1.1.7',
+    'mapserver-python >= 6.0.1',
+    'matplotlib >= 1.1.0',
+    'netCDF4 >= 0.9.7',
+    'numpy >= 1.6.1',
+    'scipy >= 0.9.0',
+]
+
 src = [
     'getMap',
     'portal.py',
@@ -50,8 +59,18 @@ data = [
 ]
 if __name__ == '__main__':
     from distutils.core import setup
+    from distutils.command.bdist_rpm import bdist_rpm
     import os.path
     import itertools
+
+    # add Requires: for RPM
+    _original_make_spec_file = bdist_rpm._make_spec_file
+    def _make_spec_file(*args):
+        spec = _original_make_spec_file(*args)
+        spec.insert(spec.index('%description') - 1,
+                    'Requires: %s' % ', '.join(rpm_deps))
+        return spec
+    bdist_rpm._make_spec_file = _make_spec_file
 
     setup(name='map-portal',
           version='0.1.0',
