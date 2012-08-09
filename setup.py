@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 
+NAME                = 'map-portal'
+VERSION             = '0.1.0'
+DESCRIPTION         = 'Map Portal'
+LONG_DESCRIPTION    = """\
+COMP Group Climate Portal
+"""
+AUTHOR              = 'COMP'
+AUTHOR_EMAIL        = 'COSPPac_COMP_Unit@bom.gov.au'
+URL                 = 'http://tuscany.bom.gov.au/wiki/index.php/Map_Portal'
+
 rpm_deps = [
     'basemap >= 1.1.7',
     'mapserver-python >= 6.0.1',
@@ -72,11 +82,14 @@ if __name__ == '__main__':
         return spec
     bdist_rpm._make_spec_file = _make_spec_file
 
-    setup(name='map-portal',
-          version='0.1.0',
-          author='COMP',
-          author_email='COSPPac_COMP_Unit@bom.gov.au',
-          url='http://tuscany/wiki/',
+    setup(name=NAME,
+          version=VERSION,
+          author=AUTHOR,
+          author_email=AUTHOR_EMAIL,
+          url=URL,
+          description=DESCRIPTION,
+          long_description=LONG_DESCRIPTION,
+
           packages=[ 'portal.backends' ] +
                    [ 'portal.backends.%s' % b for b in backends ],
           package_dir={
