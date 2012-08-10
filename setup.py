@@ -82,6 +82,11 @@ if __name__ == '__main__':
         return spec
     bdist_rpm._make_spec_file = _make_spec_file
 
+    data_files = \
+        [ ('/var/www/cgi-bin/portal', [ os.path.join('src', s) for s in src ]) ] + \
+        [ (os.path.join(BASE_PATH, d), list(f))
+            for d, f in itertools.groupby(data, lambda e: os.path.dirname(e)) ]
+
     setup(name=NAME,
           version=VERSION,
           author=AUTHOR,
@@ -99,7 +104,5 @@ if __name__ == '__main__':
               'portal.backends': [ os.path.join('resource', r)
                                     for r in backend_resources ],
           },
-          scripts=[ os.path.join('src', s) for s in src ],
-          data_files = [ (os.path.join(BASE_PATH, d), list(f))
-            for d, f in itertools.groupby(data, lambda e: os.path.dirname(e)) ]
+          data_files = data_files,
          )
