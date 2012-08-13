@@ -43,6 +43,14 @@ backend_resources = [
 ]
 
 BASE_PATH = 'share/portal'
+html = [
+    'controlPanel.html',
+    'oceanmap.html',
+    'sst.html',
+    'compmap.html',
+    'sstdev.html',
+]
+
 data = [
     'css/sst.css',
     'css/controlPanel.css',
@@ -54,11 +62,6 @@ data = [
     'config/comp/period.json',
     'config/comp/tidalGauges.txt',
     'config/comp/countryList.json',
-    'html/controlPanel.html',
-    'html/oceanmap.html',
-    'html/sst.html',
-    'html/compmap.html',
-    'html/sstdev.html',
     'js/sstdev.js',
     'js/controlPanel.js',
     'js/comp/controlPanel.js',
@@ -84,6 +87,7 @@ if __name__ == '__main__':
 
     data_files = \
         [ ('/var/www/cgi-bin/portal', [ os.path.join('src', s) for s in src ]) ] + \
+        [ (BASE_PATH, [ os.path.join('html', h) for h in html ]) ] + \
         [ (os.path.join(BASE_PATH, d), list(f))
             for d, f in itertools.groupby(data, lambda e: os.path.dirname(e)) ]
 
@@ -95,14 +99,14 @@ if __name__ == '__main__':
           description=DESCRIPTION,
           long_description=LONG_DESCRIPTION,
 
-          packages=[ 'portal.backends' ] +
-                   [ 'portal.backends.%s' % b for b in backends ],
+          packages=[ 'ocean' ] +
+                   [ 'ocean.%s' % b for b in backends ],
           package_dir={
-              'portal.backends': 'backends',
+              'ocean': 'backends',
           },
           package_data={
-              'portal.backends': [ os.path.join('resource', r)
-                                    for r in backend_resources ],
+              'ocean': [ os.path.join('resource', r)
+                         for r in backend_resources ],
           },
           data_files = data_files,
          )
