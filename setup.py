@@ -44,29 +44,19 @@ backend_resources = [
 
 BASE_PATH = 'share/portal'
 html = [
-    'controlPanel.html',
-    'oceanmap.html',
     'sst.html',
     'compmap.html',
-    'sstdev.html',
 ]
 
 data = [
     'css/sst.css',
-    'css/controlPanel.css',
     'css/comp/controlPanel.css',
-    'config/regions.json',
-    'config/datasets.json',
-    'config/period.json',
     'config/comp/datasets.json',
     'config/comp/period.json',
     'config/comp/tidalGauges.txt',
     'config/comp/countryList.json',
-    'js/sstdev.js',
-    'js/controlPanel.js',
     'js/comp/controlPanel.js',
     'js/comp/compmap.js',
-    'js/map.js',
     'js/sst.js',
     'maps/reynolds.map',
 ]
