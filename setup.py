@@ -49,6 +49,7 @@ html = [
 ]
 
 data = [
+    'css/common.css',
     'css/sst.css',
     'css/comp/controlPanel.css',
     'config/comp/datasets.json',
@@ -59,7 +60,19 @@ data = [
     'js/comp/compmap.js',
     'js/sst.js',
     'maps/reynolds.map',
+    'images/dot.png',
+    'images/sst.png',
+    'images/search.gif',
+    'images/calendar-blue.gif',
+    'images/blank.png',
+    'images/download.png',
+    'images/loading.gif',
+    'images/notavail.png',
+    'images/climate.jpg',
+    'images/bom_logo.gif',
+    'images/bathymetry_ver.png',
 ]
+
 if __name__ == '__main__':
     from distutils.core import setup
     from distutils.command.bdist_rpm import bdist_rpm
