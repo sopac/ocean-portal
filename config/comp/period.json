@@ -14,6 +14,9 @@
     "id" : "6monthly",
     "name" : "6-month"
 }, {
+    "id" : "12monthly",
+    "name" : "12-month"
+}, {
     "id" : "yearly",
     "name" : "yearly"
 }]

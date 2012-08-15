@@ -42,28 +42,111 @@
     "id":"ersst",
     "name":"ERSST",
     "title": "Sea Surface Temperature - ERSST [BETA]",
-    "variables": {
-    }
-},{
-    "id":"bran",
-    "name":"BRAN",
-    "title": "BRAN [BETA]",
-    "variables": {
+    "variables": [{
+        "id":"mean",
+        "name":"Mean SST",
+        "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
+        "areas" : ["pi", "cook", "fsm", "fiji", "kiribati", "marshall", "nauru", "niue", "palau", "png", "samoa", "solomon", "tonga", "tuvalu", "vanuatu"]
+    },{
+        "id":"anom",
+        "name":"SST Anomaly",
+        "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
+        "areas" : ["pi", "cook", "fsm", "fiji", "kiribati", "marshall", "nauru", "niue", "palau", "png", "samoa", "solomon", "tonga", "tuvalu", "vanuatu"],
+        "average" : {
+            "checkboxes" : [{
+                "boxLabel" : "Average",
+                "name" : "average"
+            }, {
+                "boxLabel" : "Trend",
+                "name" : "trend"
+            }, {
+                "boxLabel" : "Running Average",
+                "name" : "runningAve"
+            }],
+            "periods" : ["monthly", "yearly"]
+        }
+    },{
+        "id":"trend",
+        "name":"SST Trend Map",
+        "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
+        "areas" : ["pi", "cook", "fsm", "fiji", "kiribati", "marshall", "nauru", "niue", "palau", "png", "samoa", "solomon", "tonga", "tuvalu", "vanuatu"]
+    },{
+        "id":"dec",
+        "name":"SST Deciles",
+        "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
+        "areas" : ["pi", "cook", "fsm", "fiji", "kiribati", "marshall", "nauru", "niue", "palau", "png", "samoa", "solomon", "tonga", "tuvalu", "vanuatu"]
+    }],
+    "dateRange" : {
+        "minYear": "1981",
+        "maxYear": "0+",
+        "minDate": {"year": 1981, "month": 9, "date": 1},
+        "maxDate": "-4D"
     }
 },{
     "id":"ww3",
     "name":"WaveWatchIII",
     "title": "WaveWatch III [BETA]",
     "variables": [{
-        "id": "swh",
-        "name": "Significatn Wave Height"
+        "id": "Hs",
+        "name": "Significant Wave Height"
     }, {
-        "id": "mwp",
+        "id": "Tm",
         "name": "Mean Wave Period"
     }, {
-        "id": "mwd",
+        "id": "Dm",
         "name": "Mean Wave Direction"
     }]
+},{
+    "id":"bran",
+    "name":"BRAN",
+    "title": "BRAN 2.1 [BETA]",
+    "variables": [{
+        "id":"temp",
+        "name":"Temperature",
+        "periods": ["monthly"]
+    }, {
+        "id":"temp_ano",
+        "name":"Temperature Anomaly",
+        "periods": ["monthly"]
+    }, {
+        "id":"salt",
+        "name":"Salinity",
+        "periods": ["monthly"]
+    }, {
+        "id":"salt_ano",
+        "name":"Salinity Anomaly",
+        "periods": ["monthly"]
+    }, {
+        "id":"eta",
+        "name":"Sea Level Height",
+        "periods": ["monthly"]
+    }, {
+        "id":"eta_ano",
+        "name":"Sea Level Anomaly",
+        "periods": ["monthly"]
+    }, {
+        "id":"u",
+        "name":"Zonal Velocity",
+        "periods": ["monthly"]
+    }, {
+        "id":"u_ano",
+        "name":"Zonal Velocity Anomaly",
+        "periods": ["monthly"]
+    }, {
+        "id":"v",
+        "name":"Meridional Velocity",
+        "periods": ["monthly"]
+    }, {
+        "id":"v_ano",
+        "name":"Meridional Velocity Anomaly",
+        "periods": ["monthly"]
+    }],
+    "dateRange" : {
+        "minYear": "1993",
+        "maxYear": "2011",
+        "minDate": {"year": 1993, "month": 1, "date": 1},
+        "maxDate": "-4D" 
+    }
 }, {
     "id":"sealevel",
     "name":"Sea Level",
