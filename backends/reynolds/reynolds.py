@@ -136,15 +136,9 @@ def process(form):
                 fileName = aveSstGraph % (reynoldsProduct["6monthly"], mapStr, areaStr, dateStr[:6])
             elif periodStr == 'weekly':
                 fileName = aveSstGraph % (reynoldsProduct["weekly"], mapStr, areaStr, dateStr)
-            outputFileName = serverCfg["outputDir"] + fileName
-            outputFiles = [ '.png', '_east.png', '_east.pgw',
-                            '_west.png', '_west.pgw' ]
-
-            if not reduce(
-                    lambda a, p: a and os.path.exists(outputFileName + p),
-                    outputFiles, True):
+            outputFileName = serverCfg["outputDir"] + fileName 
+            if not os.path.exists(outputFileName + ".png"):
                 plotter.plot(fileName, **args)
-
             if not os.path.exists(outputFileName + ".png"):
                 responseObj["error"] = "Requested image is not available at this time."
             else:

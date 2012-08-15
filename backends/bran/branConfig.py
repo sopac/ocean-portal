@@ -20,13 +20,14 @@ class branConfig ():
                                         "format": '%d'
                                       },
                                       "temp"),
-                              "temp_ano": ("Monthly Average BRAN2.1 Temperature Anomaly",
-                                       {"colorbounds": [-2, 2],
+                              "temp_ano": ("Monthly Average BRAN2.1 Temperature Anomaly ",
+                                       {"colorbounds": [-1.5, 1.5],
                                         "colormap": plt.cm.RdBu_r,
+                                        "contourlevels": np.arange(-1.5,1.5,0.5),
                                         "unit": ur'\u00b0' + 'C',
                                         "format": '%5.1f'
                                       },
-                                      "temp_ano"),
+                                      "temp"),
                               "temp_dec": ("Monthly Average BRAN2.1 Temperature Deciles",
                                       {"colorbounds": [0, 11],
                                        "colormap": plt.cm.RdBu_r,

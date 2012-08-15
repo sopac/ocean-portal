@@ -197,6 +197,8 @@ class BranPlotter ():
             formattedDate = dateObj.strftime('%B %Y')
             if variable == 'temp':
                 filename = self.serverCfg["dataDir"]["bran"] + period + "/temp/" + "temp_" + date[:4]  + "_" + date[4:6]
+            elif variable == 'temp_ano':
+                filename = self.serverCfg["dataDir"]["bran"] + period + "/temp/temp_ano/" + "temp_ano_" + date[:4]  + "_" + date[4:6]
         else:
             return -1
 

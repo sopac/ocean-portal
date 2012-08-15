@@ -70,7 +70,7 @@
     }
     
     //Add gauge points
-    map.addLayers([wmsLayer, bathymetryLayer]);
+    map.addLayers([bathymetryLayer]);
     map.setBaseLayer(bathymetryLayer)
    // map.panTo(new OpenLayers.LonLat(178.62740, -17.93307));
     function mapBaseLayerChanged(evt) {
@@ -363,8 +363,8 @@ Ext.onReady(function() {
             border: false,
 //          title: 'Map Panel',
             padding: 2,
-            width: '82%',
-            height: '90%',
+            width: '72%',
+            height: '100%',
             items:[
                 Ext.create('Ext.panel.Panel', {contentEl: 'map', height: '100%'}),
 //                Ext.create('Ext.panel.Panel', {contentEl: 'imgDiv', height: '20%'})

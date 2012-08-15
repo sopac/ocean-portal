@@ -163,6 +163,14 @@ class SeaLevelPlotter ():
         (gridLat, gridLon), (latIndex, lonIndex) = xtractor.getGridPoint(lat, lon, lats, lons)
         y_height = dataset.variables[self.config.getVariableType(variable)][:, latIndex, lonIndex]
 
+        print lat
+        print lon
+        print gridLat
+        print gridLon
+        print latIndex
+        print lonIndex
+        print y_height[0]
+        print dataset.variables[self.config.getVariableType(variable)]._FillValue
         
         x_date = []
         date_label = []
