@@ -24,8 +24,9 @@
 
 
     var wmsLayer = new OpenLayers.Layer.WMS("Plain World",
-        "http://tuscany/cgi-bin/mapserv?map=maps/plainworld.map",
+        MAPSERV,
         {
+	    map: "maps/plainworld.map",
             layers: "land,urban,ocean,maritime,country_line,major_countries,minor_countries,cities,towns,minor_islands"
         },{
             wrapDateLine: true,
@@ -37,7 +38,7 @@
 ////Below are the MapServer layers
 
     var bathymetryLayer = new OpenLayers.Layer.MapServer("Bathymetry",
-        "http://tuscany/cgi-bin/mapserv", {
+        MAPSERV, {
             map: "maps/bathymetry.map",
             layers: ["bathymetry_10000", "bathymetry_9000", "bathymetry_8000",
                      "bathymetry_7000", "bathymetry_6000", "bathymetry_5000",
@@ -51,7 +52,7 @@
         });
 
     var sstLayer = new OpenLayers.Layer.MapServer("SST",
-        "http://tuscany/cgi-bin/mapserv", {
+        MAPSERV, {
 //            map: "maps/sst.map",
             map: "maps/reynolds.map",
             layers: ["sst_left", "sst_right", "land", "coastline"]
@@ -125,8 +126,7 @@ function updateMap(data){
     }
     else{
         var sstLayer = new OpenLayers.Layer.MapServer("Reynolds",
-            "http://tuscany/cgi-bin/comp/getMap?map=reynolds", {
-//            "http://tuscany/cgi-bin/mapserv", {
+            "cgi/getMap?map=reynolds", {
             layers: ["sst_left", "sst_right", "land", "coastline"],
             raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
         }, {
@@ -154,8 +154,7 @@ function updateSeaLevelMap(data){
     }
     else{
         var slLayer = new OpenLayers.Layer.MapServer("Sea Level",
-            "http://tuscany/cgi-bin/comp/getMap?map=sealevel", {
-//            "http://tuscany/cgi-bin/mapserv", {
+            "cgi/getMap?map=sealevel", {
             layers: ["sl_left", "sl_right", "land", "coastline"],
             raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
         }, {

@@ -12,7 +12,7 @@ Date.prototype.getMonthString = function() {
     return (calMonth < 10) ?  ('0' + calMonth) : calMonth + '';
 }
 ocean.dsConf = {
-    reynolds: {url: function() {return "/cgi-bin/comp/portal.py?dataset=reynolds"
+    reynolds: {url: function() {return "cgi/portal.py?dataset=reynolds"
                    + "&map=" + this.variable.get('id')
                    + "&date=" + $.datepick.formatDate('yyyymmdd', ocean.date)
                    + "&period=" + ocean.period
@@ -110,7 +110,7 @@ ocean.dsConf = {
             },
     ersst: {
            },
-    ww3: {url: function() {return "/cgi-bin/comp/portal.py?dataset=ww3"
+    ww3: {url: function() {return "cgi/portal.py?dataset=ww3"
                                 + "&lllat=" + document.forms['theform'].elements['latitude'].value 
                                 + "&lllon=" + document.forms['theform'].elements['longitude'].value
                                 + "&urlat=" + document.forms['theform'].elements['latitude'].value
@@ -154,7 +154,7 @@ ocean.dsConf = {
                                 $('#latlonDiv').show();
                             }
     },
-    sealevel: {url: function() {return "/cgi-bin/comp/portal.py?dataset=sealevel"
+    sealevel: {url: function() {return "cgi/portal.py?dataset=sealevel"
                                 + "&variable=" + this.variable.get('id')
                                 + "&period=" + ocean.period
                                 + "&date=" + $.datepick.formatDate('yyyymmdd', ocean.date)

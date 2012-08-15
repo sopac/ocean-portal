@@ -58,6 +58,7 @@ data = [
     'config/comp/countryList.json',
     'js/comp/controlPanel.js',
     'js/comp/compmap.js',
+    'js/config.js',
     'js/sst.js',
     'maps/reynolds.map',
     'images/dot.png',
