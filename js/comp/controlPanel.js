@@ -885,6 +885,7 @@ function setCompare() {
 function initialise() {
     $('#variableDiv').hide();
     hideControls();
+    hideControl('loadingDiv');
 };
 
 //**********************************************************
@@ -945,6 +946,7 @@ function updatePage() {
             dataType: 'json',
             success: function(data, textStatus, jqXHR) {
                 ocean.processing = false;
+		hideControl('loadingDiv');
                 if (data != null) {
                     ocean.dataset.callback(data);
                 }
