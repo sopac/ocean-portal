@@ -7,18 +7,21 @@ Author: Sheng Guo
 (c)Climate and Oceans Support Program for the Pacific(COSPPAC), Bureau of Meteorology, Australia
 """
 
-from mpl_toolkits.basemap import Basemap
-from matplotlib.offsetbox import AnchoredOffsetbox, TextArea
-import numpy as np
-import matplotlib.pyplot as plt
-import os
+import os, os.path
 import bisect
 import math
 import shutil
 import datetime
-from ..util import serverConfig
-from matplotlib.transforms import offset_copy
 
+import numpy as np
+
+from mpl_toolkits.basemap import Basemap
+from matplotlib.offsetbox import AnchoredOffsetbox, TextArea
+from matplotlib.transforms import offset_copy
+import matplotlib.pyplot as plt
+
+import ocean
+from ..util import serverConfig
 
 class Plotter:
     """The base class for plotting netCDF files."""
@@ -97,10 +100,14 @@ class Plotter:
 
     def contourBasemapWest(self, data, lats, lons, variable, config, outputFile,\
                            lllat=-90, lllon=180, urlat=90, urlon=360, proj=_DEFAULT_PROJ,\
-                           contourLines=False,  worldfile='ocean/resource/west.pgw'):
+                           contourLines=False,  worldfile=None):
         """
         Plot the input data using the specified project and save the plot to the output file.
         """
+
+        if not worldfile:
+            worldfile = os.path.join(ocean.__path__[0], 'resource', 'west.pgw')
+
         #left part
         m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
                    urcrnrlat=urlat, urcrnrlon=urlon, resolution=None)
@@ -122,10 +129,14 @@ class Plotter:
 
     def contourBasemapEast(self, data, lats, lons, variable, config, outputFile,\
                         lllat=-90, lllon=0, urlat=90, urlon=180, proj=_DEFAULT_PROJ,\
-                        contourLines=False,  worldfile='ocean/resource/east.pgw'):
+                        contourLines=False,  worldfile=None):
         """
         Plot the input data using the specified project and save the plot to the output file.
         """
+
+        if not worldfile:
+            worldfile = os.path.join(ocean.__path__[0], 'resource', 'east.pgw')
+
         m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
                    urcrnrlat=urlat, urcrnrlon=urlon, resolution=None)
         x, y = m(*np.meshgrid(lons, lats))
@@ -203,10 +214,15 @@ class Plotter:
         plt.close()
 
     def plotBasemapWest(self, data, lats, lons, variable, config, outputFile,\
-                        lllat=-90, lllon=180, urlat=90, urlon=360, proj=_DEFAULT_PROJ, worldfile='ocean/resource/west.pgw'):
+                        lllat=-90, lllon=180, urlat=90, urlon=360,
+                        proj=_DEFAULT_PROJ, worldfile=None):
         """
         Plot the input data using the specified project and save the plot to the output file.
         """
+
+        if not worldfile:
+            worldfile = os.path.join(ocean.__path__[0], 'resource', 'west.pgw')
+
         #left part
         m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
                    urcrnrlat=urlat, urcrnrlon=urlon, resolution=None)
@@ -225,10 +241,15 @@ class Plotter:
         shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_west.pgw')
 
     def plotBasemapEast(self, data, lats, lons, variable, config, outputFile,\
-                        lllat=-90, lllon=0, urlat=90, urlon=180, proj=_DEFAULT_PROJ, worldfile='ocean/resource/east.pgw'):
+                        lllat=-90, lllon=0, urlat=90, urlon=180,
+                        proj=_DEFAULT_PROJ, worldfile=None):
         """
         Plot the input data using the specified project and save the plot to the output file.
         """
+
+        if not worldfile:
+            worldfile = os.path.join(ocean.__path__[0], 'resource', 'east.pgw')
+
         #right part
         m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
                    urcrnrlat=urlat, urcrnrlon=urlon, resolution=None)
