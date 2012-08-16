@@ -211,9 +211,16 @@ def process(form):
                 fileName = trendGraph % (ersstProduct["6monthlyTre"], baseStr, areaStr, dateStr[4:6])
             if periodStr == '12monthly':
                 fileName = trendGraph % (ersstProduct["12monthlyTre"], baseStr, areaStr, dateStr[4:6])
+
             outputFileName = serverCfg["outputDir"] + fileName
-            if not os.path.exists(outputFileName + ".png"):
+            outputFiles = [ '.png', '_east.png', '_east.pgw',
+                            '_west.png', '_west.pgw' ]
+
+            if not reduce(
+                    lambda a, p: a and os.path.exists(outputFileName + p),
+                    outputFiles, True):
                 plotter.plot(fileName, **args)
+
             if not os.path.exists(outputFileName + ".png"):
                 responseObj["error"] = "Requested image is not available at this time."
             else:
