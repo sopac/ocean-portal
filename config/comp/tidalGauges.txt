@@ -1,15 +1,15 @@
 lat	lon	title	description	icon	iconSize	iconOffset	
--18.1325	178.4275	Fiji - Suva	IDO70063	resources/img/dot.png	10,10	-5,-5
--17.6053	177.4381	Fiji - Lautoka	IDO70054	resources/img/dot.png	10,10	-5,-5
--21.2048	200.2147	Cook Islands - Avatiu	IDO70051	resources/img/dot.png	10,10	-5,-5
-1.3625	172.9300	Kiribati - Betio	IDO70060	resources/img/dot.png	10,10	-5,-5
-7.1060	171.3725	Marshall Islands - Uliga	IDO70052	resources/img/dot.png	10,10	-5,-5
--0.5319	166.9092	Nauru - Aiwo	IDO70055	resources/img/dot.png	10,10	-5,-5
--2.0420	147.3737	Papua New Guinea - Lombrum	IDO70058	resources/img/dot.png	10,10	-5,-5
--9.4289	159.9555	Solomon Islands - Honiara	IDO70061	resources/img/dot.png	10,10	-5,-5
--13.8267	188.2389	Samoa - Apia	IDO70062	resources/img/dot.png	10,10	-5,-5
--21.1380	184.8185	Tonga - Nuku'alofa	IDO70053	resources/img/dot.png	10,10	-5,-5
--8.5025	179.1949	Tuvalu - Fongafale	IDO70056	resources/img/dot.png	10,10	-5,-5
--17.7569	168.3002	Vanuatu - Port Vila	IDO70059	resources/img/dot.png	10,10	-5,-5
-6.9806	158.2001	Federated States of Micronesia - Dekehtik	IDO70057	resources/img/dot.png	10,10	-5,-5
+-18.1325	178.4275	Fiji - Suva	IDO70063	images/dot.png	10,10	-5,-5
+-17.6053	177.4381	Fiji - Lautoka	IDO70054	images/dot.png	10,10	-5,-5
+-21.2048	200.2147	Cook Islands - Avatiu	IDO70051	images/dot.png	10,10	-5,-5
+1.3625	172.9300	Kiribati - Betio	IDO70060	images/dot.png	10,10	-5,-5
+7.1060	171.3725	Marshall Islands - Uliga	IDO70052	images/dot.png	10,10	-5,-5
+-0.5319	166.9092	Nauru - Aiwo	IDO70055	images/dot.png	10,10	-5,-5
+-2.0420	147.3737	Papua New Guinea - Lombrum	IDO70058	images/dot.png	10,10	-5,-5
+-9.4289	159.9555	Solomon Islands - Honiara	IDO70061	images/dot.png	10,10	-5,-5
+-13.8267	188.2389	Samoa - Apia	IDO70062	images/dot.png	10,10	-5,-5
+-21.1380	184.8185	Tonga - Nuku'alofa	IDO70053	images/dot.png	10,10	-5,-5
+-8.5025	179.1949	Tuvalu - Fongafale	IDO70056	images/dot.png	10,10	-5,-5
+-17.7569	168.3002	Vanuatu - Port Vila	IDO70059	images/dot.png	10,10	-5,-5
+6.9806	158.2001	Federated States of Micronesia - Dekehtik	IDO70057	images/dot.png	10,10	-5,-5
 
