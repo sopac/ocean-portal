@@ -4,6 +4,7 @@ import sys
 import json
 
 import seaLevelPlotter
+import ocean.util as util
 from ..util import productName
 from ..util import serverConfig
 from ..util import tidalGaugeConfig
@@ -38,9 +39,13 @@ def process(form):
         if periodStr == 'monthly':
             fileName = seaGraph % (seaLevelProduct["monthly"], variableStr, areaStr, dateStr[:6])
         outputFileName = serverCfg["outputDir"] + fileName 
-        if not os.path.exists(outputFileName + ".png"):
+        outputFiles = [ '.png', '_east.png', '_east.pgw',
+            '_west.png', '_west.pgw' ]
+
+        if not util.check_files_exist(outputFileName, outputFiles):
             plotter.plot(fileName, **args)
-        if not os.path.exists(outputFileName + ".png"):
+
+        if not util.check_files_exist(outputFileName, outputFiles):
             responseObj["error"] = "Requested image is not available at this time."
         else:
             responseObj["img"].append(serverCfg["baseURL"]\

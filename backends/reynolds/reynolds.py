@@ -4,6 +4,7 @@ import sys
 import json
 
 import reynoldsPlotter
+import ocean.util as util
 from ..util import areaMean
 from ..util import productName
 from ..util import serverConfig
@@ -107,9 +108,13 @@ def process(form):
         elif mapStr == "dec":
             fileName = decGraph % (reynoldsProduct["monthlyDec"], areaStr, dateStr[:6])
             outputFileName = serverCfg["outputDir"] + fileName
-            if not os.path.exists(outputFileName + ".png"):
+            outputFiles = [ '.png', '_east.png', '_east.pgw',
+                            '_west.png', '_west.pgw' ]
+
+            if not util.check_files_exist(outputFileName, outputFiles):
                 plotter.plot(fileName, **args)
-            if not os.path.exists(outputFileName + ".png"):
+
+            if not util.check_files_exist(outputFileName, outputFiles):
                 responseObj["error"] = "Requested image is not available at this time."
             else:
                 responseObj["img"] = serverCfg["baseURL"]\
@@ -136,10 +141,15 @@ def process(form):
                 fileName = aveSstGraph % (reynoldsProduct["6monthly"], mapStr, areaStr, dateStr[:6])
             elif periodStr == 'weekly':
                 fileName = aveSstGraph % (reynoldsProduct["weekly"], mapStr, areaStr, dateStr)
-            outputFileName = serverCfg["outputDir"] + fileName 
-            if not os.path.exists(outputFileName + ".png"):
+
+            outputFileName = serverCfg["outputDir"] + fileName
+            outputFiles = [ '.png', '_east.png', '_east.pgw',
+                            '_west.png', '_west.pgw' ]
+
+            if not util.check_files_exist(outputFileName, outputFiles):
                 plotter.plot(fileName, **args)
-            if not os.path.exists(outputFileName + ".png"):
+
+            if not util.check_files_exist(outputFileName, outputFiles):
                 responseObj["error"] = "Requested image is not available at this time."
             else:
                 responseObj["img"] = serverCfg["baseURL"]\
