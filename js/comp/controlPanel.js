@@ -12,7 +12,7 @@ Date.prototype.getMonthString = function() {
     return (calMonth < 10) ?  ('0' + calMonth) : calMonth + '';
 }
 ocean.dsConf = {
-    reynolds: {url: function() {return "/cgi-bin/comp/portal.py?dataset=reynolds"
+    reynolds: {url: function() {return "cgi/portal.py?dataset=reynolds"
                    + "&map=" + this.variable.get('id')
                    + "&date=" + $.datepick.formatDate('yyyymmdd', ocean.date)
                    + "&period=" + ocean.period
@@ -98,32 +98,103 @@ ocean.dsConf = {
                     updateCalDiv();
                     showControl('selectionDiv');
 
-                    if (selection === 'anom') {
-                        showControl('toggleDiv')
-                        for (var check in ocean.dsConf['reynolds'].aveCheck) {
-                            checkCmp = Ext.getCmp(check);
-                            checkCmp.fireEvent('beforeshow', checkCmp);
-                        }
-                        showControl('sliderDiv')
-                    }
+//                    if (selection === 'anom') {
+//                        showControl('toggleDiv')
+//                        for (var check in ocean.dsConf['reynolds'].aveCheck) {
+//                            checkCmp = Ext.getCmp(check);
+//                            checkCmp.fireEvent('beforeshow', checkCmp);
+//                        }
+//                        showControl('sliderDiv')
+//                    }
                 }
             },
-    ersst: {
+    ersst: {url: function() {return "cgi/portal.py?dataset=ersst"
+                   + "&map=" + this.variable.get('id')
+                   + "&date=" + $.datepick.formatDate('yyyymmdd', ocean.date)
+                   + "&period=" + ocean.period
+                   + "&baseYear=1900"
+                   + "&area=" + ocean.area
+                   + "&average=" + ocean.dsConf['ersst'].aveCheck.average
+                   + "&trend=" + ocean.dsConf['ersst'].aveCheck.trend
+                   + "&runningAve=" + ocean.dsConf['ersst'].aveCheck.runningAve
+                   + "&runningInterval=" + ocean.dsConf['ersst'].runningInterval
+                   + "&timestamp=" + new Date().getTime()},
+                data: null,
+                variable: null,
+                aveCheck: {},
+                mainCheck: 'average',
+                runningInterval: 2,
+                callback: function(data) {
+                    var imgDiv = $('#imgDiv');
+                    var dataDiv = $('#dataDiv');
+                    var enlargeDiv = $('#enlargeDiv');
+                    if (this.variable.get("id") == "anom" && this.aveCheck.average && data.aveImg != null) {
+                        imgDiv.html('<img src="' + data.aveImg + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
+                        dataDiv.html('<b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C<br>'
+                            + '<a href="'+ data.aveData + '" target="_blank"><img src="images/download.png"/></a>')
+
+                    }
+                    else if (data.img != null) {
+                        imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
+                        updateMap(data)
+                        dataDiv.html('')
+                    }
+                    else if (data.error != null) {
+                        imgDiv.html('<img src="images/notavail.png" />')
+                        dataDiv.html(data.error)
+                    }
+                },
+                onSelect: function(){
+                              $('#variableDiv').show();
+                              configCalendar(); 
+                          },
+                onDeselect: function() {
+                    //TODO close the Reynolds layer if it exists
+                },
+                selectVariable: function(selection) {
+                    //this should be in a callback for the combo
+                    periodCombo = Ext.getCmp('periodCombo');
+                    periodCombo.clearValue();
+                    var store = periodCombo.store;
+                    store.clearFilter(true);
+                    store.filter([periodFilter]);
+                    if (store.find('id', ocean.period) != -1) {
+                        periodCombo.select(ocean.period);
+                    }
+                    else {
+                        periodCombo.select(store.data.keys[0]);
+                        ocean.period = store.data.keys[0];
+                    } 
+                    updateCalDiv();
+                    showControl('selectionDiv');
+
+//                    if (selection === 'anom') {
+//                        showControl('toggleDiv')
+//                        for (var check in ocean.dsConf['reynolds'].aveCheck) {
+//                            checkCmp = Ext.getCmp(check);
+//                            checkCmp.fireEvent('beforeshow', checkCmp);
+//                        }
+//                        showControl('sliderDiv')
+//                    }
+                }
            },
-    ww3: {url: function() {return "/cgi-bin/comp/portal.py?dataset=ww3"
+    ww3: {url: function() {return "cgi/portal.py?dataset=ww3"
                                 + "&lllat=" + document.forms['theform'].elements['latitude'].value 
                                 + "&lllon=" + document.forms['theform'].elements['longitude'].value
                                 + "&urlat=" + document.forms['theform'].elements['latitude'].value
                                 + "&urlon=" + document.forms['theform'].elements['longitude'].value
-                                + "&variable=" + "Hs"
+                                + "&variable=" + this.variable.get('id') 
                                 + "&timestamp=" + new Date().getTime();
                            },
             data: null,
+            panelControls: null,
+            toolbar: null,
             callback: function(data) {
                           var imgDiv = $('#imgDiv');
                           var dataDiv = $('#dataDiv');
                           if(data.ext != null) {
                               dataDiv.html('<a href="'+ data.ext + '" target="_blank"><img src="images/download.png"/></a>')
+                              imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
                           }
                       },
             onSelect: function() {var ww3Layer = new OpenLayers.Layer.Vector("WaveWatch III", {
@@ -137,24 +208,51 @@ ocean.dsConf = {
                                                          }
                                                      });
                                   ocean.mapObj.addLayer(ww3Layer);
-                                  var boxControl = new OpenLayers.Control.DrawFeature(ww3Layer,
-                                                       OpenLayers.Handler.Point);
+                                  this.panelControls = [
+                                      new OpenLayers.Control.DrawFeature(ww3Layer,
+                                                       OpenLayers.Handler.Point,
+                                                       {'displayClass': 'olControlDrawFeaturePoint'}),
+                                      new OpenLayers.Control.Navigation()
+                                  ];
+                                  this.toolbar = new OpenLayers.Control.Panel({
+                                      displayClass: 'olControlEditingToolbar',
+                                      defaultControl: this.panelControls[0]
+                                  });
+                                  this.toolbar.addControls(this.panelControls);
+                                  ocean.mapObj.addControl(this.toolbar);
+////                                  var boxControl = new OpenLayers.Control.DrawFeature(ww3Layer,
+////                                                       OpenLayers.Handler.Point);
 //                                                       OpenLayers.Handler.RegularPolygon, 
 //                                                       {
 //                                                           handlerOptions: {
 //                                                               sides: 4
 //                                                           }
 //                                                       });
-                                  ocean.mapObj.addControl(boxControl);
-                                  boxControl.activate(); 
+////                                  ocean.mapObj.addControl(boxControl);
+////                                  boxControl.activate(); 
                                   $('#variableDiv').show();
                                  },
-            onDeselect: function() {},
+            onDeselect: function() {
+                            layers = map.getLayersByName("WaveWatch III")
+                            for (layer in layers) {
+                                map.removeLayer(layers[layer])
+                            }
+                            map.removeControl(this.toolbar)
+                            this.toolbar.deactivate();
+                            this.toolbar.destroy();
+                            for (control in this.panelControls) {
+                                map.removeControl(this.panelControls[control])
+                                this.panelControls[control].deactivate();
+                                this.panelControls[control].destroy();
+                            }
+                            $('#imgDiv').html('');
+                            $('#dataDiv').html('');
+                                   },
             selectVariable: function(selection) {
                                 $('#latlonDiv').show();
                             }
     },
-    sealevel: {url: function() {return "/cgi-bin/comp/portal.py?dataset=sealevel"
+    sealevel: {url: function() {return "cgi/portal.py?dataset=sealevel"
                                 + "&variable=" + this.variable.get('id')
                                 + "&period=" + ocean.period
                                 + "&date=" + $.datepick.formatDate('yyyymmdd', ocean.date)
@@ -200,7 +298,9 @@ ocean.dsConf = {
                               }),
                               'calculateInRange' : function() { return true;}
                           });
+//                          gaugesLayer.display(false)
                           ocean.mapObj.addLayer(gaugesLayer);
+                          gaugesLayer.redraw(true);
                           var gaugeControl = new OpenLayers.Control.SelectFeature(gaugesLayer, {
                               clickout: true,
                               multiple: false,
@@ -222,7 +322,24 @@ ocean.dsConf = {
                           });
                           $('#variableDiv').show();
                       },
-            onDeselect: function() {},
+            onDeselect: function() {
+                            layers = map.getLayersByName("Sea Level")
+                            for (layer in layers) {
+                                map.removeLayer(layers[layer])
+                            }
+                            layers = map.getLayersByName("Tidal gauges")
+                            for (layer in layers) {
+                                map.removeLayer(layers[layer])
+                            }
+                            controls = map.getControlsByClass("OpenLayers.Control.SelectFeature")
+                            for (control in controls) {
+                                map.removeControl(controls[control])
+                                controls[control].deactivate();
+                                controls[control].destroy();
+                            }
+                            $('#imgDiv').html('');
+                            $('#dataDiv').html('');
+                        },
             selectVariable: function(selection) {
                 periodCombo = Ext.getCmp('periodCombo');
                 periodCombo.clearValue();
@@ -256,6 +373,17 @@ ocean.dsConf = {
 
 function enlargeImg(img, show) {
     var enlargeDiv = $('#enlargeDiv');
+    if (show) {
+        enlargeDiv.html('<img src="' + img.src + ' "width="650"/>');
+    }
+    else {
+        enlargeDiv.html('');
+    }
+}
+
+
+function loadingImg(show) {
+    var enlargeDiv = $('#loadingDiv');
     if (show) {
         enlargeDiv.html('<img src="' + img.src + ' "width="650"/>');
     }
@@ -391,7 +519,7 @@ Ext.onReady(function() {
         id: 'datasetCombo',
         fieldLabel: 'Dataset',
         labelWidth: 50,
-        width: 150,
+        width: 180,
         displayField: 'name',
         valueField: 'id',
         renderTo: 'datasetDiv',
@@ -406,7 +534,7 @@ Ext.onReady(function() {
         id: 'variableCombo',
         fieldLabel: 'Variable',
         labelWidth: 50,
-        width: 150,
+        width: 180,
         displayField: 'name',
         valueField: 'id',
         renderTo: 'variableDiv',
@@ -611,6 +739,11 @@ function selectDataset(event, args) {
     var selection = event.getValue();
     var record = ocean.datasets.getById(selection);
     ocean.dsConf[selection].data = record;
+
+    if (ocean.dataset != null) {
+        ocean.dataset.onDeselect();
+    }
+
     ocean.dataset = ocean.dsConf[selection];
     $('#dstitle').html(record.get('title'))
     $('#dshelp').html('Help File')
@@ -752,6 +885,7 @@ function setCompare() {
 function initialise() {
     $('#variableDiv').hide();
     hideControls();
+    hideControl('loadingDiv');
 };
 
 //**********************************************************
@@ -812,12 +946,13 @@ function updatePage() {
             dataType: 'json',
             success: function(data, textStatus, jqXHR) {
                 ocean.processing = false;
+		hideControl('loadingDiv');
                 if (data != null) {
                     ocean.dataset.callback(data);
                 }
             },
             beforeSend: function(jqXHR, settings) {
-                $('#mainImg').html('<img src="images/loading.gif" />' + $('#mainImg').html());
+                showControl('loadingDiv');
             }
         });
     }
