@@ -29,24 +29,19 @@ def wavecaller(opath, var, gridLat, gridLon, pointValues):
         units = 'degrees'
         xstr = 'Mean wave direction'
         binwd = 45
-        RosePlot(extdata,units,gridLat,gridLon,xstr,title,var,binwd)
+        RosePlot(opath, extdata,units,gridLat,gridLon,xstr,title,var,binwd)
 
     elif var == 'Hs':
         title = 'Histogram of significant wave height'
     	units = 'm'
     	xstr = 'Significant wave height'
     	binwd = 0.1
-    	HistPlot(extdata,units,gridLat,gridLon,xstr,title,var,binwd)
+    	HistPlot(opath, extdata,units,gridLat,gridLon,xstr,title,var,binwd)
 
     elif var == 'Tm':
     	title = 'Histogram of peak wave period'
     	units = 's'
     	xstr = 'Peak wave period'
     	binwd = 0.2
-    	HistPlot(extdata,units,gridLat,gridLon,xstr,title,var,binwd)
-
-    #define image name
-    imgname = opath + '.png'
-    #write image file
-    plt.savefig(imgname)
+    	HistPlot(opath, extdata,units, gridLat, gridLon, xstr, title, var, binwd)
 
