@@ -5,7 +5,7 @@ Author: Sheng Guo
 (c)Climate and Oceans Support Program for the Pacific(COSPPAC), Bureau of Meteorology, Australia
 """
 servers = {"tuscany": {"hostname": "tuscany.bom.gov.au",
-                       "baseURL": "http://tuscany.bom.gov.au/dev",
+                       "baseURL": "/portal",
                        "outputDir": "/data/comp/raster/",
                        "cacheDir": {"reynolds": "/data/comp/raster/cache/reynolds/",
                                     "ersst": "/data/comp/raster/cache/ersst/"
