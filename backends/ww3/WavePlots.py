@@ -91,7 +91,7 @@ def RosePlot(opath,wdir,units,lat,lon,xstr,title,var,binwd):
     lpack.rosepack()
     formlat,formlon = NESWformat(lat,lon)
     #title of figure
-    plt.figtext(0.22,0.92,'%s' % title, fontsize=16, weight=800)
+    plt.figtext(0.20,0.92,'%s' % title, fontsize=16, weight=800)
     #various annotations to plot
     plt.figtext(0.76, 0.82,'Probabilities:', fontsize = 10, weight = 550)
     plt.figtext(0.76, 0.575,'Point & Graph Data:', fontsize=10, weight =550)
@@ -224,7 +224,7 @@ def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
     #x,y axis labels and title
     plt.xlabel('%s (%s)' % (xstr,units), fontsize=12)
     plt.ylabel('Probability', fontsize=12)
-    plt.figtext(0.22,0.92,'%s' % title, fontsize=16, weight = 800)
+    plt.figtext(0.22,0.90,'%s' % title, fontsize=16, weight = 800)
     #various annotations for graphics
     plt.figtext(0.79, 0.8, 'Distribution:', fontsize=10, weight=550)
     plt.figtext(0.79, 0.625, 'Point & Graph Data:',fontsize = 10, weight = 550)
