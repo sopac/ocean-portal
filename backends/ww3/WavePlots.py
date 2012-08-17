@@ -179,7 +179,7 @@ def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
     q1 = round(sci.stats.scoreatpercentile(wheight,25),2)
     q3 = round(sci.stats.scoreatpercentile(wheight,75),2)
     #set up gaussian kde approximation to supplement histogram
-    approximate_pdf = gaussian_kde(wheight)
+    #approximate_pdf = gaussian_kde(wheight)
     x=linspace(0,maxx+0.5,Nmax*binperunit)
     #set up figure
     histfig=plt.figure(figsize = (10,7.5))
@@ -212,7 +212,7 @@ def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
     #choose which legend to display based on variable
     if var == 'Hs':
         lpack.heightpack(wavg)
-        plt.figtext(0.79,0.175, 'Rogue Wave Height: %s %s' % (2*wavgr,units), fontsize = 10, color = 'm')
+    #plt.figtext(0.79,0.175, 'Rogue Wave Height: %s %s' % (2*wavgr,units), fontsize = 10, color = 'm')
     elif var == 'Tm':
 	lpack.timepack()
 
@@ -226,23 +226,23 @@ def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
     plt.ylabel('Probability', fontsize=12)
     plt.figtext(0.25,0.92,'%s' % title, fontsize=16, weight = 800)
     #various annotations for graphics
-    plt.figtext(0.79, 0.825, 'Distribution:', fontsize=10, weight=550)
-    plt.figtext(0.79, 0.65, 'Point & Graph Data:',fontsize = 10, weight = 550)
-    plt.figtext(0.79, 0.6, 'Latitude: %s' % formlat, fontsize=10)
-    plt.figtext(0.79, 0.575, 'Longitude: %s' % formlon, fontsize=10)
+    plt.figtext(0.79, 0.8, 'Distribution:', fontsize=10, weight=550)
+    plt.figtext(0.79, 0.625, 'Point & Graph Data:',fontsize = 10, weight = 550)
+    plt.figtext(0.79, 0.575, 'Latitude: %s' % formlat, fontsize=10)
+    plt.figtext(0.79, 0.55, 'Longitude: %s' % formlon, fontsize=10)
 
-    plt.figtext(0.79, 0.525, 'Points: %s' % length ,fontsize=10)
-    plt.figtext(0.79, 0.5, 'Bins: %s'  % int(binnum), fontsize=10)
-    plt.figtext(0.79, 0.475, 'Bin Width: %s %s' % (binwd,units), fontsize=10)
-    plt.figtext(0.79, 0.425, 'Statistical Information:', fontsize=10, weight=550)
+    plt.figtext(0.79, 0.5, 'Points: %s' % length ,fontsize=10)
+    plt.figtext(0.79, 0.475, 'Bins: %s'  % int(binnum), fontsize=10)
+    plt.figtext(0.79, 0.45, 'Bin Width: %s %s' % (binwd,units), fontsize=10)
+    plt.figtext(0.79, 0.4, 'Statistical Information:', fontsize=10, weight=550)
 
-    plt.figtext(0.79, 0.375, 'Mean: %s %s' % (wavgr, units), color='r', fontsize=10)
-    plt.figtext(0.79, 0.35, 'Max: %s %s' % (maxwave, units), fontsize=10)
-    plt.figtext(0.79, 0.325, 'Min: %s %s' % (minwave, units), fontsize=10)
+    plt.figtext(0.79, 0.35, 'Mean: %s %s' % (wavgr, units), color='r', fontsize=10)
+    plt.figtext(0.79, 0.325, 'Max: %s %s' % (maxwave, units), fontsize=10)
+    plt.figtext(0.79, 0.3, 'Min: %s %s' % (minwave, units), fontsize=10)
 
-    plt.figtext(0.79, 0.275,'Lower Quartile: %s %s' % (q1,units), fontsize=10)
-    plt.figtext(0.79, 0.25,'Upper Quartile:  %s %s' % (q3,units), fontsize=10)
-    plt.figtext(0.79, 0.225, 'Interquartile Range: %s %s' % (q3 - q1,units), fontsize=10)
+    plt.figtext(0.79, 0.25,'Lower Quartile: %s %s' % (q1,units), fontsize=10)
+    plt.figtext(0.79, 0.225,'Upper Quartile:  %s %s' % (q3,units), fontsize=10)
+    plt.figtext(0.79, 0.2, 'Interquartile Range: %s %s' % (q3 - q1,units), fontsize=10)
     #Bureau of Meteorology Copyright
     plt.figtext(0.02, 0.02, ur'\u00A9' + "Commonwealth of Australia "\
                + datetime.date.today().strftime('%Y')\

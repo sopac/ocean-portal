@@ -12,7 +12,7 @@ def heightpack(wavg):
     #calculate rogue wave height
     rwh = round(2*wavg,2)
     #plot line on axes at rogue wave height
-    plt.axvline(rwh, color='m', lw='3')
+    #plt.axvline(rwh, color='m', lw='3')
     #basic legend using matplotlib artists
     #p0 = pa.Rectangle((0, 0), 1, 1, fc = (0,0,0), alpha = 0.5)
     p1 = pa.Rectangle((0, 0), 1, 1, fc = "b", alpha = 0.5)
