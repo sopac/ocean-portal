@@ -12,7 +12,6 @@ import legend_pack as lpack
 from numpy import arange
 from numpy import linspace
 from numpy.random import random
-from scipy.stats import gaussian_kde
 import histcolor as hc
 from meanbearing import meanbearing
 import angleconv as conv
@@ -91,7 +90,7 @@ def RosePlot(opath,wdir,units,lat,lon,xstr,title,var,binwd):
     lpack.rosepack()
     formlat,formlon = NESWformat(lat,lon)
     #title of figure
-    plt.figtext(0.20,0.92,'%s' % title, fontsize=16, weight=800)
+    plt.figtext(0.18,0.92,'%s' % title, fontsize=16, weight=800)
     #various annotations to plot
     plt.figtext(0.76, 0.82,'Probabilities:', fontsize = 10, weight = 550)
     plt.figtext(0.76, 0.575,'Point & Graph Data:', fontsize=10, weight =550)
@@ -178,8 +177,6 @@ def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
     #do some basic statistics on histogram, std. deviation and quartiles.
     q1 = round(sci.stats.scoreatpercentile(wheight,25),2)
     q3 = round(sci.stats.scoreatpercentile(wheight,75),2)
-    #set up gaussian kde approximation to supplement histogram
-    #approximate_pdf = gaussian_kde(wheight)
     x=linspace(0,maxx+0.5,Nmax*binperunit)
     #set up figure
     histfig=plt.figure(figsize = (10,7.5))

@@ -19,7 +19,7 @@ def heightpack(wavg):
     p2 = pa.Rectangle((0, 0), 1, 1, fc = "g", alpha = 0.5)
     p3 = pa.Rectangle((0, 0), 1, 1, fc = "r", alpha = 0.5)
     #plot legend on figure, not axes
-    plt.figlegend((p3,p2,p1),('Below Lower Quartile','Interquartile Range','Above Upper Quartile'),loc='upper left', bbox_to_anchor = (0.78,0.805),prop={'size':10})
+    plt.figlegend((p3,p2,p1),('Below Lower Quartile','Interquartile Range','Above Upper Quartile'),loc='upper left', bbox_to_anchor = (0.78,0.780),prop={'size':10})
     return
 
 def timepack():
@@ -29,7 +29,7 @@ def timepack():
     p2 = pa.Rectangle((0, 0), 1, 1, fc = "g", alpha = 0.5)
     p3 = pa.Rectangle((0, 0), 1, 1, fc = "r", alpha = 0.5)
     #plot legend on figure, not axes.
-    plt.figlegend((p3,p2,p1),('Below Lower Quartile','Interquartile Range','Above Upper Quartile'),loc='upper left', bbox_to_anchor = (0.78,0.805), prop={'size':10})
+    plt.figlegend((p3,p2,p1),('Below Lower Quartile','Interquartile Range','Above Upper Quartile'),loc='upper left', bbox_to_anchor = (0.78,0.780), prop={'size':10})
     return
 
 def rosepack():
