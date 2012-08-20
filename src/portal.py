@@ -8,7 +8,7 @@ import ocean.ww3.ww3 as ww3
 import ocean.sealevel.seaLevel as sealevel
 import ocean.ersst.ersst as ersst
 import ocean.bran.bran as bran
-import ocean.utl.serverConfig as sc
+import ocean.util.serverConfig as sc
 
 if sc.servers[sc.currentServer]['debug']:
     import cgitb
