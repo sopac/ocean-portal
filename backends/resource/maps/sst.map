@@ -1,0 +1,95 @@
+# MapServer map file uses the pound sign (#) to denote the start of a line
+# comment--each line that needs to be commented has to be prepended with a "#".
+#
+# Map files begin with MAP keyword to signify the start of the map object.
+# Well, the entire map file is THE map object.  Enclosed between MAP and END
+# at the very bottom of this map file, are keyword/value pairs and other
+# objects.
+MAP
+  IMAGETYPE      PNG24
+  EXTENT         -179.99166666666667 -50.99166666666667 179.99166666666667 10.00000000000
+  SIZE           6000 3000
+  SHAPEPATH      "/data/maps"
+  IMAGECOLOR     255 255 255
+  FONTSET        "../fonts/fonts.list"
+#  SYMBOLSET      "../symbols/symbols35.sym"
+
+  # In addition to vector data (shapefiles are vector data), MapServer supports
+  # a host of raster formats.  In GIS world, one of the most common raster
+  # formats is GeoTIFF, a TIFF image with geospatial headers.  MapServer also
+  # supports JPEG, PNG, GIF, and other common formats.  Other raster formats
+  # supported by MapServer include ESRI Arc/Info grid, HDF and HDF-EOS, NetCDF, 
+  # Generic raster binaries, OGC Web Map Service (WMS) layers, etc.  Pretty much 
+  # any raster format you can think of is probably supported, thanks to the
+  # impressive Geospatial Data Abstraction Library (GDAL, pronounced "GOODALL"
+  # or GOODLE?).  More information on GDAL is available at http://www.gdal.org.
+  #
+  # MapServer 4.x can read and display bitmapped (like GIFs), RGB/A (true
+  # color), and multispectral (images with more than 3 bands, like raw LandSat
+  # images) rasters.
+  LAYER # MODIS raster layer begins here
+    NAME         sst
+    DATA         "raster/sst.tif"
+    STATUS       ON
+    TYPE         RASTER
+  END # MODIS raster layer ends here
+    
+  LAYER # States polygon layer begins here
+    NAME         land
+    DATA         land
+    STATUS       ON
+    TYPE         POLYGON
+	
+	CLASS
+      NAME 'land'
+      
+      STYLE
+        COLOR     241 235 183
+        OUTLINECOLOR 241 235 183 
+        WIDTH 2
+        ANTIALIAS TRUE
+      END
+	END
+  END # States polygon layer ends here
+   
+  LAYER # States polygon layer begins here
+    NAME         coastline
+    DATA         coastline
+    STATUS       ON
+    TYPE         LINE
+	
+	CLASS
+      NAME 'coastline'
+      
+      STYLE
+        COLOR      0 0 0
+      END
+	END
+  END # States polygon layer ends here
+  
+  LAYER # States polygon layer begins here
+    NAME         populated_places
+    DATA         populated_places
+    STATUS       ON
+    TYPE         ANNOTATION
+	
+	LABELITEM    "NAME"
+	
+	CLASS
+		LABEL
+			COLOR 0 0 0
+			SHADOWCOLOR 255 255 25
+			SHADOWSIZE 0 0
+			TYPE TRUETYPE
+			FONT vera_sans
+			SIZE 8
+			ANTIALIAS FALSE
+			POSITION CL
+			PARTIALS FALSE
+			MINDISTANCE 300
+			BUFFER 4
+		END # end of label
+	END
+  END # States polygon layer ends here
+  
+END # All map files must come to an end just as all other things must come to...

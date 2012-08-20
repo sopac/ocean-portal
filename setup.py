@@ -40,6 +40,14 @@ backend_resources = [
     'subeast.pgw',
     'west.pgw',
     'subwest.pgw',
+    'maps/bathymetry.map',
+    'maps/plainworld.map',
+    'maps/reynolds.map',
+    'maps/sealevel.map',
+    'maps/sst.map',
+    'fonts/fonts.list',
+    'fonts/Vera.ttf',
+    'fonts/VeraMono.ttf',
 ]
 
 BASE_PATH = 'share/portal'
@@ -58,9 +66,7 @@ data = [
     'config/comp/countryList.json',
     'js/comp/controlPanel.js',
     'js/comp/compmap.js',
-    'js/config.js',
     'js/sst.js',
-    'maps/reynolds.map',
     'images/dot.png',
     'images/sst.png',
     'images/search.gif',

@@ -24,9 +24,9 @@
 
 
     var wmsLayer = new OpenLayers.Layer.WMS("Plain World",
-        MAPSERV,
+        'cgi/getMap',
         {
-	    map: "maps/plainworld.map",
+	    map: "plainworld",
             layers: "land,urban,ocean,maritime,country_line,major_countries,minor_countries,cities,towns,minor_islands"
         },{
             wrapDateLine: true,
@@ -38,8 +38,8 @@
 ////Below are the MapServer layers
 
     var bathymetryLayer = new OpenLayers.Layer.MapServer("Bathymetry",
-        MAPSERV, {
-            map: "maps/bathymetry.map",
+        'cgi/getMap', {
+            map: "bathymetry",
             layers: ["bathymetry_10000", "bathymetry_9000", "bathymetry_8000",
                      "bathymetry_7000", "bathymetry_6000", "bathymetry_5000",
                      "bathymetry_4000", "bathymetry_3000", "bathymetry_2000",
@@ -52,9 +52,9 @@
         });
 
     var sstLayer = new OpenLayers.Layer.MapServer("SST",
-        MAPSERV, {
-//            map: "maps/sst.map",
-            map: "maps/reynolds.map",
+        'cgi/getMap', {
+//            map: "sst",
+            map: "reynolds",
             layers: ["sst_left", "sst_right", "land", "coastline"]
         }, {
             wrapDateLine: true
@@ -126,7 +126,8 @@ function updateMap(data){
     }
     else{
         var sstLayer = new OpenLayers.Layer.MapServer("Reynolds",
-            "cgi/getMap?map=reynolds", {
+            "cgi/getMap", {
+	    map: 'reynolds',
             layers: ["sst_left", "sst_right", "land", "coastline"],
             raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
         }, {
@@ -154,7 +155,8 @@ function updateSeaLevelMap(data){
     }
     else{
         var slLayer = new OpenLayers.Layer.MapServer("Sea Level",
-            "cgi/getMap?map=sealevel", {
+            "cgi/getMap", {
+	    map: 'sealevel',
             layers: ["sl_left", "sl_right", "land", "coastline"],
             raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
         }, {
