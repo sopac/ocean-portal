@@ -147,7 +147,13 @@ def process(form):
                             '_west.png', '_west.pgw' ]
 
             if not util.check_files_exist(outputFileName, outputFiles):
-                plotter.plot(fileName, **args)
+                try:
+                    plotter.plot(fileName, **args)
+                except:
+                    if serverCfg['debug']:
+                        raise
+                    else:
+                        pass
 
             if not util.check_files_exist(outputFileName, outputFiles):
                 responseObj["error"] = "Requested image is not available at this time."

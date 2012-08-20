@@ -54,7 +54,6 @@ ocean.dsConf = {
                             img.src = "images/notavail.png";
                             dataDiv.html('')
                         }
-                            imgDiv.insertBefore(img, imgDiv.firstChild);
                     }
                     else {
                         if (this.variable.get("id") == "anom" && this.aveCheck.average && data.aveImg != null) {
@@ -67,10 +66,6 @@ ocean.dsConf = {
                             imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
                             updateMap(data)
                             dataDiv.html('')
-                        }
-                        else if (data.error != null) {
-                            imgDiv.html('<img src="images/notavail.png" />')
-                            dataDiv.html(data.error)
                         }
                     }
                 },
@@ -138,10 +133,6 @@ ocean.dsConf = {
                         imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
                         updateMap(data)
                         dataDiv.html('')
-                    }
-                    else if (data.error != null) {
-                        imgDiv.html('<img src="images/notavail.png" />')
-                        dataDiv.html(data.error)
                     }
                 },
                 onSelect: function(){
@@ -273,10 +264,6 @@ ocean.dsConf = {
                         imgDiv.html(imgDiv.html() + '<img src="' + data.img[img] + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
                     }
                     updateSeaLevelMap(data)
-                }
-                else if (data.error != null) {
-                    imgDiv.html('<img src="images/notavail.png" />')
-                    dataDiv.html(data.error)
                 }
                 dataDiv.html('')
                 if(data.tid != null) {
@@ -944,16 +931,29 @@ function updatePage() {
         $.ajax({
             url:  ocean.dataset.url(),
             dataType: 'json',
-            success: function(data, textStatus, jqXHR) {
-                ocean.processing = false;
-		hideControl('loadingDiv');
-                if (data != null) {
-                    ocean.dataset.callback(data);
-                }
-            },
             beforeSend: function(jqXHR, settings) {
                 showControl('loadingDiv');
-            }
+                hideControl('errorDiv');
+            },
+            success: function(data, textStatus, jqXHR) {
+		hideControl('loadingDiv');
+                if (data != null) {
+                    if (data.error) {
+                        $('#errorDiv').html(data.error);
+                        showControl('errorDiv');
+                    }
+                    else {
+                        ocean.dataset.callback(data);
+                    }
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert(textStatus);
+            },
+            complete: function(jqXHR, textStatus) {
+                ocean.processing = false;
+                hideControl('loadingDiv');
+            } 
         });
     }
 }
