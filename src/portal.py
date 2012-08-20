@@ -8,7 +8,7 @@ import ocean.reynolds.reynolds as reynolds
 import ocean.ww3.ww3 as ww3
 import ocean.sealevel.seaLevel as sealevel
 import ocean.ersst.ersst as ersst
-import ocean.bran.bran2 as bran
+import ocean.bran.bran as bran
 
 sys.stderr = sys.stdout
 cgitb.enable()
