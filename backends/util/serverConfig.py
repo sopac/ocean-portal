@@ -17,7 +17,8 @@ servers = {"tuscany": {"hostname": "tuscany.bom.gov.au",
                                    "bran": "/data/blue_link/data/"
                                   },
                        "mapImageDir": "/var/www/cgi-bin/data/maps/raster/",
-                       "debug": True
+                       "debug": True,
+                       "mapservPath": "/var/www/cgi-bin/mapserv"
                       },
            "wdev": {
                    },

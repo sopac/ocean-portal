@@ -1,0 +1,320 @@
+# MapServer map file uses the pound sign (#) to denote the start of a line
+# comment--each line that needs to be commented has to be prepended with a "#".
+#
+# Map files begin with MAP keyword to signify the start of the map object.
+# Well, the entire map file is THE map object.  Enclosed between MAP and END
+# at the very bottom of this map file, are keyword/value pairs and other
+# objects.
+MAP
+    NAME "AUSTRALIA"
+    STATUS ON
+    UNITS METERS
+    IMAGETYPE      PNG24
+#  EXTENT         -250.0000 -50.0000 -150.0000 10.0000
+#  EXTENT         -180.0000 -50.99166666666667 180.0000 10.00000000000
+#  EXTENT         -179.99166666666667 -50.99166666666667 179.99166666666667 10.00000000000
+  EXTENT         -180.000 -90.000 180.000 90.000
+    SIZE           600 300
+    SHAPEPATH      "/data/maps"
+    IMAGECOLOR     255 255 255
+    FONTSET        "../fonts/fonts.list"
+#    SYMBOLSET      "../symbols/symbols35.sym"
+    CONFIG         "PROJ_LIB"    "/usr/local/share/proj/" 
+
+    WEB
+        IMAGEPATH "/data/maps/temp"
+        IMAGEURL "/data/maps/" 
+        METADATA
+            "wms_title"    "WMS Demo Server"
+            "wms_onlineresource"    "http://localhost/cgi-bin/mapserv?"
+            "wms_srs"      "EPSG:4326"
+            "wms_enable_request"    "*"
+        END
+    END
+
+    PROJECTION
+        "init=epsg:4326"
+    END
+
+    LAYER
+        NAME         shade
+        DATA         "raster/land_shade.tif"
+        STATUS       ON
+        TYPE         RASTER
+        PROCESSING   "BANDS=1,2,3"
+        OFFSITE      71 74 65
+        METADATA
+            "wms_title"    "shade"
+            "wms_srs"      "EPSG:4326"
+            "wms_enable_request"    "*"
+        END
+	PROJECTION
+            "init=epsg:4326"
+        END
+    END   
+
+    LAYER # States polygon layer begins here
+        NAME        land
+        METADATA
+            "wms_title"    "land"
+            "wms_srs"      "EPSG:4326"
+            "wms_enable_request"    "*"
+        END DATA         land
+        STATUS       ON
+        TYPE         POLYGON 
+	PROJECTION
+            "init=epsg:4326"
+        END
+	CLASS
+            NAME land
+      
+            STYLE
+                COLOR     241 235 183 
+#                COLOR     0 0 0 
+                OUTLINECOLOR  241 235 183
+                WIDTH 1
+                ANTIALIAS TRUE
+            END
+	END
+    END
+
+    LAYER # States polygon layer begins here
+        NAME       urban 
+        METADATA
+            "wms_title"    "urban"
+            "wms_srs"      "EPSG:4326"
+            "wms_enable_request"    "*"
+        END
+        DATA         urban_areas
+        STATUS       ON
+        TYPE         POLYGON 
+	PROJECTION
+            "init=epsg:4326"
+        END
+	CLASS
+            NAME urban
+      
+            STYLE
+                COLOR     243 194 101
+                OUTLINECOLOR  243 194 101
+                WIDTH 1
+                ANTIALIAS TRUE
+            END
+	END
+    END
+
+    LAYER # States polygon layer begins here
+        NAME        ocean
+        METADATA
+            "wms_title"    "ocean"
+            "wms_srs"      "EPSG:4326"
+            "wms_enable_request"    "*"
+        END
+        DATA         ocean
+        STATUS       ON
+        TYPE         POLYGON
+	PROJECTION
+            "init=epsg:4326"
+        END
+	CLASS
+            NAME ocean
+            STYLE
+                COLOR    126 153 172  
+                OUTLINECOLOR  126 153 172 
+                WIDTH 2
+                ANTIALIAS TRUE
+            END
+	END
+    END
+
+    LAYER # States polygon layer begins here
+        NAME       maritime 
+        METADATA
+            "wms_title"    "maritime"
+            "wms_srs"      "EPSG:4326"
+            "wms_enable_request"    "*"
+        END
+        DATA         World_Maritime_Boundaries 
+        STATUS       ON
+        TYPE         LINE 
+	PROJECTION
+            "init=epsg:4326"
+        END
+	CLASS
+            NAME  maritime 
+      
+            STYLE
+                COLOR      0 0 0
+            END
+	END
+    END
+    
+    LAYER # States polygon layer begins here
+        NAME       country_line
+        METADATA
+            "wms_title"    "country_line"
+            "wms_srs"      "EPSG:4326"
+            "wms_enable_request"    "*"
+        END
+        DATA         admin_boundary_lines_land 
+        STATUS       ON
+        TYPE         LINE 
+	PROJECTION
+            "init=epsg:4326"
+        END
+	CLASS
+            NAME  maritime 
+      
+            STYLE
+                COLOR      0 0 0
+            END
+	END
+    END
+
+    LAYER # States polygon layer begins here
+        NAME         cities
+        DATA         populated_places
+        STATUS       ON
+        TYPE         ANNOTATION
+
+        LABELITEM    "NAME"
+        CLASSITEM    "SCALERANK"
+        LABELMINSCALEDENOM    0
+        LABELMAXSCALEDENOM    10000000
+
+        CLASS
+            EXPRESSION ([SCALERANK]<4)
+            LABEL
+                COLOR 0 0 0
+                SHADOWCOLOR 255 255 255
+                SHADOWSIZE 1 1
+                TYPE TRUETYPE
+                FONT vera_sans
+                SIZE 10
+                ANTIALIAS TRUE
+                POSITION AUTO
+                PARTIALS FALSE 
+#                MINDISTANCE 300
+#                BUFFER 4
+                FORCE TRUE
+            END # end of label
+        END
+    END # States polygon layer ends here
+
+    LAYER # States polygon layer begins here
+        NAME         towns
+        DATA         populated_places
+        STATUS       ON
+        TYPE         ANNOTATION
+        LABELMINSCALEDENOM    0
+        LABELMAXSCALEDENOM    5000000
+
+        LABELITEM    "NAME"
+        CLASSITEM    "SCALERANK"
+
+        CLASS
+            EXPRESSION ([SCALERANK]>3)
+            LABEL
+                COLOR 0 0 0
+                SHADOWCOLOR 255 255 255
+                SHADOWSIZE 1 1
+                TYPE TRUETYPE
+                FONT vera_sans
+                SIZE 8
+                ANTIALIAS TRUE
+                POSITION AUTO
+                PARTIALS FALSE
+#                MINDISTANCE 300
+#                BUFFER 4
+                FORCE TRUE
+            END # end of label
+        END
+    END # States polygon layer ends here
+
+    LAYER # States polygon layer begins here
+        NAME         major_countries 
+        DATA         countries
+        STATUS       ON
+        TYPE         ANNOTATION
+        LABELMINSCALEDENOM    5000000
+        LABELMAXSCALEDENOM    50000000
+        
+        PROCESSING "LABEL_NO_CLIP=True"
+        LABELITEM    "NAME"
+        CLASSITEM    "SCALERANK" 
+        CLASS
+            EXPRESSION ([SCALERANK]==1)
+            LABEL
+                COLOR 0 0 0
+                SHADOWCOLOR 255 255 255
+                SHADOWSIZE 1 1
+                TYPE TRUETYPE
+                FONT vera_sans
+                SIZE 12
+                ANTIALIAS TRUE
+                POSITION AUTO
+                PARTIALS TRUE
+#                MINFEATURESIZE AUTO
+#                MINDISTANCE 300
+#                BUFFER 4
+                FORCE TRUE
+            END # end of label
+        END
+    END # States polygon layer ends here
+
+    LAYER # States polygon layer begins here
+        NAME         minor_countries 
+        DATA         countries
+        STATUS       ON
+        TYPE         ANNOTATION
+        LABELMINSCALEDENOM    5000000
+        LABELMAXSCALEDENOM    20000000
+        
+        PROCESSING "LABEL_NO_CLIP=True"
+        LABELITEM    "NAME"
+        CLASSITEM    "SCALERANK" 
+        CLASS
+            EXPRESSION ([SCALERANK]>1)
+            LABEL
+                COLOR 0 0 0
+                SHADOWCOLOR 255 255 255
+                SHADOWSIZE 1 1
+                TYPE TRUETYPE
+                FONT vera_sans
+                SIZE 12
+                ANTIALIAS TRUE
+                POSITION AUTO
+                PARTIALS TRUE
+#                MINDISTANCE 300
+#                BUFFER 4
+                FORCE TRUE
+            END # end of label
+        END
+    END # States polygon layer ends here
+
+    LAYER # States polygon layer begins here
+        NAME       minor_islands 
+        METADATA
+            "wms_title"    "minor_islands"
+            "wms_srs"      "EPSG:4326"
+            "wms_enable_request"    "*"
+        END DATA         minor_islands
+        STATUS       ON
+        TYPE         POLYGON 
+	PROJECTION
+            "init=epsg:4326"
+        END
+	CLASS
+            NAME minorisland
+      
+            STYLE
+                COLOR     241 235 183 
+#                COLOR     0 0 0 
+                OUTLINECOLOR  241 235 183
+                WIDTH 1
+                ANTIALIAS TRUE
+            END
+	END
+    END
+
+END

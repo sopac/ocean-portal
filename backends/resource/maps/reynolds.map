@@ -1,0 +1,76 @@
+MAP
+    IMAGETYPE      PNG24
+    SHAPEPATH      "/data/maps"
+    IMAGECOLOR     255 255 255
+    FONTSET        "../fonts/fonts.list"
+#    SYMBOLSET      "../symbols/symbols35.sym"
+#    EXTENT         134 -26 214 23
+    EXTENT         -180 -90 180 90
+    SIZE           6000 3000
+    CONFIG         "MS_ERRORFILE" "/tmp/mserror.log"
+    CONFIG         "PROJ_LIB"    "/usr/local/share/proj/"
+
+    PROJECTION
+        "init=epsg:4326"
+    END
+
+    LAYER # MODIS raster layer begins here
+        NAME         sst_left
+#        DATA         "/data/comp/raster/left.png"
+#        DATA         "/data/maps/raster/%eastFileName%"
+        DATA         "/data/comp/raster/%eastFileName%"
+        STATUS       ON
+        DEBUG        5
+        TYPE         RASTER
+        VALIDATION
+            'eastFileName' 'png$'
+        END
+    END # MODIS raster layer ends here
+
+LAYER # MODIS raster layer begins here
+        NAME         sst_right
+#        DATA         "/data/comp/raster/right.png"
+#        DATA         "/data/maps/raster/%westFileName%"
+        DATA         "/data/comp/raster/%westFileName%"
+        STATUS       ON
+        DEBUG        5
+        TYPE         RASTER
+        VALIDATION
+            'westFileName' 'png$'
+        END
+    END # MODIS raster layer ends here
+
+LAYER # States polygon layer begins here
+    NAME         land
+    DATA         land
+    STATUS       ON
+    TYPE         POLYGON
+
+        CLASS
+      NAME 'land'
+
+      STYLE
+        COLOR     241 235 183
+        OUTLINECOLOR 241 235 183
+        WIDTH 2
+        ANTIALIAS TRUE
+      END
+        END
+  END # States polygon layer ends here
+
+  LAYER # States polygon layer begins here
+    NAME         coastline
+    DATA         coastline
+    STATUS       ON
+    TYPE         LINE
+
+        CLASS
+      NAME 'coastline'
+
+      STYLE
+        COLOR      0 0 0
+      END
+        END
+  END # States polygon layer ends here
+
+END 
