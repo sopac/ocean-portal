@@ -2,8 +2,13 @@
 Store the server specific configurations
 
 Author: Sheng Guo
-(c)Climate and Oceans Support Program for the Pacific(COSPPAC), Bureau of Meteorology, Australia
+
+(c) Climate and Oceans Support Program for the Pacific(COSPPAC)
+    Bureau of Meteorology, Australia
+
+Don't import config directly, use util.get_server_config()
 """
+
 servers = {"tuscany": {"hostname": "tuscany.bom.gov.au",
                        "baseURL": "/portal",
                        "outputDir": "/data/comp/raster/",
@@ -25,9 +30,4 @@ servers = {"tuscany": {"hostname": "tuscany.bom.gov.au",
                   },
            "clim": {
                    }
-
 }
-
-
-currentServer = "tuscany"
-

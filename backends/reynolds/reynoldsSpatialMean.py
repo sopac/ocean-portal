@@ -2,10 +2,10 @@
 
 import os
 import subprocess
-from ..util import serverConfig
 
+import ocean.util as util
 
-serverCfg = serverConfig.servers[serverConfig.currentServer]
+serverCfg = util.get_server_config()
 
 def generateWeekly(weekDays):
 

@@ -9,11 +9,11 @@ import glob
 from netCDF4 import Dataset
 import json
 
+import ocean.util as util
 from ..util import productName
-from ..util import serverConfig
 from ..util import regionConfig
 
-serverCfg = serverConfig.servers[serverConfig.currentServer]
+serverCfg = util.get_server_config()
 
 reynoldsProduct = productName.products["reynolds"]
 

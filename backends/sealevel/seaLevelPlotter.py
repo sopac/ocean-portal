@@ -12,7 +12,6 @@ import shutil
 
 import seaLevelConfig as rc
 import ocean.util as util
-from ..util import serverConfig
 from ..util import regionConfig
 from ..netcdf import plotter
 from ..netcdf import extractor
@@ -32,7 +31,7 @@ class SeaLevelPlotter ():
     def __init__(self):
         """Initialise the plotter by getting the settings ready for the plotting.""" 
         self.config = rc.SeaLevelConfig()
-        self.serverCfg = serverConfig.servers[serverConfig.currentServer]
+        self.serverCfg = util.get_server_config()
 
     def plot(self, outputFilename, **args):
         """

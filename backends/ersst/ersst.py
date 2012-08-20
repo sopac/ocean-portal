@@ -7,7 +7,6 @@ import ersstPlotter
 import ocean.util as util
 from ..util import areaMean
 from ..util import productName
-from ..util import serverConfig
 
 #Maybe move these into configuration later
 sstGraph = "%s_%s_%s_%s"
@@ -16,7 +15,7 @@ aveSstGraph = "%s_%s_%s_%save"
 trendGraph = "%s_%s_%s_%strend" 
 
 #get the server dependant path configurations
-serverCfg = serverConfig.servers[serverConfig.currentServer]
+serverCfg = util.get_server_config()
 
 #get dataset dependant production information
 ersstProduct = productName.products["ersst"]
