@@ -24,6 +24,7 @@ servers = {
                              },
                  'mapImageDir': '/data/maps/raster/',
                  'mapservPath': '/var/www/cgi-bin/mapserv',
+                 'debug':       True,
                },
     'tunceli': { 'hostname':  'tunceli.bom.gov.au',
                  'baseURL':   '/portal',
@@ -39,5 +40,6 @@ servers = {
                              },
                  'mapImageDir': '/data/maps/raster/',
                  'mapservPath': '/usr/libexec/mapserv',
+                 'debug':       True,
                },
 }

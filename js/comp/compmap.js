@@ -274,13 +274,14 @@ Ext.onReady(function() {
 
     window.countryCombo = Ext.create('Ext.form.field.ComboBox', {
         fieldLabel: 'Select a country/region',
+        labelAlign: 'top',
         displayField: 'name',
         valueField: 'abbr',
         store: window.countryStore,
         queryMode: 'local',
         padding: 5,
         height: '60%',
-        width: '100%'
+        width: 180
 //        listeners: {
 //            afterrender: function(combo) {
 //                this.setValue('pac')
@@ -340,7 +341,8 @@ Ext.onReady(function() {
             collapsible: true,
             title: 'Control Panel',
             split: false,
-            width: '28%',
+//            width: '28%',
+            width: 220,
             items: [{
                 title: 'Maps',
                 padding: 2,
@@ -365,7 +367,7 @@ Ext.onReady(function() {
             border: false,
 //          title: 'Map Panel',
             padding: 2,
-            width: '72%',
+//          width: '72%',
             height: '100%',
             items:[
                 Ext.create('Ext.panel.Panel', {contentEl: 'map', height: '100%'}),

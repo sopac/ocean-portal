@@ -37,7 +37,8 @@ class WaveWatch3Extraction ():
         nc = Dataset(files[0], 'r')
         lats = nc.variables['y'][:]
         lons = nc.variables['x'][:]
-        (gridLat, gridLon), (gridLatIndex, gridLonIndex) = xtractor.getGridPoint(inputLat, inputLon, lats, lons)
+        var = nc.variables[variableName][0]
+        (gridLat, gridLon), (gridLatIndex, gridLonIndex) = xtractor.getGridPoint(inputLat, inputLon, lats, lons, var)
 
         nc.close()
             
