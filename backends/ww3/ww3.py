@@ -66,7 +66,7 @@ def process(form):
                     pass
 
         if not os.path.exists(outputFileName + ".png"):
-            responseObj["imgerror"] = "Error occured during the extraction.  Image could not be generated."
+            responseObj["error"] = "Error occured during the extraction.  Image could not be generated."
         else:
             responseObj["img"] = serverCfg["baseURL"]\
                                + outputFileName + ".png"
