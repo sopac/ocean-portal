@@ -35,7 +35,6 @@ class WaveWatch3Extraction ():
         filez = sorted(filez, key=lambda filename: filename[-9:-3])
         print filez 
         #align the input lat/lon to grid lat/lon 
-        xtractor = extractor.Extractor()
         nc = Dataset(filez[0], 'r')
         lats = nc.variables['y'][:]
         lons = nc.variables['x'][:]
