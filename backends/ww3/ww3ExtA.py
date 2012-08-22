@@ -7,8 +7,7 @@ import math
 from netCDF4 import Dataset
 import numpy as np
 
-import serverConfig
-import extractor
+import ocean.util as util
 
 class WaveWatch3Extraction ():
     """
@@ -23,7 +22,7 @@ class WaveWatch3Extraction ():
         """
         Initialise variables.
         """
-        self.serverCfg = serverConfig.servers[serverConfig.currentServer]
+        self.serverCfg = util.get_server_config[serverConfig.currentServer]
 
 
     def extract(self, inputLat, inputLon, variableName, delta=_DELTA):

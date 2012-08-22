@@ -3,7 +3,7 @@ import os.path
 import sys
 import json
 
-import ww3ExtA
+import ww3Ext
 import ocean.util as util
 from ..util import areaMean
 from ..util import productName
