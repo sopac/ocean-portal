@@ -8,6 +8,7 @@ from netCDF4 import Dataset
 import numpy as np
 
 import ocean.util as util
+import extractor
 
 class WaveWatch3Extraction ():
     """
@@ -31,11 +32,11 @@ class WaveWatch3Extraction ():
         files = glob.glob(self.serverCfg["dataDir"]["ww3"] + '/monthly/' +  '*.nc')
         #sort the files back in time.
         files = sorted(files, key=lambda filename: filename[-5:-3])
-	    filez =  files[k1:k2]
+        filez =  files[k1:k2]
         filez = sorted(filez, key=lambda filename: filename[-9:-3])
         print filez 
         #align the input lat/lon to grid lat/lon
-	    xtractor = extractor.Extractor()
+        xtractor = extractor.Extractor()
         nc = Dataset(filez[0], 'r')
         lats = nc.variables['y'][:]
         lons = nc.variables['x'][:]
