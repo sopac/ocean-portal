@@ -3,7 +3,7 @@ import os.path
 import sys
 import json
 
-import ww3Ext
+import ww3ExtA
 from ..util import areaMean
 from ..util import productName
 from ..util import serverConfig
@@ -20,7 +20,7 @@ serverCfg = serverConfig.servers[serverConfig.currentServer]
 ww3Product = productName.products["ww3"]
 
 #get the plotter
-extractor = ww3Ext.WaveWatch3Extraction()
+extractor = ww3ExtA.WaveWatch3Extraction()
 
 def process(form):
     responseObj = {} #this object will be encoded into a json string

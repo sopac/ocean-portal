@@ -237,9 +237,9 @@ def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
     plt.figtext(0.79, 0.325, 'Max: %s %s' % (maxwave, units), fontsize=10)
     plt.figtext(0.79, 0.3, 'Min: %s %s' % (minwave, units), fontsize=10)
 
-    plt.figtext(0.79, 0.25,'Lower Quartile: %s %s' % (q1,units), fontsize=10)
-    plt.figtext(0.79, 0.225,'Upper Quartile:  %s %s' % (q3,units), fontsize=10)
-    plt.figtext(0.79, 0.2, 'Interquartile Range: %s %s' % (q3 - q1,units), fontsize=10)
+    plt.figtext(0.79, 0.25,'Lower Quartile: below %s %s' % (q1,units), fontsize=10)
+    plt.figtext(0.79, 0.225,'Upper Quartile: above %s %s' % (q3,units), fontsize=10)
+    plt.figtext(0.79, 0.2, 'Interquartile Range: %s'-'%s %s' % (q1,q3,units), fontsize=10)
     #Bureau of Meteorology Copyright
     plt.figtext(0.02, 0.02, ur'\u00A9' + "Commonwealth of Australia "\
                + datetime.date.today().strftime('%Y')\
