@@ -8,7 +8,7 @@ from netCDF4 import Dataset
 import numpy as np
 
 import ocean.util as util
-
+from ..netcdf import extractor
 class WaveWatch3Extraction ():
     """
     Extract wave watch 3 point/rectangular area data.
@@ -34,7 +34,8 @@ class WaveWatch3Extraction ():
 	filez =  files[k1:k2]
         filez = sorted(filez, key=lambda filename: filename[-9:-3])
         print filez 
-        #align the input lat/lon to grid lat/lon 
+        #align the input lat/lon to grid lat/lon
+	xtractor = extractor.Extractor()
         nc = Dataset(filez[0], 'r')
         lats = nc.variables['y'][:]
         lons = nc.variables['x'][:]
