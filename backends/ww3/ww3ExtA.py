@@ -22,7 +22,7 @@ class WaveWatch3Extraction ():
         """
         Initialise variables.
         """
-        self.serverCfg = util.get_server_config[serverConfig.currentServer]
+        self.serverCfg = util.get_server_config()
 
 
     def extract(self, inputLat, inputLon, variableName, delta=_DELTA):
