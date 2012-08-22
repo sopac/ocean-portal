@@ -33,8 +33,7 @@ class WaveWatch3Extraction ():
         #sort the files back in time.
         files = sorted(files, key=lambda filename: filename[-5:-3])
         filez =  files[k1:k2]
-        filez = sorted(filez, key=lambda filename: filename[-9:-3])
-        print filez 
+        filez = sorted(filez, key=lambda filename: filename[-9:-3]) 
         #align the input lat/lon to grid lat/lon
         xtractor = extractor.Extractor()
         nc = Dataset(filez[0], 'r')
@@ -52,10 +51,9 @@ class WaveWatch3Extraction ():
             #print values  
             var = nc.variables[variableName]
             point = var[:,gridLatIndex,gridLonIndex]
-            #timeseries.append(file[-9:-3])
+            timeseries.append(file[-9:-3])
             latLonValues = np.append(latLonValues,point)
             nc.close()          
-        print "Extraction Complete"
                         
         return timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon)
 
