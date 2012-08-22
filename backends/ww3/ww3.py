@@ -3,7 +3,7 @@ import os.path
 import sys
 import json
 
-import ww3ExtA
+import ww3Ext
 import ocean.util as util
 from ..util import areaMean
 from ..util import productName
@@ -20,7 +20,7 @@ serverCfg = util.get_server_config()
 ww3Product = productName.products["ww3"]
 
 #get the plotter
-extractor = ww3ExtA.WaveWatch3Extraction()
+extractor = ww3Ext.WaveWatch3Extraction()
 
 def process(form):
     responseObj = {} #this object will be encoded into a json string
