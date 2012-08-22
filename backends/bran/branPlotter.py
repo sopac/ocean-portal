@@ -1,17 +1,15 @@
 #!/usr/bin/python
 
-
-
 import bisect
-from netCDF4 import Dataset
-import numpy as np
 import datetime
 
+from netCDF4 import Dataset
+import numpy as np
+
 import branConfig as rc
-from ..util import serverConfig
+import ocean.util as util
 from ..util import regionConfig
 from ..netcdf import plotter
-
 
 class BranPlotter ():
     """
@@ -24,7 +22,7 @@ class BranPlotter ():
     def __init__(self):
        """Does nothing"""
        self.config = rc.branConfig()
-       self.serverCfg = serverConfig.servers[serverConfig.currentServer]
+       self.serverCfg = util.get_server_config()
 
     def plot(self, outputFilename, variable, date, area, period):
         """

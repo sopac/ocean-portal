@@ -2,21 +2,24 @@
 
 import sys
 import cgi
-import cgitb
 
 import ocean.reynolds.reynolds as reynolds
 import ocean.ww3.ww3 as ww3
 import ocean.sealevel.seaLevel as sealevel
 import ocean.ersst.ersst as ersst
-import ocean.bran.bran2 as bran
+import ocean.bran.bran as bran
+import ocean.util as util
 
-sys.stderr = sys.stdout
-cgitb.enable()
+if util.get_server_config()['debug']:
+    import cgitb
+    sys.stderr = sys.stdout
+    cgitb.enable()
 
 form = cgi.FieldStorage()
 
 print "Content-Type: text/html"     # HTML is following
 print                               # blank line, end of headers
+
 
 if "dataset" in form:
     """

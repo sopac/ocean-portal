@@ -19,7 +19,7 @@ MAP
     IMAGECOLOR     255 255 255
     FONTSET        "../fonts/fonts.list"
 #    SYMBOLSET      "../symbols/symbols35.sym"
-    CONFIG         "PROJ_LIB"    "/usr/local/share/proj/" 
+#    CONFIG         "PROJ_LIB"    "/usr/local/share/proj/" 
 
     WEB
         IMAGEPATH "/data/maps/temp"

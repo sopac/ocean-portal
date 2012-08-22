@@ -12,7 +12,6 @@ import shutil
 
 import seaLevelConfig as rc
 import ocean.util as util
-from ..util import serverConfig
 from ..util import regionConfig
 from ..netcdf import plotter
 from ..netcdf import extractor
@@ -32,7 +31,7 @@ class SeaLevelPlotter ():
     def __init__(self):
         """Initialise the plotter by getting the settings ready for the plotting.""" 
         self.config = rc.SeaLevelConfig()
-        self.serverCfg = serverConfig.servers[serverConfig.currentServer]
+        self.serverCfg = util.get_server_config()
 
     def plot(self, outputFilename, **args):
         """
@@ -74,12 +73,8 @@ class SeaLevelPlotter ():
                   regionConfig.regions[area][1]["urcrnrlat"],\
                   regionConfig.regions[area][1]["urcrnrlon"],\
                   centerLabel = cntLabel, **args)
-        plot.plotBasemapEast(height, lats, lons, variable, self.config,
-            outputFilename, lllat=-65, lllon=60, urlat=15,
-            worldfile=util.get_resource('subeast.pgw'))
-        plot.plotBasemapWest(height, lats, lons, variable, self.config,
-            outputFilename, lllat=-65, urlat=15, urlon=210,
-            worldfile=util.get_resource('subwest.pgw'))
+        plot.plotBasemapEast(height, lats, lons, variable, self.config, outputFilename, lllat=-65, lllon=60, urlat=15, worldfile='ocean/resource/subeast.pgw')
+        plot.plotBasemapWest(height, lats, lons, variable, self.config, outputFilename, lllat=-65, urlat=15, urlon=210, worldfile='ocean/resource/subwest.pgw')
 
         dataset.close()
         
@@ -108,27 +103,38 @@ class SeaLevelPlotter ():
         file = open(filename, 'r')
         reader = csv.reader(file, delimiter='\t')
         reader.next()
+        y_max = []
         y_mean = []
+        y_min = []
         x_date = []
         for line in reader:
             date = '%4d%02d' % (int(line[1]), int(line[0]))
             date = datetime.datetime.strptime(date, '%Y%m')
             x_date.append(matplotlib.dates.date2num(date))
             try:
-                value = float(line[4])
-                value *= 1000
-                y_mean.append(value)
+                y_max.append(float(line[5]))
+                y_mean.append(float(line[6]))
+                y_min.append(float(line[4]))
             except:
+                y_max.append(None)
                 y_mean.append(None)
+                y_min.append(None)
 
         figure = plt.figure()
         plt.rc('font', size=8)
-        plt.title('Mean monthly sea levels for: ' + tidalGaugeName)
-        plt.ylabel('Sea Leve (mm)')
+        plt.title('Monthly sea levels for ' + tidalGaugeName)
+        plt.ylabel('Sea Leve (metres)')
+        plt.xlabel('Year')
         ax = figure.gca()
         ax.grid(True)
 #        ax.set_aspect(5)
-        ax.plot_date(x_date, y_mean, 'b-') 
+        maxPlot, = ax.plot_date(x_date, y_max, 'r-') 
+        meanPlot, = ax.plot_date(x_date, y_mean, 'k-') 
+        minPlot, = ax.plot_date(x_date, y_min, 'b-')
+
+        #add legend
+        ax.legend([maxPlot, meanPlot, minPlot], ['Max', 'Mean', 'Min'])
+        
         plt.savefig(outputFilename + ".png", dpi=150, bbox_inches='tight', pad_inches=.1)
 
         plt.close()
@@ -163,19 +169,12 @@ class SeaLevelPlotter ():
         time = dataset.variables["time"]
         lats = dataset.variables['lat'][:]
         lons = dataset.variables['lon'][:]
+        var = dataset.variables[self.config.getVariableType(variable)][0]
         
         xtractor = extractor.Extractor()
-        (gridLat, gridLon), (latIndex, lonIndex) = xtractor.getGridPoint(lat, lon, lats, lons)
+        (gridLat, gridLon), (latIndex, lonIndex) = xtractor.getGridPoint(lat, lon, lats, lons, var, strategy='exhaustive')
         y_height = dataset.variables[self.config.getVariableType(variable)][:, latIndex, lonIndex]
 
-        print lat
-        print lon
-        print gridLat
-        print gridLon
-        print latIndex
-        print lonIndex
-        print y_height[0]
-        print dataset.variables[self.config.getVariableType(variable)]._FillValue
         
         x_date = []
         date_label = []
@@ -192,8 +191,9 @@ class SeaLevelPlotter ():
 
         figure = plt.figure()
         plt.rc('font', size=8)
-        plt.title(titlePrefix + ' data for: ' + tidalGaugeName)
+        plt.title(titlePrefix + ' data for ' + tidalGaugeName)
         plt.ylabel('Sea-Surface Height (mm)')
+        plt.xlabel('Year')
         ax = figure.gca()
         ax.grid(True)
 #        ax.set_ylim(-350, 350)

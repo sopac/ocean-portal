@@ -7,7 +7,6 @@ import ersstPlotter
 import ocean.util as util
 from ..util import areaMean
 from ..util import productName
-from ..util import serverConfig
 
 #Maybe move these into configuration later
 sstGraph = "%s_%s_%s_%s"
@@ -16,7 +15,7 @@ aveSstGraph = "%s_%s_%s_%save"
 trendGraph = "%s_%s_%s_%strend" 
 
 #get the server dependant path configurations
-serverCfg = serverConfig.servers[serverConfig.currentServer]
+serverCfg = util.get_server_config()
 
 #get dataset dependant production information
 ersstProduct = productName.products["ersst"]
@@ -186,7 +185,13 @@ def process(form):
             outputFiles = [ '.png', '_east.png', '_east.pgw',
                             '_west.png', '_west.pgw' ]
             if not util.check_files_exist(outputFileName, outputFiles):
-		plotter.plot(fileName, **args)
+                try:
+                    plotter.plot(fileName, **args)
+                except:
+                    if serverCfg['debug']:
+                        raise
+                    else:
+                        pass
 	    if not util.check_files_exist(outputFileName, outputFiles):
                 responseObj["error"] = "Requested image is not available at this time."
             else:
@@ -220,7 +225,13 @@ def process(form):
                             '_west.png', '_west.pgw' ]
 
             if not util.check_files_exist(outputFileName, outputFiles):
-                plotter.plot(fileName, **args)
+                try:
+                    plotter.plot(fileName, **args)
+                except:
+                    if serverCfg['debug']:
+                        raise
+                    else:
+                        pass
 
             if not util.check_files_exist(outputFileName, outputFiles):
                 responseObj["error"] = "Requested image is not available at this time."
@@ -250,7 +261,13 @@ def process(form):
                             '_west.png', '_west.pgw' ]
 
             if not util.check_files_exist(outputFileName, outputFiles):
-                plotter.plot(fileName, **args)
+                try:
+                    plotter.plot(fileName, **args)
+                except:
+                    if serverCfg['debug']:
+                        raise
+                    else:
+                        pass
 
             if not util.check_files_exist(outputFileName, outputFiles):
                 responseObj["error"] = "Requested image is not available at this time."

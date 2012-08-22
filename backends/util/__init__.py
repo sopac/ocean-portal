@@ -1,6 +1,8 @@
 import os.path
+import socket
 
 import ocean
+import serverConfig as rc
 
 def get_resource(*args):
     """
@@ -16,3 +18,9 @@ def check_files_exist(basename, subnames):
 
     return reduce(lambda a, p: a and os.path.exists(basename + p),
         subnames, True)
+
+def get_server_config(hostname=None):
+    if not hostname:
+        hostname = socket.gethostname().split('.', 2)[0]
+
+    return rc.servers[hostname]

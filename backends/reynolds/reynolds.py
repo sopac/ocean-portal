@@ -7,7 +7,6 @@ import reynoldsPlotter
 import ocean.util as util
 from ..util import areaMean
 from ..util import productName
-from ..util import serverConfig
 
 #Maybe move these into configuration later
 sstGraph = "%s_%s_%s_%s"
@@ -15,7 +14,7 @@ aveSstGraph = "%s_%s_%s_%save"
 decGraph = "%s_%s_%sdec.png"
 
 #get the server dependant path configurations
-serverCfg = serverConfig.servers[serverConfig.currentServer]
+serverCfg = util.get_server_config()
 
 #get dataset dependant production information
 reynoldsProduct = productName.products["reynolds"]
@@ -147,7 +146,13 @@ def process(form):
                             '_west.png', '_west.pgw' ]
 
             if not util.check_files_exist(outputFileName, outputFiles):
-                plotter.plot(fileName, **args)
+                try:
+                    plotter.plot(fileName, **args)
+                except:
+                    if serverCfg['debug']:
+                        raise
+                    else:
+                        pass
 
             if not util.check_files_exist(outputFileName, outputFiles):
                 responseObj["error"] = "Requested image is not available at this time."

@@ -6,7 +6,6 @@ import json
 import seaLevelPlotter
 import ocean.util as util
 from ..util import productName
-from ..util import serverConfig
 from ..util import tidalGaugeConfig
 
 #Maybe move these into configuration later
@@ -14,7 +13,7 @@ seaGraph = "%s_%s_%s_%s"
 seaChart = "%s_%s_%s"
 
 #get the server dependant path configurations
-serverCfg = serverConfig.servers[serverConfig.currentServer]
+serverCfg = util.get_server_config()
 
 #get dataset dependant production information
 seaLevelProduct = productName.products["sealevel"]
