@@ -8,7 +8,6 @@ from netCDF4 import Dataset
 import numpy as np
 
 import ocean.util as util
-import extractor
 
 class WaveWatch3Extraction ():
     """
