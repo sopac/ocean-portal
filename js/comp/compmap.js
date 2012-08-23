@@ -1,4 +1,5 @@
 /*jslint eqeq: true, undef: true, sloppy: true, sub: true, todo: true, vars: true, white: true, browser: true, windows: true */
+$(function() {
 
 //    OpenLayers.ImgPath = "http://js.mapbox.com/theme/dark/";
     var ocean = ocean || {};
@@ -385,4 +386,5 @@ Ext.onReady(function() {
 
 
     setupControls();
+  });
 });
