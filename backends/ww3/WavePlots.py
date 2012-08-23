@@ -90,10 +90,10 @@ def RosePlot(opath,wdir,units,lat,lon,xstr,title,var,binwd):
     lpack.rosepack()
     formlat,formlon = NESWformat(lat,lon)
     #title of figure
-    plt.figtext(0.18,0.92,'%s' % title, fontsize=16, weight=800)
+    plt.figtext(0.12,0.92,'%s' % title, fontsize=16, weight=800)
     #various annotations to plot
     plt.figtext(0.76, 0.82,'Probabilities:', fontsize = 10, weight = 550)
-    plt.figtext(0.76, 0.575,'Point & Graph Data:', fontsize=10, weight =550)
+    plt.figtext(0.76, 0.575,'Grid Point & Graph Data:', fontsize=10, weight =550)
     plt.figtext(0.76, 0.525, 'Latitude: %s' % formlat, fontsize=10)
     plt.figtext(0.76, 0.5, 'Longitude: %s' % formlon, fontsize=10)
 
@@ -142,8 +142,8 @@ def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
     #calculate the values of some pertinent statistical quantities
     wavg = np.average(wheight)
     wavgr = round(wavg,2)
-    maxwave = np.max(wheight)
-    minwave = np.min(wheight)
+    maxwave = round(np.max(wheight),2)
+    minwave = round(np.min(wheight),2)
     imaxwave = int(np.max(wheight))+ 1
     Nmax = imaxwave
     length = np.size(wheight)
@@ -212,7 +212,6 @@ def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
     #plt.figtext(0.79,0.175, 'Rogue Wave Height: %s %s' % (2*wavgr,units), fontsize = 10, color = 'm')
     elif var == 'Tm':
         lpack.timepack()
-
     formlat, formlon = NESWformat(lat,lon)
     #specify graph grid properties
     xticks = [10,20,30,40,50,60,70,80,90,100]
@@ -221,10 +220,10 @@ def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
     #x,y axis labels and title
     plt.xlabel('%s (%s)' % (xstr,units), fontsize=12)
     plt.ylabel('Probability', fontsize=12)
-    plt.figtext(0.22,0.90,'%s' % title, fontsize=16, weight = 800)
+    plt.figtext(0.10,0.90,'%s' % title, fontsize=16, weight = 800)
     #various annotations for graphics
     plt.figtext(0.79, 0.8, 'Distribution:', fontsize=10, weight=550)
-    plt.figtext(0.79, 0.625, 'Point & Graph Data:',fontsize = 10, weight = 550)
+    plt.figtext(0.79, 0.625, 'Grid Point & Graph Data:',fontsize = 10, weight = 550)
     plt.figtext(0.79, 0.575, 'Latitude: %s' % formlat, fontsize=10)
     plt.figtext(0.79, 0.55, 'Longitude: %s' % formlon, fontsize=10)
 
@@ -237,9 +236,8 @@ def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
     plt.figtext(0.79, 0.325, 'Max: %s %s' % (maxwave, units), fontsize=10)
     plt.figtext(0.79, 0.3, 'Min: %s %s' % (minwave, units), fontsize=10)
 
-    plt.figtext(0.79, 0.25,'Lower Quartile: below %s %s' % (q1,units), fontsize=10)
-    plt.figtext(0.79, 0.225,'Upper Quartile: above %s %s' % (q3,units), fontsize=10)
-    plt.figtext(0.79, 0.2, 'Interquartile Range: %s - %s %s' % (q1,q3,units), fontsize=10)
+    plt.figtext(0.79, 0.25,'25th Percentile: %s %s' % (q1,units), fontsize=10)
+    plt.figtext(0.79, 0.225,'75th Percentile: %s %s' % (q3,units), fontsize=10)
     #Bureau of Meteorology Copyright
     plt.figtext(0.02, 0.02, ur'\u00A9' + "Commonwealth of Australia "\
                + datetime.date.today().strftime('%Y')\

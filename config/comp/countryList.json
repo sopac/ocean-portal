@@ -6,13 +6,6 @@
     "long":"172.000",
     "extent":""
 },{
-    "name":"Australia",
-    "abbr":"au",
-    "zoom":"2",
-    "lat":"-25.62688",
-    "long":"132.75674",
-    "extent":""
-},{
     "name":"Cook Islands",
     "abbr":"cook",
     "zoom":"6",
@@ -29,16 +22,16 @@
 },{
     "name":"Fiji",
     "abbr":"fiji",
-    "zoom":"5",
-    "lat":"-18.1325",
-    "long":"178.4275",
+    "zoom":"4",
+    "lat":"-17.3000",
+    "long":"179.0000",
     "extent":""
 },{
     "name":"Kiribati",
     "abbr":"kiribati",
-    "zoom":"5",
-    "lat":"1.3625",
-    "long":"172.9300",
+    "zoom":"3",
+    "lat":"0.2000",
+    "long":"173.9300",
     "extent":""
 },{
     "name":"Marshall Islands",
@@ -71,30 +64,30 @@
 },{
     "name":"Papua New Guinea",
     "abbr":"png",
-    "zoom":"6",
-    "lat":"-2.0420",
-    "long":"147.3737",
+    "zoom":"3",
+    "lat":"-6.5000",
+    "long":"147.8000",
     "extent":""
 },{
     "name":"Samoa",
     "abbr":"samoa",
     "zoom":"6",
-    "lat":"-13.8267",
-    "long":"-171.7611",
+    "lat":"-13.8000",
+    "long":"-172.1000",
     "extent":""
 },{
     "name":"Solomon Islands",
     "abbr":"solomon",
-    "zoom":"6",
-    "lat":"-9.4289",
-    "long":"159.9555",
+    "zoom":"4",
+    "lat":"-8.7000",
+    "long":"159.4000",
     "extent":""
 },{
     "name":"Tonga",
     "abbr":"tonga",
-    "zoom":"6",
-    "lat":"-21.1380",
-    "long":"-175.1815",
+    "zoom":"4",
+    "lat":"-20.0000",
+    "long":"-174.6000",
     "extent":""
 },{
     "name":"Tuvalu",
@@ -106,9 +99,9 @@
 },{
     "name":"Vanuatu",
     "abbr":"vanuatu",
-    "zoom":"6",
-    "lat":"-17.7569",
-    "long":"168.3002",
+    "zoom":"4",
+    "lat":"-17.3000",
+    "long":"169.0000",
     "extent":""
 }]    
 

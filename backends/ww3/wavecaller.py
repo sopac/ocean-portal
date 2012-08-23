@@ -17,6 +17,7 @@ from formatter import nameformat
 
 def wavecaller(opath, var, gridLat, gridLon, pointValues):
     #convert lat,lon to floats
+    mthStr = "February"
     lat = float(gridLat)
     lon = float(gridLon)
     #convert lat,lon to consistant format
@@ -25,23 +26,23 @@ def wavecaller(opath, var, gridLat, gridLon, pointValues):
     extdata = np.array(pointValues)
     #determine which plot module to call based on variable input
     if var == 'Dm':
-        title = 'Windrose of wave direction probability'
+        title = mthStr + ' ' + 'Long-term mean wave directions (1979-2009)'
         units = 'degrees'
         xstr = 'Mean wave direction'
         binwd = 45
         RosePlot(opath, extdata,units,gridLat,gridLon,xstr,title,var,binwd)
 
     elif var == 'Hs':
-        title = 'Histogram of significant wave height'
+        title = mthStr + ' ' + 'Long-term significant wave height (1979-2009)'
     	units = 'm'
     	xstr = 'Significant wave height'
     	binwd = 0.1
     	HistPlot(opath, extdata,units,gridLat,gridLon,xstr,title,var,binwd)
 
     elif var == 'Tm':
-    	title = 'Histogram of peak wave period'
+    	title = mthStr + ' ' + 'Long-term peak wave periods (1979-2009)'
     	units = 's'
     	xstr = 'Peak wave period'
-    	binwd = 0.2
+    	binwd = 0.1
     	HistPlot(opath, extdata,units, gridLat, gridLon, xstr, title, var, binwd)
 

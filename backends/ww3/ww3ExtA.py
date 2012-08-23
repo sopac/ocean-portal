@@ -27,8 +27,8 @@ class WaveWatch3Extraction ():
 
 
     def extract(self, inputLat, inputLon, variableName, delta=_DELTA):
-        k1 = 0
-        k2 = 30
+        k1 = 31
+        k2 = 62
         files = glob.glob(self.serverCfg["dataDir"]["ww3"] + '/monthly/' +  '*.nc')
         #sort the files back in time.
         files = sorted(files, key=lambda filename: filename[-5:-3])
@@ -43,18 +43,19 @@ class WaveWatch3Extraction ():
         gridValues = []
         latLonValues = []
         timeseries = []
-        latsLons = [] 
+        latsLons = str(gridLat) + ' ' + str(gridLon) 
         nc.close()
             
         for file in filez:
             nc = Dataset(file, 'r') 		 
             #print values  
             var = nc.variables[variableName]
-            point = var[:,gridLatIndex,gridLonIndex]
-            timeseries.append(file[-9:-3])
+            point = var[1::4,gridLatIndex,gridLonIndex]
+            tvar = nc.variables['time1']
+            time = tvar[1::4]   
+            timeseries = np.append(timeseries,time)
             latLonValues = np.append(latLonValues,point)
-            nc.close()          
-                        
+            nc.close()                  
         return timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon)
 
     def writeOutput(self, fileName, latsLons, timeseries, gridValues):
@@ -62,8 +63,8 @@ class WaveWatch3Extraction ():
         output = open(fileName, 'w')
         #write lats and lons table header
         output.write('\t')
-        for latlon in latsLons:
-            output.write(latlon + '\t')
+        #for latlon in latsLons:
+        output.write(latsLons + '\t')
         output.write('\n')
         for timestamp, row in zip(timeseries, gridValues):
             output.write(timestamp + '\t')
