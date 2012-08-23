@@ -13,6 +13,7 @@
 <script type="text/javascript" src="lib/jquery/jquery.datepick.ext.js"></script>
 
 <script type="text/javascript" src="js/comp/controlPanel.js"></script>
+<script type="text/javascript" src="js/comp/compmap.js"></script>
 
 <link rel="stylesheet" type="text/css" href="lib/ext/resources/css/ext-all.css" />
 <link rel="stylesheet" type="text/css" href="lib/jquery/css/smoothness/jquery-ui-1.8.22.custom.css"/>
@@ -51,7 +52,7 @@
           <div class="title" id="title" ><h1 id="dstitle" class="dstitle"></h1></div>
           <div class="help" id="help" ><a href="" target="_blank" id="dshelp" class="dshelp"></a></div>
       </div>
-      <div class="left" id="left" style="width=150px">
+      <div class="left" id="left" style="width:150px;">
           <div class="categoryDiv" id="categoryDiv"></div>
           <div class="datasetDiv" id="datasetDiv"></div>
           <div class="variableDiv" id="variableDiv"></div>
@@ -71,25 +72,30 @@
           </div>
           <div class="compDiv" id="compDiv"></div>
           <div class="tidalGaugeDiv" id="tidalGaugeDiv">
-              Selected Tidal Gauge: <input type="text" name="tidalgauge" id="tidalgauge" disabled="disabled" style="width: 150px"/>
+              Selected Tidal Gauge:
+	      <input type="text" name="tidalgauge" id="tidalgauge" disabled="disabled" style="width: 150px;"/>
               <input type="hidden" name="tgId" id="tgId"/>
           </div>
           <div class="latlonDiv" id="latlonDiv">
               <div class="latDiv" id="latDiv">
-                  Latitude: <input type="text" name="latitude" id="latitude" style="width: 80px"/>
+                  Latitude:
+		  <input type="text" name="latitude" id="latitude" style="width: 80px;"/>
               </div>
               <div class="lonDiv" id="lonDiv">
-                  Longitude: <input type="text" name="longitude" id="longitude" style="width: 80px"/>
+                  Longitude:
+		  <input type="text" name="longitude" id="longitude" style="width: 80px;"/>
               </div>
               </div>
           </div>
-          <input type="button" name="submitbtn" value="Submit" style="width: 55px" onClick="updatePage()"/>
+
+          <div id="submitbuttonDiv"></div>
       </div>
       <div class="bottom" id="bottom"></div>
       </form>
 </div>
 
-<!-- script must go at end -->
-<script type="text/javascript" src="js/comp/compmap.js"></script>
-</body> 
+<div id="about-datasets" class="dialog" title="About Datasets">
+</div>
+
+</body>
 </html>

@@ -74,11 +74,11 @@ class SeaLevelPlotter ():
                   regionConfig.regions[area][1]["urcrnrlon"],\
                   centerLabel = cntLabel, **args)
         plot.plotBasemapEast(height, lats, lons, variable, self.config,
-            outputFilename, lllat=-65, lllon=60, urlat=15,
-            worldfile=util.get_resource('subeast.pgw'))
+                             outputFilename, lllat=-65, lllon=60, urlat=15,
+                             worldfile='subeast.pgw')
         plot.plotBasemapWest(height, lats, lons, variable, self.config,
-            outputFilename, lllat=-65, urlat=15, urlon=210,
-            worldfile=util.get_resource('subwest.pgw'))
+                             outputFilename, lllat=-65, urlat=15, urlon=210, 
+                             worldfile='subwest.pgw')
 
         dataset.close()
         

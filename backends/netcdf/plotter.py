@@ -230,13 +230,12 @@ class Plotter:
 
     def plotBasemapWest(self, data, lats, lons, variable, config, outputFile,\
                         lllat=-90, lllon=180, urlat=90, urlon=360,
-                        proj=_DEFAULT_PROJ, worldfile=None):
+                        proj=_DEFAULT_PROJ, worldfile='west.pgw'):
         """
         Plot the input data using the specified project and save the plot to the output file.
         """
 
-        if not worldfile:
-            worldfile = util.get_resource('west.pgw')
+        worldfile = util.get_resource(worldfile)
 
         #left part
         m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
@@ -257,13 +256,12 @@ class Plotter:
 
     def plotBasemapEast(self, data, lats, lons, variable, config, outputFile,\
                         lllat=-90, lllon=0, urlat=90, urlon=180,
-                        proj=_DEFAULT_PROJ, worldfile=None):
+                        proj=_DEFAULT_PROJ, worldfile='east.pgw'):
         """
         Plot the input data using the specified project and save the plot to the output file.
         """
 
-        if not worldfile:
-            worldfile = util.get_resource('east.pgw')
+        worldfile = util.get_resource(worldfile)
 
         #right part
         m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\

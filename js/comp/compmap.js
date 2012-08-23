@@ -1,8 +1,9 @@
-    <!-- this is a test to use different navigate control-->
-//    OpenLayers.ImgPath = "http://js.mapbox.com/theme/dark/";
-    var ocean = ocean || {};
-    var popup;
-    var map = new OpenLayers.Map("map", {
+/*jslint eqeq: true, undef: true, sloppy: true, sub: true, todo: true, vars: true, white: true, browser: true, windows: true */
+var ocean = ocean || {};
+var map;
+
+$(document).ready(function() {
+    map = new OpenLayers.Map("map", {
         resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
         maxResolution: 0.087890625, 
         minExtent: new OpenLayers.Bounds(-1, -1, -1, -1),
@@ -61,43 +62,36 @@
 //            maxResolution: 0.0000453613
         });
 
-    function centerMap() {
-        if (map) {
-//            map.setCenter(new OpenLayers.LonLat(-178.48551, -13.11418), 0);
-            map.setCenter(new OpenLayers.LonLat(173.00000, -13.11418), 0);
-//            gaugesLayer.setVisibility(true);
-        }
-    }
-    
     //Add gauge points
     map.addLayers([bathymetryLayer]);
-    map.setBaseLayer(bathymetryLayer)
+    map.setBaseLayer(bathymetryLayer);
    // map.panTo(new OpenLayers.LonLat(178.62740, -17.93307));
     function mapBaseLayerChanged(evt) {
-        layerName = evt.layer.name;
-        var legendDiv = $('#legendDiv')
+        var layerName = evt.layer.name;
+        var legendDiv = $('#legendDiv');
         if (window.basemapLegend) {
             if (layerName == 'Bathymetry') {
 //                legendPanel.update("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='200'/>");
-                legendDiv.html("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='200'/>")
+                legendDiv.html("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='200'/>");
            //     basemapLegend.setSrc('images/bathymetry_ver.png'); 
            //     basemapLegend.setSize(40, 250);
             }     
             else if (layerName == 'SST') {
 //                legendPanel.update("<p><b>Temperature (&deg;C)</b></p><br/><img src='images/sst.png' height='200'/>");
-                legendDiv.html("<p><b>Temperature (&deg;C)</b></p><br/><img src='images/sst.png' height='200'/>")
+                legendDiv.html("<p><b>Temperature (&deg;C)</b></p><br/><img src='images/sst.png' height='200'/>");
            //     basemapLegend.setSrc('images/sst.png');
            //     basemapLegend.setSize(40, 250);
             }
             else {
 //                legendPanel.update("<p></p>");
-                legendDiv.html("<p></p>")
+                legendDiv.html("<p></p>");
           //      basemapLegend.html="<p>hello</p>";
           //      basemapLegend.setSrc('images/blank.png');
          //       basemapLegend.setSize(1, 1);
             }
         }
     } 
+});
 
 function selectCountry(event, args) {
     var selection = event.getValue();
@@ -108,24 +102,30 @@ function selectCountry(event, args) {
 
 
     ocean.area = selection;
-};
+}
 
 //this is a callback funtion, invoked when Extjs loading is finished
 function setupControls() {
     window.countryCombo.on('select', selectCountry, this);
     window.countryCombo.on('change', selectCountry, this);
 //    window.countryCombo.select('pac');
-};
+}
 
-function updateMap(data){
-    if (map.getLayersByName("Reynolds").length != 0) {
-        layer = map.getLayersByName("Reynolds")[0]
-        map.setBaseLayer(layer)
-        layer.params["raster"] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
-        layer.redraw(true)
+function centerMap() {
+    if (map) {
+        map.setCenter(new OpenLayers.LonLat(173.00000, -13.11418), 0);
+    }
+}
+
+function updateMap(layerName, data){
+    if (map.getLayersByName(layerName).length != 0) {
+        layer = map.getLayersByName(layerName)[0]
+        map.setBaseLayer(layer);
+        layer.params["raster"] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw];
+        layer.redraw(true);
     }
     else{
-        var sstLayer = new OpenLayers.Layer.MapServer("Reynolds",
+        var sstLayer = new OpenLayers.Layer.MapServer(layerName,
             "cgi/getMap", {
 	    map: 'reynolds',
             layers: ["sst_left", "sst_right", "land", "coastline"],
@@ -140,18 +140,18 @@ function updateMap(data){
 //            new OpenLayers.Size(720, 720),
 //            {numZoomLevels: 5});
 
-        map.addLayer(sstLayer)
-        map.setBaseLayer(sstLayer)
+        map.addLayer(sstLayer);
+        map.setBaseLayer(sstLayer);
     }
 }
 
 
 function updateSeaLevelMap(data){
     if (map.getLayersByName("Sea Level").length != 0) {
-        layer = map.getLayersByName("Sea Level")[0]
-        map.setBaseLayer(layer)
-        layer.params["raster"] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
-        layer.redraw(true)
+        var layer = map.getLayersByName("Sea Level")[0];
+        map.setBaseLayer(layer);
+        layer.params["raster"] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw];
+        layer.redraw(true);
     }
     else{
         var slLayer = new OpenLayers.Layer.MapServer("Sea Level",
@@ -169,8 +169,8 @@ function updateSeaLevelMap(data){
 //            new OpenLayers.Size(720, 720),
 //            {numZoomLevels: 5});
 
-        map.addLayer(slLayer)
-        map.setBaseLayer(slLayer)
+        map.addLayer(slLayer);
+        map.setBaseLayer(slLayer);
     }
 }
 /*
@@ -295,21 +295,21 @@ Ext.onReady(function() {
         height: 1
     });
     
-    countryPanel = Ext.create('Ext.panel.Panel', {
+    var countryPanel = Ext.create('Ext.panel.Panel', {
         title: 'Country',
         autoScroll: true,
         items: [countryCombo],
         height: '15%'
     });
    
-    datasetPanel = Ext.create('Ext.panel.Panel', {
+    var datasetPanel = Ext.create('Ext.panel.Panel', {
         title: 'Dataset',
         autoScroll: true,
         height: '50%',
         contentEl: 'wrapper'
     });
 
-    thumbnailPanel = Ext.create('Ext.panel.Panel', {
+    var thumbnailPanel = Ext.create('Ext.panel.Panel', {
         title: 'Thumbnail',
         contentEl: 'outputDiv',
         autoScroll: true,
@@ -370,9 +370,9 @@ Ext.onReady(function() {
 //          width: '72%',
             height: '100%',
             items:[
-                Ext.create('Ext.panel.Panel', {contentEl: 'map', height: '100%'}),
+                Ext.create('Ext.panel.Panel', {contentEl: 'map', height: '100%'})
 //                Ext.create('Ext.panel.Panel', {contentEl: 'imgDiv', height: '20%'})
-            ] 
+            ]
         }
 //        {
 //            region: 'south',
@@ -384,4 +384,4 @@ Ext.onReady(function() {
 
 
     setupControls();
-});
+  });
