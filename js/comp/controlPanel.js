@@ -636,6 +636,14 @@ Ext.onReady(function() {
         }
     });
 
+    Ext.create('Ext.Button', {
+        renderTo: 'submitbuttonDiv',
+        text: 'Submit',
+        handler: function() {
+            updatePage();
+        }
+    });
+
 //    ocean.plotComp = Ext.create('Ext.form.field.Checkbox', {
 //            boxLabel: 'Plot Comparision',
 //            renderTo: 'compDiv',
