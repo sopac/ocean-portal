@@ -42,13 +42,13 @@ ocean.dsConf = {
                    + "&map=" + this.variable.get('id')
                    + "&date=" + $.datepick.formatDate('yyyymmdd', ocean.date)
                    + "&period=" + ocean.period
-//                   + "&area=aus"
                    + "&area=" + ocean.area
                    + "&average=" + ocean.dsConf['reynolds'].aveCheck.average
                    + "&trend=" + ocean.dsConf['reynolds'].aveCheck.trend
                    + "&runningAve=" + ocean.dsConf['reynolds'].aveCheck.runningAve
                    + "&runningInterval=" + ocean.dsConf['reynolds'].runningInterval
-                   + "&timestamp=" + new Date().getTime();},
+                   + "&timestamp=" + new Date().getTime();
+                },
                 data: null,
                 variable: null,
                 aveCheck: {},
@@ -143,7 +143,8 @@ ocean.dsConf = {
                    + "&trend=" + ocean.dsConf['ersst'].aveCheck.trend
                    + "&runningAve=" + ocean.dsConf['ersst'].aveCheck.runningAve
                    + "&runningInterval=" + ocean.dsConf['ersst'].runningInterval
-                   + "&timestamp=" + new Date().getTime();},
+                   + "&timestamp=" + new Date().getTime();
+                },
                 data: null,
                 variable: null,
                 aveCheck: {},

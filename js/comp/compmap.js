@@ -1,10 +1,9 @@
 /*jslint eqeq: true, undef: true, sloppy: true, sub: true, todo: true, vars: true, white: true, browser: true, windows: true */
-$(function() {
+var ocean = ocean || {};
+var map;
 
-//    OpenLayers.ImgPath = "http://js.mapbox.com/theme/dark/";
-    var ocean = ocean || {};
-    var popup;
-    var map = new OpenLayers.Map("map", {
+$(document).ready(function() {
+    map = new OpenLayers.Map("map", {
         resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
         maxResolution: 0.087890625, 
         minExtent: new OpenLayers.Bounds(-1, -1, -1, -1),
@@ -63,14 +62,6 @@ $(function() {
 //            maxResolution: 0.0000453613
         });
 
-    function centerMap() {
-        if (map) {
-//            map.setCenter(new OpenLayers.LonLat(-178.48551, -13.11418), 0);
-            map.setCenter(new OpenLayers.LonLat(173.00000, -13.11418), 0);
-//            gaugesLayer.setVisibility(true);
-        }
-    }
-    
     //Add gauge points
     map.addLayers([bathymetryLayer]);
     map.setBaseLayer(bathymetryLayer);
@@ -100,6 +91,7 @@ $(function() {
             }
         }
     } 
+});
 
 function selectCountry(event, args) {
     var selection = event.getValue();
@@ -117,6 +109,12 @@ function setupControls() {
     window.countryCombo.on('select', selectCountry, this);
     window.countryCombo.on('change', selectCountry, this);
 //    window.countryCombo.select('pac');
+}
+
+function centerMap() {
+    if (map) {
+        map.setCenter(new OpenLayers.LonLat(173.00000, -13.11418), 0);
+    }
 }
 
 function updateMap(layerName, data){
@@ -387,4 +385,3 @@ Ext.onReady(function() {
 
     setupControls();
   });
-});
