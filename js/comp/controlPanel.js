@@ -1,5 +1,7 @@
+/*jslint eqeq: true, forin: true, plusplus: true, undef: true, sloppy: true, sub: true, todo: true, vars: true, white: true, browser: true, windows: true */
+
 var ocean = ocean || {};
-ocean.controls = ['selectionDiv', 'toggleDiv', 'sliderDiv', 'yearMonthDiv', 'datepickerDiv', 'latlonDiv', 'tidalGaugeDiv']
+ocean.controls = ['selectionDiv', 'toggleDiv', 'sliderDiv', 'yearMonthDiv', 'datepickerDiv', 'latlonDiv', 'tidalGaugeDiv'];
 ocean.compare = false;
 ocean.processing = false;
 //ocean.average = false;
@@ -7,10 +9,34 @@ ocean.processing = false;
 //ocean.runningAve = false;
 //ocean.runningAveLen = 2;
 ocean.MIN_YEAR = 1850;
+
+/* set up JQuery UI elements */
+$(document).ready(function() {
+    $('.dialog').dialog({ autoOpen: false });
+
+    // Load up the datasets dialog
+    html = '';
+    $.getJSON('config/comp/datasets.json', function(data) {
+        $.each(data, function(k, dataset) {
+            html += '<h1>' + dataset.name + '</h1>';
+            html += '<ul>';
+
+            $.each(dataset.variables, function(k, variable) {
+                html += '<li>' + variable.name + '</li>';
+            });
+
+            html += '</ul>';
+        });
+
+        $('#about-datasets').html(html);
+    });
+});
+
 Date.prototype.getMonthString = function() {
     var calMonth = this.getMonth() + 1;
     return (calMonth < 10) ?  ('0' + calMonth) : calMonth + '';
-}
+};
+
 ocean.dsConf = {
     reynolds: {url: function() {return "cgi/portal.py?dataset=reynolds"
                    + "&map=" + this.variable.get('id')
@@ -22,7 +48,7 @@ ocean.dsConf = {
                    + "&trend=" + ocean.dsConf['reynolds'].aveCheck.trend
                    + "&runningAve=" + ocean.dsConf['reynolds'].aveCheck.runningAve
                    + "&runningInterval=" + ocean.dsConf['reynolds'].runningInterval
-                   + "&timestamp=" + new Date().getTime()},
+                   + "&timestamp=" + new Date().getTime();},
                 data: null,
                 variable: null,
                 aveCheck: {},
@@ -35,37 +61,37 @@ ocean.dsConf = {
                     if (ocean.compare){
                         var imgList = imgDiv.childNodes;
                         imgDiv.removeChild(imgDiv.firstChild);
-                        if (imgList.length >= compareSize) {
-                            imgDiv.removeChild(imgDiv.lastChild);
-                        }
+                        // if (imgList.length >= compareSize) {
+                        //     imgDiv.removeChild(imgDiv.lastChild);
+                        // }
                         var img = document.createElement("IMG");
+
+			var average = false;
                         if(average) {
                             img.src = data.aveImg;
                             img.width = "680";
-                            document.getElementById('aveArea').innerHTML = '<div style="display:inline-block; width:341px; text-align:left">Download data from <a href="' + data.aveData + '" target="_blank">here</a></div>'
-                                                                         + '<div style="display:inline-block; width:341px; text-align:right"><b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C</div>'
+                            document.getElementById('aveArea').innerHTML = '<div style="display:inline-block; width:341px; text-align:left">Download data from <a href="' + data.aveData + '" target="_blank">here</a></div>' + '<div style="display:inline-block; width:341px; text-align:right"><b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C</div>';
                         }
                         else if (data.img != null) {
                             img.src = data.img;
                             img.width = "150";
-                            dataDiv.html('')
+                            dataDiv.html('');
                         }
                         else {
                             img.src = "images/notavail.png";
-                            dataDiv.html('')
+                            dataDiv.html('');
                         }
                     }
                     else {
                         if (this.variable.get("id") == "anom" && this.aveCheck.average && data.aveImg != null) {
-                            imgDiv.html('<img src="' + data.aveImg + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
-                            dataDiv.html('<b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C<br>'
-                                + '<a href="'+ data.aveData + '" target="_blank"><img src="images/download.png"/></a>')
+                            imgDiv.html('<img src="' + data.aveImg + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                            dataDiv.html('<b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C<br>' + '<a href="'+ data.aveData + '" target="_blank"><img src="images/download.png"/></a>');
 
                         }
                         else if (data.img != null) {
-                            imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
-                            updateMap("Reynolds", data)
-                            dataDiv.html('')
+                            imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                            updateMap("Reynolds", data);
+                            dataDiv.html('');
                         }
                     }
                 },
@@ -117,7 +143,7 @@ ocean.dsConf = {
                    + "&trend=" + ocean.dsConf['ersst'].aveCheck.trend
                    + "&runningAve=" + ocean.dsConf['ersst'].aveCheck.runningAve
                    + "&runningInterval=" + ocean.dsConf['ersst'].runningInterval
-                   + "&timestamp=" + new Date().getTime()},
+                   + "&timestamp=" + new Date().getTime();},
                 data: null,
                 variable: null,
                 aveCheck: {},
@@ -128,20 +154,19 @@ ocean.dsConf = {
                     var dataDiv = $('#dataDiv');
                     var enlargeDiv = $('#enlargeDiv');
                     if (this.variable.get("id") == "anom" && this.aveCheck.average && data.aveImg != null) {
-                        imgDiv.html('<img src="' + data.aveImg + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
-                        dataDiv.html('<b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C<br>'
-                            + '<a href="'+ data.aveData + '" target="_blank"><img src="images/download.png"/></a>')
+                        imgDiv.html('<img src="' + data.aveImg + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                        dataDiv.html('<b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C<br>' + '<a href="'+ data.aveData + '" target="_blank"><img src="images/download.png"/></a>');
 
                     }
                     else if (data.img != null) {
-                        imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
-                        updateMap("ERSST", data)
-                        dataDiv.html('')
+                        imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                        updateMap("ERSST", data);
+                        dataDiv.html('');
                     }
                 },
                 onSelect: function(){
                               $('#variableDiv').show();
-                              configCalendar(); 
+                              configCalendar();
                           },
                 onDeselect: function() {
                     layers = map.getLayersByName("ERSST")
@@ -207,8 +232,8 @@ ocean.dsConf = {
                           var imgDiv = $('#imgDiv');
                           var dataDiv = $('#dataDiv');
                           if(data.ext != null) {
-                              dataDiv.html('<a href="'+ data.ext + '" target="_blank"><img src="images/download.png"/></a>')
-                              imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
+                              dataDiv.html('<a href="'+ data.ext + '" target="_blank"><img src="images/download.png"/></a>');
+                              imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
                           }
                       },
             onSelect: function() {var ww3Layer = new OpenLayers.Layer.Vector("WaveWatch III", {
@@ -217,8 +242,8 @@ ocean.dsConf = {
                                                          },
                                                          onFeatureInsert: function(feature) {
                                                              var geometry = feature.geometry;
-                                                             document.forms['theform'].elements['latitude'].value = Math.round(geometry.y * 1000)/1000
-                                                             document.forms['theform'].elements['longitude'].value = Math.round(geometry.x * 1000)/1000
+                                                             document.forms['theform'].elements['latitude'].value = Math.round(geometry.y * 1000)/1000;
+                                                             document.forms['theform'].elements['longitude'].value = Math.round(geometry.x * 1000)/1000;
                                                          }
                                                      });
                                   ocean.mapObj.addLayer(ww3Layer);
@@ -247,15 +272,19 @@ ocean.dsConf = {
                                   $('#variableDiv').show();
                                  },
             onDeselect: function() {
-                            layers = map.getLayersByName("WaveWatch III")
+                            var layers = map.getLayersByName("WaveWatch III");
+			    var layer;
+			    var control;
+
                             for (layer in layers) {
-                                map.removeLayer(layers[layer])
+                                map.removeLayer(layers[layer]);
                             }
-                            map.removeControl(this.toolbar)
+                            map.removeControl(this.toolbar);
                             this.toolbar.deactivate();
                             this.toolbar.destroy();
+
                             for (control in this.panelControls) {
-                                map.removeControl(this.panelControls[control])
+                                map.removeControl(this.panelControls[control]);
                                 this.panelControls[control].deactivate();
                                 this.panelControls[control].destroy();
                             }
@@ -282,21 +311,23 @@ ocean.dsConf = {
                 var dataDiv = $('#dataDiv');
                 var enlargeDiv = $('#enlargeDiv');
                 if (data.img != null) {
-                    imgDiv.html('')
+		    var img;
+
+                    imgDiv.html('');
                     for (img in data.img) {
-                        imgDiv.html(imgDiv.html() + '<img src="' + data.img[img] + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
+                        imgDiv.html(imgDiv.html() + '<img src="' + data.img[img] + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
                     }
-                    updateSeaLevelMap(data)
+                    updateSeaLevelMap(data);
                 }
-                dataDiv.html('')
+                dataDiv.html('');
                 if(data.tid != null) {
-                    dataDiv.html('<a href="'+ data.tid + '" target="_blank">Tidal Gauge Data</a><br/>')
+                    dataDiv.html('<a href="'+ data.tid + '" target="_blank">Tidal Gauge Data</a><br/>');
                 }
                 if(data.alt != null) {
-                    dataDiv.html(dataDiv.html() + '<a href="'+ data.alt + '" target="_blank">Altimetry Data</a><br/>')
+                    dataDiv.html(dataDiv.html() + '<a href="'+ data.alt + '" target="_blank">Altimetry Data</a><br/>');
                 }
                 if(data.rec!= null) {
-                    dataDiv.html(dataDiv.html() + '<a href="'+ data.rec + '" target="_blank">Reconstruction Data</a><br/>')
+                    dataDiv.html(dataDiv.html() + '<a href="'+ data.rec + '" target="_blank">Reconstruction Data</a><br/>');
                 }
             },
             onSelect: function() {
@@ -333,17 +364,22 @@ ocean.dsConf = {
                           $('#variableDiv').show();
                       },
             onDeselect: function() {
-                            layers = map.getLayersByName("Sea Level")
+                            var layers = map.getLayersByName("Sea Level");
+			    var layer;
+			    var control;
+
                             for (layer in layers) {
-                                map.removeLayer(layers[layer])
+                                map.removeLayer(layers[layer]);
                             }
-                            layers = map.getLayersByName("Tidal gauges")
+
+                            layers = map.getLayersByName("Tidal gauges");
                             for (layer in layers) {
-                                map.removeLayer(layers[layer])
+                                map.removeLayer(layers[layer]);
                             }
-                            controls = map.getControlsByClass("OpenLayers.Control.SelectFeature")
+
+                            var controls = map.getControlsByClass("OpenLayers.Control.SelectFeature");
                             for (control in controls) {
-                                map.removeControl(controls[control])
+                                map.removeControl(controls[control]);
                                 controls[control].deactivate();
                                 controls[control].destroy();
                             }
@@ -363,15 +399,15 @@ ocean.dsConf = {
                     periodCombo.select(store.data.keys[0]);
                     ocean.period = store.data.keys[0];
                 } 
-                var record = this.data.variables().getById(selection)
-                var maxDate = new Date()
+                var record = this.data.variables().getById(selection);
+                var maxDate = new Date();
                 if (record.get("dateRange") != null) {
-                    maxDate.setMonth(record.get("dateRange")["maxDate"]["month"] - 1)
-                    maxDate.setFullYear(record.get("dateRange")["maxDate"]["year"])
-                    maxDate.setDate(record.get("dateRange")["maxDate"]["date"])
+                    maxDate.setMonth(record.get("dateRange")["maxDate"]["month"] - 1);
+                    maxDate.setFullYear(record.get("dateRange")["maxDate"]["year"]);
+                    maxDate.setDate(record.get("dateRange")["maxDate"]["date"]);
                 }
      
-                ocean.date = maxDate 
+                ocean.date = maxDate;
                 updateCalDiv();
                 showControl('selectionDiv');
                 $('#tidalGaugeDiv').show();
@@ -379,7 +415,7 @@ ocean.dsConf = {
             }
     }
 
-}
+};
 
 function enlargeImg(img, show) {
     var enlargeDiv = $('#enlargeDiv');
@@ -487,7 +523,7 @@ Ext.onReady(function() {
         else {
             return true;
         }
-    };
+    }
 
     avePeriodFilter = Ext.create('Ext.util.Filter', {filterFn: aveFilterPeriod});
     function aveFilterPeriod(item){
@@ -497,7 +533,7 @@ Ext.onReady(function() {
         else {
             return true;
         }
-    };
+    }
 
     regionFilter = Ext.create('Ext.util.Filter', {filterFn: filterRegion});
     function filterRegion(item){
@@ -507,7 +543,7 @@ Ext.onReady(function() {
         else {
             return true;
         }
-    };
+    }
 
 //    ocean.categoryCombo = Ext.create('Ext.form.field.ComboBox', {
 //        id: 'categoryCombo',
@@ -524,27 +560,42 @@ Ext.onReady(function() {
 //        }
 //    });
 
+    var hbox = Ext.create('Ext.container.Container', {
+        layout: {
+            type: 'hbox'
+        },
+        renderTo: 'datasetDiv',
+        width: 185
+    });
 
     ocean.datasetCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'datasetCombo',
         fieldLabel: 'Dataset',
         labelWidth: 50,
-        width: 180,
+        width: 155,
         displayField: 'name',
         valueField: 'id',
-        renderTo: 'datasetDiv',
         store: ocean.datasets,
         queryMode: 'local',
         listeners: {
             'select': selectDataset
         }
     });
+    hbox.add(ocean.datasetCombo);
+
+    hbox.add(Ext.create('Ext.Button', {
+        html: '<span class="ui-icon ui-icon-help" title="About Datasets"></span>',
+        margin: { left: 2 },
+        handler: function() {
+            $('#about-datasets').dialog('open');
+        }
+    }));
 
     ocean.mapCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'variableCombo',
         fieldLabel: 'Variable',
         labelWidth: 50,
-        width: 180,
+        width: 155,
         displayField: 'name',
         valueField: 'id',
         renderTo: 'variableDiv',
@@ -560,7 +611,7 @@ Ext.onReady(function() {
         id: 'periodCombo',
         fieldLabel: 'Period',
         labelWidth: 50,
-        width: 150,
+        width: 155,
         displayField: 'name',
         valueField: 'id',
         renderTo: 'selectionDiv',
@@ -577,7 +628,7 @@ Ext.onReady(function() {
         renderTo: 'sliderDiv',
         hideLabel: true,
         id: 'runningAveSlider',
-        width: 200,
+        width: 155,
         minValue: 2,
         maxValue: 15,
         listeners: {
@@ -613,7 +664,7 @@ Ext.onReady(function() {
         id: 'monthCombo',
         fieldLabel: 'Month',
         labelWidth: 40,
-        width: 140,
+        width: 155,
         displayField: 'name',
         valueField: 'id',
         renderTo: 'monthDiv',
@@ -637,7 +688,7 @@ Ext.onReady(function() {
         id: 'yearCombo',
         fieldLabel: 'Year',
         labelWidth: 40,
-        width: 140,
+        width: 155,
         renderTo: 'yearDiv',
         queryMode: 'local',
         lastQuery: '',
@@ -662,21 +713,23 @@ function createCheckBoxes(store, records, result, operation, eOpt) {
         Ext.create('Ext.form.field.Checkbox', {
             boxLabel: rec.boxLabel,
             renderTo: 'toggleDiv',
-            width: 150,
+            width: 155,
             name: name,
             id: rec.name,
             handler: function(checkbox, checked) {
                 if (checkbox.id == ocean.dataset.mainCheck) {
+		    var checkboxId;
+
                     ocean.dataset.aveCheck[checkbox.id] = checked;
                     this.setValue(checked);
-                    for (var checkboxId in (ocean.dataset.aveCheck)) {
+                    for (checkboxId in (ocean.dataset.aveCheck)) {
                         if( checkboxId != checkbox.id) {
                             var checkboxCmp = Ext.getCmp(checkboxId);
                             checkboxCmp.setDisabled(!checked);
                             checkboxCmp.setValue(ocean.dataset.aveCheck[checkboxId]);
                         }
                     }
-                    
+
                     periodCombo = Ext.getCmp('periodCombo');
                     periodCombo.clearValue();
                     var store = periodCombo.store;
@@ -698,9 +751,9 @@ function createCheckBoxes(store, records, result, operation, eOpt) {
                 }
                 else {
                     ocean.dsConf['reynolds'].aveCheck[checkbox.id] = checked;
-                    for (var checkboxId in ocean.dsConf['reynolds'].aveCheck) {
+                    for (checkboxId in ocean.dsConf['reynolds'].aveCheck) {
                         if( checkboxId != checkbox.id && checkboxId != ocean.dsConf['reynolds'].mainCheck) {
-                            var checkboxCmp = Ext.getCmp(checkboxId);
+                            checkboxCmp = Ext.getCmp(checkboxId);
 //                            checkboxCmp.setDisabled(!checked);
                             if (checked) {
                                 ocean.dsConf['reynolds'].aveCheck[checkboxId] = !checked;
@@ -729,9 +782,11 @@ function createCheckBoxes(store, records, result, operation, eOpt) {
             }
         });
     });
-    
+
     dataArray = new Array();
-    for (var i=0; i<records.length; i++) {
+
+    var i;
+    for (i=0; i<records.length; i++) {
         thisItem = new Array();
         thisItem["boxLabel"] = records[i].boxLabel;
         thisItem["name"] = records[i].name;
@@ -755,17 +810,16 @@ function selectDataset(event, args) {
     }
 
     ocean.dataset = ocean.dsConf[selection];
-    $('#dstitle').html(record.get('title'))
-    $('#dshelp').html('Help File')
-    $('#dshelp').attr('href', record.get('help'))
+    $('#dstitle').html(record.get('title'));
+    $('#dshelp').html('Help File');
+    $('#dshelp').attr('href', record.get('help'));
     varCombo = Ext.getCmp('variableCombo');
     varCombo.setDisabled(false);
     varCombo.bindStore(record.variables());
     varCombo.clearValue();
-    
+
     ocean.dataset.onSelect();
-    
-};
+}
 
 function configCalendar() {
     if(ocean.calendar) {
@@ -813,8 +867,8 @@ function createCalendars() {
     $( "#datepicker" ).datepick('setDate', -4);
     $( "#datepicker" ).mousedown(function() {
         $(this).datepick('show');
-    })
-    
+    });
+
 //    ocean.monthCombo = Ext.create('Ext.form.field.ComboBox', {
 //        id: 'monthCombo',
 //        fieldLabel: 'Month',
@@ -840,24 +894,24 @@ function createCalendars() {
 }
 
 function selectVariable(event, args) {
-    hideControls()
+    hideControls();
     var selection = event.getValue();
     var record = ocean.dataset.data.variables().getById(selection);
     ocean.dataset.variable = record;
     ocean.dataset.selectVariable(selection);
 
-};
+}
 
 function selectPeriod(event, args) {
     ocean.period = event.getValue();
     updateCalDiv();
-};
+}
 
 function updateCalDiv() {
     if (ocean.period == 'daily' || ocean.period == 'weekly') {
         showControl('datepickerDiv');
         hideControl('yearMonthDiv');
-        $("#datepicker").datepick('setDate', new Date(ocean.date))
+        $("#datepicker").datepick('setDate', new Date(ocean.date));
     }
     else {
         hideControl('datepickerDiv');
@@ -871,10 +925,11 @@ function updateCalDiv() {
 
 function selectRunningInterval(slider, value, thumb, args) {
     ocean.dataset.runningInterval = value;
-};
+}
 
 function hideControls() {
-   for (var control in ocean.controls) {
+   var control;
+   for (control in ocean.controls) {
 //       document.getElementById(ocean.controls[control]).style.display = 'none';
        $('#' + ocean.controls[control]).hide();
    }
@@ -896,7 +951,7 @@ function initialise() {
     $('#variableDiv').hide();
     hideControls();
     hideControl('loadingDiv');
-};
+}
 
 //**********************************************************
 //Datepicker setup

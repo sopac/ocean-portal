@@ -160,7 +160,7 @@
             "minYear": "1993",
             "maxYear": "2011",
             "minDate": {"year": 1993, "month": 1, "date": 1},
-            "maxDate": {"year": 2011, "month": 2, "date": 1},
+            "maxDate": {"year": 2011, "month": 2, "date": 1}
         }
     },{
         "id":"rec",
