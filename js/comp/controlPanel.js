@@ -64,7 +64,7 @@ ocean.dsConf = {
                         }
                         else if (data.img != null) {
                             imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
-                            updateMap(data)
+                            updateMap("Reynolds", data)
                             dataDiv.html('')
                         }
                     }
@@ -74,7 +74,11 @@ ocean.dsConf = {
                               configCalendar(); 
                           },
                 onDeselect: function() {
-                    //TODO close the Reynolds layer if it exists
+                    layers = map.getLayersByName("Reynolds")
+                    for (layer in layers) {
+                        map.removeLayer(layers[layer])
+                    }
+                    $('#imgDiv').html('');
                 },
                 selectVariable: function(selection) {
                     //this should be in a callback for the combo
@@ -131,7 +135,7 @@ ocean.dsConf = {
                     }
                     else if (data.img != null) {
                         imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
-                        updateMap(data)
+                        updateMap("ERSST", data)
                         dataDiv.html('')
                     }
                 },
@@ -140,7 +144,11 @@ ocean.dsConf = {
                               configCalendar(); 
                           },
                 onDeselect: function() {
-                    //TODO close the Reynolds layer if it exists
+                    layers = map.getLayersByName("ERSST")
+                    for (layer in layers) {
+                        map.removeLayer(layers[layer])
+                    }
+                    $('#imgDiv').html('');
                 },
                 selectVariable: function(selection) {
                     //this should be in a callback for the combo
@@ -169,6 +177,21 @@ ocean.dsConf = {
 //                    }
                 }
            },
+    bran: {url: function() {return "cgi/portal.py?dataset=bran"
+                                + "&timestamp=" + new Date().getTime();
+                           },
+            data: null,
+            callback: function(data) {
+            },
+            onSelect: function() {
+                      },
+            onDeselect: function() {
+                            $('#imgDiv').html('');
+                            $('#dataDiv').html('');
+                        },
+            selectVariable: function(selection) {
+            }
+    },
     ww3: {url: function() {return "cgi/portal.py?dataset=ww3"
                                 + "&lllat=" + document.forms['theform'].elements['latitude'].value 
                                 + "&lllon=" + document.forms['theform'].elements['longitude'].value

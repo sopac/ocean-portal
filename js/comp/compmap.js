@@ -117,15 +117,15 @@ function setupControls() {
 //    window.countryCombo.select('pac');
 };
 
-function updateMap(data){
-    if (map.getLayersByName("Reynolds").length != 0) {
-        layer = map.getLayersByName("Reynolds")[0]
+function updateMap(layerName, data){
+    if (map.getLayersByName(layerName).length != 0) {
+        layer = map.getLayersByName(layerName)[0]
         map.setBaseLayer(layer)
         layer.params["raster"] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
         layer.redraw(true)
     }
     else{
-        var sstLayer = new OpenLayers.Layer.MapServer("Reynolds",
+        var sstLayer = new OpenLayers.Layer.MapServer(layerName,
             "cgi/getMap", {
 	    map: 'reynolds',
             layers: ["sst_left", "sst_right", "land", "coastline"],
