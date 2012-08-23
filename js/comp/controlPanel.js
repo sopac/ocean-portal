@@ -13,6 +13,23 @@ ocean.MIN_YEAR = 1850;
 /* set up JQuery UI elements */
 $(document).ready(function() {
     $('.dialog').dialog({ autoOpen: false });
+
+    // Load up the datasets dialog
+    html = '';
+    $.getJSON('config/comp/datasets.json', function(data) {
+        $.each(data, function(k, dataset) {
+            html += '<h1>' + dataset.name + '</h1>';
+            html += '<ul>';
+
+            $.each(dataset.variables, function(k, variable) {
+                html += '<li>' + variable.name + '</li>';
+            });
+
+            html += '</ul>';
+        });
+
+        $('#about-datasets').html(html);
+    });
 });
 
 Date.prototype.getMonthString = function() {
