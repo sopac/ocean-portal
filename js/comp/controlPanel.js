@@ -571,7 +571,7 @@ Ext.onReady(function() {
         id: 'periodCombo',
         fieldLabel: 'Period',
         labelWidth: 50,
-        width: 150,
+        width: 155,
         displayField: 'name',
         valueField: 'id',
         renderTo: 'selectionDiv',
@@ -588,7 +588,7 @@ Ext.onReady(function() {
         renderTo: 'sliderDiv',
         hideLabel: true,
         id: 'runningAveSlider',
-        width: 200,
+        width: 155,
         minValue: 2,
         maxValue: 15,
         listeners: {
@@ -624,7 +624,7 @@ Ext.onReady(function() {
         id: 'monthCombo',
         fieldLabel: 'Month',
         labelWidth: 40,
-        width: 140,
+        width: 155,
         displayField: 'name',
         valueField: 'id',
         renderTo: 'monthDiv',
@@ -648,7 +648,7 @@ Ext.onReady(function() {
         id: 'yearCombo',
         fieldLabel: 'Year',
         labelWidth: 40,
-        width: 140,
+        width: 155,
         renderTo: 'yearDiv',
         queryMode: 'local',
         lastQuery: '',
@@ -673,7 +673,7 @@ function createCheckBoxes(store, records, result, operation, eOpt) {
         Ext.create('Ext.form.field.Checkbox', {
             boxLabel: rec.boxLabel,
             renderTo: 'toggleDiv',
-            width: 150,
+            width: 155,
             name: name,
             id: rec.name,
             handler: function(checkbox, checked) {
@@ -689,7 +689,7 @@ function createCheckBoxes(store, records, result, operation, eOpt) {
                             checkboxCmp.setValue(ocean.dataset.aveCheck[checkboxId]);
                         }
                     }
-                    
+
                     periodCombo = Ext.getCmp('periodCombo');
                     periodCombo.clearValue();
                     var store = periodCombo.store;
