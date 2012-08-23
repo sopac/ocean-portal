@@ -3,10 +3,10 @@ import os.path
 import sys
 import json
 
-import ww3Ext
+import ww3ExtA
+import ocean.util as util
 from ..util import areaMean
 from ..util import productName
-from ..util import serverConfig
 import wavecaller as wc
 import formatter as frm
 #Maybe move these into configuration later
@@ -14,13 +14,13 @@ pointExt = "%s_%s_%s_%s_datas"
 recExt = "%s_%s_%s_%s_data_%s"
 
 #get the server dependant path configurations
-serverCfg = serverConfig.servers[serverConfig.currentServer]
+serverCfg = util.get_server_config()
 
 #get dataset dependant production information
 ww3Product = productName.products["ww3"]
 
 #get the plotter
-extractor = ww3Ext.WaveWatch3Extraction()
+extractor = ww3ExtA.WaveWatch3Extraction()
 
 def process(form):
     responseObj = {} #this object will be encoded into a json string

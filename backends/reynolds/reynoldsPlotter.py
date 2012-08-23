@@ -6,7 +6,7 @@ import datetime
 
 import reynoldsConfig as rc
 import reynoldsSpatialMean as spatialMean
-from ..util import serverConfig
+import ocean.util as util
 from ..util import regionConfig
 from ..util import dateRange
 from ..netcdf import plotter
@@ -23,7 +23,7 @@ class ReynoldsPlotter ():
     def __init__(self):
        """Does nothing""" 
        self.config = rc.ReynoldsConfig()
-       self.serverCfg = serverConfig.servers[serverConfig.currentServer]
+       self.serverCfg = util.get_server_config()
 
     def plot(self, outputFilename, **args):
         """

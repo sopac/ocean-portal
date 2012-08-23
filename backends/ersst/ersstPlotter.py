@@ -10,8 +10,8 @@ import glob
 import ersstConfig as ec
 import smooth as sm
 
+import ocean.util as util
 from ..netcdf import plotter
-from ..util import serverConfig
 from ..util import regionConfig
 from ..util import dateRange
 
@@ -27,7 +27,7 @@ class ErsstPlotter ():
     def __init__(self):
        """Initialise the configurations""" 
        self.config = ec.ErsstConfig()
-       self.serverCfg = serverConfig.servers[serverConfig.currentServer]
+       self.serverCfg = util.get_server_config()
 
     def plot(self, outputFilename, **args):
         """

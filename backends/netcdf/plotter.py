@@ -21,7 +21,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import ocean.util as util
-from ..util import serverConfig
 
 class Plotter:
     """The base class for plotting netCDF files."""
@@ -31,7 +30,7 @@ class Plotter:
 
     def __init__(self):
         """The simple constructor of Plotter"""
-        self.serverConfig = serverConfig.servers[serverConfig.currentServer]
+        self.serverConfig = util.get_server_config()
 
 #    def plot(inputFile, outputFile, projection=__DEFAULT_PROJ):
         """

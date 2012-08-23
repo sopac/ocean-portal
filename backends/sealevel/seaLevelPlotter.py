@@ -11,7 +11,7 @@ import matplotlib.dates
 import shutil
 
 import seaLevelConfig as rc
-from ..util import serverConfig
+import ocean.util as util
 from ..util import regionConfig
 from ..netcdf import plotter
 from ..netcdf import extractor
@@ -31,7 +31,7 @@ class SeaLevelPlotter ():
     def __init__(self):
         """Initialise the plotter by getting the settings ready for the plotting.""" 
         self.config = rc.SeaLevelConfig()
-        self.serverCfg = serverConfig.servers[serverConfig.currentServer]
+        self.serverCfg = util.get_server_config()
 
     def plot(self, outputFilename, **args):
         """
@@ -73,8 +73,12 @@ class SeaLevelPlotter ():
                   regionConfig.regions[area][1]["urcrnrlat"],\
                   regionConfig.regions[area][1]["urcrnrlon"],\
                   centerLabel = cntLabel, **args)
-        plot.plotBasemapEast(height, lats, lons, variable, self.config, outputFilename, lllat=-65, lllon=60, urlat=15, worldfile='subeast.pgw')
-        plot.plotBasemapWest(height, lats, lons, variable, self.config, outputFilename, lllat=-65, urlat=15, urlon=210, worldfile='subwest.pgw')
+        plot.plotBasemapEast(height, lats, lons, variable, self.config,
+                             outputFilename, lllat=-65, lllon=60, urlat=15,
+                             worldfile='subeast.pgw')
+        plot.plotBasemapWest(height, lats, lons, variable, self.config,
+                             outputFilename, lllat=-65, urlat=15, urlon=210, 
+                             worldfile='subwest.pgw')
 
         dataset.close()
         
