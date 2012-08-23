@@ -10,6 +10,11 @@ ocean.processing = false;
 //ocean.runningAveLen = 2;
 ocean.MIN_YEAR = 1850;
 
+/* set up JQuery UI elements */
+$(document).ready(function() {
+    $('.dialog').dialog({ autoOpen: false });
+});
+
 Date.prototype.getMonthString = function() {
     var calMonth = this.getMonth() + 1;
     return (calMonth < 10) ?  ('0' + calMonth) : calMonth + '';
@@ -515,27 +520,42 @@ Ext.onReady(function() {
 //        }
 //    });
 
+    var hbox = Ext.create('Ext.container.Container', {
+        layout: {
+            type: 'hbox'
+        },
+        renderTo: 'datasetDiv',
+        width: 185
+    });
 
     ocean.datasetCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'datasetCombo',
         fieldLabel: 'Dataset',
         labelWidth: 50,
-        width: 180,
+        width: 155,
         displayField: 'name',
         valueField: 'id',
-        renderTo: 'datasetDiv',
         store: ocean.datasets,
         queryMode: 'local',
         listeners: {
             'select': selectDataset
         }
     });
+    hbox.add(ocean.datasetCombo);
+
+    hbox.add(Ext.create('Ext.Button', {
+        html: '<span class="ui-icon ui-icon-help" title="About Datasets"></span>',
+        margin: { left: 2 },
+        handler: function() {
+            $('#about-datasets').dialog('open');
+        }
+    }));
 
     ocean.mapCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'variableCombo',
         fieldLabel: 'Variable',
         labelWidth: 50,
-        width: 180,
+        width: 155,
         displayField: 'name',
         valueField: 'id',
         renderTo: 'variableDiv',
