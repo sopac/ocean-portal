@@ -62,28 +62,17 @@ $(document).ready(function() {
     function mapBaseLayerChanged(evt) {
         var layerName = evt.layer.name;
         var legendDiv = $('#legendDiv');
-        if (window.basemapLegend) {
-            if (layerName == 'Bathymetry') {
-//                legendPanel.update("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='200'/>");
-                legendDiv.html("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='200'/>");
-           //     basemapLegend.setSrc('images/bathymetry_ver.png'); 
-           //     basemapLegend.setSize(40, 250);
-            }     
-            else if (layerName == 'SST') {
-//                legendPanel.update("<p><b>Temperature (&deg;C)</b></p><br/><img src='images/sst.png' height='200'/>");
-                legendDiv.html("<p><b>Temperature (&deg;C)</b></p><br/><img src='images/sst.png' height='200'/>");
-           //     basemapLegend.setSrc('images/sst.png');
-           //     basemapLegend.setSize(40, 250);
-            }
-            else {
-//                legendPanel.update("<p></p>");
-                legendDiv.html("<p></p>");
-          //      basemapLegend.html="<p>hello</p>";
-          //      basemapLegend.setSrc('images/blank.png');
-         //       basemapLegend.setSize(1, 1);
-            }
+
+        if (layerName == 'Bathymetry') {
+            legendDiv.html("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='200'/>");
         }
-    } 
+        else if (layerName == 'SST') {
+            legendDiv.html("<p><b>Temperature (&deg;C)</b></p><br/><img src='images/sst.png' height='200'/>");
+        }
+        else {
+            legendDiv.html("<p></p>");
+        }
+    }
 });
 
 function selectCountry(event, args) {
@@ -281,20 +270,14 @@ Ext.onReady(function() {
 //            }
 //        }
     });
-        
-    window.basemapLegend = Ext.create('Ext.Img', {
-        src: 'images/blank.png',
-        width: 1,
-        height: 1
-    });
-    
+
     var countryPanel = Ext.create('Ext.panel.Panel', {
         title: 'Country',
         autoScroll: true,
         items: [countryCombo],
         height: '15%'
     });
-   
+
     var datasetPanel = Ext.create('Ext.panel.Panel', {
         title: 'Dataset',
         autoScroll: true,
