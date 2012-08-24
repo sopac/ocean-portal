@@ -5,7 +5,7 @@ var map;
 $(document).ready(function() {
     map = new OpenLayers.Map("map", {
         resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
-        maxResolution: 0.087890625, 
+        maxResolution: 0.087890625,
         minExtent: new OpenLayers.Bounds(-1, -1, -1, -1),
         maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
         restrictedExtent: new OpenLayers.Bounds(-254.75303, -51.78606, -144.49137, 20.13191),
@@ -21,8 +21,8 @@ $(document).ready(function() {
            "changebaselayer": mapBaseLayerChanged
         }
     });
-    ocean.mapObj = map;
 
+    ocean.mapObj = map;
 
     var wmsLayer = new OpenLayers.Layer.WMS("Plain World",
         'cgi/getMap',
@@ -35,9 +35,6 @@ $(document).ready(function() {
         }
     );
 
-
-////Below are the MapServer layers
-
     var bathymetryLayer = new OpenLayers.Layer.MapServer("Bathymetry",
         'cgi/getMap', {
             map: "bathymetry",
@@ -46,26 +43,22 @@ $(document).ready(function() {
                      "bathymetry_4000", "bathymetry_3000", "bathymetry_2000",
                      "bathymetry_1000", "bathymetry_200", "bathymetry_0",
                      "land", "maritime", "capitals", "countries"]
-//            layers: ["coastline", "populated_places", "ocean"]
         }, {
             wrapDateLine: true
-//            maxResolution: 0.0000453613
         });
 
     var sstLayer = new OpenLayers.Layer.MapServer("SST",
         'cgi/getMap', {
-//            map: "sst",
             map: "reynolds",
             layers: ["sst_left", "sst_right", "land", "coastline"]
         }, {
             wrapDateLine: true
-//            maxResolution: 0.0000453613
         });
 
-    //Add gauge points
+    /* Add gauge points */
     map.addLayers([bathymetryLayer]);
     map.setBaseLayer(bathymetryLayer);
-   // map.panTo(new OpenLayers.LonLat(178.62740, -17.93307));
+
     function mapBaseLayerChanged(evt) {
         var layerName = evt.layer.name;
         var legendDiv = $('#legendDiv');
