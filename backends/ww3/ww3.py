@@ -58,7 +58,7 @@ def process(form):
         if not os.path.exists(outputFileName + ".png"):
             timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr)
             try:
-                wc.wavecaller(outputFileName, varStr, gridLat, gridLon, latLonValues)
+                wc.wavecaller(outputFileName, varStr, gridLat, gridLon, gridValues)
             except:
                 if serverCfg['debug']:
                     raise
