@@ -1,5 +1,6 @@
 import os.path
 import socket
+import datetime
 
 import ocean
 import serverConfig as rc
@@ -24,3 +25,14 @@ def get_server_config(hostname=None):
         hostname = socket.gethostname().split('.', 2)[0]
 
     return rc.servers[hostname]
+
+def format_old_date(d):
+    """
+    date.strftime() doesn't deal with dates before 1900, which doesn't suit
+    us for ERSST.
+
+    Returns: a formatted date string
+    """
+
+    h = datetime.date(2000, d.month, d.day)
+    return '%s %s' % (h.strftime('%B'), d.year)
