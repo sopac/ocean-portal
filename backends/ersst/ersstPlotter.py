@@ -51,21 +51,21 @@ class ErsstPlotter ():
                 filename = self.serverCfg["dataDir"]["ersst"] + period + "/" + "ersst." + date[:6]
 		title = self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
-                      + inputDate.strftime('%B %Y') 
+                      + util.format_old_date(inputDate)
             elif period=='3monthly' or period == '6monthly': 
             	filename = self.serverCfg["dataDir"]["ersst"] + "/" + period + "/ersst." + date[:6] + "ave"
 		title = self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
-                      + dateRange.getMonths(date, period[:1])[0].strftime('%B %Y')\
+                      + util.format_old_date(dateRange.getMonths(date, period[:1])[0]) \
                       + " to "\
-                      + inputDate.strftime('%B %Y') 
+                      + util.format_old_date(inputDate)
             elif period == '12monthly': 
             	filename = self.serverCfg["dataDir"]["ersst"] + "/" + period + "/ersst." + date[:6] + "ave"
 		title = self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
-                      + dateRange.getMonths(date, period[:2])[0].strftime('%B %Y')\
+                      + util.format_old_date(dateRange.getMonths(date, period[:2])[0])\
                       + " to "\
-                      + inputDate.strftime('%B %Y') 
+                      + util.format_old_date(inputDate)
 	elif variable=='dec':
 	    centerLabel = True
             baseYear = args["baseYear"]
@@ -73,21 +73,21 @@ class ErsstPlotter ():
                 filename = self.serverCfg["dataDir"]["ersst"] + "decile/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
 		title = self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
-                      + inputDate.strftime('%B %Y') 
+                      + util.format_old_date(inputDate)
             elif period=='3monthly' or period == '6monthly': 
                 filename = self.serverCfg["dataDir"]["ersst"] + "decile/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
 		title = self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
-                      + dateRange.getMonths(date, period[:1])[0].strftime('%B %Y')\
+                      + util.format_old_date(dateRange.getMonths(date, period[:1])[0]) \
                       + " to "\
-                      + inputDate.strftime('%B %Y') 
+                      + util.format_old_date(inputDate)
             elif period == '12monthly': 
                 filename = self.serverCfg["dataDir"]["ersst"] + "decile/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
 		title = self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
-                      + dateRange.getMonths(date, period[:2])[0].strftime('%B %Y')\
+                      + util.format_old_date(dateRange.getMonths(date, period[:2])[0]) \
                       + " to "\
-                      + inputDate.strftime('%B %Y') 
+                      + util.format_old_date(inputDate)
 
 	elif variable=='trend':
             baseYear = args["baseYear"]
