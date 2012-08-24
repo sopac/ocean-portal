@@ -342,7 +342,7 @@ ocean.dsConf = {
                             $('#dataDiv').html('');
                         },
             selectVariable: function(selection) {
-                periodCombo = Ext.getCmp('periodCombo');
+                var periodCombo = Ext.getCmp('periodCombo');
                 periodCombo.clearValue();
                 var store = periodCombo.store;
                 store.clearFilter(true);
