@@ -5,6 +5,7 @@ import json
 
 import reynoldsPlotter
 import ocean.util as util
+from ocean.netcdf.plotter import COMMON_FILES
 from ..util import areaMean
 from ..util import productName
 
@@ -107,25 +108,17 @@ def process(form):
         elif mapStr == "dec":
             fileName = decGraph % (reynoldsProduct["monthlyDec"], areaStr, dateStr[:6])
             outputFileName = serverCfg["outputDir"] + fileName
-            outputFiles = [ '.png', '_east.png', '_east.pgw',
-                            '_west.png', '_west.pgw' ]
 
-            if not util.check_files_exist(outputFileName, outputFiles):
+            if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
                 plotter.plot(fileName, **args)
 
-            if not util.check_files_exist(outputFileName, outputFiles):
+            if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
                 responseObj["error"] = "Requested image is not available at this time."
             else:
-                responseObj["img"] = serverCfg["baseURL"]\
-                                   + outputFileName + ".png"
-                responseObj["mapeast"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_east.png"
-                responseObj["mapeastw"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_east.pgw"
-                responseObj["mapwest"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_west.png"
-                responseObj["mapwestw"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_west.pgw"
+                responseObj.update(util.build_response_object(
+                        COMMON_FILES.keys(),
+                        serverCfg['baseURL'] + outputFileName,
+                        COMMON_FILES.values()))
         else:
         ####current xml html response
             if periodStr == 'daily':
@@ -142,10 +135,8 @@ def process(form):
                 fileName = aveSstGraph % (reynoldsProduct["weekly"], mapStr, areaStr, dateStr)
 
             outputFileName = serverCfg["outputDir"] + fileName
-            outputFiles = [ '.png', '_east.png', '_east.pgw',
-                            '_west.png', '_west.pgw' ]
 
-            if not util.check_files_exist(outputFileName, outputFiles):
+            if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
                 try:
                     plotter.plot(fileName, **args)
                 except:
@@ -154,19 +145,13 @@ def process(form):
                     else:
                         pass
 
-            if not util.check_files_exist(outputFileName, outputFiles):
-                responseObj["error"] = "Requested image is not available at this time."
+            if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
+                responseObj['error'] = "Requested image is not available at this time."
             else:
-                responseObj["img"] = serverCfg["baseURL"]\
-                                   + outputFileName + ".png"
-                responseObj["mapeast"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_east.png"
-                responseObj["mapeastw"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_east.pgw"
-                responseObj["mapwest"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_west.png"
-                responseObj["mapwestw"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_west.pgw"
+                responseObj.update(util.build_response_object(
+                        COMMON_FILES.keys(),
+                        serverCfg['baseURL'] + outputFileName,
+                        COMMON_FILES.values()))
 
     response = json.dumps(responseObj)
     return response

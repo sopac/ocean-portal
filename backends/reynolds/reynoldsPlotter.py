@@ -96,8 +96,8 @@ class ReynoldsPlotter ():
                   centerLabel = cntLabel, **args)
         plot.plotBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
         plot.plotBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
+        plot.plotScale(sst, variable, self.config, outputFilename)
 
         dataset.close()
-        
-        return 0
 
+        return 0
