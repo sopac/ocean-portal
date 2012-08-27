@@ -64,7 +64,7 @@ $(document).ready(function() {
         var legendDiv = $('#legendDiv');
 
         if (layerName == 'Bathymetry') {
-            legendDiv.html("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='200'/>");
+            legendDiv.html("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='180'/>");
         }
         else {
             if (ocean.map_scale)
