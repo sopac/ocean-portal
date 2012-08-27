@@ -5,7 +5,7 @@ var map;
 $(document).ready(function() {
     map = new OpenLayers.Map("map", {
         resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
-        maxResolution: 0.087890625, 
+        maxResolution: 0.087890625,
         minExtent: new OpenLayers.Bounds(-1, -1, -1, -1),
         maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
         restrictedExtent: new OpenLayers.Bounds(-254.75303, -51.78606, -144.49137, 20.13191),
@@ -21,8 +21,8 @@ $(document).ready(function() {
            "changebaselayer": mapBaseLayerChanged
         }
     });
-    ocean.mapObj = map;
 
+    ocean.mapObj = map;
 
     var wmsLayer = new OpenLayers.Layer.WMS("Plain World",
         'cgi/getMap',
@@ -35,9 +35,6 @@ $(document).ready(function() {
         }
     );
 
-
-////Below are the MapServer layers
-
     var bathymetryLayer = new OpenLayers.Layer.MapServer("Bathymetry",
         'cgi/getMap', {
             map: "bathymetry",
@@ -46,51 +43,36 @@ $(document).ready(function() {
                      "bathymetry_4000", "bathymetry_3000", "bathymetry_2000",
                      "bathymetry_1000", "bathymetry_200", "bathymetry_0",
                      "land", "maritime", "capitals", "countries"]
-//            layers: ["coastline", "populated_places", "ocean"]
         }, {
             wrapDateLine: true
-//            maxResolution: 0.0000453613
         });
 
     var sstLayer = new OpenLayers.Layer.MapServer("SST",
         'cgi/getMap', {
-//            map: "sst",
             map: "reynolds",
             layers: ["sst_left", "sst_right", "land", "coastline"]
         }, {
             wrapDateLine: true
-//            maxResolution: 0.0000453613
         });
 
-    //Add gauge points
+    /* Add gauge points */
     map.addLayers([bathymetryLayer]);
     map.setBaseLayer(bathymetryLayer);
-   // map.panTo(new OpenLayers.LonLat(178.62740, -17.93307));
+
     function mapBaseLayerChanged(evt) {
         var layerName = evt.layer.name;
         var legendDiv = $('#legendDiv');
-        if (window.basemapLegend) {
-            if (layerName == 'Bathymetry') {
-//                legendPanel.update("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='200'/>");
-                legendDiv.html("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='200'/>");
-           //     basemapLegend.setSrc('images/bathymetry_ver.png'); 
-           //     basemapLegend.setSize(40, 250);
-            }     
-            else if (layerName == 'SST') {
-//                legendPanel.update("<p><b>Temperature (&deg;C)</b></p><br/><img src='images/sst.png' height='200'/>");
-                legendDiv.html("<p><b>Temperature (&deg;C)</b></p><br/><img src='images/sst.png' height='200'/>");
-           //     basemapLegend.setSrc('images/sst.png');
-           //     basemapLegend.setSize(40, 250);
-            }
-            else {
-//                legendPanel.update("<p></p>");
-                legendDiv.html("<p></p>");
-          //      basemapLegend.html="<p>hello</p>";
-          //      basemapLegend.setSrc('images/blank.png');
-         //       basemapLegend.setSize(1, 1);
-            }
+
+        if (layerName == 'Bathymetry') {
+            legendDiv.html("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='200'/>");
         }
-    } 
+        else if (layerName == 'SST') {
+            legendDiv.html("<p><b>Temperature (&deg;C)</b></p><br/><img src='images/sst.png' height='200'/>");
+        }
+        else {
+            legendDiv.html("<p></p>");
+        }
+    }
 });
 
 function selectCountry(event, args) {
@@ -288,20 +270,14 @@ Ext.onReady(function() {
 //            }
 //        }
     });
-        
-    window.basemapLegend = Ext.create('Ext.Img', {
-        src: 'images/blank.png',
-        width: 1,
-        height: 1
-    });
-    
+
     var countryPanel = Ext.create('Ext.panel.Panel', {
         title: 'Country',
         autoScroll: true,
         items: [countryCombo],
         height: '15%'
     });
-   
+
     var datasetPanel = Ext.create('Ext.panel.Panel', {
         title: 'Dataset',
         autoScroll: true,
