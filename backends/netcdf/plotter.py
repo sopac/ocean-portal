@@ -12,7 +12,9 @@ import bisect
 import math
 import shutil
 import datetime
+import sys
 
+from matplotlib import mpl
 from mpl_toolkits.basemap import Basemap
 from matplotlib.offsetbox import AnchoredOffsetbox, TextArea
 from matplotlib.transforms import offset_copy
@@ -32,11 +34,6 @@ class Plotter:
         """The simple constructor of Plotter"""
         self.serverConfig = util.get_server_config()
 
-#    def plot(inputFile, outputFile, projection=__DEFAULT_PROJ):
-        """
-        Plot the input file using the specified projection and save the
-        plot to the output file.
-        """
     def contour(self, data, lats, lons, variable, config, outputFile,\
                 title, lllat, lllon, urlat, urlon, proj=_DEFAULT_PROJ,\
                 contourLines = False, centerLabel = False):
@@ -108,6 +105,30 @@ class Plotter:
                     pass
 
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=1., bbox_extra_artists=[copyrightBox])
+        plt.close()
+
+    def plotScale(self, data, variable, config, outputFile):
+        # plot another colour bar
+        fig = plt.figure(figsize=(0.75,2))
+        ax1 = fig.add_axes([0.05, 0.01, 0.25, 0.98])
+
+        norm = mpl.colors.Normalize(*config.getColorBounds(variable))
+        cb1 = mpl.colorbar.ColorbarBase(ax1,
+                cmap=config.getColorMap(variable),
+                norm=norm,
+                orientation='vertical',
+                format=config.getValueFormat(variable),
+                extend='both')
+        cb1.set_label(config.getUnit(variable),
+                rotation='horizontal',
+                fontsize=6)
+
+        for tick in cb1.ax.get_yticklabels():
+            tick.set_fontsize(6)
+
+        plt.savefig(self.serverConfig['outputDir'] + outputFile + '_scale.png',
+                dpi=120,
+                transparent=True)
         plt.close()
 
     def contourBasemapWest(self, data, lats, lons, variable, config, outputFile,\
