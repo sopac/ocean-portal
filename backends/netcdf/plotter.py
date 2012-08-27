@@ -24,6 +24,15 @@ import numpy as np
 
 import ocean.util as util
 
+COMMON_FILES = {
+    'img': '.png',
+    'mapeast': '_east.png',
+    'mapeastw': '_east.pgw',
+    'mapwest': '_west.png',
+    'mapwestw': '_west.pgw',
+    'scale': '_scale.png',
+}
+
 class Plotter:
     """The base class for plotting netCDF files."""
 
