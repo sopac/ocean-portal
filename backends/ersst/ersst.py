@@ -5,6 +5,7 @@ import json
 
 import ersstPlotter
 import ocean.util as util
+from ocean.netcdf.plotter import COMMON_FILES
 from ..util import areaMean
 from ..util import productName
 
@@ -182,9 +183,7 @@ def process(form):
 	    if periodStr == '12monthly':
 		fileName = decGraph % (ersstProduct["12monthlyDec"], baseStr, areaStr, dateStr[:6])
             outputFileName = serverCfg["outputDir"] + fileName
-            outputFiles = [ '.png', '_east.png', '_east.pgw',
-                            '_west.png', '_west.pgw' ]
-            if not util.check_files_exist(outputFileName, outputFiles):
+            if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
                 try:
                     plotter.plot(fileName, **args)
                 except:
@@ -192,19 +191,14 @@ def process(form):
                         raise
                     else:
                         pass
-	    if not util.check_files_exist(outputFileName, outputFiles):
+	    if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
                 responseObj["error"] = "Requested image is not available at this time."
             else:
-                responseObj["img"] = serverCfg["baseURL"]\
-				   + outputFileName + ".png"
-		responseObj["mapeast"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_east.png"
-                responseObj["mapeastw"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_east.pgw"
-                responseObj["mapwest"] = serverCfg["baseURL"]\
-				       + outputFileName + "_west.png"
-                responseObj["mapwestw"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_west.pgw"
+                responseObj.update(util.build_response_object(
+                    COMMON_FILES.keys(),
+                    serverCfg['baseURL'] + outputFileName,
+                    COMMON_FILES.values()))
+
 	elif mapStr == "trend":
             if "baseYear" in form:
                 baseStr = form["baseYear"].value
@@ -221,10 +215,8 @@ def process(form):
                 fileName = trendGraph % (ersstProduct["12monthlyTre"], baseStr, areaStr, dateStr[4:6])
 
             outputFileName = serverCfg["outputDir"] + fileName
-            outputFiles = [ '.png', '_east.png', '_east.pgw',
-                            '_west.png', '_west.pgw' ]
 
-            if not util.check_files_exist(outputFileName, outputFiles):
+            if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
                 try:
                     plotter.plot(fileName, **args)
                 except:
@@ -233,19 +225,13 @@ def process(form):
                     else:
                         pass
 
-            if not util.check_files_exist(outputFileName, outputFiles):
-                responseObj["error"] = "Requested image is not available at this time."
+            if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
+                responseObj['error'] = "Requested image is not available at this time."
             else:
-                responseObj["img"] = serverCfg["baseURL"]\
-                                   + outputFileName + ".png"
-                responseObj["mapeast"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_east.png"
-                responseObj["mapeastw"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_east.pgw"
-                responseObj["mapwest"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_west.png"
-                responseObj["mapwestw"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_west.pgw"
+                responseObj.update(util.build_response_object(
+                        COMMON_FILES.keys(),
+                        serverCfg['baseURL'] + outputFileName,
+                        COMMON_FILES.values()))
         else:
         ####current xml html response
             if periodStr == 'monthly':
@@ -256,11 +242,9 @@ def process(form):
                 fileName = sstGraph % (ersstProduct["6monthly"], mapStr, areaStr, dateStr[:6])
             elif periodStr == '12monthly':
 	 	fileName = sstGraph % (ersstProduct["12monthly"], mapStr, areaStr, dateStr[:6])
-            outputFileName = serverCfg["outputDir"] + fileName 
-            outputFiles = [ '.png', '_east.png', '_east.pgw',
-                            '_west.png', '_west.pgw' ]
+            outputFileName = serverCfg["outputDir"] + fileName
 
-            if not util.check_files_exist(outputFileName, outputFiles):
+            if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
                 try:
                     plotter.plot(fileName, **args)
                 except:
@@ -269,19 +253,13 @@ def process(form):
                     else:
                         pass
 
-            if not util.check_files_exist(outputFileName, outputFiles):
-                responseObj["error"] = "Requested image is not available at this time."
+            if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
+                responseObj['error'] = "Requested image is not available at this time."
             else:
-                responseObj["img"] = serverCfg["baseURL"]\
-                                   + outputFileName + ".png"
-                responseObj["mapeast"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_east.png"
-                responseObj["mapeastw"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_east.pgw"
-                responseObj["mapwest"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_west.png"
-                responseObj["mapwestw"] = serverCfg["baseURL"]\
-                                       + outputFileName + "_west.pgw"
+                responseObj.update(util.build_response_object(
+                        COMMON_FILES.keys(),
+                        serverCfg['baseURL'] + outputFileName,
+                        COMMON_FILES.values()))
 
     response = json.dumps(responseObj)
     return response

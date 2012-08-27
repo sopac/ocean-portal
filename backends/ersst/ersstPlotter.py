@@ -146,6 +146,7 @@ class ErsstPlotter ():
 		  "cyl", contourLines, centerLabel)
         plot.contourBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
         plot.contourBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
+        plot.plotScale(sst, variable, self.config, outputFilename)
 
         dataset.close()
         
