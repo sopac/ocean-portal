@@ -18,7 +18,7 @@ $(document).ready(function() {
             new OpenLayers.Control.Navigation({dragPanOptions: {enableKinetic: true}})
         ],
         eventListeners: {
-           "changebaselayer": mapBaseLayerChanged
+           'changelayer': mapBaseLayerChanged
         }
     });
 
