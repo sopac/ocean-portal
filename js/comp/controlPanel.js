@@ -1,8 +1,10 @@
 /*jslint eqeq: true, forin: true, plusplus: true, undef: true, sloppy: true, sub: true, todo: true, vars: true, white: true, browser: true, windows: true */
 
 var ocean = ocean || {};
-ocean.controls = ['selectionDiv', 'toggleDiv', 'sliderDiv', 'yearMonthDiv', 'datepickerDiv', 'latlonDiv', 'tidalGaugeDiv'];
-ocean.compare = false;
+ocean.controls = ['selectionDiv', 'toggleDiv', 'sliderDiv',
+                  'yearMonthDiv', 'datepickerDiv', 'latlonDiv', 
+                  'tidalGaugeDiv', 'compDiv'];
+ocean.compare = {"flag": true, "limit": 2}
 ocean.processing = false;
 //ocean.average = false;
 //ocean.trend = false;
@@ -58,42 +60,35 @@ ocean.dsConf = {
                     var imgDiv = $('#imgDiv');
                     var dataDiv = $('#dataDiv');
                     var enlargeDiv = $('#enlargeDiv');
-                    if (ocean.compare){
-                        var imgList = imgDiv.childNodes;
-                        imgDiv.removeChild(imgDiv.firstChild);
-                        // if (imgList.length >= compareSize) {
-                        //     imgDiv.removeChild(imgDiv.lastChild);
-                        // }
-                        var img = document.createElement("IMG");
-
-			var average = false;
-                        if(average) {
-                            img.src = data.aveImg;
-                            img.width = "680";
-                            document.getElementById('aveArea').innerHTML = '<div style="display:inline-block; width:341px; text-align:left">Download data from <a href="' + data.aveData + '" target="_blank">here</a></div>' + '<div style="display:inline-block; width:341px; text-align:right"><b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C</div>';
-                        }
-                        else if (data.img != null) {
-                            img.src = data.img;
-                            img.width = "150";
-                            dataDiv.html('');
-                        }
-                        else {
-                            img.src = "images/notavail.png";
-                            dataDiv.html('');
-                        }
-                    }
-                    else {
                         if (this.variable.get("id") == "anom" && this.aveCheck.average && data.aveImg != null) {
                             imgDiv.html('<img src="' + data.aveImg + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
                             dataDiv.html('<b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C<br>' + '<a href="'+ data.aveData + '" target="_blank"><img src="images/download.png"/></a>');
 
                         }
                         else if (data.img != null) {
-                            imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                            if (ocean.compare.flag){
+                                var imgChildren = document.getElementById('imgDiv').childNodes;
+                                var imgList = imgDiv.children();
+                                if (imgList.length >= ocean.compare.limit) {
+                                    $('#imgDiv img:last-child').remove();
+//                                    var last = imgDiv.last()
+//                                    imgDiv.removeChild(imgDiv.lastChild);
+                                }
+                                if (data.img != null) {
+                                    imgDiv.prepend('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
+//                                    img.src = data.img + '?time=' + new Date().getTime();
+//                                    img.width = "150";
+//                                    img.onmouseover = "enlargeImg(this, true)";
+//                                    img.onmouseout = "enlargeImg(this, false)"; 
+                                }
+//                                imgDiv.insertBefore(img, imgDiv.firstChild);
+                            }
+                            else {
+                                imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                            }
                             updateMap("Reynolds", data);
                             dataDiv.html('');
                         }
-                    }
                 },
                 onSelect: function(){
                               $('#variableDiv').show();
@@ -122,6 +117,7 @@ ocean.dsConf = {
                     } 
                     updateCalDiv();
                     showControl('selectionDiv');
+                    showControl('compDiv');
 
 //                    if (selection === 'anom') {
 //                        showControl('toggleDiv')
@@ -645,12 +641,18 @@ Ext.onReady(function() {
         }
     });
 
-//    ocean.plotComp = Ext.create('Ext.form.field.Checkbox', {
-//            boxLabel: 'Plot Comparision',
-//            renderTo: 'compDiv',
-//            width: 150,
-//            name: 'plotComp',
-//            id: 'plotComp'});
+    ocean.plotComp = Ext.create('Ext.form.field.Checkbox', {
+            boxLabel: 'Plot Comparision',
+            renderTo: 'compDiv',
+            width: 150,
+            name: 'plotComp',
+            id: 'plotComp',
+            checked: ocean.compare.flag,
+            listeners: {
+                'change': function(checkbox, newValue, oldValue, opts) {
+                        ocean.compare.flag = newValue;
+                    } 
+            }});
 //    ocean.plotComp.setDisabled(true);
 
     ocean.monthStore = Ext.create('Ext.data.Store', {

@@ -105,40 +105,20 @@
         "name":"Temperature",
         "periods": ["monthly"]
     }, {
-        "id":"temp_ano",
-        "name":"Temperature Anomaly",
-        "periods": ["monthly"]
-    }, {
         "id":"salt",
         "name":"Salinity",
-        "periods": ["monthly"]
-    }, {
-        "id":"salt_ano",
-        "name":"Salinity Anomaly",
         "periods": ["monthly"]
     }, {
         "id":"eta",
         "name":"Sea Level Height",
         "periods": ["monthly"]
     }, {
-        "id":"eta_ano",
-        "name":"Sea Level Anomaly",
+        "id":"uvtemp",
+        "name":"Temp & Currents",
         "periods": ["monthly"]
     }, {
-        "id":"u",
-        "name":"Zonal Velocity",
-        "periods": ["monthly"]
-    }, {
-        "id":"u_ano",
-        "name":"Zonal Velocity Anomaly",
-        "periods": ["monthly"]
-    }, {
-        "id":"v",
-        "name":"Meridional Velocity",
-        "periods": ["monthly"]
-    }, {
-        "id":"v_ano",
-        "name":"Meridional Velocity Anomaly",
+        "id":"uveta",
+        "name":"Sea Level & Currents",
         "periods": ["monthly"]
     }],
     "dateRange" : {
