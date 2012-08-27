@@ -642,7 +642,7 @@ Ext.onReady(function() {
     });
 
     ocean.plotComp = Ext.create('Ext.form.field.Checkbox', {
-            boxLabel: 'Plot Comparision',
+            boxLabel: 'Plot Comparison',
             renderTo: 'compDiv',
             width: 150,
             name: 'plotComp',
