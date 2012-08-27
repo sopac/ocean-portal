@@ -125,6 +125,8 @@ function updateMap(layerName, data){
 
 
 function updateSeaLevelMap(data){
+    ocean.map_scale = data.scale;
+
     if (map.getLayersByName("Sea Level").length != 0) {
         var layer = map.getLayersByName("Sea Level")[0];
         map.setBaseLayer(layer);
@@ -140,12 +142,6 @@ function updateSeaLevelMap(data){
         }, {
             wrapDateLine: true
         });
-
-//        var sstLayer = new OpenLayers.Layer.Image("SST",
-//            "http://tuscany/dev/data/comp/raster/left.png",
-//            new OpenLayers.Bounds(180, -90, 360, 90),
-//            new OpenLayers.Size(720, 720),
-//            {numZoomLevels: 5});
 
         map.addLayer(slLayer);
         map.setBaseLayer(slLayer);

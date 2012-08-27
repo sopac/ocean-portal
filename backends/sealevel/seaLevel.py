@@ -5,6 +5,7 @@ import json
 
 import seaLevelPlotter
 import ocean.util as util
+from ocean.netcdf.plotter import COMMON_FILES
 from ..util import productName
 from ..util import tidalGaugeConfig
 
@@ -23,7 +24,6 @@ plotter = seaLevelPlotter.SeaLevelPlotter()
 
 def process(form): 
     responseObj = {} #this object will be encoded into a json string
-    responseObj["img"] = [] #img is a list of images
     if "variable" in form and "date" in form and "period" in form and "area" in form:
         variableStr = form["variable"].value
         dateStr = form["date"].value
@@ -37,26 +37,20 @@ def process(form):
     
         if periodStr == 'monthly':
             fileName = seaGraph % (seaLevelProduct["monthly"], variableStr, areaStr, dateStr[:6])
-        outputFileName = serverCfg["outputDir"] + fileName 
-        outputFiles = [ '.png', '_east.png', '_east.pgw',
-            '_west.png', '_west.pgw' ]
+        outputFileName = serverCfg['outputDir'] + fileName
 
-        if not util.check_files_exist(outputFileName, outputFiles):
+        if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
             plotter.plot(fileName, **args)
 
-        if not util.check_files_exist(outputFileName, outputFiles):
-            responseObj["error"] = "Requested image is not available at this time."
+        if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
+            responseObj['error'] = "Requested image is not available at this time."
         else:
-            responseObj["img"].append(serverCfg["baseURL"]\
-                               + outputFileName + ".png")
-            responseObj["mapeast"] = serverCfg["baseURL"]\
-                                   + outputFileName + "_east.png"
-            responseObj["mapeastw"] = serverCfg["baseURL"]\
-                                    + outputFileName + "_east.pgw"
-            responseObj["mapwest"] = serverCfg["baseURL"]\
-                                   + outputFileName + "_west.png"
-            responseObj["mapwestw"] = serverCfg["baseURL"]\
-                                    + outputFileName + "_west.pgw"
+            responseObj.update(util.build_response_object(
+                    COMMON_FILES.keys(),
+                    serverCfg['baseURL'] + outputFileName,
+                    COMMON_FILES.values()))
+            # make this a list
+            responseObj['img'] = [ responseObj['img'] ]
 
     if "tidalGaugeId" in form:
         tidalGaugeId = form["tidalGaugeId"].value

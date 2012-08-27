@@ -79,6 +79,7 @@ class SeaLevelPlotter ():
         plot.plotBasemapWest(height, lats, lons, variable, self.config,
                              outputFilename, lllat=-65, urlat=15, urlon=210, 
                              worldfile='subwest.pgw')
+        plot.plotScale(height, variable, self.config, outputFilename)
 
         dataset.close()
         
