@@ -37,9 +37,8 @@ def RosePlot(opath,wdir,units,lat,lon,xstr,title,var,binwd):
     #set number of bins and max bin value.
     N,wdnbin,wdmax = 8,8,2*np.pi
     degree = ur'\u00b0'
-    #if wdir[1] == -999.0:
-    #   print "Specified location is out of bounds or lies on land."
-    #   exit()
+    if wdir[1] == -999.0:
+       responseObj["error"] = "Invalid data point."
     #flip directions as WWIII direction are given in meteorological convention.
     if var == "Dm":
         wdir = conv.dirflip(wdir)
@@ -151,9 +150,8 @@ def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
     #calculate range of data
     #binthresh = maxwave - minwave
     #Error message if selected coordinates are out of range or on land
-    #if maxwave == -999.0:
-       #print "Specified data point is out of bounds, or lies on land."
-       #exit()
+    if maxwave == -999.0:
+       responseObj["error"] = "Invalid data point."
     #alter bin width depending on range of data
     #if binthresh < 10:
      #  binwd = 0.1

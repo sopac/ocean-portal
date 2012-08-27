@@ -26,10 +26,8 @@ class WaveWatch3Extraction ():
         self.serverCfg = util.get_server_config()
 
 
-    def extract(self, inputLat, inputLon, variableName, delta=_DELTA):
-        k1 = 31
-        k2 = 62
-        files = glob.glob(self.serverCfg["dataDir"]["ww3"] + '/monthlydaily/' +  '*.nc')
+    def extract(self, inputLat, inputLon, variableName, k1, k2, delta=_DELTA):
+        files = glob.glob(self.serverCfg["dataDir"]["ww3"] + '/monthly' +  '*.nc')
         #sort the files back in time.
         files = sorted(files, key=lambda filename: filename[-5:-3])
         filez =  files[k1:k2]
@@ -49,9 +47,9 @@ class WaveWatch3Extraction ():
             nc = Dataset(file, 'r') 		 
             #print values  
             var = nc.variables[variableName]
-            point = var[:,gridLatIndex,gridLonIndex]
+            point = var[1::4,gridLatIndex,gridLonIndex]
             tvar = nc.variables['time1']
-            time = tvar[:]    
+            time = tvar[1::4]    
             timeseries = np.append(timeseries,time)
             gridValues = np.append(gridValues,point)
             nc.close()    

@@ -15,9 +15,8 @@ from WavePlots import HistPlot
 from WavePlots import RosePlot
 from formatter import nameformat
 
-def wavecaller(opath, var, gridLat, gridLon, pointValues):
+def wavecaller(opath, var, gridLat, gridLon, pointValues, mthStr):
     #convert lat,lon to floats
-    mthStr = "February"
     lat = float(gridLat)
     lon = float(gridLon)
     #convert lat,lon to consistant format

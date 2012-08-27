@@ -9,9 +9,10 @@ from ..util import areaMean
 from ..util import productName
 import wavecaller as wc
 import formatter as frm
+import monthconfig as mc
 #Maybe move these into configuration later
-pointExt = "%s_%s_%s_%s_datas"
-recExt = "%s_%s_%s_%s_data_%s"
+pointExt = "%s_%s_%s_%s_%s"
+recExt = "%s_%s_%s_%s_%s_%s"
 
 #get the server dependant path configurations
 serverCfg = util.get_server_config()
@@ -25,29 +26,38 @@ extractor = ww3ExtA.WaveWatch3Extraction()
 def process(form):
     responseObj = {} #this object will be encoded into a json string
     if "variable" in form and "lllat" in form and "lllon" in form\
-        and "urlat" in form and "urlon" in form:
+        and "urlat" in form and "urlon" in form and "date" in form\
+             and "period" in form:
+
         varStr = form["variable"].value
         lllatStr = form["lllat"].value
         lllonStr = form["lllon"].value
         urlatStr = form["urlat"].value
         urlonStr = form["urlon"].value
+        dateStr = form["date"].value
+        period = form["period"].value
 
         args = {"var": varStr,
                 "lllat": lllatStr,
                 "lllon": lllonStr,
                 "urlat": urlatStr,
-                "urlon": urlonStr}
+                "urlon": urlonStr,
+                "date": dateStr,
+		"period": periodStr}
+
+        month = dateStr[4:6]
+        k1, k2, mthStr = mc.monthconfig(month)
 
         if lllatStr == urlatStr and lllonStr == urlonStr:
             (latStr, lonStr) = frm.nameformat(lllatStr,lllonStr)
-            filename = pointExt % (ww3Product["point"], latStr, lonStr, varStr)
+            filename = pointExt % (ww3Product["point"], latStr, lonStr, varStr, mthStr)
         else:
-            filename = recExt % (ww3Product["rect"], lllatStr, lllonStr, urlatStr, urlonStr, varStr)
+            filename = recExt % (ww3Product["rect"], lllatStr, lllonStr, urlatStr, urlonStr, varStr, mthStr)
 
         outputFileName = serverCfg["outputDir"] + filename
 
         if not os.path.exists(outputFileName + ".txt"):
-            timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr)
+            timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr, k1, k2)
             extractor.writeOutput(outputFileName + ".txt", latsLons, timeseries, gridValues)
         if not os.path.exists(outputFileName + ".txt"):
             responseObj["error"] = "Error occured during the extraction."
@@ -56,9 +66,9 @@ def process(form):
                                + outputFileName + ".txt"
 
         if not os.path.exists(outputFileName + ".png"):
-            timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr)
+            timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr, k1, k2)
             try:
-                wc.wavecaller(outputFileName, varStr, gridLat, gridLon, gridValues)
+                wc.wavecaller(outputFileName, varStr, gridLat, gridLon, gridValues, mthStr)
             except:
                 if serverCfg['debug']:
                     raise
@@ -72,6 +82,5 @@ def process(form):
                                + outputFileName + ".png"
 
     response = json.dumps(responseObj)
-
 
     return response
