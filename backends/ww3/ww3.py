@@ -10,6 +10,7 @@ from ..util import productName
 import wavecaller as wc
 import formatter as frm
 import monthconfig as mc
+import landerror as le
 #Maybe move these into configuration later
 pointExt = "%s_%s_%s_%s_%s"
 recExt = "%s_%s_%s_%s_%s_%s"
@@ -69,17 +70,16 @@ def process(form):
             timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr, k1, k2)
             try:
                 wc.wavecaller(outputFileName, varStr, gridLat, gridLon, gridValues, mthStr)
-            #except: le.Landerror:
-            #    responseObj["error"] = "Invalid data point.  Please try again."
-            except:
+            except le.LandError:
+	        responseObj["error"] = "Invalid data point.  Please try another location."
+	    except:
                 if serverCfg['debug']:
                     raise
                 else:
+		    responseObj["error"] = "Error occured during the extraction.  Image could not be generated."	
                     pass
-
-        if not os.path.exists(outputFileName + ".png"):
-            responseObj["error"] = "Error occured during the extraction.  Image could not be generated."
-        else:
+                 
+        if os.path.exists(outputFileName + ".png"):    
             responseObj["img"] = serverCfg["baseURL"]\
                                + outputFileName + ".png"
 
