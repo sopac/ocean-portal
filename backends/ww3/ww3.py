@@ -26,7 +26,7 @@ extractor = ww3ExtA.WaveWatch3Extraction()
 def process(form):
     responseObj = {} #this object will be encoded into a json string
     if "variable" in form and "lllat" in form and "lllon" in form\
-        and "urlat" in form and "urlon" in form: and "date" in form\
+        and "urlat" in form and "urlon" in form and "date" in form\
              and "period" in form:
 
         varStr = form["variable"].value
