@@ -16,7 +16,5 @@ for d in data:
     print >> manifest, 'include %s' % d
 for r in backend_resources:
     print >> manifest, 'include %s' % os.path.join('backends', 'resource', r)
-for h in html:
-    print >> manifest, 'include %s' % os.path.join('html', h)
 
 manifest.close()
