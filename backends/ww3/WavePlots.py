@@ -82,7 +82,7 @@ def RosePlot(opath,wdir,units,lat,lon,xstr,title,var,binwd):
     bars = ax.bar(theta, prob, width, bottom=0.0)
     my_cmap = hc.decile_rose()
     #plot a line to indicate mean bearing
-    ax.arrow(0, 0, meanb, max(prob)+0.1, edgecolor = 'r', facecolor = 'r', lw='3')
+    ax.arrow(0, 0, meanb, 1.0, edgecolor = 'r', facecolor = 'r', lw='3')
     #plot bar chart of histogram in theta space
     for r,bar in zip(prob, bars):
         bar.set_facecolor(my_cmap(r))
