@@ -13,7 +13,7 @@ from numpy import arange
 from numpy import linspace
 from numpy.random import random
 import histcolor as hc
-from meanbearing import meanbearing
+from radbearing import meanbearing
 import angleconv as conv
 from formatter import NESWformat
 
