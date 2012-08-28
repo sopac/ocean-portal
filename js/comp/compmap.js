@@ -60,10 +60,13 @@ $(document).ready(function() {
     map.setBaseLayer(bathymetryLayer);
 
     function mapBaseLayerChanged(evt) {
-        var layerName = evt.layer.name;
+        var layerName;
         var legendDiv = $('#legendDiv');
 
-        if (layerName == 'Bathymetry') {
+        if (evt)
+            layerName = evt.layer.name;
+
+        if (layerName == null || layerName == 'Bathymetry') {
             legendDiv.html("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='180'/>");
         }
         else {
@@ -73,6 +76,8 @@ $(document).ready(function() {
                 legendDiv.html('<p></p>');
         }
     }
+
+    mapBaseLayerChanged(null);
 });
 
 function selectCountry(event, args) {
