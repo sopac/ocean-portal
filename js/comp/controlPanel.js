@@ -366,6 +366,7 @@ ocean.dsConf = {
                             }
                             $('#imgDiv').html('');
                             $('#dataDiv').html('');
+                            showControl('yearDiv');
                                    },
             selectVariable: function(selection) {
                                 //this should be in a callback for the combo
