@@ -68,7 +68,6 @@ data = [
     'js/comp/compmap.js',
 #   'js/sst.js',
     'images/dot.png',
-    'images/sst.png',
     'images/search.gif',
     'images/calendar-blue.gif',
     'images/blank.png',
