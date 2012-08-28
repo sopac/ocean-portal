@@ -86,19 +86,22 @@ html = [
     'compmap.html',
 ]
 
-data = [
+web_files = [
     'css/common.css',
 #   'css/sst.css',
     'css/comp/controlPanel.css',
+    'js/comp/controlPanel.js',
+    'js/comp/compmap.js',
+#   'js/sst.js',
+]
+
+data = [
     'config/comp/datasets.json',
     'config/comp/period.json',
     'config/comp/portals.json',
     'config/comp/tidalGauges.txt',
     'config/aus/countryList.json',
     'config/pac/countryList.json',
-    'js/comp/controlPanel.js',
-    'js/comp/compmap.js',
-#   'js/sst.js',
     'images/search.gif',
     'images/calendar-blue.gif',
     'images/blank.png',
@@ -119,6 +122,13 @@ backend_resources += [ os.path.join('maps', 'layers', '%s.%s' % (l, ext))
 if __name__ == '__main__':
     from distutils.core import setup
     from distutils.command.bdist_rpm import bdist_rpm
+
+    from localdistutils.dist import PortalDist
+    from localdistutils.build import build
+    from localdistutils.build_web import build_web
+    from localdistutils.install import install
+    from localdistutils.install_web import install_web
+
     import itertools
 
     # add Requires: for RPM
@@ -155,4 +165,14 @@ if __name__ == '__main__':
           },
           scripts=[ os.path.join('src', s) for s in scripts ],
           data_files = data_files,
+          web_files = (BASE_PATH, web_files),
+
+          # extend distutils
+          distclass=PortalDist,
+          cmdclass={
+              'build': build,
+              'build_web': build_web,
+              'install': install,
+              'install_web': install_web,
+          },
          )
