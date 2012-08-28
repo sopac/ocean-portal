@@ -52,13 +52,13 @@ backend_resources = [
 
 BASE_PATH = 'share/portal'
 html = [
-    'sst.html',
+#   'sst.html',
     'compmap.html',
 ]
 
 data = [
     'css/common.css',
-    'css/sst.css',
+#   'css/sst.css',
     'css/comp/controlPanel.css',
     'config/comp/datasets.json',
     'config/comp/period.json',
@@ -66,7 +66,7 @@ data = [
     'config/comp/countryList.json',
     'js/comp/controlPanel.js',
     'js/comp/compmap.js',
-    'js/sst.js',
+#   'js/sst.js',
     'images/dot.png',
     'images/sst.png',
     'images/search.gif',
