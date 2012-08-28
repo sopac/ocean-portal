@@ -16,10 +16,7 @@ MAP
 
     LAYER # MODIS raster layer begins here
         NAME         sl_left
-#        DATA         "/data/comp/raster/left.png"
-#        DATA         "/data/maps/raster/%eastFileName%"
-        DATA         "/data/comp/raster/%eastFileName%"
-#        DATA         "/data/comp/raster/SEA00002_alt_fiji_201101_east.png"
+        DATA         "%eastFileName%"
         STATUS       ON
         DEBUG        5
         TYPE         RASTER
@@ -30,10 +27,7 @@ MAP
 
 LAYER # MODIS raster layer begins here
         NAME         sl_right
-#        DATA         "/data/comp/raster/right.png"
-#        DATA         "/data/maps/raster/%westFileName%"
-        DATA         "/data/comp/raster/%westFileName%"
-#        DATA         "/data/comp/raster/SEA00002_alt_fiji_201101_west.png"
+        DATA         "%westFileName%"
         STATUS       ON
         DEBUG        5
         TYPE         RASTER
@@ -75,4 +69,4 @@ LAYER # States polygon layer begins here
         END
   END # States polygon layer ends here
 
-END 
+END

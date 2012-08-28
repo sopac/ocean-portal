@@ -22,7 +22,6 @@ servers = {
                                'ersst': '/data/sst/ersst/data/',
                                'bran': '/data/blue_link/data/'
                              },
-                 'mapImageDir': '/data/maps/raster/',
                  'mapservPath': '/var/www/cgi-bin/mapserv',
                  'debug':       True,
                },
@@ -38,7 +37,6 @@ servers = {
                                'ersst':    '/data/comp/ersst/',
                                'bran':     '/data/comp/bran/',
                              },
-                 'mapImageDir': '/data/maps/raster/',
                  'mapservPath': '/usr/libexec/mapserv',
                  'debug':       True,
                },
@@ -54,8 +52,7 @@ servers = {
                             'ersst':    '/data/comp/ersst/',
                             'bran':     '/data/comp/bran/',
                           },
-              'mapImageDir': '/data/maps/raster/',
               'mapservPath': '/usr/libexec/mapserv',
               'debug':       True,
-               },
+            },
 }

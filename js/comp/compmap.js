@@ -24,17 +24,6 @@ $(document).ready(function() {
 
     ocean.mapObj = map;
 
-    var wmsLayer = new OpenLayers.Layer.WMS("Plain World",
-        'cgi/getMap',
-        {
-	    map: "plainworld",
-            layers: "land,urban,ocean,maritime,country_line,major_countries,minor_countries,cities,towns,minor_islands"
-        },{
-            wrapDateLine: true,
-            transitionEffect: 'resize'
-        }
-    );
-
     var bathymetryLayer = new OpenLayers.Layer.MapServer("Bathymetry",
         'cgi/getMap', {
             map: "bathymetry",
