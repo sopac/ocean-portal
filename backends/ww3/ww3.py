@@ -41,7 +41,7 @@ def process(form):
                 "lllat": lllatStr,
                 "lllon": lllonStr,
                 "urlat": urlatStr,
-                "urlon": urlonStr
+                "urlon": urlonStr,
                 "date": dateStr,
 		"period": periodStr}
 
