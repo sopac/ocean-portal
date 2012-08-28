@@ -104,7 +104,6 @@ data = [
 # CODE BEGINS
 import os.path
 
-data += [ os.path.join('html', h) for h in html ]
 backend_resources += [ os.path.join('maps', 'layers', '%s.%s' % (l, ext))
                         for l in map_layers
                         for ext in map_layer_extensions ]
@@ -125,6 +124,7 @@ if __name__ == '__main__':
 
     data_files = \
         [ ('/var/www/cgi-bin/portal', [ os.path.join('src', s) for s in src ]) ] + \
+        [ (BASE_PATH, [ os.path.join('html', h) for h in html ]) ] + \
         [ (os.path.join(BASE_PATH, d), list(f))
             for d, f in itertools.groupby(data, lambda e: os.path.dirname(e)) ]
 
