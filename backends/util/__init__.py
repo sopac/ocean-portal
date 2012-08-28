@@ -20,6 +20,9 @@ def check_files_exist(basename, subnames):
     return reduce(lambda a, p: a and os.path.exists(basename + p),
         subnames, True)
 
+def build_response_object(fields, basename, subnames):
+    return dict([ (k, basename + v) for (k, v) in zip(fields, subnames) ])
+
 def get_server_config(hostname=None):
     if not hostname:
         hostname = socket.gethostname().split('.', 2)[0]

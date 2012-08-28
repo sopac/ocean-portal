@@ -64,13 +64,13 @@ $(document).ready(function() {
         var legendDiv = $('#legendDiv');
 
         if (layerName == 'Bathymetry') {
-            legendDiv.html("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='200'/>");
-        }
-        else if (layerName == 'SST') {
-            legendDiv.html("<p><b>Temperature (&deg;C)</b></p><br/><img src='images/sst.png' height='200'/>");
+            legendDiv.html("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='180'/>");
         }
         else {
-            legendDiv.html("<p></p>");
+            if (ocean.map_scale)
+                legendDiv.html('<p><img src="' + ocean.map_scale + '" />');
+            else
+                legendDiv.html('<p></p>');
         }
     }
 });
@@ -100,6 +100,8 @@ function centerMap() {
 }
 
 function updateMap(layerName, data){
+    ocean.map_scale = data.scale;
+
     if (map.getLayersByName(layerName).length != 0) {
         layer = map.getLayersByName(layerName)[0]
         map.setBaseLayer(layer);
@@ -116,12 +118,6 @@ function updateMap(layerName, data){
             wrapDateLine: true
         });
 
-//        var sstLayer = new OpenLayers.Layer.Image("SST",
-//            "http://tuscany/dev/data/comp/raster/left.png",
-//            new OpenLayers.Bounds(180, -90, 360, 90),
-//            new OpenLayers.Size(720, 720),
-//            {numZoomLevels: 5});
-
         map.addLayer(sstLayer);
         map.setBaseLayer(sstLayer);
     }
@@ -129,6 +125,8 @@ function updateMap(layerName, data){
 
 
 function updateSeaLevelMap(data){
+    ocean.map_scale = data.scale;
+
     if (map.getLayersByName("Sea Level").length != 0) {
         var layer = map.getLayersByName("Sea Level")[0];
         map.setBaseLayer(layer);
@@ -144,12 +142,6 @@ function updateSeaLevelMap(data){
         }, {
             wrapDateLine: true
         });
-
-//        var sstLayer = new OpenLayers.Layer.Image("SST",
-//            "http://tuscany/dev/data/comp/raster/left.png",
-//            new OpenLayers.Bounds(180, -90, 360, 90),
-//            new OpenLayers.Size(720, 720),
-//            {numZoomLevels: 5});
 
         map.addLayer(slLayer);
         map.setBaseLayer(slLayer);

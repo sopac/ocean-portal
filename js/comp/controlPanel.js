@@ -200,19 +200,94 @@ ocean.dsConf = {
                 }
            },
     bran: {url: function() {return "cgi/portal.py?dataset=bran"
-                                + "&timestamp=" + new Date().getTime();
-                           },
-            data: null,
-            callback: function(data) {
-            },
-            onSelect: function() {
-                      },
-            onDeselect: function() {
-                            $('#imgDiv').html('');
-                            $('#dataDiv').html('');
-                        },
-            selectVariable: function(selection) {
-            }
+                   + "&map=" + this.variable.get('id')
+                   + "&date=" + $.datepick.formatDate('yyyymmdd', ocean.date)
+                   + "&period=" + ocean.period
+                   + "&area=" + ocean.area
+                   + "&timestamp=" + new Date().getTime();
+                },
+                data: null,
+                variable: null,
+                callback: function(data) {
+                    var imgDiv = $('#imgDiv');
+                    var dataDiv = $('#dataDiv');
+                    var enlargeDiv = $('#enlargeDiv');
+                    if (this.variable.get("id") == "anom" && this.aveCheck.average && data.aveImg != null) {
+                        imgDiv.html('<img src="' + data.aveImg + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                        dataDiv.html('<b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C<br>' + '<a href="'+ data.aveData + '" target="_blank"><img src="images/download.png"/></a>');
+
+                    }
+                    else if (data.img != null) {
+                        imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                        updateMap("ERSST", data);
+                        dataDiv.html('');
+                    }
+                },
+                onSelect: function(){
+                              var ww3Layer = new OpenLayers.Layer.Vector("WaveWatch III", {
+                                                         preFeatureInsert: function(feature) {
+                                                             this.removeAllFeatures();
+                                                         },
+                                                         onFeatureInsert: function(feature) {
+                                                             var geometry = feature.geometry;
+                                                             document.forms['theform'].elements['latitude'].value = Math.round(geometry.y * 1000)/1000;
+                                                             document.forms['theform'].elements['longitude'].value = Math.round(geometry.x * 1000)/1000;
+                                                         }
+                                                     });
+                              ocean.mapObj.addLayer(ww3Layer);
+                              this.panelControls = [
+                                  new OpenLayers.Control.DrawFeature(ww3Layer,
+                                                   OpenLayers.Handler.Point,
+                                                   {'displayClass': 'olControlDrawFeaturePoint'}),
+                                  new OpenLayers.Control.Navigation()
+                              ];
+                              this.toolbar = new OpenLayers.Control.Panel({
+                                  displayClass: 'olControlEditingToolbar',
+                                  defaultControl: this.panelControls[0]
+                              });
+                              this.toolbar.addControls(this.panelControls);
+                              ocean.mapObj.addControl(this.toolbar);
+
+                              $('#variableDiv').show();
+                              configCalendar();
+                          },
+                onDeselect: function() {
+                                var layers = map.getLayersByName("BRAN");
+                                var layer;
+                                var control;
+
+                                for (layer in layers) {
+                                    map.removeLayer(layers[layer]);
+                                }
+                                map.removeControl(this.toolbar);
+                                this.toolbar.deactivate();
+                                this.toolbar.destroy();
+ 
+                                for (control in this.panelControls) {
+                                    map.removeControl(this.panelControls[control]);
+                                    this.panelControls[control].deactivate();
+                                    this.panelControls[control].destroy();
+                                }
+                                $('#imgDiv').html('');
+                                $('#dataDiv').html('');
+                },
+                selectVariable: function(selection) {
+                                //this should be in a callback for the combo
+                                periodCombo = Ext.getCmp('periodCombo');
+                                periodCombo.clearValue();
+                                var store = periodCombo.store;
+                                store.clearFilter(true);
+                                store.filter([periodFilter]);
+                                if (store.find('id', ocean.period) != -1) {
+                                    periodCombo.select(ocean.period);
+                                }
+                                else {
+                                    periodCombo.select(store.data.keys[0]);
+                                    ocean.period = store.data.keys[0];
+                                } 
+                                updateCalDiv();
+                                showControl('selectionDiv');
+                }
     },
     ww3: {url: function() {return "cgi/portal.py?dataset=ww3"
                                 + "&lllat=" + document.forms['theform'].elements['latitude'].value 
