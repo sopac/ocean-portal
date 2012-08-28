@@ -57,7 +57,7 @@ def RosePlot(opath,wdir,units,lat,lon,xstr,title,var,binwd):
     plt.thetagrids((0,45,90,135,180,225,270,315),('N', '45' + degree, 'E', '135' + degree, 'S', '215' + degree, 'W', '315' + degree),frac = 1.1)
     #rotate axis to zero at North and set direction of increasing angle clockwise.
     plt.rgrids((0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9), angle=0)
-    plt.ylim(0.0,1.1)
+    plt.ylim(0.0,1.0)
     ax.set_theta_direction(-1)
     ax.set_theta_zero_location('N')
     #lines, labels = plt.rgrids()
