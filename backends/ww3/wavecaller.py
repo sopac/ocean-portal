@@ -25,21 +25,21 @@ def wavecaller(opath, var, gridLat, gridLon, pointValues, mthStr):
     extdata = np.array(pointValues)
     #determine which plot module to call based on variable input
     if var == 'Dm':
-        title = mthStr + ' ' + 'Long-term mean wave directions (1979-2009)'
+        title = mthStr + ' ' + 'mean daily wave direction (1979-2009)'
         units = 'degrees'
-        xstr = 'Mean wave direction'
+        xstr = 'Wave direction'
         binwd = 45
         RosePlot(opath, extdata,units,gridLat,gridLon,xstr,title,var,binwd)
 
     elif var == 'Hs':
-        title = mthStr + ' ' + 'Long-term significant wave height (1979-2009)'
+        title = mthStr + ' ' + 'mean daily significant wave height (1979-2009)'
     	units = 'm'
     	xstr = 'Significant wave height'
     	binwd = 0.1
     	HistPlot(opath, extdata,units,gridLat,gridLon,xstr,title,var,binwd)
 
     elif var == 'Tm':
-    	title = mthStr + ' ' + 'Long-term peak wave periods (1979-2009)'
+    	title = mthStr + ' ' + 'mean daily peak wave period (1979-2009)'
     	units = 's'
     	xstr = 'Peak wave period'
     	binwd = 0.1
