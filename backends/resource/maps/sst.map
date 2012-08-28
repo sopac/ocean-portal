@@ -9,7 +9,7 @@ MAP
   IMAGETYPE      PNG24
   EXTENT         -179.99166666666667 -50.99166666666667 179.99166666666667 10.00000000000
   SIZE           6000 3000
-  SHAPEPATH      "/data/maps"
+  SHAPEPATH      "layers"
   IMAGECOLOR     255 255 255
   FONTSET        "../fonts/fonts.list"
 #  SYMBOLSET      "../symbols/symbols35.sym"
