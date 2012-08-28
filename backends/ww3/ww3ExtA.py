@@ -7,6 +7,7 @@ from netCDF4 import Dataset
 import numpy as np
 import ocean.util as util
 import extractor
+from angleconv import dirflip
 
 class WaveWatch3Extraction ():
     """
@@ -57,6 +58,7 @@ class WaveWatch3Extraction ():
     def writeOutput(self, fileName, latsLons, timeseries, gridValues, varStr):
         if varStr == 'Dm':
             label = 'Wave Direction (degrees)'
+	    gridValues = dirflip(gridValues)
         if varStr == 'Hs':
             label = 'Significant Wave Height (m)'
         if varStr == 'Tm':
