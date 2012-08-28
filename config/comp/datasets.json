@@ -1,7 +1,7 @@
 [{
     "id":"reynolds",
     "name":"Reynolds",
-    "title": "Sea Surface Temperature - Reynolds [BETA]",
+    "title": "Sea Surface Temperature - Reynolds",
     "help": "doc/ReynoldsSSTv2.doc",
     "variables": [{
         "id":"mean",
@@ -41,7 +41,7 @@
 },{
     "id":"ersst",
     "name":"ERSST",
-    "title": "Sea Surface Temperature - ERSST [BETA]",
+    "title": "Sea Surface Temperature - ERSST",
     "variables": [{
         "id":"mean",
         "name":"Mean SST",
@@ -85,21 +85,30 @@
 },{
     "id":"ww3",
     "name":"WaveWatch III",
-    "title": "WaveWatch III [BETA]",
+    "title": "WaveWatch III",
     "variables": [{
         "id": "Hs",
-        "name": "Significant Wave Height"
+        "name": "Significant Wave Height",
+        "periods": ["monthly"]
     }, {
         "id": "Tm",
-        "name": "Mean Wave Period"
+        "name": "Mean Wave Period",
+        "periods": ["monthly"]
     }, {
         "id": "Dm",
-        "name": "Mean Wave Direction"
-    }]
+        "name": "Mean Wave Direction",
+        "periods": ["monthly"]
+    }],
+    "dateRange" : {
+        "minYear": "1979",
+        "maxYear": "2009",
+        "minDate": {"year": 1979, "month": 1, "date": 1},
+        "maxDate": {"year": 2009, "month": 12, "date":1}
+    }
 },{
     "id":"bran",
     "name":"BRAN",
-    "title": "BRAN 2.1 [BETA]",
+    "title": "BRAN 2.1",
     "variables": [{
         "id":"temp",
         "name":"Temperature",

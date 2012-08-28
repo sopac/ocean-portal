@@ -35,7 +35,7 @@ def process(form):
         urlatStr = form["urlat"].value
         urlonStr = form["urlon"].value
         dateStr = form["date"].value
-        period = form["period"].value
+        periodStr = form["period"].value
 
         args = {"var": varStr,
                 "lllat": lllatStr,
@@ -50,15 +50,15 @@ def process(form):
 
         if lllatStr == urlatStr and lllonStr == urlonStr:
             (latStr, lonStr) = frm.nameformat(lllatStr,lllonStr)
-            filename = pointExt % (ww3Product["point"], latStr, lonStr, varStr, mthStr)
+            filename = pointExt % (ww3Product["point"], latStr, lonStr, varStr, month)
         else:
-            filename = recExt % (ww3Product["rect"], lllatStr, lllonStr, urlatStr, urlonStr, varStr, mthStr)
+            filename = recExt % (ww3Product["rect"], lllatStr, lllonStr, urlatStr, urlonStr, varStr, month)
 
         outputFileName = serverCfg["outputDir"] + filename
 
         if not os.path.exists(outputFileName + ".txt"):
             timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr, k1, k2)
-            extractor.writeOutput(outputFileName + ".txt", latsLons, timeseries, gridValues)
+            extractor.writeOutput(outputFileName + ".txt", latsLons, timeseries, gridValues, varStr)
         if not os.path.exists(outputFileName + ".txt"):
             responseObj["error"] = "Error occured during the extraction."
         else:
@@ -69,6 +69,8 @@ def process(form):
             timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr, k1, k2)
             try:
                 wc.wavecaller(outputFileName, varStr, gridLat, gridLon, gridValues, mthStr)
+            #except: le.Landerror:
+            #    responseObj["error"] = "Invalid data point.  Please try again."
             except:
                 if serverCfg['debug']:
                     raise
