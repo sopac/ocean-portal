@@ -11,6 +11,7 @@ import wavecaller as wc
 import formatter as frm
 import monthconfig as mc
 import landerror as le
+import GridPointFinder as GPF
 #Maybe move these into configuration later
 pointExt = "%s_%s_%s_%s_%s"
 recExt = "%s_%s_%s_%s_%s_%s"
@@ -23,7 +24,7 @@ ww3Product = productName.products["ww3"]
 
 #get the plotter
 extractor = ww3ExtA.WaveWatch3Extraction()
-#getGrid = GPF.Extractor()
+getGrid = GPF.Extractor()
 
 def process(form):
     responseObj = {} #this object will be encoded into a json string
@@ -51,8 +52,8 @@ def process(form):
         k1, k2, mthStr = mc.monthconfig(month)
 
         if lllatStr == urlatStr and lllonStr == urlonStr:
-            #latStr,lonStr = getGrid.getGridPoint(lllatStr,lllonStr)
-            (latStr, lonStr) = frm.nameformat(lllatStr,lllonStr)
+            latStr,lonStr = getGrid.getGridPoint(lllatStr,lllonStr)
+            (latStr, lonStr) = frm.nameformat(latStr,lonStr)
             filename = pointExt % (ww3Product["point"], latStr, lonStr, varStr, month)
         else:
             filename = recExt % (ww3Product["rect"], lllatStr, lllonStr, urlatStr, urlonStr, varStr, month)
