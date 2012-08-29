@@ -35,7 +35,7 @@
     "dateRange" : {
         "minYear": "1981",
         "maxYear": "0+",
-        "minDate": {"year": 1981, "month": 9, "date": 1},
+        "minDate": "19810901",
         "maxDate": "-4D"
     }
 },{
@@ -79,7 +79,7 @@
     "dateRange" : {
         "minYear": "1981",
         "maxYear": "0+",
-        "minDate": {"year": 1981, "month": 9, "date": 1},
+        "minDate": "19810901",
         "maxDate": "-4D"
     }
 },{
@@ -102,8 +102,8 @@
     "dateRange" : {
         "minYear": "1979",
         "maxYear": "2009",
-        "minDate": {"year": 1979, "month": 1, "date": 1},
-        "maxDate": {"year": 2009, "month": 12, "date":1}
+        "minDate": "19790101",
+        "maxDate": "20091201"
     }
 },{
     "id":"bran",
@@ -132,9 +132,9 @@
     }],
     "dateRange" : {
         "minYear": "1993",
-        "maxYear": "2011",
-        "minDate": {"year": 1993, "month": 1, "date": 1},
-        "maxDate": "-4D" 
+        "maxYear": "2006",
+        "minDate": "19930101",
+        "maxDate": "20061230"
     }
 }, {
     "id":"sealevel",
@@ -148,8 +148,8 @@
         "dateRange" : {
             "minYear": "1993",
             "maxYear": "2011",
-            "minDate": {"year": 1993, "month": 1, "date": 1},
-            "maxDate": {"year": 2011, "month": 2, "date": 1}
+            "minDate": "19930101",
+            "maxDate": "20110201"
         }
     },{
         "id":"rec",
@@ -158,8 +158,8 @@
         "dateRange" : {
             "minYear": "1950",
             "maxYear": "2009",
-            "minDate": {"year": 1950, "month": 1, "date": 1},
-            "maxDate": {"year": 2009, "month": 12, "date": 1}
+            "minDate": "19500101",
+            "maxDate": "20091201"
         }
     }]
 }]    
