@@ -4,10 +4,12 @@ import json
 import datetime
 import numpy as np
 
+from ..netcdf import plotter
 import branPlotterNew
 from ..util import productName
 import ocean.util as util
 from ..util import regionConfig
+import branConfig as bc
 
 #Maybe move these into configuration later
 branGraph = "%s_%s_%s_%s"
@@ -103,6 +105,10 @@ def process(form):
                     u = None; v = None
                     contourLines = True
                 
+                config = bc.branConfig()
+                plot = plotter.Plotter()
+                plot.contourBasemapEast(data, lats, lons, 'temp', config, outputFilename) 
+                plot.contourBasemapWest(data, lats, lons, 'temp', config, outputFilename)
                 branPlotterNew.plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
                                                       output_filename=outputFileFullPath, title=title, units=unitStr,
                                                       cb_ticks=cb_ticks, cb_tick_fmt=cb_tick_fmt, cmp_name='jet', proj='cyl',
