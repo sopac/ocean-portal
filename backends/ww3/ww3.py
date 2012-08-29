@@ -23,6 +23,7 @@ ww3Product = productName.products["ww3"]
 
 #get the plotter
 extractor = ww3ExtA.WaveWatch3Extraction()
+#getGrid = GPF.Extractor()
 
 def process(form):
     responseObj = {} #this object will be encoded into a json string
@@ -50,6 +51,7 @@ def process(form):
         k1, k2, mthStr = mc.monthconfig(month)
 
         if lllatStr == urlatStr and lllonStr == urlonStr:
+            #latStr,lonStr = getGrid.getGridPoint(lllatStr,lllonStr)
             (latStr, lonStr) = frm.nameformat(lllatStr,lllonStr)
             filename = pointExt % (ww3Product["point"], latStr, lonStr, varStr, month)
         else:
