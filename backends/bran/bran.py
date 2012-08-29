@@ -89,13 +89,13 @@ def process(form):
                 lon_min = regionConfig.regions[regionStr][1]['llcrnrlon']
                 lon_max = regionConfig.regions[regionStr][1]['urcrnrlon']
 
-                input_data_file = '/data/blue_link/data/monthly/' + dataVar + '/' + dataVar + '_' + year + '_' + month + '.nc4'                    
+                input_data_file = os.path.join(util.get_server_config()['dataDir']['bran'], 'monthly', dataVar, dataVar + '_' + year + '_' + month + '.nc4')
                 lats, lons, zlevels, data = branPlotterNew.load_BRAN_data(input_data_file, dataVar, lat_min - 1.0, lat_max + 1.0, lon_min - 1.0, lon_max + 1.0)
 
                 if currents == True:
-                    input_data_file = '/data/blue_link/data/monthly/u/' + 'u' + '_' + year + '_' + month + '.nc4'
+                    input_data_file = os.path.join(util.get_server_config()['dataDir']['bran'], 'monthly', 'u', 'u' + '_' + year + '_' + month + '.nc4')
                     lats2, lons2, zlevels, u = branPlotterNew.load_BRAN_data(input_data_file, 'u', lat_min - 1.0, lat_max + 1.0, lon_min - 1.0, lon_max + 1.0)
-                    input_data_file = '/data/blue_link/data/monthly/v/' + 'v' + '_' + year + '_' + month + '.nc4'
+                    input_data_file = os.path.join(util.get_server_config()['dataDir']['bran'], 'monthly', 'v', 'v' + '_' + year + '_' + month + '.nc4')
                     lats2, lons2, zlevels, v = branPlotterNew.load_BRAN_data(input_data_file, 'v', lat_min - 1.0, lat_max + 1.0, lon_min - 1.0, lon_max + 1.0)
                     contourLines=False
                 else:
@@ -112,7 +112,7 @@ def process(form):
             if not os.path.exists(outputFileFullPath):
                 responseObj["error"] = "Requested image is not available at this time."
             else:
-                responseObj["img"] = '/portal' + outputFileFullPath
+                responseObj["img"] = util.get_server_config()['baseURL'] + outputFileFullPath
 
     response = json.dumps(responseObj)
     return response
