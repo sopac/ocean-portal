@@ -11,11 +11,17 @@ Don't import config directly, use util.get_server_config()
 
 servers = {
     'tuscany': { 'hostname':  'tuscany.bom.gov.au',
-                 'baseURL':   '/portal',
+                 # path on web server
+                 'baseURL':   '/portal/',
+                 # relative path to rasters
+                 'rasterURL': 'raster/',
+                 # path on disk to output rasters/caches
                  'outputDir': '/data/comp/raster/',
-                 'cacheDir': { 'reynolds': '/data/comp/raster/cache/reynolds/',
-                               'ersst': '/data/comp/raster/cache/ersst/'
+                 # relative path to caches (relative to rasterURL)
+                 'cacheDir': { 'reynolds': 'cache/reynolds/',
+                               'ersst': 'cache/ersst/'
                              },
+                 # path to data on disk
                  'dataDir':  { 'reynolds': '/data/sst/reynolds/',
                                'ww3': '/data/wavewatch3/',
                                'sealevel': '/data/sea_level/',
@@ -26,10 +32,11 @@ servers = {
                  'debug':       True,
                },
     'tunceli': { 'hostname':  'tunceli.bom.gov.au',
-                 'baseURL':   '/portal',
+                 'baseURL':   '/portal/',
+                 'rasterURL': 'raster/',
                  'outputDir': '/data/comp/raster/',
-                 'cacheDir': { 'reynolds': '/data/comp/raster/cache/reynolds/',
-                               'ersst':    '/data/comp/raster/cache/ersst/',
+                 'cacheDir': { 'reynolds': 'cache/reynolds/',
+                               'ersst':    'cache/ersst/',
                              },
                  'dataDir':  { 'reynolds': '/data/comp/reynolds/',
                                'ww3':      '/data/comp/wavewatch3/',
@@ -40,17 +47,19 @@ servers = {
                  'mapservPath': '/usr/libexec/mapserv',
                  'debug':       True,
                },
-    'www4': { 'hostname':  'www4.bom.gov.au:50002', # FIXME: will be proxied
-              'baseURL':   '/cosppac/portal',
-              'outputDir': '/data/comp/raster/',
-              'cacheDir': { 'reynolds': '/data/comp/raster/cache/reynolds/',
-                            'ersst':    '/data/comp/raster/cache/ersst/',
+    'www4': { 'hostname':  'wdev.bom.gov.au',
+              # hard specified to go through the proxy
+              'baseURL':   'http://wdev.bom.gov.au/cosppac/apps/portal/',
+              'rasterURL': 'raster/',
+              'outputDir': '/web/cosppac/raster/',
+              'cacheDir': { 'reynolds': 'cache/reynolds/',
+                            'ersst':    'cache/ersst/',
                           },
-              'dataDir':  { 'reynolds': '/data/comp/reynolds/',
-                            'ww3':      '/data/comp/wavewatch3/',
-                            'sealevel': '/data/comp/sea_level/',
-                            'ersst':    '/data/comp/ersst/',
-                            'bran':     '/data/comp/bran/',
+              'dataDir':  { 'reynolds': '/web/data/cosppac/reynolds/',
+                            'ww3':      '/web/data/cosppac/wavewatch3/',
+                            'sealevel': '/web/data/cosppac/sea_level/',
+                            'ersst':    '/web/data/cosppac/ersst/',
+                            'bran':     '/web/data/cosppac/bran/',
                           },
               'mapservPath': '/usr/libexec/mapserv',
               'debug':       True,

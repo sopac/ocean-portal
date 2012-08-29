@@ -20,6 +20,10 @@ serverCfg = util.get_server_config()
 #get dataset dependant production information
 reynoldsProduct = productName.products["reynolds"]
 
+CACHE_URL = os.path.join(serverCfg['baseURL'],
+                         serverCfg['rasterURL'],
+                         serverCfg['cacheDir']['ersst'])
+
 #get the plotter
 plotter = reynoldsPlotter.ReynoldsPlotter()
 
@@ -42,18 +46,15 @@ def process(form):
             dateStr = dateStr[4:6] #extract month value
             if form["trend"].value == "true":
                 if periodStr == 'monthly':
-                    responseObj["aveImg"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]["reynolds"]\
+                    responseObj["aveImg"] = CACHE_URL \
                                           + reynoldsProduct["monthlyAve"]\
                                           + "_%s_ave_%s_trend.png" % (dateStr, areaStr)
-                    responseObj["aveData"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]["reynolds"]\
+                    responseObj["aveData"] = CACHE_URL \
                                           + reynoldsProduct["monthlyAve"]\
                                           + '_%s_ave_%s.txt"' % (dateStr, areaStr)
                     responseObj["mean"] = str(areaMean.monthlyMean[dateStr][areaStr])
                 elif periodStr == 'yearly':
-                    responseObj["aveImg"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]["reynolds"]\
+                    responseObj["aveImg"] = CACHE_URL \
                                           + reynoldsProduct["yearlyAve"]\
                                           + '_ave_%s_trend.png"' % (areaStr)
                     responseObj["aveData"] = serverCfg["baseURL"]\
@@ -65,8 +66,7 @@ def process(form):
                 if periodStr == 'monthly':
                     if "runningInterval" in form:
                         runningInterval = int(form["runningInterval"].value)
-                        responseObj["aveImg"] = serverCfg["baseURL"]\
-                                              + serverCfg["cacheDir"]["reynolds"]\
+                        responseObj["aveImg"] = CACHE_URL \
                                               + reynoldsProduct["monthlyAve"]\
                                               + '_%s_ave_%s_%02dmoving.png"' % (dateStr, areaStr, runningInterval)
                         responseObj["aveData"] = serverCfg["baseURL"]\
@@ -75,39 +75,33 @@ def process(form):
                                                + '_%s_ave_%s.txt"' % (dateStr, areaStr)
                         responseObj["mean"] = str(areaMean.monthlyMean[dateStr][areaStr])
                 elif periodStr == 'yearly':
-                    responseObj["aveImg"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]["reynolds"]\
+                    responseObj["aveImg"] = CACHE_URL \
                                           + reynoldsProduct["yearlyAve"]\
                                           + '_ave_%s_%02dmoving.png"' % (areaStr, runningInterval)
-                    responseObj["aveData"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]["reynolds"]\
+                    responseObj["aveData"] = CACHE_URL \
                                           + reynoldsProduct["yearlyAve"]\
                                           + '_ave_%s.txt' % (areaStr)
                     responseObj["mean"] = str(areaMean.yearlyMean[areaStr])
             else:
                 if periodStr == 'monthly':
-                    responseObj["aveImg"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]["reynolds"]\
+                    responseObj["aveImg"] = CACHE_URL \
                                           + reynoldsProduct["monthlyAve"]\
                                           + '_%s_ave_%s.png"' % (dateStr, areaStr)
-                    responseObj["aveData"] = serverCfg["baseURL"]\
-                                           + serverCfg["cacheDir"]["reynolds"]\
+                    responseObj["aveData"] = CACHE_URL \
                                            + reynoldsProduct["monthlyAve"]\
                                            + '_%s_ave_%s.txt"' % (dateStr, areaStr)
                     responseObj["mean"] = str(areaMean.monthlyMean[dateStr][areaStr])
                 elif periodStr == 'yearly':
-                    responseObj["aveImg"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]["reynolds"]\
+                    responseObj["aveImg"] = CACHE_URL \
                                           + reynoldsProduct["yearlyAve"]\
                                           + '_ave_%s.png"' % (areaStr)
-                    responseObj["aveData"] = serverCfg["baseURL"]\
-                                           + serverCfg["cacheDir"]["reynolds"]\
+                    responseObj["aveData"] = CACHE_URL \
                                            + reynoldsProduct["yearlyAve"]\
                                            + '_ave_%s.txt"' % (areaStr)
                     responseObj["mean"] = str(areaMean.yearlyMean[areaStr])
         elif mapStr == "dec":
             fileName = decGraph % (reynoldsProduct["monthlyDec"], areaStr, dateStr[:6])
-            outputFileName = serverCfg["outputDir"] + fileName
+            outputFileName = os.path.join(serverCfg['outputDir'], fileName)
 
             if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
                 plotter.plot(fileName, **args)
@@ -117,7 +111,9 @@ def process(form):
             else:
                 responseObj.update(util.build_response_object(
                         COMMON_FILES.keys(),
-                        serverCfg['baseURL'] + outputFileName,
+                        os.path.join(serverCfg['baseURL'],
+                                     serverCfg['rasterURL'],
+                                     fileName),
                         COMMON_FILES.values()))
         else:
         ####current xml html response
@@ -134,7 +130,7 @@ def process(form):
             elif periodStr == 'weekly':
                 fileName = aveSstGraph % (reynoldsProduct["weekly"], mapStr, areaStr, dateStr)
 
-            outputFileName = serverCfg["outputDir"] + fileName
+            outputFileName = os.path.join(serverCfg['outputDir'], fileName)
 
             if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
                 try:
@@ -150,7 +146,9 @@ def process(form):
             else:
                 responseObj.update(util.build_response_object(
                         COMMON_FILES.keys(),
-                        serverCfg['baseURL'] + outputFileName,
+                        os.path.join(serverCfg['baseURL'],
+                                     serverCfg['rasterURL'],
+                                     fileName),
                         COMMON_FILES.values()))
 
     response = json.dumps(responseObj)

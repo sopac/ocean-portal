@@ -66,8 +66,9 @@ def process(form):
         if not os.path.exists(outputFileName + ".txt"):
             responseObj["error"] = "Error occured during the extraction."
         else:
-            responseObj["ext"] = serverCfg["baseURL"]\
-                               + outputFileName + ".txt"
+            responseObj['ext'] = os.path.join(serverCfg['baseURL'],
+                                              serverCfg['rasterURL'],
+                                              filename + '.txt')
 
         if not os.path.exists(outputFileName + ".png"):
             timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr, k1, k2)
@@ -82,9 +83,10 @@ def process(form):
 		    responseObj["error"] = "Error occured during the extraction.  Image could not be generated."	
                     pass
                  
-        if os.path.exists(outputFileName + ".png"):    
-            responseObj["img"] = serverCfg["baseURL"]\
-                               + outputFileName + ".png"
+        if os.path.exists(outputFileName + ".png"):
+            responseObj['img'] = os.path.join(serverCfg['baseURL'],
+                                              serverCfg['rasterURL'],
+                                              filename + '.png')
 
     response = json.dumps(responseObj)
 
