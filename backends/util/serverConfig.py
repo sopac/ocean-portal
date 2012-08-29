@@ -48,7 +48,8 @@ servers = {
                  'debug':       True,
                },
     'www4': { 'hostname':  'wdev.bom.gov.au',
-              'baseURL':   '/cosppac/portal/',
+              # hard specified to go through the proxy
+              'baseURL':   'http://wdev.bom.gov.au/cosppac/apps/portal/',
               'rasterURL': 'raster/',
               'outputDir': '/web/cosppac/raster/',
               'cacheDir': { 'reynolds': 'cache/reynolds/',
