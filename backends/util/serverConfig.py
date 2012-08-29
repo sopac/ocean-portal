@@ -22,7 +22,7 @@ servers = {
                                'ersst': '/data/sst/ersst/data/',
                                'bran': '/data/blue_link/data/'
                              },
-                 'mapservPath': '/var/www/cgi-bin/mapserv',
+                 'mapservPath': '/usr/libexec/mapserv',
                  'debug':       True,
                },
     'tunceli': { 'hostname':  'tunceli.bom.gov.au',
