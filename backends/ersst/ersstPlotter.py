@@ -147,7 +147,7 @@ class ErsstPlotter ():
                   regionConfig.regions[area][1]["llcrnrlon"],\
                   regionConfig.regions[area][1]["urcrnrlat"],\
                   regionConfig.regions[area][1]["urcrnrlon"],\
-		  "cyl", contourLines, centerLabel)
+		  res=resolution,"cyl", contourLines, centerLabel)
         plot.contourBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
         plot.contourBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
         plot.plotScale(sst, variable, self.config, outputFilename)
