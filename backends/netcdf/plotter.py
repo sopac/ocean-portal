@@ -94,12 +94,20 @@ class Plotter:
         ax = plt.gca()
         box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))
         copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.15), frameon=False, bbox_transform=ax.transAxes)
+#        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (0,0,1,1), frameon=False, bbox_transform=plt.gcf().transFigure)
         ax.add_artist(copyrightBox)
 #        cax = plt.axes([0.93, 0.18, 0.02, 0.65])
 #        cbar = plt.colorbar(format=config.getValueFormat(variable), cax=cax, extend='both')
    
+#        cbar = plt.colorbar(format=config.getValueFormat(variable), extend='both', shrink=0.5)
         cbar = plt.colorbar(format=config.getValueFormat(variable), extend='both')
+
         cbar.set_label(config.getUnit(variable), rotation='horizontal', fontsize=6)
+
+
+        l,b,w,h = plt.gca().get_position().bounds
+        ll,bb,ww,hh = cbar.ax.get_position().bounds
+        cbar.ax.set_position([ll, b+0.25*h, ww, h*0.5])
 
 	colorbarLabels = config.getColorbarLabels(variable)
 	if len(colorbarLabels) != 0:
@@ -206,7 +214,7 @@ class Plotter:
         #* Generate image for the thumbnail and download
         #*******************************************
         m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
-                    urcrnrlat=urlat, urcrnrlon=urlon, resolution='h')
+                    urcrnrlat=urlat, urcrnrlon=urlon, resolution='f')
         x, y = m(*np.meshgrid(lons, lats))
         m.pcolormesh(x, y, data, shading='flat', cmap=config.getColorMap(variable))
         m.drawcoastlines(linewidth=0.1, zorder=6)
@@ -232,15 +240,22 @@ class Plotter:
         plt.clim(*config.getColorBounds(variable))
         ax = plt.gca()
         box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))
-        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.15), frameon=False, bbox_transform=ax.transAxes)
+        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.3), frameon=False, bbox_transform=ax.transAxes)
+#        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (0,0,1,1), frameon=False, bbox_transform=plt.gcf().transFigure)
         ax.add_artist(copyrightBox)
 
 #        cax = plt.axes([0.93, 0.18, 0.02, 0.65])
 #        cbar = plt.colorbar(format=config.getValueFormat(variable), cax=cax, extend='both')
 #        cbar = plt.colorbar(format=config.getValueFormat(variable), cax=cax, extend='both')
+#        cbar = plt.colorbar(format=config.getValueFormat(variable), extend='both', shrink=0.5)
         cbar = plt.colorbar(format=config.getValueFormat(variable), extend='both')
+        
         cbar.set_label(config.getUnit(variable), rotation='horizontal', fontsize=6)
 #        cbar.set_label(ax.get_window_extent(), rotation='horizontal')
+
+        l,b,w,h = plt.gca().get_position().bounds
+        ll,bb,ww,hh = cbar.ax.get_position().bounds
+        cbar.ax.set_position([ll, b+0.25*h, ww, h*0.5])
 
         colorbarLabels = config.getColorbarLabels(variable)
         if len(colorbarLabels) != 0:
@@ -254,8 +269,7 @@ class Plotter:
                 except KeyError:
                     pass
 
-
-        plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.8, bbox_extra_artists=[copyrightBox])
+        plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.3, bbox_extra_artists=[copyrightBox])
         plt.close()
 
     def plotBasemapWest(self, data, lats, lons, variable, config, outputFile,\
@@ -324,10 +338,17 @@ class Plotter:
         ax = plt.gca()
         box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))
         copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.15), frameon=False, bbox_transform=ax.transAxes)
+#       copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (0,0,1,1), frameon=False, bbox_transform=plt.gcf().transFigure)
         ax.add_artist(copyrightBox)
 
+#        cbar = plt.colorbar(format=config.getValueFormat(variable), extend='both', shrink=0.5)
         cbar = plt.colorbar(format=config.getValueFormat(variable), extend='both')
+
         cbar.set_label(config.getUnit(variable), rotation='horizontal', fontsize=6)
+
+        l,b,w,h = plt.gca().get_position().bounds
+        ll,bb,ww,hh = cbar.ax.get_position().bounds
+        cbar.ax.set_position([ll,  b+0.25*h, ww, h*0.5])
 
         colorbarLabels = config.getColorbarLabels(variable)
         if len(colorbarLabels) != 0:
