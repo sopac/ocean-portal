@@ -21,6 +21,10 @@ serverCfg = util.get_server_config()
 #get dataset dependant production information
 ersstProduct = productName.products["ersst"]
 
+CACHE_URL = os.path.join(serverCfg['baseURL'],
+                         serverCfg['rasterURL'],
+                         serverCfg['cacheDir']['ersst'])
+
 #get the plotter
 plotter = ersstPlotter.ErsstPlotter()
 
@@ -43,42 +47,34 @@ def process(form):
             dateStr = dateStr[4:6] #extract month value
             if form["trend"].value == "true":
                 if periodStr == 'monthly':
-                    responseObj["aveImg"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]["ersst"]\
+                    responseObj["aveImg"] = CACHE_URL \
                                           + ersstProduct["monthlyAve"]\
                                           + "_%s_ave_%s_trend.png" % (dateStr, areaStr)
-                    responseObj["aveData"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]["ersst"]\
+                    responseObj["aveData"] = CACHE_URL \
                                           + ersstProduct["monthlyAve"]\
                                           + '_%s_ave_%s.txt"' % (dateStr, areaStr)
                     responseObj["mean"] = str(areaMean.monthlyMean[dateStr][areaStr])
 	        elif periodStr == '3monthly':
-                    responseObj["aveImg"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]["ersst"]\
+                    responseObj["aveImg"] = CACHE_URL \
                                           + ersstProduct["3monthlyAve"]\
                                           + "_%s_ave_%s_trend.png" % (dateStr, areaStr)
-                    responseObj["aveData"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]["ersst"]\
+                    responseObj["aveData"] = CACHE_URL \
                                           + ersstProduct["3monthlyAve"]\
                                           + '_%s_ave_%s.txt"' % (dateStr, areaStr)
 #                    responseObj["mean"] = str(areaMean.3monthlyMean[dateStr][areaStr])
 	        elif periodStr == '6monthly':
-                    responseObj["aveImg"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]\
+                    responseObj["aveImg"] = CACHE_URL \
                                           + ersstProduct["6monthlyAve"]\
                                           + "_%s_ave_%s_trend.png" % (dateStr, areaStr)
-                    responseObj["aveData"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]\
+                    responseObj["aveData"] = CACHE_URL \
                                           + ersstProduct["6monthlyAve"]\
                                           + '_%s_ave_%s.txt"' % (dateStr, areaStr)
 #                    responseObj["mean"] = str(areaMean.6monthlyMean[dateStr][areaStr])
 	        elif periodStr == '12monthly':
-                    responseObj["aveImg"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]\
+                    responseObj["aveImg"] = CACHE_URL \
                                           + ersstProduct["12monthlyAve"]\
                                           + "_%s_ave_%s_trend.png" % (dateStr, areaStr)
-                    responseObj["aveData"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]\
+                    responseObj["aveData"] = CACHE_URL \
                                           + ersstProduct["12monthlyAve"]\
                                           + '_%s_ave_%s.txt"' % (dateStr, areaStr)
 #                    responseObj["mean"] = str(areaMean.12monthlyMean[dateStr][areaStr])
@@ -86,83 +82,67 @@ def process(form):
                 if "runningInterval" in form:
                     runningInterval = int(form["runningInterval"].value)
                     if periodStr == 'monthly':
-                        responseObj["aveImg"] = serverCfg["baseURL"]\
-                                              + serverCfg["cacheDir"]\
+                        responseObj["aveImg"] = CACHE_URL \
                                               + ersstProduct["monthlyAve"]\
                                               + '_%s_ave_%s_%02drunningMean.png"' % (dateStr, areaStr, runningInterval)
-                        responseObj["aveData"] = serverCfg["baseURL"]\
-                                               + serverCfg["cacheDir"]\
+                        responseObj["aveData"] = CACHE_URL \
                                                + ersstProduct["monthlyAve"]\
                                                + '_%s_ave_%s.txt"' % (dateStr, areaStr)
                         responseObj["mean"] = str(areaMean.monthlyMean[dateStr][areaStr])
                     elif periodStr == '3monthly':
-                        responseObj["aveImg"] = serverCfg["baseURL"]\
-                                              + serverCfg["cacheDir"]\
+                        responseObj["aveImg"] = CACHE_URL \
                                               + ersstProduct["3monthlyAve"]\
                                               + '_%s_ave_%s_%02drunningMean.png"' % (dateStr, areaStr, runningInterval)
-                        responseObj["aveData"] = serverCfg["baseURL"]\
-                                               + serverCfg["cacheDir"]\
+                        responseObj["aveData"] = CACHE_URL \
                                                + ersstProduct["3monthlyAve"]\
                                                + '_%s_ave_%s.txt"' % (dateStr, areaStr)
 #                        responseObj["mean"] = str(areaMean.3monthlyMean[dateStr][areaStr])
                     elif periodStr == '6monthly':
-                        responseObj["aveImg"] = serverCfg["baseURL"]\
-                                              + serverCfg["cacheDir"]\
+                        responseObj["aveImg"] = CACHE_URL \
                                               + ersstProduct["6monthlyAve"]\
                                               + '_%s_ave_%s_%02drunningMean.png"' % (dateStr, areaStr, runningInterval)
-                        responseObj["aveData"] = serverCfg["baseURL"]\
-                                               + serverCfg["cacheDir"]\
+                        responseObj["aveData"] = CACHE_URL \
                                                + ersstProduct["6monthlyAve"]\
                                                + '_%s_ave_%s.txt"' % (dateStr, areaStr)
 #                            responseObj["mean"] = str(areaMean.6monthlyMean[dateStr][areaStr])
                     elif periodStr == '12monthly':
-                        responseObj["aveImg"] = serverCfg["baseURL"]\
-                                              + serverCfg["cacheDir"]\
+                        responseObj["aveImg"] = CACHE_URL \
                                               + ersstProduct["12monthlyAve"]\
                                               + '_%s_ave_%s_%02drunningMean.png"' % (dateStr, areaStr, runningInterval)
-                        responseObj["aveData"] = serverCfg["baseURL"]\
-                                               + serverCfg["cacheDir"]\
+                        responseObj["aveData"] = CACHE_URL \
                                                + ersstProduct["12monthlyAve"]\
                                                + '_%s_ave_%s.txt"' % (dateStr, areaStr)
 #                        responseObj["mean"] = str(areaMean.12monthlyMean[dateStr][areaStr])
             else:
                 if periodStr == 'monthly':
-                    responseObj["aveImg"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]\
+                    responseObj["aveImg"] = CACHE_URL \
                                           + ersstProduct["monthlyAve"]\
                                           + "_%s_ave_%s_.png" % (dateStr, areaStr)
-                    responseObj["aveData"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]\
+                    responseObj["aveData"] = CACHE_URL \
                                           + ersstProduct["monthlyAve"]\
                                           + '_%s_ave_%s.txt"' % (dateStr, areaStr)
                     responseObj["mean"] = str(areaMean.monthlyMean[dateStr][areaStr])
                 elif periodStr == '3monthly':
-                    responseObj["aveImg"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]\
+                    responseObj["aveImg"] = CACHE_URL \
                                           + ersstProduct["3monthlyAve"]\
                                           + "_%s_ave_%s_.png" % (dateStr, areaStr)
-                    responseObj["aveData"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]\
+                    responseObj["aveData"] = CACHE_URL \
                                           + ersstProduct["3monthlyAve"]\
                                           + '_%s_ave_%s.txt"' % (dateStr, areaStr)
 #                    responseObj["mean"] = str(areaMean.3monthlyMean[dateStr][areaStr])
                 elif periodStr == '6monthly':
-                    responseObj["aveImg"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]\
+                    responseObj["aveImg"] = CACHE_URL \
                                           + ersstProduct["6monthlyAve"]\
                                           + "_%s_ave_%s_.png" % (dateStr, areaStr)
-                    responseObj["aveData"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]\
+                    responseObj["aveData"] = CACHE_URL \
                                           + ersstProduct["6monthlyAve"]\
                                           + '_%s_ave_%s.txt"' % (dateStr, areaStr)
 #                    responseObj["mean"] = str(areaMean.6monthlyMean[dateStr][areaStr])
                 elif periodStr == '12monthly':
-                    responseObj["aveImg"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]\
+                    responseObj["aveImg"] = CACHE_URL \
                                           + ersstProduct["12monthlyAve"]\
                                           + "_%s_ave_%s_.png" % (dateStr, areaStr)
-                    responseObj["aveData"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]\
+                    responseObj["aveData"] = CACHE_URL \
                                           + ersstProduct["12monthlyAve"]\
                                           + '_%s_ave_%s.txt"' % (dateStr, areaStr)
 #                    responseObj["mean"] = str(areaMean.12monthlyMean[dateStr][areaStr])
@@ -182,7 +162,7 @@ def process(form):
 		fileName = decGraph % (ersstProduct["6monthlyDec"], baseStr, areaStr, dateStr[:6])
 	    if periodStr == '12monthly':
 		fileName = decGraph % (ersstProduct["12monthlyDec"], baseStr, areaStr, dateStr[:6])
-            outputFileName = serverCfg["outputDir"] + fileName
+            outputFileName = os.path.join(serverCfg['outputDir'], fileName)
             if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
                 try:
                     plotter.plot(fileName, **args)
@@ -196,7 +176,9 @@ def process(form):
             else:
                 responseObj.update(util.build_response_object(
                     COMMON_FILES.keys(),
-                    serverCfg['baseURL'] + outputFileName,
+                    os.path.join(serverCfg['baseURL'],
+                                 serverCfg['rasterURL'],
+                                 fileName),
                     COMMON_FILES.values()))
 
 	elif mapStr == "trend":
@@ -214,7 +196,7 @@ def process(form):
             if periodStr == '12monthly':
                 fileName = trendGraph % (ersstProduct["12monthlyTre"], baseStr, areaStr, dateStr[4:6])
 
-            outputFileName = serverCfg["outputDir"] + fileName
+            outputFileName = os.path.join(serverCfg["outputDir"], fileName)
 
             if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
                 try:
@@ -230,7 +212,9 @@ def process(form):
             else:
                 responseObj.update(util.build_response_object(
                         COMMON_FILES.keys(),
-                        serverCfg['baseURL'] + outputFileName,
+                        os.path.join(serverCfg['baseURL'],
+                                     serverCfg['rasterURL'],
+                                     fileName),
                         COMMON_FILES.values()))
         else:
         ####current xml html response
@@ -242,7 +226,7 @@ def process(form):
                 fileName = sstGraph % (ersstProduct["6monthly"], mapStr, areaStr, dateStr[:6])
             elif periodStr == '12monthly':
 	 	fileName = sstGraph % (ersstProduct["12monthly"], mapStr, areaStr, dateStr[:6])
-            outputFileName = serverCfg["outputDir"] + fileName
+            outputFileName = os.path.join(serverCfg['outputDir'], fileName)
 
             if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
                 try:
@@ -258,7 +242,9 @@ def process(form):
             else:
                 responseObj.update(util.build_response_object(
                         COMMON_FILES.keys(),
-                        serverCfg['baseURL'] + outputFileName,
+                        os.path.join(serverCfg['baseURL'],
+                                     serverCfg['rasterURL'],
+                                     fileName),
                         COMMON_FILES.values()))
 
     response = json.dumps(responseObj)

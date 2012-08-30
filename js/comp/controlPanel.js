@@ -1122,32 +1122,43 @@ function monthOrYearChanged(year, month) {
 function updatePage() {
     if (!ocean.processing) {
         ocean.processing = true;
+
+        function show_error(url, text)
+        {
+            $('#error-dialog-content').html(text);
+            $('#error-dialog-request').prop('href', url);
+            $('#error-dialog').dialog('open');
+        }
+
         $.ajax({
             url:  ocean.dataset.url(),
             dataType: 'json',
             beforeSend: function(jqXHR, settings) {
                 showControl('loadingDiv');
-                hideControl('errorDiv');
+                $('#error-dialog').dialog('close');
             },
             success: function(data, textStatus, jqXHR) {
-		hideControl('loadingDiv');
-                if (data != null) {
-                    if (data.error) {
-                        $('#errorDiv').html(data.error);
-                        showControl('errorDiv');
-                    }
-                    else {
+                hideControl('loadingDiv');
+
+                if (data == null || $.isEmptyObject(data))
+                {
+                    show_error(ocean.dataset.url(), "returned no data");
+                }
+                else
+                {
+                    if (data.error)
+                        show_error(ocean.dataset.url(), data.error);
+                    else
                         ocean.dataset.callback(data);
-                    }
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                alert(textStatus);
+                show_error(ocean.dataset.url(), textStatus);
             },
             complete: function(jqXHR, textStatus) {
                 ocean.processing = false;
                 hideControl('loadingDiv');
-            } 
+            }
         });
     }
 }

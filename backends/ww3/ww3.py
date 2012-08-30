@@ -7,10 +7,12 @@ import ww3ExtA
 import ocean.util as util
 from ..util import areaMean
 from ..util import productName
+from ..netcdf import extractor as xt
 import wavecaller as wc
 import formatter as frm
 import monthconfig as mc
 import landerror as le
+import GridPointFinder as GPF
 #Maybe move these into configuration later
 pointExt = "%s_%s_%s_%s_%s"
 recExt = "%s_%s_%s_%s_%s_%s"
@@ -23,6 +25,8 @@ ww3Product = productName.products["ww3"]
 
 #get the plotter
 extractor = ww3ExtA.WaveWatch3Extraction()
+getGrid = GPF.Extractor()
+GridPoints = xt.Extractor()
 
 def process(form):
     responseObj = {} #this object will be encoded into a json string
@@ -50,7 +54,9 @@ def process(form):
         k1, k2, mthStr = mc.monthconfig(month)
 
         if lllatStr == urlatStr and lllonStr == urlonStr:
-            (latStr, lonStr) = frm.nameformat(lllatStr,lllonStr)
+            lats,lons,vari = getGrid.getGridPoint(lllatStr,lllonStr,varStr)
+            (latStr,lonStr),(latgrid,longrid) = GridPoints.getGridPoint(lllatStr,lllonStr,lats,lons,vari,strategy = "exhaustive") 
+            (latStr, lonStr) = frm.nameformat(latStr,lonStr)
             filename = pointExt % (ww3Product["point"], latStr, lonStr, varStr, month)
         else:
             filename = recExt % (ww3Product["rect"], lllatStr, lllonStr, urlatStr, urlonStr, varStr, month)
@@ -59,12 +65,13 @@ def process(form):
 
         if not os.path.exists(outputFileName + ".txt"):
             timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr, k1, k2)
-            extractor.writeOutput(outputFileName + ".txt", latsLons, timeseries, gridValues, varStr)
+            extractor.writeOutput(outputFileName + ".txt", latStr, lonStr, timeseries, gridValues, varStr)
         if not os.path.exists(outputFileName + ".txt"):
             responseObj["error"] = "Error occured during the extraction."
         else:
-            responseObj["ext"] = serverCfg["baseURL"]\
-                               + outputFileName + ".txt"
+            responseObj['ext'] = os.path.join(serverCfg['baseURL'],
+                                              serverCfg['rasterURL'],
+                                              filename + '.txt')
 
         if not os.path.exists(outputFileName + ".png"):
             timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr, k1, k2)
@@ -79,9 +86,10 @@ def process(form):
 		    responseObj["error"] = "Error occured during the extraction.  Image could not be generated."	
                     pass
                  
-        if os.path.exists(outputFileName + ".png"):    
-            responseObj["img"] = serverCfg["baseURL"]\
-                               + outputFileName + ".png"
+        if os.path.exists(outputFileName + ".png"):
+            responseObj['img'] = os.path.join(serverCfg['baseURL'],
+                                              serverCfg['rasterURL'],
+                                              filename + '.png')
 
     response = json.dumps(responseObj)
 
