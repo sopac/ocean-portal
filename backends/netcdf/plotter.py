@@ -46,7 +46,7 @@ class Plotter:
         self.regionConfig = rc.regions
 
     def contour(self, data, lats, lons, variable, config, outputFile,\
-                title, lllat, lllon, urlat, urlon, proj=_DEFAULT_PROJ,\
+                title, lllat, lllon, urlat, urlon, res = 'h', proj=_DEFAULT_PROJ,\
                 contourLines = False, centerLabel = False):
 	"""
 	Plot the input data with contours using the specified project and save the plot to the output file.
