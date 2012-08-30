@@ -25,31 +25,7 @@ class Extractor ():
         nc = Dataset(file[0], 'r')
         lats  = nc.variables['y'][:] 
         lons = nc.variables['x'][:]
-        gridPointColIndex = 0
-        inputLat = float(inputLat)
-        inputLon = float(inputLon)        
-        latInsertIndex = bisect.bisect_left(lats,inputLat)
-        gridLatIndex = latInsertIndex 
-        if latInsertIndex == 0:
-            gridLat = lats[0]
-        elif math.fabs(lats[latInsertIndex-1] - inputLat) - math.fabs(lats[latInsertIndex] - inputLat) > 0: 
-            gridLat = lats[latInsertIndex]
-        else:
-            gridLatIndex = latInsertIndex - 1
-            gridLat = lats[gridLatIndex]
-           
-
-        lonInsertIndex = bisect.bisect_left(lons,inputLon)
-        gridLonIndex = lonInsertIndex
-        if lonInsertIndex == 0:
-            gridLon = lons[0]
-        elif math.fabs(lons[lonInsertIndex-1] - inputLon) - math.fabs(lons[lonInsertIndex] - inputLon) > 0: 
-            gridLon = lons[lonInsertIndex]
-        else:
-            gridLonIndex = lonInsertIndex - 1
-            gridLon = lons[gridLonIndex]
-
-        return gridLat, gridLon
+        return lats, lons
 
     def extract(self, data, lats, lons, latTop, latBottom, lonLeft, lonRight):
         """

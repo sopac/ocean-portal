@@ -7,6 +7,7 @@ import ww3ExtA
 import ocean.util as util
 from ..util import areaMean
 from ..util import productName
+from ..netcdf import extractor
 import wavecaller as wc
 import formatter as frm
 import monthconfig as mc
@@ -25,6 +26,7 @@ ww3Product = productName.products["ww3"]
 #get the plotter
 extractor = ww3ExtA.WaveWatch3Extraction()
 getGrid = GPF.Extractor()
+GridPoints = extractor.Extractor()
 
 def process(form):
     responseObj = {} #this object will be encoded into a json string
@@ -52,7 +54,8 @@ def process(form):
         k1, k2, mthStr = mc.monthconfig(month)
 
         if lllatStr == urlatStr and lllonStr == urlonStr:
-            latStr,lonStr = getGrid.getGridPoint(lllatStr,lllonStr)
+            lats,lons = getGrid.getGridPoint(lllatStr,lllonStr)
+            result = GridPoints.getGridPoint(lllatStr,lllonStr,lats,lons,varStr) 
             (latStr, lonStr) = frm.nameformat(latStr,lonStr)
             filename = pointExt % (ww3Product["point"], latStr, lonStr, varStr, month)
         else:
