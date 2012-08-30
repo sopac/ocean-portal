@@ -22,7 +22,7 @@ reynoldsProduct = productName.products["reynolds"]
 
 CACHE_URL = os.path.join(serverCfg['baseURL'],
                          serverCfg['rasterURL'],
-                         serverCfg['cacheDir']['ersst'])
+                         serverCfg['cacheDir']['reynolds'])
 
 #get the plotter
 plotter = reynoldsPlotter.ReynoldsPlotter()
@@ -57,8 +57,7 @@ def process(form):
                     responseObj["aveImg"] = CACHE_URL \
                                           + reynoldsProduct["yearlyAve"]\
                                           + '_ave_%s_trend.png"' % (areaStr)
-                    responseObj["aveData"] = serverCfg["baseURL"]\
-                                          + serverCfg["cacheDir"]["reynolds"]\
+                    responseObj["aveData"] = CACHE_URL \
                                           + reynoldsProduct["yearlyAve"] \
                                           + '"_ave_%s.txt"' % (areaStr)
                     responseObj["mean"] = str(areaMean.yearlyMean[areaStr])
@@ -69,8 +68,7 @@ def process(form):
                         responseObj["aveImg"] = CACHE_URL \
                                               + reynoldsProduct["monthlyAve"]\
                                               + '_%s_ave_%s_%02dmoving.png"' % (dateStr, areaStr, runningInterval)
-                        responseObj["aveData"] = serverCfg["baseURL"]\
-                                               + serverCfg["cacheDir"]["reynolds"]\
+                        responseObj["aveData"] = CACHE_URL \
                                                + reynoldsProduct["monthlyAve"]\
                                                + '_%s_ave_%s.txt"' % (dateStr, areaStr)
                         responseObj["mean"] = str(areaMean.monthlyMean[dateStr][areaStr])

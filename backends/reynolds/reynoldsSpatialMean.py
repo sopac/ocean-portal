@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import os
+import os.path
 import subprocess
 
 import ocean.util as util
