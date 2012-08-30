@@ -274,7 +274,7 @@ ocean.dsConf = {
                 },
                 selectVariable: function(selection) {
                                 //this should be in a callback for the combo
-                                periodCombo = Ext.getCmp('periodCombo');
+                                var periodCombo = Ext.getCmp('periodCombo');
                                 periodCombo.clearValue();
                                 var store = periodCombo.store;
                                 store.clearFilter(true);
@@ -370,7 +370,7 @@ ocean.dsConf = {
                                    },
             selectVariable: function(selection) {
                                 //this should be in a callback for the combo
-                                periodCombo = Ext.getCmp('periodCombo');
+                                var periodCombo = Ext.getCmp('periodCombo');
                                 periodCombo.clearValue();
                                 var store = periodCombo.store;
                                 store.clearFilter(true);
@@ -847,7 +847,7 @@ function createCheckBoxes(store, records, result, operation, eOpt) {
                         }
                     }
 
-                    periodCombo = Ext.getCmp('periodCombo');
+                    var periodCombo = Ext.getCmp('periodCombo');
                     periodCombo.clearValue();
                     var store = periodCombo.store;
                     store.clearFilter(true);
