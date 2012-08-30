@@ -25,7 +25,7 @@ class Extractor ():
         nc = Dataset(file[0], 'r')
         lats  = nc.variables['y'][:] 
         lons = nc.variables['x'][:]
-        var = nc.variables[varStr][:]
+        var = nc.variables[varStr][:][0]
 
         return lats, lons, var
 
