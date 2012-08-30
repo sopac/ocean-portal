@@ -55,7 +55,7 @@ class Plotter:
         #* Generate image for the thumbnail and download
         #*******************************************
 	m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
-                    urcrnrlat=urlat, urcrnrlon=urlon, resolution='h')
+                    urcrnrlat=urlat, urcrnrlon=urlon, resolution=res)
         x, y = m(*np.meshgrid(lons, lats))
 	if contourLines:
 	    contourPlt = m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4)
@@ -95,7 +95,7 @@ class Plotter:
         plt.clim(*config.getColorBounds(variable))
         ax = plt.gca()
         box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))
-        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.15), frameon=False, bbox_transform=ax.transAxes)
+        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.3), frameon=False, bbox_transform=ax.transAxes)
 #        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (0,0,1,1), frameon=False, bbox_transform=plt.gcf().transFigure)
         ax.add_artist(copyrightBox)
 #        cax = plt.axes([0.93, 0.18, 0.02, 0.65])
