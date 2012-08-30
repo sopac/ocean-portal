@@ -231,8 +231,8 @@ ocean.dsConf = {
                                                          },
                                                          onFeatureInsert: function(feature) {
                                                              var geometry = feature.geometry;
-                                                             document.forms['theform'].elements['latitude'].value = Math.round(geometry.y * 1000)/1000;
-                                                             document.forms['theform'].elements['longitude'].value = Math.round(geometry.x * 1000)/1000;
+                                                             $('#latitude').val(Math.round(geometry.y * 1000)/1000);
+                                                             $('#longitude').val(Math.round(geometry.x * 1000)/1000);
                                                          }
                                                      });
                               ocean.mapObj.addLayer(ww3Layer);
@@ -291,11 +291,11 @@ ocean.dsConf = {
                 }
     },
     ww3: {url: function() {return "cgi/portal.py?dataset=ww3"
-                                + "&lllat=" + document.forms['theform'].elements['latitude'].value 
-                                + "&lllon=" + document.forms['theform'].elements['longitude'].value
-                                + "&urlat=" + document.forms['theform'].elements['latitude'].value
-                                + "&urlon=" + document.forms['theform'].elements['longitude'].value
-                                + "&variable=" + this.variable.get('id') 
+                                + "&lllat=" + $('#latitude').val()
+                                + "&lllon=" + $('#longitude').val()
+                                + "&urlat=" + $('#latitude').val()
+                                + "&urlon=" + $('#longitude').val()
+                                + "&variable=" + this.variable.get('id')
                                 + "&date=" + $.datepick.formatDate('yyyymmdd', ocean.date)
                                 + "&period=" + ocean.period
                                 + "&timestamp=" + new Date().getTime();
@@ -317,8 +317,8 @@ ocean.dsConf = {
                                                          },
                                                          onFeatureInsert: function(feature) {
                                                              var geometry = feature.geometry;
-                                                             document.forms['theform'].elements['latitude'].value = Math.round(geometry.y * 1000)/1000;
-                                                             document.forms['theform'].elements['longitude'].value = Math.round(geometry.x * 1000)/1000;
+                                                             $('#latitude').val(Math.round(geometry.y * 1000)/1000);
+                                                             $('#longitude').val(Math.round(geometry.x * 1000)/1000);
                                                          }
                                                      });
                                   ocean.mapObj.addLayer(ww3Layer);
@@ -403,9 +403,9 @@ ocean.dsConf = {
                                 + "&period=" + ocean.period
                                 + "&date=" + $.datepick.formatDate('yyyymmdd', ocean.date)
                                 + "&area=" + ocean.area
-                                + "&lat=" + document.forms['theform'].elements['latitude'].value 
-                                + "&lon=" + document.forms['theform'].elements['longitude'].value
-                                + "&tidalGaugeId=" + document.forms['theform'].elements['tgId'].value
+                                + "&lat=" + $('#latitude').val()
+                                + "&lon=" + $('#longitude').val()
+                                + "&tidalGaugeId=" + $('#tgId').val()
                                 + "&timestamp=" + new Date().getTime();
                            },
             data: null,
@@ -458,10 +458,10 @@ ocean.dsConf = {
                               'featureselected': function(event) {
                                   gauge = event.feature;
                                   geometry = gauge.geometry.getBounds().getCenterLonLat();
-                                  document.forms['theform'].elements['tidalgauge'].value = gauge.attributes.title;
-                                  document.forms['theform'].elements['tgId'].value = gauge.attributes.description;
-                                  document.forms['theform'].elements['latitude'].value = Math.round(geometry.lat * 1000)/1000;
-                                  document.forms['theform'].elements['longitude'].value = Math.round(geometry.lon * 1000)/1000;
+                                  $('#tidalgauge').val(gauge.attributes.title);
+                                  $('#tgId').val(gauge.attributes.description);
+                                  $('#latitude').val(Math.round(geometry.lat * 1000)/1000);
+                                  $('#longitude').val(Math.round(geometry.lon * 1000)/1000);
                               }
                           });
                           $('#variableDiv').show();
