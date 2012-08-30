@@ -48,7 +48,7 @@ servers = {
                  'mapservPath': '/usr/libexec/mapserv',
                  'debug':       True,
                },
-    'www4': { 'hostname':  'wdev.bom.gov.au',
+    'www4': { 'hostname':  'www4.bom.gov.au',
               # hard specified to go through the proxy
               'baseURL':   'http://wdev.bom.gov.au/cosppac/apps/portal/',
               'rasterURL': 'raster/',
@@ -56,6 +56,7 @@ servers = {
               'cacheDir': { 'reynolds': 'cache/reynolds/',
                             'ersst':    'cache/ersst/',
                           },
+              # shared data directories from ITB (mounted ro)
               'dataDir':  { 'reynolds': '/web/data/cosppac/reynolds/',
                             'ww3':      '/web/data/cosppac/wavewatch3/',
                             'sealevel': '/web/data/cosppac/sea_level/',
@@ -64,5 +65,23 @@ servers = {
                           },
               'mapservPath': '/usr/libexec/mapserv',
               'debug':       True,
+            },
+    'hoapp2': { 'hostname':  'hoapp2.bom.gov.au',
+                # hard specified to go through the proxy
+                'baseURL':   'http://www.bom.gov.au/cosppac/apps/portal/',
+                'rasterURL': 'raster/',
+                'outputDir': '/web/cosppac/raster/',
+                'cacheDir': { 'reynolds': 'cache/reynolds/',
+                              'ersst':    'cache/ersst/',
+                            },
+                # shared data directories from ITB (mounted ro)
+                'dataDir':  { 'reynolds': '/web/data/cosppac/reynolds/',
+                              'ww3':      '/web/data/cosppac/wavewatch3/',
+                              'sealevel': '/web/data/cosppac/sea_level/',
+                              'ersst':    '/web/data/cosppac/ersst/',
+                              'bran':     '/web/data/cosppac/bran/',
+                            },
+                'mapservPath': '/usr/libexec/mapserv',
+                'debug':       False,
             },
 }
