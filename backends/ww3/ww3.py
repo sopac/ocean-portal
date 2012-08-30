@@ -7,7 +7,7 @@ import ww3ExtA
 import ocean.util as util
 from ..util import areaMean
 from ..util import productName
-from ..netcdf import extractor
+from ..netcdf import extractor as xt
 import wavecaller as wc
 import formatter as frm
 import monthconfig as mc
@@ -26,7 +26,7 @@ ww3Product = productName.products["ww3"]
 #get the plotter
 extractor = ww3ExtA.WaveWatch3Extraction()
 getGrid = GPF.Extractor()
-GridPoints = extractor.Extractor()
+GridPoints = xt.Extractor()
 
 def process(form):
     responseObj = {} #this object will be encoded into a json string
