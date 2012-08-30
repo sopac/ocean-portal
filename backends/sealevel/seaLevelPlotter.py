@@ -66,6 +66,10 @@ class SeaLevelPlotter ():
  
         args['formattedDate'] = ''
 
+        resolution='h'
+        if not area=='pac':
+           resolution='f'
+
         plot = plotter.Plotter()
         plot.plot(height, lats, lons, variable, self.config, outputFilename,\
                   regionConfig.regions[area][1]["llcrnrlat"],\

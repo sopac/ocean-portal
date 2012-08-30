@@ -137,6 +137,10 @@ class ErsstPlotter ():
 
 	contourLines = True
 
+        resolution='h'
+        if not area=='pac':
+           resolution='f'
+
         plot = plotter.Plotter()
         plot.contour(sst, lats, lons, variable, self.config, outputFilename, title,\
                   regionConfig.regions[area][1]["llcrnrlat"],\

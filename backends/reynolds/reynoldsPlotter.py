@@ -86,6 +86,10 @@ class ReynoldsPlotter ():
         lats = (lats - 0.5*delat).tolist()
         lats.append(lats[-1]+delat)
         lats = np.array(lats,np.float64)
+         
+        resolution='h'
+        if not area=='pac':
+           resolution='f'
 
         plot = plotter.Plotter()
         plot.plot(sst, lats, lons, variable, self.config, outputFilename,\
@@ -93,7 +97,7 @@ class ReynoldsPlotter ():
                   regionConfig.regions[area][1]["llcrnrlon"],\
                   regionConfig.regions[area][1]["urcrnrlat"],\
                   regionConfig.regions[area][1]["urcrnrlon"],\
-                  centerLabel = cntLabel, **args)
+                  res = resolution, centerLabel = cntLabel, **args)
         plot.plotBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
         plot.plotBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
         plot.plotScale(sst, variable, self.config, outputFilename)
