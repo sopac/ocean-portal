@@ -10,6 +10,8 @@ from ..util import productName
 import wavecaller as wc
 import formatter as frm
 import monthconfig as mc
+import landerror as le
+import GridPointFinder as GPF
 #Maybe move these into configuration later
 pointExt = "%s_%s_%s_%s_%s"
 recExt = "%s_%s_%s_%s_%s_%s"
@@ -22,6 +24,7 @@ ww3Product = productName.products["ww3"]
 
 #get the plotter
 extractor = ww3ExtA.WaveWatch3Extraction()
+getGrid = GPF.Extractor()
 
 def process(form):
     responseObj = {} #this object will be encoded into a json string
@@ -35,7 +38,7 @@ def process(form):
         urlatStr = form["urlat"].value
         urlonStr = form["urlon"].value
         dateStr = form["date"].value
-        period = form["period"].value
+        periodStr = form["period"].value
 
         args = {"var": varStr,
                 "lllat": lllatStr,
@@ -49,37 +52,41 @@ def process(form):
         k1, k2, mthStr = mc.monthconfig(month)
 
         if lllatStr == urlatStr and lllonStr == urlonStr:
-            (latStr, lonStr) = frm.nameformat(lllatStr,lllonStr)
-            filename = pointExt % (ww3Product["point"], latStr, lonStr, varStr, mthStr)
+            latStr,lonStr = getGrid.getGridPoint(lllatStr,lllonStr)
+            (latStr, lonStr) = frm.nameformat(latStr,lonStr)
+            filename = pointExt % (ww3Product["point"], latStr, lonStr, varStr, month)
         else:
-            filename = recExt % (ww3Product["rect"], lllatStr, lllonStr, urlatStr, urlonStr, varStr, mthStr)
+            filename = recExt % (ww3Product["rect"], lllatStr, lllonStr, urlatStr, urlonStr, varStr, month)
 
         outputFileName = serverCfg["outputDir"] + filename
 
         if not os.path.exists(outputFileName + ".txt"):
             timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr, k1, k2)
-            extractor.writeOutput(outputFileName + ".txt", latsLons, timeseries, gridValues)
+            extractor.writeOutput(outputFileName + ".txt", latStr, lonStr, timeseries, gridValues, varStr)
         if not os.path.exists(outputFileName + ".txt"):
             responseObj["error"] = "Error occured during the extraction."
         else:
-            responseObj["ext"] = serverCfg["baseURL"]\
-                               + outputFileName + ".txt"
+            responseObj['ext'] = os.path.join(serverCfg['baseURL'],
+                                              serverCfg['rasterURL'],
+                                              filename + '.txt')
 
         if not os.path.exists(outputFileName + ".png"):
             timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr, k1, k2)
             try:
                 wc.wavecaller(outputFileName, varStr, gridLat, gridLon, gridValues, mthStr)
-            except:
+            except le.LandError:
+	        responseObj["error"] = "Invalid data point.  Please try another location."
+	    except:
                 if serverCfg['debug']:
                     raise
                 else:
+		    responseObj["error"] = "Error occured during the extraction.  Image could not be generated."	
                     pass
-
-        if not os.path.exists(outputFileName + ".png"):
-            responseObj["error"] = "Error occured during the extraction.  Image could not be generated."
-        else:
-            responseObj["img"] = serverCfg["baseURL"]\
-                               + outputFileName + ".png"
+                 
+        if os.path.exists(outputFileName + ".png"):
+            responseObj['img'] = os.path.join(serverCfg['baseURL'],
+                                              serverCfg['rasterURL'],
+                                              filename + '.png')
 
     response = json.dumps(responseObj)
 

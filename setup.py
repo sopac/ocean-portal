@@ -41,13 +41,35 @@ backend_resources = [
     'west.pgw',
     'subwest.pgw',
     'maps/bathymetry.map',
-    'maps/plainworld.map',
+#   'maps/plainworld.map',
     'maps/reynolds.map',
     'maps/sealevel.map',
-    'maps/sst.map',
+#   'maps/sst.map',
     'fonts/fonts.list',
     'fonts/Vera.ttf',
     'fonts/VeraMono.ttf',
+]
+
+map_layer_extensions = ['dbf', 'prj', 'shp', 'shx' ]
+map_layers = [
+    'bathymetry_0',
+    'bathymetry_200',
+    'bathymetry_1000',
+    'bathymetry_2000',
+    'bathymetry_3000',
+    'bathymetry_4000',
+    'bathymetry_5000',
+    'bathymetry_6000',
+    'bathymetry_7000',
+    'bathymetry_8000',
+    'bathymetry_9000',
+    'bathymetry_10000',
+    'ocean',
+    'land',
+    'coastline',
+    'pacific_islands_capitals',
+    'southern_pac',
+    'World_Maritime_Boundaries',
 ]
 
 BASE_PATH = 'share/portal'
@@ -79,10 +101,16 @@ data = [
     'images/bathymetry_ver.png',
 ]
 
+# CODE BEGINS
+import os.path
+
+backend_resources += [ os.path.join('maps', 'layers', '%s.%s' % (l, ext))
+                        for l in map_layers
+                        for ext in map_layer_extensions ]
+
 if __name__ == '__main__':
     from distutils.core import setup
     from distutils.command.bdist_rpm import bdist_rpm
-    import os.path
     import itertools
 
     # add Requires: for RPM

@@ -47,7 +47,9 @@ def process(form):
         else:
             responseObj.update(util.build_response_object(
                     COMMON_FILES.keys(),
-                    serverCfg['baseURL'] + outputFileName,
+                    os.path.join(serverCfg['baseURL'],
+                                 serverCfg['rasterURL'],
+                                 fileName),
                     COMMON_FILES.values()))
             # make this a list
             responseObj['img'] = [ responseObj['img'] ]
@@ -64,47 +66,56 @@ def process(form):
         var = "tid"
         args["var"] = var
         fileName = seaChart % (seaLevelProduct["monthly"], tidalGaugeId, var)
-        outputFileName = serverCfg["outputDir"] + fileName 
+        outputFileName = os.path.join(serverCfg['outputDir'], fileName)
+
         if not os.path.exists(outputFileName + ".png"):
             plotter.plotTidalGauge(outputFileName, **args)
         if not os.path.exists(outputFileName + ".png"):
-            responseObj["error"] = "Requested image is not available at this time."
+            responseObj['error'] = "Requested image is not available at this time."
         else:
-            responseObj["img"].append(serverCfg["baseURL"]\
-                               + outputFileName + ".png")
-            responseObj["tid"] = serverCfg["baseURL"]\
-                               + outputFileName + ".txt"
+            responseObj['img'].append(os.path.join(serverCfg['baseURL'],
+                                                   serverCfg['rasterURL'],
+                                                   fileName + '.png'))
+            responseObj["tid"] = os.path.join(serverCfg['baseURL'],
+                                              serverCfg['rasterURL'],
+                                              fileName + '.txt')
         #plot altimetry 
         var = "alt"
         args["var"] = var
         fileName = seaChart % (seaLevelProduct["monthly"], tidalGaugeId, var)
-        outputFileName = serverCfg["outputDir"] + fileName 
+        outputFileName = os.path.join(serverCfg['outputDir'], fileName)
+
         if not os.path.exists(outputFileName + ".png"):
             plotter.plotTimeseries(outputFileName, **args)
         if not os.path.exists(outputFileName + ".png"):
             responseObj["error"] = "Requested image is not available at this time."
         else:
-            responseObj["img"].append(serverCfg["baseURL"]\
-                               + outputFileName + ".png")
-            responseObj["alt"] = serverCfg["baseURL"]\
-                               + outputFileName + ".txt"
+            responseObj["img"].append(os.path.join(serverCfg['baseURL'],
+                                                   serverCfg['rasterURL'],
+                                                   fileName + '.png'))
+            responseObj["alt"] = os.path.join(serverCfg['baseURL'],
+                                              serverCfg['rasterURL'],
+                                              fileName + '.txt')
 
         #plot reconstruction
         var = "rec"
         args["var"] = var
         fileName = seaChart % (seaLevelProduct["monthly"], tidalGaugeId, var)
-        outputFileName = serverCfg["outputDir"] + fileName 
+        outputFileName = os.path.join(serverCfg['outputDir'], fileName)
+
         if not os.path.exists(outputFileName + ".png"):
             plotter.plotTimeseries(outputFileName, **args)
         if not os.path.exists(outputFileName + ".png"):
             responseObj["error"] = "Requested image is not available at this time."
         else:
-            responseObj["img"].append(serverCfg["baseURL"]\
-                               + outputFileName + ".png")
-            responseObj["rec"] = serverCfg["baseURL"]\
-                               + outputFileName + ".txt"
+            responseObj["img"].append(os.path.join(serverCfg['baseURL'],
+                                                   serverCfg['rasterURL'],
+                                                   fileName + '.png'))
+            responseObj["rec"] = os.path.join(serverCfg['baseURL'],
+                                              serverCfg['rasterURL'],
+                                              fileName + ".txt")
 
         #plot altimery and reconstruction comparison from 1950
-        
+
     response = json.dumps(responseObj)
     return response

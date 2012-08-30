@@ -8,6 +8,7 @@ import math
 import glob
 from netCDF4 import Dataset
 import json
+import os.path
 
 import ocean.util as util
 from ..util import productName
@@ -16,6 +17,9 @@ from ..util import regionConfig
 serverCfg = util.get_server_config()
 
 reynoldsProduct = productName.products["reynolds"]
+
+CACHE_DIR = os.path.join(serverCfg['outputDir'],
+                         serverCfg['cacheDir']['reynolds'])
 
 regionCfg = regionConfig.regions
 
@@ -39,14 +43,14 @@ def generateYearlyAverages():
     Generate yearly averages images and downloadable data.
     """
 
-    meanFileName = serverCfg["cacheDir"]["reynolds"]\
+    meanFileName = CACHE_DIR \
                  + reynoldsProduct["yearlyAve"]\
                  + '_mean.json'
     meanFile = open(meanFileName, 'w')
     yearlyAreaMean = {}
 
     for region in regionCfg:
-        averageFileName = serverCfg["cacheDir"]["reynolds"]\
+        averageFileName = CACHE_DIR \
                         + reynoldsProduct["yearlyAve"]\
                         + '_ave_%s' % (region)
 
@@ -123,7 +127,7 @@ def generateYearlyAverages():
         plt.xlabel('Year', fontsize=10)
         plt.ylabel('Sea Surface Temperature Anomaly (' + ur'\u00b0'  + 'C)', fontsize=10)
         plt.xlim([1980,currentYear + 1])
-        plt.savefig(serverCfg["cacheDir"]["reynolds"] + reynoldsProduct["yearlyAve"]\
+        plt.savefig(CACHE_DIR + reynoldsProduct["yearlyAve"]\
                    + '_ave_%s' % region + '.png', dpi=150, bbox_inches='tight', pad_inches=.2, bbox_extra_artists=[copyrightBox, anchoredBox])
         plt.close()
 
@@ -157,7 +161,7 @@ def generateYearlyAverages():
         plt.xlabel('Year', fontsize=10)
         plt.ylabel('Sea Surface Temperature Anomaly (' + ur'\u00b0'  + 'C)', fontsize=10)
         plt.xlim([1980,currentYear + 1])
-        plt.savefig(serverCfg["cacheDir"]["reynolds"] + reynoldsProduct["yearlyAve"]\
+        plt.savefig(CACHE_DIR + reynoldsProduct["yearlyAve"]\
                    + '_ave_%s_trend' % region + '.png', dpi=150, bbox_inches='tight', pad_inches=.2, bbox_extra_artists=[copyrightBox, averageBox, trendBox])
         plt.close()
    
@@ -196,7 +200,7 @@ def generateYearlyAverages():
             plt.xlabel('Year', fontsize=10)
             plt.ylabel('Sea Surface Temperature Anomaly (' + ur'\u00b0'  + 'C)', fontsize=10)
             plt.xlim([1980,currentYear + 1])
-            plt.savefig(serverCfg["cacheDir"]["reynolds"] + reynoldsProduct["yearlyAve"]\
+            plt.savefig(CACHE_DIR + reynoldsProduct["yearlyAve"]\
                       + '_ave_%s_%02drunning' % (region, interval) + '.png', dpi=150,\
                       bbox_inches='tight', pad_inches=.2, bbox_extra_artists=[copyrightBox,\
                       averageBox, runningBox])
@@ -222,14 +226,14 @@ months = {'01':'January',
 def generateMonthlyAverages():
     
     for month in months:
-        meanFileName = serverCfg["cacheDir"]["reynolds"]\
+        meanFileName = CACHE_DIR \
                           + reynoldsProduct["monthlyAve"]\
                           + '_' + month + '_mean.json'
         meanFile = open(meanFileName, 'w')
         monthlyAreaMean = {}
 
         for region in regionCfg:
-            averageFileName = serverCfg["cacheDir"]["reynolds"]\
+            averageFileName = CACHE_DIR \
                             + reynoldsProduct["monthlyAve"]\
                             + '_' +  month + '_ave_%s' % (region)
 

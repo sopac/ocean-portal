@@ -24,17 +24,6 @@ $(document).ready(function() {
 
     ocean.mapObj = map;
 
-    var wmsLayer = new OpenLayers.Layer.WMS("Plain World",
-        'cgi/getMap',
-        {
-	    map: "plainworld",
-            layers: "land,urban,ocean,maritime,country_line,major_countries,minor_countries,cities,towns,minor_islands"
-        },{
-            wrapDateLine: true,
-            transitionEffect: 'resize'
-        }
-    );
-
     var bathymetryLayer = new OpenLayers.Layer.MapServer("Bathymetry",
         'cgi/getMap', {
             map: "bathymetry",
@@ -60,10 +49,13 @@ $(document).ready(function() {
     map.setBaseLayer(bathymetryLayer);
 
     function mapBaseLayerChanged(evt) {
-        var layerName = evt.layer.name;
+        var layerName;
         var legendDiv = $('#legendDiv');
 
-        if (layerName == 'Bathymetry') {
+        if (evt)
+            layerName = evt.layer.name;
+
+        if (layerName == null || layerName == 'Bathymetry') {
             legendDiv.html("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='180'/>");
         }
         else {
@@ -73,6 +65,8 @@ $(document).ready(function() {
                 legendDiv.html('<p></p>');
         }
     }
+
+    mapBaseLayerChanged(null);
 });
 
 function selectCountry(event, args) {

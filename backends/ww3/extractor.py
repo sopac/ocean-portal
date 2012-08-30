@@ -20,8 +20,9 @@ class Extractor ():
         """
         gridPointColIndex = 0
         inputLat = float(inputLat)
-        inputLon = float(inputLon)        
-        latInsertIndex = bisect.bisect_left(lats, inputLat)
+        inputLon = float(inputLon)
+        
+        latInsertIndex = bisect.bisect_left(lats,inputLat)
         gridLatIndex = latInsertIndex 
         if latInsertIndex == 0:
             gridLat = lats[0]
@@ -29,10 +30,9 @@ class Extractor ():
             gridLat = lats[latInsertIndex]
         else:
             gridLatIndex = latInsertIndex - 1
-            gridLat = lats[gridLatIndex]
-           
+            gridLat = lats[gridLatIndex]           
 
-        lonInsertIndex = bisect.bisect_left(lons, inputLon)
+        lonInsertIndex = bisect.bisect_left(lons,inputLon)
         gridLonIndex = lonInsertIndex
         if lonInsertIndex == 0:
             gridLon = lons[0]

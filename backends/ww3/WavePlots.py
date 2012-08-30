@@ -13,7 +13,8 @@ from numpy import arange
 from numpy import linspace
 from numpy.random import random
 import histcolor as hc
-from meanbearing import meanbearing
+import landerror as le
+from radbearing import meanbearing
 import angleconv as conv
 from formatter import NESWformat
 
@@ -37,8 +38,8 @@ def RosePlot(opath,wdir,units,lat,lon,xstr,title,var,binwd):
     #set number of bins and max bin value.
     N,wdnbin,wdmax = 8,8,2*np.pi
     degree = ur'\u00b0'
-    if wdir[1] == -999.0:
-       responseObj["error"] = "Invalid data point."
+    if wdir[0] == -999.0:
+       raise le.LandError("Error")
     #flip directions as WWIII direction are given in meteorological convention.
     if var == "Dm":
         wdir = conv.dirflip(wdir)
@@ -55,6 +56,8 @@ def RosePlot(opath,wdir,units,lat,lon,xstr,title,var,binwd):
     #plot radial gridlines at seperations of 45 degrees
     plt.thetagrids((0,45,90,135,180,225,270,315),('N', '45' + degree, 'E', '135' + degree, 'S', '215' + degree, 'W', '315' + degree),frac = 1.1)
     #rotate axis to zero at North and set direction of increasing angle clockwise.
+    plt.rgrids((0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9), angle=0)
+    plt.ylim(0.0,1.0)
     ax.set_theta_direction(-1)
     ax.set_theta_zero_location('N')
     #lines, labels = plt.rgrids()
@@ -81,7 +84,7 @@ def RosePlot(opath,wdir,units,lat,lon,xstr,title,var,binwd):
     bars = ax.bar(theta, prob, width, bottom=0.0)
     my_cmap = hc.decile_rose()
     #plot a line to indicate mean bearing
-    ax.arrow(0, 0, meanb, max(prob)+0.1, edgecolor = 'r', facecolor = 'r', lw='3')
+    ax.arrow(0, 0, meanb, 1.0, edgecolor = 'r', facecolor = 'r', lw='3')
     #plot bar chart of histogram in theta space
     for r,bar in zip(prob, bars):
         bar.set_facecolor(my_cmap(r))
@@ -151,7 +154,7 @@ def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
     #binthresh = maxwave - minwave
     #Error message if selected coordinates are out of range or on land
     if maxwave == -999.0:
-       responseObj["error"] = "Invalid data point."
+       raise le.LandError("Error")
     #alter bin width depending on range of data
     #if binthresh < 10:
      #  binwd = 0.1

@@ -14,16 +14,14 @@ import string
 
 import ocean.util as util
 
-#The following line is for debugging
-#cgitb.enable(display=0, logdir="/tmp")
 sys.stderr = sys.stdout
 cgitb.enable()
-#cgitb.enable(logdir="/tmp/pytho.log")
 
 MAP_EAST_PATTERN = re.compile('east.png$')
 MAP_WEST_PATTERN = re.compile('west.png$')
 
 def main():
+    config = util.get_server_config()
     form = cgi.FieldStorage()
 
     if "map" in form:
@@ -35,20 +33,15 @@ def main():
             rasters = string.split(raster, " ")
             for file in rasters:
                 url, filename = os.path.split(file)
-                #copy file into the location that is specified in the map file
-                #TODO
-                #path = serverCfg.servers[serverCfg.currentServer]["mapImageDir"]
-                #urllib.urlretrieve(file, path + filename)
 
-                #detect the image file and add to the URL for the map variable substitution.
                 if MAP_EAST_PATTERN.search(filename):
-                    queryMap["eastFileName"] = filename
+                    queryMap["eastFileName"] = os.path.join(config['outputDir'], filename)
                 elif MAP_WEST_PATTERN.search(filename):
-                    queryMap["westFileName"] = filename
+                    queryMap["westFileName"] = os.path.join(config['outputDir'], filename)
 
         queryString = urllib.urlencode(queryMap, True)
         os.environ["QUERY_STRING"] = queryString
-        subprocess.call(util.get_server_config()['mapservPath'])
+        subprocess.call(config['mapservPath'])
 
 main()
 

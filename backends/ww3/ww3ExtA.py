@@ -1,14 +1,13 @@
 #!/usr/bin/python
 
-
 import glob
 import bisect
 import math
 from netCDF4 import Dataset
 import numpy as np
-
 import ocean.util as util
 import extractor
+from angleconv import dirflip
 
 class WaveWatch3Extraction ():
     """
@@ -56,16 +55,27 @@ class WaveWatch3Extraction ():
               
         return timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon)
 
-    def writeOutput(self, fileName, latsLons, timeseries, gridValues):
-    
+    def writeOutput(self, fileName, latStr, lonStr, timeseries, gridValues, varStr):
+        if varStr == 'Dm':
+            label = 'Wave Direction (degrees)'
+	    gridValues = dirflip(gridValues)
+        if varStr == 'Hs':
+            label = 'Significant Wave Height (m)'
+        if varStr == 'Tm':
+            label = 'Wave Period (s)'
+
+        timelabel = 'Date (YYYYMMDD)'
         output = open(fileName, 'w')
         #write lats and lons table header
-        output.write('\t')
+        output.write('Lat/Lon:' + '\t')
         #for latlon in latsLons:
-        output.write(latsLons + '\t')
+        output.write(latStr + ' ' + lonStr + '\t')
+        output.write('\n')
+        output.write(timelabel + '\t')
+        output.write(label + '\t')
         output.write('\n')
 	for time, point in zip (timeseries, gridValues):
         	output.write(str(int(time)) + '\t')
-		output.write(str(point) + '\t')
+		output.write(str(round(point,2)) + '\t')
                 output.write('\n')   
         output.close()

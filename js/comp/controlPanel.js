@@ -93,6 +93,7 @@ ocean.dsConf = {
                 onSelect: function(){
                               $('#variableDiv').show();
                               configCalendar(); 
+                              $( "#datepicker" ).datepick('setDate', -4);
                           },
                 onDeselect: function() {
                     layers = map.getLayersByName("Reynolds")
@@ -174,7 +175,7 @@ ocean.dsConf = {
                 },
                 selectVariable: function(selection) {
                     //this should be in a callback for the combo
-                    periodCombo = Ext.getCmp('periodCombo');
+                    var periodCombo = Ext.getCmp('periodCombo');
                     periodCombo.clearValue();
                     var store = periodCombo.store;
                     store.clearFilter(true);
@@ -295,6 +296,8 @@ ocean.dsConf = {
                                 + "&urlat=" + document.forms['theform'].elements['latitude'].value
                                 + "&urlon=" + document.forms['theform'].elements['longitude'].value
                                 + "&variable=" + this.variable.get('id') 
+                                + "&date=" + $.datepick.formatDate('yyyymmdd', ocean.date)
+                                + "&period=" + ocean.period
                                 + "&timestamp=" + new Date().getTime();
                            },
             data: null,
@@ -342,6 +345,7 @@ ocean.dsConf = {
 ////                                  ocean.mapObj.addControl(boxControl);
 ////                                  boxControl.activate(); 
                                   $('#variableDiv').show();
+                                  configCalendar(); 
                                  },
             onDeselect: function() {
                             var layers = map.getLayersByName("WaveWatch III");
@@ -362,9 +366,36 @@ ocean.dsConf = {
                             }
                             $('#imgDiv').html('');
                             $('#dataDiv').html('');
+                            showControl('yearDiv');
                                    },
             selectVariable: function(selection) {
-                                $('#latlonDiv').show();
+                                //this should be in a callback for the combo
+                                periodCombo = Ext.getCmp('periodCombo');
+                                periodCombo.clearValue();
+                                var store = periodCombo.store;
+                                store.clearFilter(true);
+                                store.filter([periodFilter]);
+                                if (store.find('id', ocean.period) != -1) {
+                                    periodCombo.select(ocean.period);
+                                }
+                                else {
+                                    periodCombo.select(store.data.keys[0]);
+                                    ocean.period = store.data.keys[0];
+                                }
+                                if (ocean.date == null) {
+                                    var dateRange = this.data.get('dateRange');
+                                    var maxDate = new Date();
+                                    if (dateRange != null) {
+                                        maxDate.setMonth(dateRange.maxDate.month - 1);
+                                        maxDate.setFullYear(dateRange.maxDate.year);
+                                        maxDate.setDate(dateRange.maxDate.date);
+                                    }
+                                    ocean.date = maxDate;
+                                }
+                                updateCalDiv();
+                                showControl('selectionDiv'); 
+                                hideControl('yearDiv');
+                                showControl('latlonDiv');
                             }
     },
     sealevel: {url: function() {return "cgi/portal.py?dataset=sealevel"
@@ -897,7 +928,7 @@ function selectDataset(event, args) {
 
     ocean.dataset = ocean.dsConf[selection];
     $('#dstitle').html(record.get('title'));
-    $('#dshelp').html('Help File');
+    $('#dshelp').html('About File');
     $('#dshelp').attr('href', record.get('help'));
     varCombo = Ext.getCmp('variableCombo');
     varCombo.setDisabled(false);
@@ -950,7 +981,6 @@ function createCalendars() {
 //        onClose: closed,
         showOnFocus: false
     });
-    $( "#datepicker" ).datepick('setDate', -4);
     $( "#datepicker" ).mousedown(function() {
         $(this).datepick('show');
     });
