@@ -58,6 +58,22 @@ ocean.dsConf = {
                 aveCheck: {},
                 mainCheck: 'average',
                 runningInterval: 2,
+                setData: function(data) {
+                    this.data = data;
+                    dateRange = this.data.get('dateRange');
+                    minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
+                    maxDate = $.datepick.determineDate(dateRange.maxDate);
+                    var minYear = parseInt(dateRange["minYear"]);
+                    var maxYear = maxDate.getFullYear();
+                    dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
+                        var year = item.data.field1;
+                        var filter = item.store.filters.items[0]
+                            return year >= filter.minYear && year <= filter.maxYear;
+                        },
+                        minYear: minYear,
+                        maxYear: maxYear});
+
+                },
                 callback: function(data) {
                     var imgDiv = $('#imgDiv');
                     var dataDiv = $('#dataDiv');
@@ -107,6 +123,7 @@ ocean.dsConf = {
                 selectVariable: function(selection) {
                                     updatePeriodCombo();
                                     dateRange = this.data.get('dateRange');
+                                    updateYearCombo(dateRange.yearFilter);
                                     minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
                                     maxDate = $.datepick.determineDate(dateRange.maxDate);
                                     if (ocean.date != null) {
@@ -152,6 +169,21 @@ ocean.dsConf = {
                 aveCheck: {},
                 mainCheck: 'average',
                 runningInterval: 2,
+                setData: function(data) {
+                    this.data = data;
+                    dateRange = this.data.get('dateRange');
+                    minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
+                    maxDate = $.datepick.determineDate(dateRange.maxDate);
+                    var minYear = parseInt(dateRange["minYear"]);
+                    var maxYear = maxDate.getFullYear();
+                    dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
+                        var year = item.data.field1;
+                        var filter = item.store.filters.items[0]
+                            return year >= filter.minYear && year <= filter.maxYear;
+                        },
+                        minYear: minYear,
+                        maxYear: maxYear});
+                },
                 callback: function(data) {
                     var imgDiv = $('#imgDiv');
                     var dataDiv = $('#dataDiv');
@@ -181,6 +213,7 @@ ocean.dsConf = {
                 selectVariable: function(selection) {
                                     updatePeriodCombo();
                                     dateRange = this.data.get('dateRange');
+                                    updateYearCombo(dateRange.yearFilter);
                                     minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
                                     maxDate = $.datepick.determineDate(dateRange.maxDate);
                                     if (ocean.date != null) {
@@ -216,6 +249,21 @@ ocean.dsConf = {
                 },
                 data: null,
                 variable: null,
+                setData: function(data) {
+                    this.data = data;
+                    dateRange = this.data.get('dateRange');
+                    minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
+                    maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
+                    var minYear = parseInt(dateRange["minYear"]);
+                    var maxYear = parseInt(dateRange["maxYear"]);
+                    dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
+                        var year = item.data.field1;
+                        var filter = item.store.filters.items[0]
+                            return year >= filter.minYear && year <= filter.maxYear;
+                        },
+                        minYear: minYear,
+                        maxYear: maxYear});
+                },
                 callback: function(data) {
                     var imgDiv = $('#imgDiv');
                     var dataDiv = $('#dataDiv');
@@ -282,6 +330,7 @@ ocean.dsConf = {
                 selectVariable: function(selection) {
                                     updatePeriodCombo();
                                     dateRange = this.data.get('dateRange');
+                                    updateYearCombo(dateRange.yearFilter);
                                     minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
                                     maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
                                     if (ocean.date != null) {
@@ -312,6 +361,21 @@ ocean.dsConf = {
             data: null,
             panelControls: null,
             toolbar: null,
+            setData: function(data) {
+                this.data = data;
+                dateRange = this.data.get('dateRange');
+                minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
+                maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
+                var minYear = parseInt(dateRange["minYear"]);
+                var maxYear = parseInt(dateRange["maxYear"]);
+                dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
+                        var year = item.data.field1;
+                        var filter = item.store.filters.items[0]
+                            return year >= filter.minYear && year <= filter.maxYear;
+                        },
+                        minYear: minYear,
+                        maxYear: maxYear});
+            },
             callback: function(data) {
                           var imgDiv = $('#imgDiv');
                           var dataDiv = $('#dataDiv');
@@ -380,6 +444,7 @@ ocean.dsConf = {
             selectVariable: function(selection) {
                                 updatePeriodCombo();
                                 dateRange = this.data.get('dateRange');
+                                updateYearCombo(dateRange.yearFilter);
                                 minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
                                 maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
                                 if (ocean.date != null) {
@@ -410,6 +475,31 @@ ocean.dsConf = {
                                 + "&timestamp=" + new Date().getTime();
                            },
             data: null,
+            setData: function(data) {
+                this.data = data;
+                var items = this.data.variables().data.items;
+                for (var itemIndex in items) {
+                    var record = items[itemIndex];
+                    var dateRange = record.get("dateRange")
+                    var minDate = $.datepick.parseDate(ocean.dateFormat, dateRange["minDate"]);
+                    var maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange["maxDate"]);
+                    var minYear = parseInt(dateRange["minYear"]);
+                    var maxYear = parseInt(dateRange["maxYear"]); 
+                    
+                    dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
+                        var year = item.data.field1;
+                        var filter = item.store.filters.items[0]
+//                        if(ocean.date != null) {
+//                            return Ext.Array.contains(ocean.dataset.variable.get('periods'), item.data.field1);
+//                        }
+//                        else {
+                            return year >= filter.minYear && year <= filter.maxYear;
+//                        }
+                        },
+                        minYear: minYear,
+                        maxYear: maxYear});
+                }
+            },
             callback: function(data) {
                 var imgDiv = $('#imgDiv');
                 var dataDiv = $('#dataDiv');
@@ -495,6 +585,7 @@ ocean.dsConf = {
 
                                 var record = this.data.variables().getById(selection);
                                 dateRange = record.get("dateRange")
+                                updateYearCombo(dateRange.yearFilter);
                                 minDate = $.datepick.parseDate(ocean.dateFormat, dateRange["minDate"]);
                                 maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange["maxDate"]);
                                 if (ocean.date != null) {
@@ -794,10 +885,7 @@ Ext.onReady(function() {
 
     var currentYear = new Date().getFullYear();
     var minYear = ocean.MIN_YEAR;
-    var yearRange = [];
-    while(minYear <= currentYear){
-        yearRange.push(minYear++);
-    }
+    var yearRange = range(minYear, currentYear);
     ocean.yearCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'yearCombo',
         fieldLabel: 'Year',
@@ -805,15 +893,20 @@ Ext.onReady(function() {
         width: 155,
         renderTo: 'yearDiv',
         queryMode: 'local',
+        autoScroll: true,
         lastQuery: '',
         store: yearRange,
         listeners: {
             'select': function(event, args) {
                 ocean.date.setFullYear(event.getValue());
+            },
+            'expend': function(picker, opts) {
+                var pick = picker;
             } 
         }
     });
-
+//    ocean.yearCombo.getPicker().setAutoScroll(true);
+ 
     initialise();
 });
 
@@ -917,7 +1010,8 @@ function selectDataset(event, args) {
     hideControls();
     var selection = event.getValue();
     var record = ocean.datasets.getById(selection);
-    ocean.dsConf[selection].data = record;
+    ocean.dsConf[selection].setData(record);
+//    ocean.dsConf[selection].data = record;
 
     if (ocean.dataset != null) {
         ocean.dataset.onDeselect();
@@ -993,6 +1087,28 @@ function selectPeriod(event, args) {
         ocean.period = event.getValue();
         updateCalDiv();
     }
+}
+
+function range(start, end) {
+    var rangeArray = [];
+    while(start <= end){
+        rangeArray.push(start++);
+    }
+    return rangeArray
+}
+
+function updateYearCombo(yearFilter) {
+    var yearCombo = Ext.getCmp('yearCombo');
+    //yearCombo.setAutoScroll('auto');
+//    yearCombo.getPicker().setAutoScroll(true);
+    yearCombo.clearValue();
+    var store = yearCombo.store;
+    store.clearFilter(true);
+    store.filter([yearFilter]);
+//    yearCombo.picker.height = 300;
+//    yearCombo.updateLayout();
+    //yearCombo.getPicker().doComponentLayout();
+//    yearCombo.doComponentLayout();
 }
 
 function updatePeriodCombo() {
