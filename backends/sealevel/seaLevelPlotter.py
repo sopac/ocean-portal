@@ -76,7 +76,7 @@ class SeaLevelPlotter ():
                   regionConfig.regions[area][1]["llcrnrlon"],\
                   regionConfig.regions[area][1]["urcrnrlat"],\
                   regionConfig.regions[area][1]["urcrnrlon"],\
-                  res=resolution, proj=proj, contourLines=contourLines,\
+                  res=resolution, contourLines=contourLines,\
                   centerLabel=cntLabel, **args)
         plot.plotBasemapEast(height, lats, lons, variable, self.config,
                              outputFilename, lllat=-65, lllon=60, urlat=15,
