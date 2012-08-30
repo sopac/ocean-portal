@@ -17,7 +17,7 @@ class Extractor ():
         """
         self.serverCfg = util.get_server_config()
 
-    def getGridPoint(self, inputLat, inputLon):
+    def getGridPoint(self, inputLat, inputLon, varStr):
         """
         Align the input lat/lon to the grid lat/lon. Also returns the index of the grid lat/lon.
         """
@@ -25,7 +25,9 @@ class Extractor ():
         nc = Dataset(file[0], 'r')
         lats  = nc.variables['y'][:] 
         lons = nc.variables['x'][:]
-        return lats, lons
+        var = nc.variables[varStr][:]
+
+        return lats, lons, var
 
     def extract(self, data, lats, lons, latTop, latBottom, lonLeft, lonRight):
         """

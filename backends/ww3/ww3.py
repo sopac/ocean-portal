@@ -54,8 +54,8 @@ def process(form):
         k1, k2, mthStr = mc.monthconfig(month)
 
         if lllatStr == urlatStr and lllonStr == urlonStr:
-            lats,lons = getGrid.getGridPoint(lllatStr,lllonStr)
-            (latStr,lonStr),(latgrid,longrid) = GridPoints.getGridPoint(lllatStr,lllonStr,lats,lons,varStr,strategy = "exhaustive") 
+            lats,lons,vari = getGrid.getGridPoint(lllatStr,lllonStr,varStr)
+            (latStr,lonStr),(latgrid,longrid) = GridPoints.getGridPoint(lllatStr,lllonStr,lats,lons,vari,strategy = "exhaustive") 
             (latStr, lonStr) = frm.nameformat(latStr,lonStr)
             filename = pointExt % (ww3Product["point"], latStr, lonStr, varStr, month)
         else:
