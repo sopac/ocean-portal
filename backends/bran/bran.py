@@ -11,6 +11,7 @@ from ..util import productName
 import ocean.util as util
 from ..util import regionConfig
 import branConfig as bc
+from ocean.netcdf.plotter import COMMON_FILES
 
 #Maybe move these into configuration later
 branGraph = "%s_%s_%s_%s"
@@ -32,6 +33,7 @@ def process(form):
 
         if (periodStr == 'monthly') & (varName in ['temp', 'salt', 'eta', 'uvtemp', 'uveta']):
            
+            outputFilenameTop = branGraph % (branProduct["monthly"], varName, regionStr, dateStr[:6])
             outputFilename = branGraph % (branProduct["monthly"], varName, regionStr, dateStr[:6]) + '.png'
             outputFileFullPath = os.path.join(server_config['outputDir'],
                                               outputFilename)
@@ -113,6 +115,7 @@ def process(form):
                 plot = plotter.Plotter()
                 plot.contourBasemapEast(data, lats, lons, 'temp', config, outputFilename) 
                 plot.contourBasemapWest(data, lats, lons, 'temp', config, outputFilename)
+                plot.plotScale(data, 'temp', config, outputFilename)
                 branPlotterNew.plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
                                                       output_filename=outputFileFullPath, title=title, units=unitStr,
                                                       cb_ticks=cb_ticks, cb_tick_fmt=cb_tick_fmt, cmp_name='jet', proj='cyl',
@@ -122,9 +125,15 @@ def process(form):
             if not os.path.exists(outputFileFullPath):
                 responseObj["error"] = "Requested image is not available at this time."
             else:
-                responseObj["img"] = os.path.join(server_config['baseURL'],
-                                                  server_config['rasterURL'],
-                                                  outputFilename)
+#                responseObj["img"] = os.path.join(server_config['baseURL'],
+#                                                  server_config['rasterURL'],
+#                                                  outputFilename)
+                responseObj.update(util.build_response_object(
+                        COMMON_FILES.keys(),
+                        os.path.join(server_config['baseURL'],
+                                     server_config['rasterURL'],
+                                     outputFilenameTop),
+                        COMMON_FILES.values()))                                                  
 
     response = json.dumps(responseObj)
     return response
