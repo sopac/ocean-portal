@@ -115,7 +115,7 @@ def process(form):
                 plot = plotter.Plotter()
                 plot.contourBasemapEast(data, lats, lons, dataVar, config, outputFilenameTop) 
                 plot.contourBasemapWest(data, lats, lons, dataVar, config, outputFilenameTop)
-                plot.plotScale(data, dataVar, config, outputFilenameTop
+                plot.plotScale(data, dataVar, config, outputFilenameTop)
                 branPlotterNew.plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
                                                       output_filename=outputFileFullPath, title=title, units=unitStr,
                                                       cb_ticks=cb_ticks, cb_tick_fmt=cb_tick_fmt, cmp_name='jet', proj='cyl',
