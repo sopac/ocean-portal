@@ -540,7 +540,6 @@ ocean.dsConf = {
                               clickout: true,
                               multiple: false,
                               toggle: true,
-                              hover: true,
                               highlightOnly: false
                           });
                           map.addControl(gaugeControl);
