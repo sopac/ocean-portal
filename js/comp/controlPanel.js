@@ -443,12 +443,10 @@ ocean.dsConf = {
                         },
             selectVariable: function(selection) {
                                 updatePeriodCombo();
-
-                                var record = this.data.variables().getById(selection);
-                                dateRange = record.get("dateRange")
+                                dateRange = this.data.get('dateRange');
                                 updateYearCombo(dateRange.yearFilter);
-                                minDate = $.datepick.parseDate(ocean.dateFormat, dateRange["minDate"]);
-                                maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange["maxDate"]);
+                                minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
+                                maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
                                 if (ocean.date != null) {
                                     if (ocean.date < minDate) {
                                         ocean.date = minDate
@@ -460,9 +458,10 @@ ocean.dsConf = {
                                 else {
                                     ocean.date = maxDate;
                                 }
-                                showControl('selectionDiv');
                                 updateCalDiv();
-                                $('#tidalGaugeDiv').show();
+                                showControl('selectionDiv');
+                                hideControl('yearDiv');
+                                showControl('latlonDiv');
                             }
     },
     sealevel: {url: function() {return "cgi/portal.py?dataset=sealevel"
@@ -470,9 +469,9 @@ ocean.dsConf = {
                                 + "&period=" + ocean.period
                                 + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
                                 + "&area=" + ocean.area
-                                + "&lat=" + document.forms['theform'].elements['latitude'].value
-                                + "&lon=" + document.forms['theform'].elements['longitude'].value
-                                + "&tidalGaugeId=" + document.forms['theform'].elements['tgId'].value
+                                + "&lat=" + $('#latitude').val()
+                                + "&lon=" + $('#longitude').val()
+                                + "&tidalGaugeId=" + $('#tgId').val()
                                 + "&timestamp=" + new Date().getTime();
                            },
             data: null,
@@ -510,7 +509,7 @@ ocean.dsConf = {
 
                     imgDiv.html('');
                     for (img in data.img) {
-                        imgDiv.html(imgDiv.html() + '<img src="' + data.img[img] + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeIm
+                        imgDiv.html(imgDiv.html() + '<img src="' + data.img[img] + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
                     }
                     updateSeaLevelMap(data);
                 }
@@ -550,10 +549,10 @@ ocean.dsConf = {
                               'featureselected': function(event) {
                                   gauge = event.feature;
                                   geometry = gauge.geometry.getBounds().getCenterLonLat();
-                                  document.forms['theform'].elements['tidalgauge'].value = gauge.attributes.title;
-                                  document.forms['theform'].elements['tgId'].value = gauge.attributes.description;
-                                  document.forms['theform'].elements['latitude'].value = Math.round(geometry.lat * 1000)/1000;
-                                  document.forms['theform'].elements['longitude'].value = Math.round(geometry.lon * 1000)/1000;
+                                  $('#tidalgauge').val(gauge.attributes.title);
+                                  $('#tgId').val(gauge.attributes.description);
+                                  $('#latitude').val(Math.round(geometry.lat * 1000)/1000);
+                                  $('#longitude').val(Math.round(geometry.lon * 1000)/1000);
                               }
                           });
                           $('#variableDiv').show();
