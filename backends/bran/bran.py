@@ -33,12 +33,11 @@ def process(form):
 
         if (periodStr == 'monthly') & (varName in ['temp', 'salt', 'eta', 'uvtemp', 'uveta']):
            
-            outputFilenameTop = branGraph % (branProduct["monthly"], varName, regionStr, dateStr[:6])
-            outputFilename = branGraph % (branProduct["monthly"], varName, regionStr, dateStr[:6]) + '.png'
+            outputFilename = branGraph % (branProduct["monthly"], varName, regionStr, dateStr[:6])
             outputFileFullPath = os.path.join(server_config['outputDir'],
                                               outputFilename)
             
-            if not util.check_files_exist(outputFilenameTop, COMMON_FILES.values()):
+            if not util.check_files_exist(outputFileFullPath, COMMON_FILES.values()):
                 year = dateStr[0:4]
                 month = dateStr[4:6]
                 title_date_str = datetime.date(int(year), int(month), 1).strftime('%B %Y')
@@ -113,24 +112,24 @@ def process(form):
                 
                 config = bc.branConfig()
                 plot = plotter.Plotter()
-                plot.contourBasemapEast(data, lats, lons, dataVar, config, outputFilenameTop) 
-                plot.contourBasemapWest(data, lats, lons, dataVar, config, outputFilenameTop)
-                plot.plotScale(data, dataVar, config, outputFilenameTop)
+                plot.contourBasemapEast(data, lats, lons, dataVar, config, outputFilename)
+                plot.contourBasemapWest(data, lats, lons, dataVar, config, outputFilename)
+                plot.plotScale(data, dataVar, config, outputFilename)
                 branPlotterNew.plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
-                                                      output_filename=outputFileFullPath, title=title, units=unitStr,
+                                                      output_filename=outputFileFullPath + '.png', title=title, units=unitStr,
                                                       cb_ticks=cb_ticks, cb_tick_fmt=cb_tick_fmt, cmp_name='jet', proj='cyl',
                                                       contourLines=contourLines, product_label_str='Bluelink Reanalysis 2.1',
                                                       vlat=lats2, vlon=lons2, u=u, v=v)
 
-            if not util.check_files_exist(outputFilenameTop, COMMON_FILES.values()):
+            if not util.check_files_exist(outputFileFullPath, COMMON_FILES.values()):
                 responseObj["error"] = "Requested image is not available at this time."
             else:
                 responseObj.update(util.build_response_object(
                         COMMON_FILES.keys(),
                         os.path.join(server_config['baseURL'],
                                      server_config['rasterURL'],
-                                     outputFilenameTop),
-                        COMMON_FILES.values()))                                                  
+                                     outputFilename),
+                        COMMON_FILES.values()))
 
     response = json.dumps(responseObj)
     return response
