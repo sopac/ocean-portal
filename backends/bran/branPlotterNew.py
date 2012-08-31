@@ -8,7 +8,6 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pylab as py
 import datetime
-import branPlotterNew
 
 
 def load_BRAN_data(input_data_file, var_name, lat_min, lat_max, lon_min, lon_max, depth_min=0, depth_max=0):
@@ -122,8 +121,81 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
     plt.close()
     
     return m
+
+
+def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data,
+                          output_filename='noname.png', title='', units='m/s',
+                          cb_ticks=None, cb_tick_fmt="%.0f", cmp_name='jet', 
+                          product_label_str=None):
+    fg = py.figure()
     
+    gs = mpl.gridspec.GridSpec(8,6)
+    ax1=py.subplot(gs[1:4,:-1])
+        
+    n_colours = cb_ticks.size - 1
+    d_cmap = discrete_cmap(cmp_name, n_colours)
     
+    # Draw contour
+    x, y = np.meshgrid(lons, depths)
+    ctr = py.contour(x, y, zonal_data, levels=cb_ticks, colors='k', linewidths=0.4)
+    plt.clabel(ctr, inline=True, fmt=cb_tick_fmt, fontsize=8)
+
+    lons2 = get_grid_edges(lons)
+    depths2 = get_grid_edges(depths)
+        
+    # Plot data
+    x2, y2 = np.meshgrid(lons2, depths2)
+    img = py.pcolormesh(x2, y2, zonal_data, shading='flat', cmap=d_cmap, vmin=cb_ticks.min(), vmax=cb_ticks.max())
+    plt.title(title, fontsize=12)
+    
+    ax = plt.gca()
+    ax.set_ylim(0,300)
+    ax.set_ylim(ax.get_ylim()[::-1]) 
+
+    py.ylabel("Depth (m)", fontsize=10)
+    py.xlabel("Longitude", fontsize=10)
+    
+    ax2=py.subplot(gs[5:8,:-1])
+
+    # Draw contour
+    x, y = np.meshgrid(lats, depths)
+    ctr = py.contour(x, y, meridional_data, levels=cb_ticks, colors='k', linewidths=0.4)
+    plt.clabel(ctr, inline=True, fmt=cb_tick_fmt, fontsize=8)
+
+    lats2 = get_grid_edges(lats)
+    depths2 = get_grid_edges(depths)
+        
+    # Plot data
+    x2, y2 = np.meshgrid(lats2, depths2)
+    img = py.pcolormesh(x2, y2, meridional_data, shading='flat', cmap=d_cmap, vmin=cb_ticks.min(), vmax=cb_ticks.max())
+
+    ax = plt.gca()
+    ax.set_ylim(0,300)
+    ax.set_ylim(ax.get_ylim()[::-1]) 
+
+    py.ylabel("Depth (m)", fontsize=10)
+    py.xlabel("Latitude", fontsize=10)
+    
+    cbaxes = fg.add_axes([0.8, 0.1, 0.03, 0.7]) # setup colorbar axes.
+    cb = fg.colorbar(img, spacing='proportional', drawedges='True', cax=cbaxes,orientation='vertical',
+                       extend='both', ticks=cb_ticks)
+    cb.set_ticklabels([cb_tick_fmt % k for k in cb_ticks])
+    cb.set_label(units)
+    
+    box = TextArea(getCopyright(), textprops=dict(color='k', fontsize=6))
+    copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor=(-0.1, -0.45), frameon=False, bbox_transform=ax.transAxes)
+    ax.add_artist(copyrightBox)
+
+    box = TextArea(product_label_str, textprops=dict(color='k', fontsize=8))
+    copyrightBox = AnchoredOffsetbox(loc=4, child=box, bbox_to_anchor=(1.040, -0.45), frameon=False, bbox_transform=ax.transAxes)
+    ax.add_artist(copyrightBox)
+    
+    plt.savefig(output_filename, dpi=150, bbox_inches='tight', pad_inches=1.)
+    plt.close()
+    
+    return
+
+
 def draw_vector_plot(m, x, y, u, v, draw_every=1, arrow_scale=10, quiverkey_value=0.5, units='ms^{-1}', 
                      quiverkey_xpos=0.25, quiverkey_ypos=0.28):
     # Draw vector plot

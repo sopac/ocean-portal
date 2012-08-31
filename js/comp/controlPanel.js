@@ -245,6 +245,8 @@ ocean.dsConf = {
                    + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
                    + "&period=" + ocean.period
                    + "&area=" + ocean.area
+                   + "&lat=" + $('#latitude').val()
+                   + "&lon=" + $('#longitude').val()
                    + "&timestamp=" + new Date().getTime();
                 },
                 data: null,
@@ -268,19 +270,14 @@ ocean.dsConf = {
                     var imgDiv = $('#imgDiv');
                     var dataDiv = $('#dataDiv');
                     var enlargeDiv = $('#enlargeDiv');
-                    if (this.variable.get("id") == "anom" && this.aveCheck.average && data.aveImg != null) {
-                        imgDiv.html('<img src="' + data.aveImg + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
-                        dataDiv.html('<b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C<br>' + '<a href="'+ data.aveData + '" target="_blank"><img src="images/download.png"/></a>');
-
-                    }
-                    else if (data.img != null) {
+                    if (data.img != null) {
                         imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
-                        updateMap("ERSST", data);
+                        updateMap("BRAN", data);
                         dataDiv.html('');
                     }
                 },
                 onSelect: function(){
-                              var ww3Layer = new OpenLayers.Layer.Vector("WaveWatch III", {
+                              var branLayer = new OpenLayers.Layer.Vector("BRAN Sub-Surface", {
                                                          preFeatureInsert: function(feature) {
                                                              this.removeAllFeatures();
                                                          },
@@ -290,9 +287,9 @@ ocean.dsConf = {
                                                              $('#longitude').val(Math.round(geometry.x * 1000)/1000);
                                                          }
                                                      });
-                              ocean.mapObj.addLayer(ww3Layer);
+                              ocean.mapObj.addLayer(branLayer);
                               this.panelControls = [
-                                  new OpenLayers.Control.DrawFeature(ww3Layer,
+                                  new OpenLayers.Control.DrawFeature(branLayer,
                                                    OpenLayers.Handler.Point,
                                                    {'displayClass': 'olControlDrawFeaturePoint'}),
                                   new OpenLayers.Control.Navigation()
@@ -315,6 +312,12 @@ ocean.dsConf = {
                                 for (layer in layers) {
                                     map.removeLayer(layers[layer]);
                                 }
+
+                                layers = map.getLayersByName("BRAN Sub-Surface");
+                                for (layer in layers) {
+                                    map.removeLayer(layers[layer]);
+                                }
+
                                 map.removeControl(this.toolbar);
                                 this.toolbar.deactivate();
                                 this.toolbar.destroy();
@@ -346,6 +349,7 @@ ocean.dsConf = {
                                     }
                                     updateCalDiv();
                                     showControl('selectionDiv');
+                                    showControl('latlonDiv');
                             }
     },
     ww3: {url: function() {return "cgi/portal.py?dataset=ww3"
