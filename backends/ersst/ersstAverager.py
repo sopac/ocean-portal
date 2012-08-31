@@ -8,6 +8,7 @@ import math
 import glob
 from netCDF4 import Dataset
 import json
+import os.path
 
 import ocean.util as util
 from ..util import productName
@@ -18,6 +19,9 @@ serverCfg = util.get_server_config()
 ersstProduct = productName.products["ersst"]
 
 regionCfg = regionConfig.regions
+
+CACHE_DIR = os.path.join(serverCfg['outputDir'],
+                         serverCfg['cacheDir']['ersst'])
 
 currentDate = datetime.datetime.today()
 strCurrentYear = str(currentDate.year)
@@ -50,15 +54,15 @@ months = {'01':'January',
 def generateMonthlyAverages():
     
     for month in months:
-        meanFileName = serverCfg["cacheDir"]["ersst"]\
-                          + reynoldsProduct["monthlyAve"]\
+        meanFileName = CACHE_DIR \
+                          + ersstProduct['monthlyAve']\
                           + '_' + month + '_mean.json'
         meanFile = open(meanFileName, 'w')
         monthlyAreaMean = {}
 
         for region in regionCfg:
-            averageFileName = serverCfg["cacheDir"]["ersst"]\
-                            + reynoldsProduct["monthlyAve"]\
+            averageFileName = CACHE_DIR \
+                            + ersstProduct['monthlyAve']\
                             + '_' +  month + '_ave_%s' % (region)
 
             averageFile = open(averageFileName + '.txt', 'w')

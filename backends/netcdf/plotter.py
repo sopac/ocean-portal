@@ -23,6 +23,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import ocean.util as util
+import ocean.util.regionConfig as rc
 
 COMMON_FILES = {
     'img': '.png',
@@ -42,9 +43,10 @@ class Plotter:
     def __init__(self):
         """The simple constructor of Plotter"""
         self.serverConfig = util.get_server_config()
+        self.regionConfig = rc.regions
 
     def contour(self, data, lats, lons, variable, config, outputFile,\
-                title, lllat, lllon, urlat, urlon, proj=_DEFAULT_PROJ,\
+                title, lllat, lllon, urlat, urlon, res = 'h', proj=_DEFAULT_PROJ,\
                 contourLines = False, centerLabel = False):
 	"""
 	Plot the input data with contours using the specified project and save the plot to the output file.
@@ -53,7 +55,7 @@ class Plotter:
         #* Generate image for the thumbnail and download
         #*******************************************
 	m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
-                    urcrnrlat=urlat, urcrnrlon=urlon, resolution='h')
+                    urcrnrlat=urlat, urcrnrlon=urlon, resolution=res)
         x, y = m(*np.meshgrid(lons, lats))
 	if contourLines:
 	    contourPlt = m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4)
@@ -93,13 +95,21 @@ class Plotter:
         plt.clim(*config.getColorBounds(variable))
         ax = plt.gca()
         box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))
-        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.15), frameon=False, bbox_transform=ax.transAxes)
+        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.3), frameon=False, bbox_transform=ax.transAxes)
+#        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (0,0,1,1), frameon=False, bbox_transform=plt.gcf().transFigure)
         ax.add_artist(copyrightBox)
 #        cax = plt.axes([0.93, 0.18, 0.02, 0.65])
 #        cbar = plt.colorbar(format=config.getValueFormat(variable), cax=cax, extend='both')
    
+#        cbar = plt.colorbar(format=config.getValueFormat(variable), extend='both', shrink=0.5)
         cbar = plt.colorbar(format=config.getValueFormat(variable), extend='both')
+
         cbar.set_label(config.getUnit(variable), rotation='horizontal', fontsize=6)
+
+
+        l,b,w,h = plt.gca().get_position().bounds
+        ll,bb,ww,hh = cbar.ax.get_position().bounds
+        cbar.ax.set_position([ll, b+0.25*h, ww, h*0.5])
 
 	colorbarLabels = config.getColorbarLabels(variable)
 	if len(colorbarLabels) != 0:
@@ -198,7 +208,7 @@ class Plotter:
         shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_east.pgw')
 
 
-    def plot(self, data, lats, lons, variable, config, outputFile, lllat, lllon, urlat, urlon, proj=_DEFAULT_PROJ, centerLabel = False, **args):
+    def plot(self, data, lats, lons, variable, config, outputFile, lllat, lllon, urlat, urlon, res = 'h', proj=_DEFAULT_PROJ, centerLabel = False, **args):
         """
         Plot the input data using the specified project and save the plot to the output file.
         """
@@ -206,13 +216,15 @@ class Plotter:
         #* Generate image for the thumbnail and download
         #*******************************************
         m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
-                    urcrnrlat=urlat, urcrnrlon=urlon, resolution='h')
+                    urcrnrlat=urlat, urcrnrlon=urlon, resolution=res)
         x, y = m(*np.meshgrid(lons, lats))
         m.pcolormesh(x, y, data, shading='flat', cmap=config.getColorMap(variable))
         m.drawcoastlines(linewidth=0.1, zorder=6)
 #        m.fillcontinents(color='#F1EBB7', zorder=7)
         m.fillcontinents(color='#cccccc', zorder=7)
 
+        #parallels = self.get_tick_values(lllon, urlon)
+        #meridians = self.get_tick_values(lllat, urlat)
         if math.fabs(lllat - urlat) < 2:
             parallels = np.linspace(lllat, urlat, 2)
         elif math.fabs(lllat - urlat) < 5:
@@ -232,15 +244,22 @@ class Plotter:
         plt.clim(*config.getColorBounds(variable))
         ax = plt.gca()
         box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))
-        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.15), frameon=False, bbox_transform=ax.transAxes)
+        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.3), frameon=False, bbox_transform=ax.transAxes)
+#        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (0,0,1,1), frameon=False, bbox_transform=plt.gcf().transFigure)
         ax.add_artist(copyrightBox)
 
 #        cax = plt.axes([0.93, 0.18, 0.02, 0.65])
 #        cbar = plt.colorbar(format=config.getValueFormat(variable), cax=cax, extend='both')
 #        cbar = plt.colorbar(format=config.getValueFormat(variable), cax=cax, extend='both')
+#        cbar = plt.colorbar(format=config.getValueFormat(variable), extend='both', shrink=0.5)
         cbar = plt.colorbar(format=config.getValueFormat(variable), extend='both')
+        
         cbar.set_label(config.getUnit(variable), rotation='horizontal', fontsize=6)
 #        cbar.set_label(ax.get_window_extent(), rotation='horizontal')
+
+        l,b,w,h = plt.gca().get_position().bounds
+        ll,bb,ww,hh = cbar.ax.get_position().bounds
+        cbar.ax.set_position([ll, b+0.25*h, ww, h*0.5])
 
         colorbarLabels = config.getColorbarLabels(variable)
         if len(colorbarLabels) != 0:
@@ -254,8 +273,7 @@ class Plotter:
                 except KeyError:
                     pass
 
-
-        plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.8, bbox_extra_artists=[copyrightBox])
+        plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.3, bbox_extra_artists=[copyrightBox])
         plt.close()
 
     def plotBasemapWest(self, data, lats, lons, variable, config, outputFile,\
@@ -324,10 +342,17 @@ class Plotter:
         ax = plt.gca()
         box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))
         copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.15), frameon=False, bbox_transform=ax.transAxes)
+#       copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (0,0,1,1), frameon=False, bbox_transform=plt.gcf().transFigure)
         ax.add_artist(copyrightBox)
 
+#        cbar = plt.colorbar(format=config.getValueFormat(variable), extend='both', shrink=0.5)
         cbar = plt.colorbar(format=config.getValueFormat(variable), extend='both')
+
         cbar.set_label(config.getUnit(variable), rotation='horizontal', fontsize=6)
+
+        l,b,w,h = plt.gca().get_position().bounds
+        ll,bb,ww,hh = cbar.ax.get_position().bounds
+        cbar.ax.set_position([ll,  b+0.25*h, ww, h*0.5])
 
         colorbarLabels = config.getColorbarLabels(variable)
         if len(colorbarLabels) != 0:
@@ -346,4 +371,39 @@ class Plotter:
                + datetime.date.today().strftime('%Y')\
                + "\nAustralian Bureau of Meteorology, COSPPac COMP"
 
+    def get_tick_values(self, x_min, x_max, min_ticks=4, max_ticks=9):
+        """
+        Automatically determine best latitude / longitude tick values for plotting.
+
+        Input arguments:
+            x_min       Minimum lat/lon value
+            x_max       Maximum lat/lon value
+            min_ticks   Minimum number of ticks
+            max_ticks   Maximum number of ticks    
+
+        Example usage: 
+            get_tick_values(-30,30) -> [-30., -20., -10., 0., 10., 20., 30.]
+        """
+        eps = 0.0001
+        
+        # Calculate base 10 exponent of the value range
+        dif_exp = np.floor(np.log10(x_max - x_min))
+        
+        for k in [1.0,0.5,0.2]:
+            test_interval = math.pow(10, dif_exp) * k
+            start_value = np.ceil(x_min/test_interval)*test_interval
+            ticks = np.arange(start_value, x_max + eps, test_interval)
+            if (ticks.size >= min_ticks) & (ticks.size <= max_ticks):
+                break
+        
+        # Determine number of decimal places required for labels
+        if dif_exp <= 0:
+            if k >= 1.0:
+                dec_places = abs(dif_exp)
+            else:
+                dec_places = abs(dif_exp) + 1
+        else:
+            dec_places = 0
+        
+        return ticks, int(dec_places)
 

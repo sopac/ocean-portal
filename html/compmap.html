@@ -42,12 +42,11 @@
         <img id="loadingImg" src="images/loading.gif" /><br/>
         <p id="loadingTxt"><b>Loading...</b></p>
     </div>
-    <div id="errorDiv"></div>
     <div id="dataDiv"></div>
     <div id="imgDiv"></div>
 </div>
 <div class="wrapper" id="wrapper">
-      <form name="theform" id="theform" method="get" action="index.jsp?">
+      <form action="#">
       <div class="header" id="header">
           <div class="title" id="title" ><h1 id="dstitle" class="dstitle"></h1></div>
           <div class="help" id="help" ><a href="" target="_blank" id="dshelp" class="dshelp"></a></div>
@@ -68,21 +67,21 @@
               <div class="yearDiv" id="yearDiv"></div>
           </div>
           <div class="datepickerDiv" id="datepickerDiv">
-              <input type="text" name="datepicker" id="datepicker" readonly="readonly" style="width: 80px"/>
+              <input type="text" id="datepicker" readonly="readonly" style="width: 80px"/>
           </div>
           <div class="tidalGaugeDiv" id="tidalGaugeDiv">
               Selected Tidal Gauge:
-	      <input type="text" name="tidalgauge" id="tidalgauge" disabled="disabled" style="width: 150px;"/>
-              <input type="hidden" name="tgId" id="tgId"/>
+	      <input type="text" id="tidalgauge" disabled="disabled" style="width: 150px;"/>
+              <input type="hidden" id="tgId"/>
           </div>
           <div class="latlonDiv" id="latlonDiv">
               <div class="latDiv" id="latDiv">
                   Latitude:
-		  <input type="text" name="latitude" id="latitude" style="width: 80px;"/>
+		  <input type="text" id="latitude" style="width: 80px;"/>
               </div>
               <div class="lonDiv" id="lonDiv">
                   Longitude:
-		  <input type="text" name="longitude" id="longitude" style="width: 80px;"/>
+		  <input type="text" id="longitude" style="width: 80px;"/>
               </div>
               </div>
           </div>
@@ -95,6 +94,18 @@
 </div>
 
 <div id="about-datasets" class="dialog" title="About Datasets">
+</div>
+<div id="error-dialog" class="dialog" title="Error">
+ <p>
+  <b>Error:</b>
+  <span id="error-dialog-content"></span>
+  <br/>
+  Please consider reporting this error to
+  <a href="mailto:COSPPac_SoftwareSupport@bom.gov.au">COSPPac Software
+  Support</a>.
+  <br/>
+  <small><a id="error-dialog-request" href="">Server Request</a></small>
+ </p>
 </div>
 
 </body>

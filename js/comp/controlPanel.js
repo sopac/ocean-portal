@@ -286,8 +286,8 @@ ocean.dsConf = {
                                                          },
                                                          onFeatureInsert: function(feature) {
                                                              var geometry = feature.geometry;
-                                                             document.forms['theform'].elements['latitude'].value = Math.round(geometry.y * 1000)/1000;
-                                                             document.forms['theform'].elements['longitude'].value = Math.round(geometry.x * 1000)/1000;
+                                                             $('#latitude').val(Math.round(geometry.y * 1000)/1000);
+                                                             $('#longitude').val(Math.round(geometry.x * 1000)/1000);
                                                          }
                                                      });
                               ocean.mapObj.addLayer(ww3Layer);
@@ -349,11 +349,11 @@ ocean.dsConf = {
                             }
     },
     ww3: {url: function() {return "cgi/portal.py?dataset=ww3"
-                                + "&lllat=" + document.forms['theform'].elements['latitude'].value 
-                                + "&lllon=" + document.forms['theform'].elements['longitude'].value
-                                + "&urlat=" + document.forms['theform'].elements['latitude'].value
-                                + "&urlon=" + document.forms['theform'].elements['longitude'].value
-                                + "&variable=" + this.variable.get('id') 
+                                + "&lllat=" + $('#latitude').val()
+                                + "&lllon=" + $('#longitude').val()
+                                + "&urlat=" + $('#latitude').val()
+                                + "&urlon=" + $('#longitude').val()
+                                + "&variable=" + this.variable.get('id')
                                 + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
                                 + "&period=" + ocean.period
                                 + "&timestamp=" + new Date().getTime();
@@ -390,8 +390,8 @@ ocean.dsConf = {
                                                          },
                                                          onFeatureInsert: function(feature) {
                                                              var geometry = feature.geometry;
-                                                             document.forms['theform'].elements['latitude'].value = Math.round(geometry.y * 1000)/1000;
-                                                             document.forms['theform'].elements['longitude'].value = Math.round(geometry.x * 1000)/1000;
+                                                             $('#latitude').val(Math.round(geometry.y * 1000)/1000);
+                                                             $('#longitude').val(Math.round(geometry.x * 1000)/1000);
                                                          }
                                                      });
                                   ocean.mapObj.addLayer(ww3Layer);
@@ -443,10 +443,12 @@ ocean.dsConf = {
                         },
             selectVariable: function(selection) {
                                 updatePeriodCombo();
-                                dateRange = this.data.get('dateRange');
+
+                                var record = this.data.variables().getById(selection);
+                                dateRange = record.get("dateRange")
                                 updateYearCombo(dateRange.yearFilter);
-                                minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
-                                maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
+                                minDate = $.datepick.parseDate(ocean.dateFormat, dateRange["minDate"]);
+                                maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange["maxDate"]);
                                 if (ocean.date != null) {
                                     if (ocean.date < minDate) {
                                         ocean.date = minDate
@@ -458,10 +460,9 @@ ocean.dsConf = {
                                 else {
                                     ocean.date = maxDate;
                                 }
+                                showControl('selectionDiv');
                                 updateCalDiv();
-                                showControl('selectionDiv'); 
-                                hideControl('yearDiv');
-                                showControl('latlonDiv');
+                                $('#tidalGaugeDiv').show();
                             }
     },
     sealevel: {url: function() {return "cgi/portal.py?dataset=sealevel"
@@ -469,7 +470,7 @@ ocean.dsConf = {
                                 + "&period=" + ocean.period
                                 + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
                                 + "&area=" + ocean.area
-                                + "&lat=" + document.forms['theform'].elements['latitude'].value 
+                                + "&lat=" + document.forms['theform'].elements['latitude'].value
                                 + "&lon=" + document.forms['theform'].elements['longitude'].value
                                 + "&tidalGaugeId=" + document.forms['theform'].elements['tgId'].value
                                 + "&timestamp=" + new Date().getTime();
@@ -484,8 +485,8 @@ ocean.dsConf = {
                     var minDate = $.datepick.parseDate(ocean.dateFormat, dateRange["minDate"]);
                     var maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange["maxDate"]);
                     var minYear = parseInt(dateRange["minYear"]);
-                    var maxYear = parseInt(dateRange["maxYear"]); 
-                    
+                    var maxYear = parseInt(dateRange["maxYear"]);
+
                     dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
                         var year = item.data.field1;
                         var filter = item.store.filters.items[0]
@@ -505,11 +506,11 @@ ocean.dsConf = {
                 var dataDiv = $('#dataDiv');
                 var enlargeDiv = $('#enlargeDiv');
                 if (data.img != null) {
-		    var img;
+                    var img;
 
                     imgDiv.html('');
                     for (img in data.img) {
-                        imgDiv.html(imgDiv.html() + '<img src="' + data.img[img] + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                        imgDiv.html(imgDiv.html() + '<img src="' + data.img[img] + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeIm
                     }
                     updateSeaLevelMap(data);
                 }
@@ -559,8 +560,8 @@ ocean.dsConf = {
                       },
             onDeselect: function() {
                             var layers = map.getLayersByName("Sea Level");
-			    var layer;
-			    var control;
+                            var layer;
+                            var control;
 
                             for (layer in layers) {
                                 map.removeLayer(layers[layer]);
@@ -604,6 +605,7 @@ ocean.dsConf = {
                                 $('#tidalGaugeDiv').show();
                             }
     }
+
 
 };
 
@@ -937,7 +939,7 @@ function createCheckBoxes(store, records, result, operation, eOpt) {
                         }
                     }
 
-                    periodCombo = Ext.getCmp('periodCombo');
+                    var periodCombo = Ext.getCmp('periodCombo');
                     periodCombo.clearValue();
                     var store = periodCombo.store;
                     store.clearFilter(true);
@@ -1186,32 +1188,43 @@ function updateDate(dateObj) {
 function updatePage() {
     if (!ocean.processing) {
         ocean.processing = true;
+
+        function show_error(url, text)
+        {
+            $('#error-dialog-content').html(text);
+            $('#error-dialog-request').prop('href', url);
+            $('#error-dialog').dialog('open');
+        }
+
         $.ajax({
             url:  ocean.dataset.url(),
             dataType: 'json',
             beforeSend: function(jqXHR, settings) {
                 showControl('loadingDiv');
-                hideControl('errorDiv');
+                $('#error-dialog').dialog('close');
             },
             success: function(data, textStatus, jqXHR) {
-		hideControl('loadingDiv');
-                if (data != null) {
-                    if (data.error) {
-                        $('#errorDiv').html(data.error);
-                        showControl('errorDiv');
-                    }
-                    else {
+                hideControl('loadingDiv');
+
+                if (data == null || $.isEmptyObject(data))
+                {
+                    show_error(ocean.dataset.url(), "returned no data");
+                }
+                else
+                {
+                    if (data.error)
+                        show_error(ocean.dataset.url(), data.error);
+                    else
                         ocean.dataset.callback(data);
-                    }
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                alert(textStatus);
+                show_error(ocean.dataset.url(), textStatus);
             },
             complete: function(jqXHR, textStatus) {
                 ocean.processing = false;
                 hideControl('loadingDiv');
-            } 
+            }
         });
     }
 }

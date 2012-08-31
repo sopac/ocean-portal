@@ -66,13 +66,17 @@ class SeaLevelPlotter ():
  
         args['formattedDate'] = ''
 
+        resolution='h'
+        if not area=='pac':
+           resolution='f'
+
         plot = plotter.Plotter()
         plot.plot(height, lats, lons, variable, self.config, outputFilename,\
                   regionConfig.regions[area][1]["llcrnrlat"],\
                   regionConfig.regions[area][1]["llcrnrlon"],\
                   regionConfig.regions[area][1]["urcrnrlat"],\
                   regionConfig.regions[area][1]["urcrnrlon"],\
-                  centerLabel = cntLabel, **args)
+                  res=resolution, centerLabel=cntLabel, **args)
         plot.plotBasemapEast(height, lats, lons, variable, self.config,
                              outputFilename, lllat=-65, lllon=60, urlat=15,
                              worldfile='subeast.pgw')
