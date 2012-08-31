@@ -216,6 +216,13 @@ regions = {"pi": ("pi",
                   "Southern Hemisphere",
                   {"boundinglat": -10,
                    "lon0": 0
-                  })
-          }
+                  }),
+           "sealevel": ("pi",
+                       {"llcrnrlat": -50,
+                        "llcrnrlon": 130,
+                        "urcrnrlat": 10,
+                        "urcrnrlon": 210,
+                       },
+                       "Pacific Sea Level")
+                       }
 

@@ -34,9 +34,9 @@ class ErsstConfig ():
 				       {"colorbounds": [0,11],
 					"colormap": plt.cm.RdBu_r,
 					"contourlevels": [-1,0,1,3,7,9,10,11],
-					"colorbarlabels": ['Lowest on \nrecord','Very much \nbelow \naverage \n[1]',
+					"colorbarlabels": ['','Lowest on \nrecord','Very much \nbelow \naverage \n[1]',
 					'Below \naverage \n[2-3]','Average \n[4-7]','Above \naverage \n[8-9]',
-					'Very much \nabove \naverage \n[10]','Highest on \nrecord'],
+					'Very much \nabove \naverage \n[10]','Highest on \nrecord',''],
 					"unit": ur'\u00b0' + 'C',
 					"format": '%5.1f'
 				      },
