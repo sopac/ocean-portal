@@ -10,7 +10,9 @@ ocean.processing = false;
 //ocean.trend = false;
 //ocean.runningAve = false;
 //ocean.runningAveLen = 2;
-ocean.MIN_YEAR = 1850;
+ocean.MIN_YEAR = 1949;
+ocean.dateFormat = 'yyyymmdd';
+ocean.date = new Date();
 
 /* set up JQuery UI elements */
 $(document).ready(function() {
@@ -42,7 +44,7 @@ Date.prototype.getMonthString = function() {
 ocean.dsConf = {
     reynolds: {url: function() {return "cgi/portal.py?dataset=reynolds"
                    + "&map=" + this.variable.get('id')
-                   + "&date=" + $.datepick.formatDate('yyyymmdd', ocean.date)
+                   + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
                    + "&period=" + ocean.period
                    + "&area=" + ocean.area
                    + "&average=" + ocean.dsConf['reynolds'].aveCheck.average
@@ -56,6 +58,22 @@ ocean.dsConf = {
                 aveCheck: {},
                 mainCheck: 'average',
                 runningInterval: 2,
+                setData: function(data) {
+                    this.data = data;
+                    dateRange = this.data.get('dateRange');
+                    minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
+                    maxDate = $.datepick.determineDate(dateRange.maxDate);
+                    var minYear = parseInt(dateRange["minYear"]);
+                    var maxYear = maxDate.getFullYear();
+                    dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
+                        var year = item.data.field1;
+                        var filter = item.store.filters.items[0]
+                            return year >= filter.minYear && year <= filter.maxYear;
+                        },
+                        minYear: minYear,
+                        maxYear: maxYear});
+
+                },
                 callback: function(data) {
                     var imgDiv = $('#imgDiv');
                     var dataDiv = $('#dataDiv');
@@ -93,7 +111,7 @@ ocean.dsConf = {
                 onSelect: function(){
                               $('#variableDiv').show();
                               configCalendar(); 
-                              $( "#datepicker" ).datepick('setDate', -4);
+//                              $( "#datepicker" ).datepick('setDate', -4);
                           },
                 onDeselect: function() {
                     layers = map.getLayersByName("Reynolds")
@@ -103,22 +121,25 @@ ocean.dsConf = {
                     $('#imgDiv').html('');
                 },
                 selectVariable: function(selection) {
-                    //this should be in a callback for the combo
-                    var periodCombo = Ext.getCmp('periodCombo');
-                    periodCombo.clearValue();
-                    var store = periodCombo.store;
-                    store.clearFilter(true);
-                    store.filter([periodFilter]);
-                    if (store.find('id', ocean.period) != -1) {
-                        periodCombo.select(ocean.period);
-                    }
-                    else {
-                        periodCombo.select(store.data.keys[0]);
-                        ocean.period = store.data.keys[0];
-                    } 
-                    updateCalDiv();
-                    showControl('selectionDiv');
-                    showControl('compDiv');
+                                    updatePeriodCombo();
+                                    dateRange = this.data.get('dateRange');
+                                    updateYearCombo(dateRange.yearFilter);
+                                    minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
+                                    maxDate = $.datepick.determineDate(dateRange.maxDate);
+                                    if (ocean.date != null) {
+                                        if (ocean.date < minDate) {
+                                            ocean.date = minDate
+                                        }
+                                        else if (ocean.date > maxDate) {
+                                            ocean.date = maxDate
+                                        }
+                                    }
+                                    else {
+                                        ocean.date = maxDate;
+                                    }
+                                    updateCalDiv();
+                                    showControl('selectionDiv');
+                                    showControl('compDiv');
 
 //                    if (selection === 'anom') {
 //                        showControl('toggleDiv')
@@ -128,11 +149,12 @@ ocean.dsConf = {
 //                        }
 //                        showControl('sliderDiv')
 //                    }
-                }
+                               }
+//                update
             },
     ersst: {url: function() {return "cgi/portal.py?dataset=ersst"
                    + "&map=" + this.variable.get('id')
-                   + "&date=" + $.datepick.formatDate('yyyymmdd', ocean.date)
+                   + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
                    + "&period=" + ocean.period
                    + "&baseYear=1900"
                    + "&area=" + ocean.area
@@ -147,6 +169,21 @@ ocean.dsConf = {
                 aveCheck: {},
                 mainCheck: 'average',
                 runningInterval: 2,
+                setData: function(data) {
+                    this.data = data;
+                    dateRange = this.data.get('dateRange');
+                    minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
+                    maxDate = $.datepick.determineDate(dateRange.maxDate);
+                    var minYear = parseInt(dateRange["minYear"]);
+                    var maxYear = maxDate.getFullYear();
+                    dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
+                        var year = item.data.field1;
+                        var filter = item.store.filters.items[0]
+                            return year >= filter.minYear && year <= filter.maxYear;
+                        },
+                        minYear: minYear,
+                        maxYear: maxYear});
+                },
                 callback: function(data) {
                     var imgDiv = $('#imgDiv');
                     var dataDiv = $('#dataDiv');
@@ -174,21 +211,24 @@ ocean.dsConf = {
                     $('#imgDiv').html('');
                 },
                 selectVariable: function(selection) {
-                    //this should be in a callback for the combo
-                    var periodCombo = Ext.getCmp('periodCombo');
-                    periodCombo.clearValue();
-                    var store = periodCombo.store;
-                    store.clearFilter(true);
-                    store.filter([periodFilter]);
-                    if (store.find('id', ocean.period) != -1) {
-                        periodCombo.select(ocean.period);
-                    }
-                    else {
-                        periodCombo.select(store.data.keys[0]);
-                        ocean.period = store.data.keys[0];
-                    } 
-                    updateCalDiv();
-                    showControl('selectionDiv');
+                                    updatePeriodCombo();
+                                    dateRange = this.data.get('dateRange');
+                                    updateYearCombo(dateRange.yearFilter);
+                                    minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
+                                    maxDate = $.datepick.determineDate(dateRange.maxDate);
+                                    if (ocean.date != null) {
+                                        if (ocean.date < minDate) {
+                                            ocean.date = minDate
+                                        }
+                                        else if (ocean.date > maxDate) {
+                                            ocean.date = maxDate
+                                        }
+                                    }
+                                    else {
+                                        ocean.date = maxDate;
+                                    }
+                                    updateCalDiv();
+                                    showControl('selectionDiv');
 
 //                    if (selection === 'anom') {
 //                        showControl('toggleDiv')
@@ -198,34 +238,46 @@ ocean.dsConf = {
 //                        }
 //                        showControl('sliderDiv')
 //                    }
-                }
+                              }
            },
     bran: {url: function() {return "cgi/portal.py?dataset=bran"
                    + "&map=" + this.variable.get('id')
-                   + "&date=" + $.datepick.formatDate('yyyymmdd', ocean.date)
+                   + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
                    + "&period=" + ocean.period
                    + "&area=" + ocean.area
+                   + "&lat=" + $('#latitude').val()
+                   + "&lon=" + $('#longitude').val()
                    + "&timestamp=" + new Date().getTime();
                 },
                 data: null,
                 variable: null,
+                setData: function(data) {
+                    this.data = data;
+                    dateRange = this.data.get('dateRange');
+                    minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
+                    maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
+                    var minYear = parseInt(dateRange["minYear"]);
+                    var maxYear = parseInt(dateRange["maxYear"]);
+                    dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
+                        var year = item.data.field1;
+                        var filter = item.store.filters.items[0]
+                            return year >= filter.minYear && year <= filter.maxYear;
+                        },
+                        minYear: minYear,
+                        maxYear: maxYear});
+                },
                 callback: function(data) {
                     var imgDiv = $('#imgDiv');
                     var dataDiv = $('#dataDiv');
                     var enlargeDiv = $('#enlargeDiv');
-                    if (this.variable.get("id") == "anom" && this.aveCheck.average && data.aveImg != null) {
-                        imgDiv.html('<img src="' + data.aveImg + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
-                        dataDiv.html('<b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C<br>' + '<a href="'+ data.aveData + '" target="_blank"><img src="images/download.png"/></a>');
-
-                    }
-                    else if (data.img != null) {
+                    if (data.img != null) {
                         imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
-                        updateMap("ERSST", data);
+                        updateMap("BRAN", data);
                         dataDiv.html('');
                     }
                 },
                 onSelect: function(){
-                              var ww3Layer = new OpenLayers.Layer.Vector("WaveWatch III", {
+                              var branLayer = new OpenLayers.Layer.Vector("BRAN Sub-Surface", {
                                                          preFeatureInsert: function(feature) {
                                                              this.removeAllFeatures();
                                                          },
@@ -235,9 +287,9 @@ ocean.dsConf = {
                                                              $('#longitude').val(Math.round(geometry.x * 1000)/1000);
                                                          }
                                                      });
-                              ocean.mapObj.addLayer(ww3Layer);
+                              ocean.mapObj.addLayer(branLayer);
                               this.panelControls = [
-                                  new OpenLayers.Control.DrawFeature(ww3Layer,
+                                  new OpenLayers.Control.DrawFeature(branLayer,
                                                    OpenLayers.Handler.Point,
                                                    {'displayClass': 'olControlDrawFeaturePoint'}),
                                   new OpenLayers.Control.Navigation()
@@ -260,6 +312,12 @@ ocean.dsConf = {
                                 for (layer in layers) {
                                     map.removeLayer(layers[layer]);
                                 }
+
+                                layers = map.getLayersByName("BRAN Sub-Surface");
+                                for (layer in layers) {
+                                    map.removeLayer(layers[layer]);
+                                }
+
                                 map.removeControl(this.toolbar);
                                 this.toolbar.deactivate();
                                 this.toolbar.destroy();
@@ -273,22 +331,26 @@ ocean.dsConf = {
                                 $('#dataDiv').html('');
                 },
                 selectVariable: function(selection) {
-                                //this should be in a callback for the combo
-                                var periodCombo = Ext.getCmp('periodCombo');
-                                periodCombo.clearValue();
-                                var store = periodCombo.store;
-                                store.clearFilter(true);
-                                store.filter([periodFilter]);
-                                if (store.find('id', ocean.period) != -1) {
-                                    periodCombo.select(ocean.period);
-                                }
-                                else {
-                                    periodCombo.select(store.data.keys[0]);
-                                    ocean.period = store.data.keys[0];
-                                } 
-                                updateCalDiv();
-                                showControl('selectionDiv');
-                }
+                                    updatePeriodCombo();
+                                    dateRange = this.data.get('dateRange');
+                                    updateYearCombo(dateRange.yearFilter);
+                                    minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
+                                    maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
+                                    if (ocean.date != null) {
+                                        if (ocean.date < minDate) {
+                                            ocean.date = minDate
+                                        }
+                                        else if (ocean.date > maxDate) {
+                                            ocean.date = maxDate
+                                        }
+                                    }
+                                    else {
+                                        ocean.date = maxDate;
+                                    }
+                                    updateCalDiv();
+                                    showControl('selectionDiv');
+                                    showControl('latlonDiv');
+                            }
     },
     ww3: {url: function() {return "cgi/portal.py?dataset=ww3"
                                 + "&lllat=" + $('#latitude').val()
@@ -296,13 +358,28 @@ ocean.dsConf = {
                                 + "&urlat=" + $('#latitude').val()
                                 + "&urlon=" + $('#longitude').val()
                                 + "&variable=" + this.variable.get('id')
-                                + "&date=" + $.datepick.formatDate('yyyymmdd', ocean.date)
+                                + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
                                 + "&period=" + ocean.period
                                 + "&timestamp=" + new Date().getTime();
                            },
             data: null,
             panelControls: null,
             toolbar: null,
+            setData: function(data) {
+                this.data = data;
+                dateRange = this.data.get('dateRange');
+                minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
+                maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
+                var minYear = parseInt(dateRange["minYear"]);
+                var maxYear = parseInt(dateRange["maxYear"]);
+                dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
+                        var year = item.data.field1;
+                        var filter = item.store.filters.items[0]
+                            return year >= filter.minYear && year <= filter.maxYear;
+                        },
+                        minYear: minYear,
+                        maxYear: maxYear});
+            },
             callback: function(data) {
                           var imgDiv = $('#imgDiv');
                           var dataDiv = $('#dataDiv');
@@ -367,33 +444,26 @@ ocean.dsConf = {
                             $('#imgDiv').html('');
                             $('#dataDiv').html('');
                             showControl('yearDiv');
-                                   },
+                        },
             selectVariable: function(selection) {
-                                //this should be in a callback for the combo
-                                var periodCombo = Ext.getCmp('periodCombo');
-                                periodCombo.clearValue();
-                                var store = periodCombo.store;
-                                store.clearFilter(true);
-                                store.filter([periodFilter]);
-                                if (store.find('id', ocean.period) != -1) {
-                                    periodCombo.select(ocean.period);
+                                updatePeriodCombo();
+                                dateRange = this.data.get('dateRange');
+                                updateYearCombo(dateRange.yearFilter);
+                                minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
+                                maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
+                                if (ocean.date != null) {
+                                    if (ocean.date < minDate) {
+                                        ocean.date = minDate
+                                    }
+                                    else if (ocean.date > maxDate) {
+                                        ocean.date = maxDate
+                                    }
                                 }
                                 else {
-                                    periodCombo.select(store.data.keys[0]);
-                                    ocean.period = store.data.keys[0];
-                                }
-                                if (ocean.date == null) {
-                                    var dateRange = this.data.get('dateRange');
-                                    var maxDate = new Date();
-                                    if (dateRange != null) {
-                                        maxDate.setMonth(dateRange.maxDate.month - 1);
-                                        maxDate.setFullYear(dateRange.maxDate.year);
-                                        maxDate.setDate(dateRange.maxDate.date);
-                                    }
                                     ocean.date = maxDate;
                                 }
                                 updateCalDiv();
-                                showControl('selectionDiv'); 
+                                showControl('selectionDiv');
                                 hideControl('yearDiv');
                                 showControl('latlonDiv');
                             }
@@ -401,7 +471,7 @@ ocean.dsConf = {
     sealevel: {url: function() {return "cgi/portal.py?dataset=sealevel"
                                 + "&variable=" + this.variable.get('id')
                                 + "&period=" + ocean.period
-                                + "&date=" + $.datepick.formatDate('yyyymmdd', ocean.date)
+                                + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
                                 + "&area=" + ocean.area
                                 + "&lat=" + $('#latitude').val()
                                 + "&lon=" + $('#longitude').val()
@@ -409,12 +479,37 @@ ocean.dsConf = {
                                 + "&timestamp=" + new Date().getTime();
                            },
             data: null,
+            setData: function(data) {
+                this.data = data;
+                var items = this.data.variables().data.items;
+                for (var itemIndex in items) {
+                    var record = items[itemIndex];
+                    var dateRange = record.get("dateRange")
+                    var minDate = $.datepick.parseDate(ocean.dateFormat, dateRange["minDate"]);
+                    var maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange["maxDate"]);
+                    var minYear = parseInt(dateRange["minYear"]);
+                    var maxYear = parseInt(dateRange["maxYear"]);
+
+                    dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
+                        var year = item.data.field1;
+                        var filter = item.store.filters.items[0]
+//                        if(ocean.date != null) {
+//                            return Ext.Array.contains(ocean.dataset.variable.get('periods'), item.data.field1);
+//                        }
+//                        else {
+                            return year >= filter.minYear && year <= filter.maxYear;
+//                        }
+                        },
+                        minYear: minYear,
+                        maxYear: maxYear});
+                }
+            },
             callback: function(data) {
                 var imgDiv = $('#imgDiv');
                 var dataDiv = $('#dataDiv');
                 var enlargeDiv = $('#enlargeDiv');
                 if (data.img != null) {
-		    var img;
+                    var img;
 
                     imgDiv.html('');
                     for (img in data.img) {
@@ -468,8 +563,8 @@ ocean.dsConf = {
                       },
             onDeselect: function() {
                             var layers = map.getLayersByName("Sea Level");
-			    var layer;
-			    var control;
+                            var layer;
+                            var control;
 
                             for (layer in layers) {
                                 map.removeLayer(layers[layer]);
@@ -490,33 +585,30 @@ ocean.dsConf = {
                             $('#dataDiv').html('');
                         },
             selectVariable: function(selection) {
-                var periodCombo = Ext.getCmp('periodCombo');
-                periodCombo.clearValue();
-                var store = periodCombo.store;
-                store.clearFilter(true);
-                store.filter([periodFilter]);
-                if (store.find('id', ocean.period) != -1) {
-                    periodCombo.select(ocean.period);
-                }
-                else {
-                    periodCombo.select(store.data.keys[0]);
-                    ocean.period = store.data.keys[0];
-                } 
-                var record = this.data.variables().getById(selection);
-                var maxDate = new Date();
-                if (record.get("dateRange") != null) {
-                    maxDate.setMonth(record.get("dateRange")["maxDate"]["month"] - 1);
-                    maxDate.setFullYear(record.get("dateRange")["maxDate"]["year"]);
-                    maxDate.setDate(record.get("dateRange")["maxDate"]["date"]);
-                }
-     
-                ocean.date = maxDate;
-                updateCalDiv();
-                showControl('selectionDiv');
-                $('#tidalGaugeDiv').show();
-//                $('#latlonDiv').show();
-            }
+                                updatePeriodCombo();
+
+                                var record = this.data.variables().getById(selection);
+                                dateRange = record.get("dateRange")
+                                updateYearCombo(dateRange.yearFilter);
+                                minDate = $.datepick.parseDate(ocean.dateFormat, dateRange["minDate"]);
+                                maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange["maxDate"]);
+                                if (ocean.date != null) {
+                                    if (ocean.date < minDate) {
+                                        ocean.date = minDate
+                                    }
+                                    else if (ocean.date > maxDate) {
+                                        ocean.date = maxDate
+                                    }
+                                }
+                                else {
+                                    ocean.date = maxDate;
+                                }
+                                showControl('selectionDiv');
+                                updateCalDiv();
+                                $('#tidalGaugeDiv').show();
+                            }
     }
+
 
 };
 
@@ -723,7 +815,8 @@ Ext.onReady(function() {
         store: ocean.periods,
         lastQuery: '',
         listeners: {
-            'select': selectPeriod
+//            'select': selectPeriod
+            'change': selectPeriod
         }
     });
 
@@ -797,10 +890,7 @@ Ext.onReady(function() {
 
     var currentYear = new Date().getFullYear();
     var minYear = ocean.MIN_YEAR;
-    var yearRange = [];
-    while(minYear <= currentYear){
-        yearRange.push(minYear++);
-    }
+    var yearRange = range(minYear, currentYear);
     ocean.yearCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'yearCombo',
         fieldLabel: 'Year',
@@ -808,15 +898,20 @@ Ext.onReady(function() {
         width: 155,
         renderTo: 'yearDiv',
         queryMode: 'local',
+        autoScroll: true,
         lastQuery: '',
         store: yearRange,
         listeners: {
             'select': function(event, args) {
                 ocean.date.setFullYear(event.getValue());
+            },
+            'expend': function(picker, opts) {
+                var pick = picker;
             } 
         }
     });
-
+//    ocean.yearCombo.getPicker().setAutoScroll(true);
+ 
     initialise();
 });
 
@@ -864,7 +959,7 @@ function createCheckBoxes(store, records, result, operation, eOpt) {
                         periodCombo.select(store.data.keys[0]);
                         ocean.period = store.data.keys[0];
                     } 
-                    updateCalDiv();
+////                    updateCalDiv();
                 }
                 else {
                     ocean.dsConf['reynolds'].aveCheck[checkbox.id] = checked;
@@ -920,7 +1015,8 @@ function selectDataset(event, args) {
     hideControls();
     var selection = event.getValue();
     var record = ocean.datasets.getById(selection);
-    ocean.dsConf[selection].data = record;
+    ocean.dsConf[selection].setData(record);
+//    ocean.dsConf[selection].data = record;
 
     if (ocean.dataset != null) {
         ocean.dataset.onDeselect();
@@ -942,9 +1038,7 @@ function configCalendar() {
     if(ocean.calendar) {
         var dateRange = ocean.dataset.data.get('dateRange');
         var minDate = ocean.dataset.data.get('dateRange').minDate;
-        ocean.calendar.datepick('option', {'minDate': new Date(minDate.year,
-                                                               minDate.month - 1,
-                                                               minDate.date),
+        ocean.calendar.datepick('option', {'minDate': dateRange.minDate,
                                            'maxDate': dateRange.maxDate,
                                            'yearRange': dateRange.minYear + ":" + dateRange.maxYear
                                 });
@@ -959,12 +1053,10 @@ function createCalendars() {
     var dateRange = ocean.dataset.data.get('dateRange');
     var minDate = ocean.dataset.data.get('dateRange').minDate;
     ocean.calendar = $("#datepicker").datepick({
-        minDate: new Date(minDate.year,
-                          minDate.month - 1,
-                          minDate.date),
+        minDate: dateRange.minDate,
         maxDate: dateRange.maxDate,
         yearRange: dateRange.minYear + ":" + dateRange.maxYear,
-        dateFormat: 'dd M yyyy',
+        dateFormat: ocean.dateFormat,
         firstDay: 1,
         showTrigger: '#calImg',
         renderer: $.extend({},
@@ -984,29 +1076,6 @@ function createCalendars() {
     $( "#datepicker" ).mousedown(function() {
         $(this).datepick('show');
     });
-
-//    ocean.monthCombo = Ext.create('Ext.form.field.ComboBox', {
-//        id: 'monthCombo',
-//        fieldLabel: 'Month',
-//        labelWidth: 20,
-//        width: 100,
-//        height: 30,
-//        rederTo: 'monthDiv',
-//        queryMode: 'local',
-//        lastQuery: '',
-//        store: ['Jan', 'Feb']
-//    });
-
-//    ocean.yearCombo = Ext.create('Ext.form.field.ComboBox', {
-//        id: 'yearCombo',
-//        fieldLabel: 'Year',
-//        labelWidth: 20,
-//        width: 100,
-//        rederTo: 'yearDiv',
-//        queryMode: 'local',
-//        lastQuery: '',
-//        store: ['2011', '2012']
-//    });
 }
 
 function selectVariable(event, args) {
@@ -1019,8 +1088,46 @@ function selectVariable(event, args) {
 }
 
 function selectPeriod(event, args) {
-    ocean.period = event.getValue();
-    updateCalDiv();
+    if (event.getValue() != null) {
+        ocean.period = event.getValue();
+        updateCalDiv();
+    }
+}
+
+function range(start, end) {
+    var rangeArray = [];
+    while(start <= end){
+        rangeArray.push(start++);
+    }
+    return rangeArray
+}
+
+function updateYearCombo(yearFilter) {
+    var yearCombo = Ext.getCmp('yearCombo');
+    //yearCombo.setAutoScroll('auto');
+//    yearCombo.getPicker().setAutoScroll(true);
+    yearCombo.clearValue();
+    var store = yearCombo.store;
+    store.clearFilter(true);
+    store.filter([yearFilter]);
+//    yearCombo.picker.height = 300;
+//    yearCombo.updateLayout();
+    //yearCombo.getPicker().doComponentLayout();
+//    yearCombo.doComponentLayout();
+}
+
+function updatePeriodCombo() {
+    var periodCombo = Ext.getCmp('periodCombo');
+    periodCombo.clearValue();
+    var store = periodCombo.store;
+    store.clearFilter(true);
+    store.filter([periodFilter]);
+    if (store.find('id', ocean.period) != -1) {
+        periodCombo.setValue(ocean.period)
+    }
+    else {
+        periodCombo.setValue(store.data.keys[0])
+    } 
 }
 
 function updateCalDiv() {
@@ -1034,9 +1141,7 @@ function updateCalDiv() {
         showControl('yearMonthDiv');
         ocean.monthCombo.select(ocean.date.getMonthString());
         ocean.yearCombo.select(ocean.date.getFullYear());
-//        $('#yearDiv').val(ocean.date.getFullYear());
     }
-
 }
 
 function selectRunningInterval(slider, value, thumb, args) {
@@ -1075,45 +1180,9 @@ function initialise() {
 var average;
 
 function updateDate(dateObj) {
-    ocean.date = dateObj.length? dateObj[0] : dateObj;
+    ocean.date = dateObj.length? dateObj[0] : null;
 }
 
-function beforeShow(picker, inst) {
-//    if (period == 'monthly' || period == '3monthly' || period == '6monthly') {
-//        monthOnly(picker, inst);
-//    }
-//    else if (period == 'yearly') {
-//        yearOnly(picker, inst);
-//    }
-//    else if (period == 'weekly'){
-//        weekOnly(picker, inst);
-//    }
-}
-
-function checkPeriod() {
-//    if (period == 'weekly') {
-//        return {selectable: false};
-//    }
-//    else {
-//        return {selectable: true};
-//    }
-}
-
-function monthOrYearChanged(year, month) {
-//    if(average || period == 'yearly') {
-//        var target = $('#datepicker');
-//        if(period == 'yearly') {
-//            target.datepick('setDate', $.datepick.newDate(
-//                parseInt(year, 10), 1, 1)).
-//                datepick('hide');
-//        }
-//        else {
-//            target.datepick('setDate', $.datepick.newDate(
-//                parseInt(year, 10), parseInt(month, 10), 1)).
-//                datepick('hide');
-//        }
-//    }
-}
 
 
 //**********************************************************
