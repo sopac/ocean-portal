@@ -113,9 +113,9 @@ def process(form):
                 
                 config = bc.branConfig()
                 plot = plotter.Plotter()
-                plot.contourBasemapEast(data, lats, lons, 'temp', config, outputFilename) 
-                plot.contourBasemapWest(data, lats, lons, 'temp', config, outputFilename)
-                plot.plotScale(data, 'temp', config, outputFilename)
+                plot.contourBasemapEast(data, lats, lons, dataVar, config, outputFilenameTop) 
+                plot.contourBasemapWest(data, lats, lons, dataVar, config, outputFilenameTop)
+                plot.plotScale(data, dataVar, config, outputFilenameTop
                 branPlotterNew.plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
                                                       output_filename=outputFileFullPath, title=title, units=unitStr,
                                                       cb_ticks=cb_ticks, cb_tick_fmt=cb_tick_fmt, cmp_name='jet', proj='cyl',
@@ -125,9 +125,6 @@ def process(form):
             if not os.path.exists(outputFileFullPath):
                 responseObj["error"] = "Requested image is not available at this time."
             else:
-#                responseObj["img"] = os.path.join(server_config['baseURL'],
-#                                                  server_config['rasterURL'],
-#                                                  outputFilename)
                 responseObj.update(util.build_response_object(
                         COMMON_FILES.keys(),
                         os.path.join(server_config['baseURL'],
