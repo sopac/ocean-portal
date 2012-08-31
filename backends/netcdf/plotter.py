@@ -23,6 +23,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import ocean.util as util
+import ocean.util.regionConfig as rc
 
 COMMON_FILES = {
     'img': '.png',
@@ -42,9 +43,10 @@ class Plotter:
     def __init__(self):
         """The simple constructor of Plotter"""
         self.serverConfig = util.get_server_config()
+        self.regionConfig = rc.regions
 
     def contour(self, data, lats, lons, variable, config, outputFile,\
-                title, lllat, lllon, urlat, urlon, proj=_DEFAULT_PROJ,\
+                title, lllat, lllon, urlat, urlon, res = 'h', proj=_DEFAULT_PROJ,\
                 contourLines = False, centerLabel = False):
 	"""
 	Plot the input data with contours using the specified project and save the plot to the output file.
@@ -53,7 +55,7 @@ class Plotter:
         #* Generate image for the thumbnail and download
         #*******************************************
 	m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
-                    urcrnrlat=urlat, urcrnrlon=urlon, resolution='h')
+                    urcrnrlat=urlat, urcrnrlon=urlon, resolution=res)
         x, y = m(*np.meshgrid(lons, lats))
 	if contourLines:
 	    contourPlt = m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4)
@@ -93,7 +95,7 @@ class Plotter:
         plt.clim(*config.getColorBounds(variable))
         ax = plt.gca()
         box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))
-        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.15), frameon=False, bbox_transform=ax.transAxes)
+        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.3), frameon=False, bbox_transform=ax.transAxes)
 #        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (0,0,1,1), frameon=False, bbox_transform=plt.gcf().transFigure)
         ax.add_artist(copyrightBox)
 #        cax = plt.axes([0.93, 0.18, 0.02, 0.65])
@@ -206,7 +208,7 @@ class Plotter:
         shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_east.pgw')
 
 
-    def plot(self, data, lats, lons, variable, config, outputFile, lllat, lllon, urlat, urlon, proj=_DEFAULT_PROJ, centerLabel = False, **args):
+    def plot(self, data, lats, lons, variable, config, outputFile, lllat, lllon, urlat, urlon, res = 'h', proj=_DEFAULT_PROJ, centerLabel = False, **args):
         """
         Plot the input data using the specified project and save the plot to the output file.
         """
@@ -214,13 +216,15 @@ class Plotter:
         #* Generate image for the thumbnail and download
         #*******************************************
         m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
-                    urcrnrlat=urlat, urcrnrlon=urlon, resolution='f')
+                    urcrnrlat=urlat, urcrnrlon=urlon, resolution=res)
         x, y = m(*np.meshgrid(lons, lats))
         m.pcolormesh(x, y, data, shading='flat', cmap=config.getColorMap(variable))
         m.drawcoastlines(linewidth=0.1, zorder=6)
 #        m.fillcontinents(color='#F1EBB7', zorder=7)
         m.fillcontinents(color='#cccccc', zorder=7)
 
+        #parallels = self.get_tick_values(lllon, urlon)
+        #meridians = self.get_tick_values(lllat, urlat)
         if math.fabs(lllat - urlat) < 2:
             parallels = np.linspace(lllat, urlat, 2)
         elif math.fabs(lllat - urlat) < 5:
@@ -367,7 +371,7 @@ class Plotter:
                + datetime.date.today().strftime('%Y')\
                + "\nAustralian Bureau of Meteorology, COSPPac COMP"
 
-    def get_tick_values(x_min, x_max, min_ticks=4, max_ticks=9):
+    def get_tick_values(self, x_min, x_max, min_ticks=4, max_ticks=9):
         """
         Automatically determine best latitude / longitude tick values for plotting.
 

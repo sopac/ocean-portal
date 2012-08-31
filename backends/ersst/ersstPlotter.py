@@ -137,13 +137,18 @@ class ErsstPlotter ():
 
 	contourLines = True
 
+        resolution='h'
+        if not area=='pac':
+           resolution='f'
+
         plot = plotter.Plotter()
         plot.contour(sst, lats, lons, variable, self.config, outputFilename, title,\
                   regionConfig.regions[area][1]["llcrnrlat"],\
                   regionConfig.regions[area][1]["llcrnrlon"],\
                   regionConfig.regions[area][1]["urcrnrlat"],\
                   regionConfig.regions[area][1]["urcrnrlon"],\
-		  "cyl", contourLines, centerLabel)
+		  res=resolution, proj="cyl",\
+                  contourLines=contourLines, centerLabel=centerLabel)
         plot.contourBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
         plot.contourBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
         plot.plotScale(sst, variable, self.config, outputFilename)
