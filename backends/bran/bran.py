@@ -38,7 +38,7 @@ def process(form):
             outputFileFullPath = os.path.join(server_config['outputDir'],
                                               outputFilename)
             
-            if not os.path.exists(outputFileFullPath):
+            if not util.check_files_exist(outputFilenameTop, COMMON_FILES.values()):
                 year = dateStr[0:4]
                 month = dateStr[4:6]
                 title_date_str = datetime.date(int(year), int(month), 1).strftime('%B %Y')
@@ -122,7 +122,7 @@ def process(form):
                                                       contourLines=contourLines, product_label_str='Bluelink Reanalysis 2.1',
                                                       vlat=lats2, vlon=lons2, u=u, v=v)
 
-            if not os.path.exists(outputFileFullPath):
+            if not util.check_files_exist(outputFilenameTop, COMMON_FILES.values()):
                 responseObj["error"] = "Requested image is not available at this time."
             else:
                 responseObj.update(util.build_response_object(
