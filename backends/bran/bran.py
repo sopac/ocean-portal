@@ -151,13 +151,13 @@ def draw_monthly_mean_surface_plot(varName, dateStr, regionStr, outputFilename, 
         dataVar = 'eta'
         unitStr = 'Metres'
         cb_ticks = np.arange(-0.5,0.51,0.1)
-        varLongName = 'Sea Level Anomaly'
+        varLongName = 'Sea Level Height'
         cb_tick_fmt="%.2f"
     elif varName == 'uveta':
         dataVar = 'eta'
         unitStr = 'Metres'
         cb_ticks = np.arange(-0.5,0.51,0.1)
-        varLongName = 'Sea Level Anomaly and Currents'
+        varLongName = 'Sea Level Height and Currents'
         cb_tick_fmt="%.2f"
         currents = True
     else:
