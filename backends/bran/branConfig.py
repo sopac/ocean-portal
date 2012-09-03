@@ -41,6 +41,7 @@ class branConfig ():
                               "salt": ("Monthly Average BRAN2.1 Salinity",
                                        {"colorbounds": [32, 37],
                                         "colormap": plt.cm.jet,
+                                        "contourlevels": np.arange(33,37.1,0.5),
                                         "unit": ur'\u00b0' + 'PSU',
                                         "format": '%5.1f'
                                       },
@@ -63,8 +64,9 @@ class branConfig ():
                                       },
                                       "salt_dec"),
                               "eta": ("Monthly Average BRAN2.1 Sea Level",
-                                       {"colorbounds": [-0.9, 0.45],
+                                       {"colorbounds": [-0.6, 0.6],
                                         "colormap": plt.cm.jet,
+                                        "contourlevels": np.arange(-0.6,0.6,0.1),
                                         "unit": ur'\u00b0' + 'M',
                                         "format": '%5.1f'
                                       },

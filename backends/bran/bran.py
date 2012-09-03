@@ -25,7 +25,58 @@ branProduct = productName.products["bran"]
 def process(form):
     responseObj = {} #this object will be encoded into a json string
 
-    if ("map" in form) and ("date" in form) and ("period" in form) and ("area" in form):
+    if ("map" in form) and ("date" in form) and ("period" in form) and ("lat" in form) and ("lon" in form):
+        varName = form["map"].value
+        dateStr = form["date"].value
+        regionStr = form["area"].value
+        periodStr = form["period"].value
+        lat_cnt = form["lat"].value
+        lon_cnt = form["lon"].value
+        periodStr = form["lon"].value
+
+        if (periodStr == 'monthly') & (varName in ['temp', 'salt']):
+            
+            outputFilename = branGraph % (branProduct["monthly"], varName, regionStr, dateStr[:6])
+            outputFileFullPath = os.path.join(server_config['outputDir'], outputFilename)
+            
+            if not util.check_files_exist(outputFileFullPath, COMMON_FILES.values()):
+                year = dateStr[0:4]
+                month = dateStr[4:6]
+                title_date_str = datetime.date(int(year), int(month), 1).strftime('%B %Y')
+                titleStr = title_date_str + ': ' + varLongName
+
+                if varName == 'temp':
+                    unitStr = 'Degrees Celsius'
+                    varLongName = 'Subsurface Temperature Profile\n'
+                    cb_ticks = np.arange(16.0, 30.1, 1.0)
+                elif varName == 'salt':
+                    unitStr = 'PSU'
+                    varLongName = 'Subsurface Salinity Profile\n'
+                    cb_ticks = np.arange(33, 37.1, 0.5)
+                #elif varName == 'u':
+                #    unitStr = 'm/s'
+                #    varLongName = 'Subsurface Zonal Velocity Profile\n'
+                #elif varName == 'v':
+                #    unitStr = 'm/s'
+                #    varLongName = 'Subsurface Meridional Velocity Profile\n'
+                
+                input_data_file = os.path.join(server_config['dataDir']['bran'], 'monthly', dataVar, dataVar + '_' + year + '_' + month + '.nc4')
+            
+                lats1, lons1, zlevels1, zonal_data = branPlotterNew.load_BRAN_data(input_data_file, varName, lat_cnt, lat_cnt, lon_cnt - 5.0, lon_cnt + 5.0, depth_min=0.0, depth_max=300.0)
+                lats2, lons2, zlevels2, meridional_data = branPlotterNew.load_BRAN_data(input_data_file, varName, lat_cnt - 5.0, lat_cnt + 5.0, lon_cnt, lon_cnt, depth_min=0.0, depth_max=300.0)
+                branPlotterNew.plot_BRAN_depth_slice(zlevels1, lats2, lons1, zonal_data, meridional_data, units=unitStr, title=titleStr, cb_ticks=cb_ticks, product_label_str='Bluelink Reanalysis 2.1')
+
+            if not util.check_files_exist(outputFileFullPath, COMMON_FILES.values()):
+                responseObj["error"] = "Requested image is not available at this time."
+            else:
+                responseObj.update(util.build_response_object(
+                        COMMON_FILES.keys(),
+                        os.path.join(server_config['baseURL'],
+                                     server_config['rasterURL'],
+                                     outputFilename),
+                        COMMON_FILES.values()))
+        
+    elif ("map" in form) and ("date" in form) and ("period" in form) and ("area" in form):
         varName = form["map"].value
         dateStr = form["date"].value
         regionStr = form["area"].value
@@ -130,7 +181,7 @@ def process(form):
                                      server_config['rasterURL'],
                                      outputFilename),
                         COMMON_FILES.values()))
-
+        
     response = json.dumps(responseObj)
     return response
 
