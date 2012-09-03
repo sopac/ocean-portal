@@ -56,17 +56,16 @@ class Extractor ():
                             pass
                     else:
                         nearestPoints.append((lonInsertIndex + lonIndex, latInsertIndex + latIndex))
-                        
+
+
 
         input = (inputLon, inputLat)
-        sortedNearestPoints = sorted(nearestPoints,\
-            key=lambda coord: math.sqrt(math.pow((input[0] - lons[coord[0]]), 2) + math.pow((input[1] - lats[coord[1]]), 2)))
-
+        nearestPoints.sort(key=lambda coord: (input[0] - lons[coord[0]]) ** 2 + (input[1] - lats[coord[1]]) ** 2)
 
         if strategy == self._NEAREST_STRATEGY:
-            return self._nearest_strategy(sortedNearestPoints, lats, lons, var)
+            return self._nearest_strategy(nearestPoints, lats, lons, var)
         elif strategy == self._EXHAUSTIVE_STRATEGY:
-            return self._exhaustive_strategy(sortedNearestPoints, lats, lons, var)
+            return self._exhaustive_strategy(nearestPoints, lats, lons, var)
 
     def _nearest_strategy(self, sortedNearestPoints, lats, lons, var):
         return ((lats[sortedNearestPoints[0][1]], lons[sortedNearestPoints[0][0]]), sortedNearestPoints[0][::-1])
