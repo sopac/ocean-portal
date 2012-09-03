@@ -28,9 +28,13 @@
     height: 100%;
     border: 2px solid black;
  }
+
+ #latlonDiv table input {
+   margin: 3px;
+ }
 </style>
 
-</head> 
+</head>
 
 <body>
 <div id="map">
@@ -76,16 +80,22 @@
               <input type="hidden" id="tgId"/>
           </div>
           <div class="latlonDiv" id="latlonDiv">
-              <small>Click on the map to select a location.</small>
-              <div class="latDiv" id="latDiv">
-                  Latitude:
-		  <input type="text" id="latitude" style="width: 80px;"/>
-              </div>
-              <div class="lonDiv" id="lonDiv">
-                  Longitude:
-		  <input type="text" id="longitude" style="width: 80px;"/>
-              </div>
-              </div>
+            <small>Click on the map to select a location.</small>
+            <table>
+              <tr>
+                <td>Latitude:</td>
+                <td>
+                  <input type="text" id="latitude" style="width: 70px;"/>
+                  <div id="clearlatlonButton" style="display:inline;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>Longitude:</td>
+                <td>
+                  <input type="text" id="longitude" style="width: 70px;"/>
+                </td>
+              </tr>
+            </table>
           </div>
           <div class="compDiv" id="compDiv"></div>
 

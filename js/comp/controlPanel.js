@@ -2,8 +2,8 @@
 
 var ocean = ocean || {};
 ocean.controls = ['selectionDiv', 'toggleDiv', 'sliderDiv',
-                  'yearMonthDiv', 'datepickerDiv', 'latlonDiv', 
-                  'tidalGaugeDiv', 'compDiv'];
+                  'yearMonthDiv', 'datepickerDiv', 'latlonDiv',
+                  'tidalGaugeDiv', 'compDiv', 'clearlatlonButton' ];
 ocean.compare = {"flag": true, "limit": 2}
 ocean.processing = false;
 //ocean.average = false;
@@ -329,6 +329,7 @@ ocean.dsConf = {
                                 }
                                 $('#imgDiv').html('');
                                 $('#dataDiv').html('');
+                                hideControl('clearlatlonButton');
                 },
                 selectVariable: function(selection) {
                                     updatePeriodCombo();
@@ -350,6 +351,7 @@ ocean.dsConf = {
                                     updateCalDiv();
                                     showControl('selectionDiv');
                                     showControl('latlonDiv');
+                                    showControl('clearlatlonButton');
                             }
     },
     ww3: {url: function() {return "cgi/portal.py?dataset=ww3"
@@ -785,6 +787,18 @@ Ext.onReady(function() {
         }
     }));
 
+    Ext.create('Ext.Button', {
+        html: '<span class="ui-icon ui-icon-close" title="Clear Latitude/Longitude"></span>',
+        margin: { top: 3, bottom: 3 },
+        renderTo: 'clearlatlonButton',
+        handler: function() {
+            /* clear the latitude/longitude */
+            $('#latitude').val('');
+            $('#longitude').val('');
+            /* FIXME: remove the marker from the map */
+        }
+    });
+
     ocean.mapCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'variableCombo',
         fieldLabel: 'Variable',
@@ -919,7 +933,6 @@ function createCheckBoxes(store, records, result, operation, eOpt) {
     records = store.getById('reynolds').variables().getById('anom').get('average').checkboxes; 
     Ext.each(records, function(rec) {
         var name = rec.name;
-//        ocean.dsConf['reynolds'].aveCheck.push(new AveCheck(name, false)); 
         ocean.dsConf['reynolds'].aveCheck[name] = false; 
         Ext.create('Ext.form.field.Checkbox', {
             boxLabel: rec.boxLabel,
@@ -1150,13 +1163,11 @@ function selectRunningInterval(slider, value, thumb, args) {
 function hideControls() {
    var control;
    for (control in ocean.controls) {
-//       document.getElementById(ocean.controls[control]).style.display = 'none';
        $('#' + ocean.controls[control]).hide();
    }
 }
 
 function showControl(control) {
-//    document.getElementById(control).style.display = 'block';
     $('#' + control).show();
 }
 
@@ -1189,7 +1200,6 @@ function updateDate(dateObj) {
 //**********************************************************
 function updatePage() {
     if (!ocean.processing) {
-        ocean.processing = true;
 
         function show_error(url, text)
         {
@@ -1199,15 +1209,14 @@ function updatePage() {
         }
 
         $.ajax({
-            url:  ocean.dataset.url(),
+            url: ocean.dataset.url(),
             dataType: 'json',
             beforeSend: function(jqXHR, settings) {
+                ocean.processing = true;
                 showControl('loadingDiv');
                 $('#error-dialog').dialog('close');
             },
             success: function(data, textStatus, jqXHR) {
-                hideControl('loadingDiv');
-
                 if (data == null || $.isEmptyObject(data))
                 {
                     show_error(ocean.dataset.url(), "returned no data");
