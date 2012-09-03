@@ -41,24 +41,30 @@ class Extractor ():
 
         nearestPoints = []
         lonInsertIndex = bisect.bisect_left(lons, dataLon)
-        for latIndex in range(-self._RADIUS, self._RADIUS + 1):
-            #There is no need to wrap the lat, therefore skip till the index becomes 0 
-            if latInsertIndex + latIndex < 0:
+
+        # check if the dataset wraps around the globe
+        dataset_wraps = ((lons[0] + lons[-1]) % 360) ** 2 <= 25
+
+        # extract a square grid of points size 2r x 2r
+        for latIndex in range(latInsertIndex - self._RADIUS,
+                              latInsertIndex + self._RADIUS + 1):
+            if latIndex < 0 or latIndex > len(lats):
+                # There is no need to wrap the lat, therefore skip till the
+                # index is in range
                 pass
             else:
-                for lonIndex in range(-self._RADIUS, self._RADIUS + 1):
-                    if lonInsertIndex + lonIndex < 0:
-                        lonsCheck = lons[0] + lons[-1]
-                        if math.fabs(lonsCheck) <= 5 or math.fabs(lonsCheck - 360) <= 5:
-                        #wrap around the globe
-                            nearestPoints.append((lonInsertIndex + lonIndex, latInsertIndex + latIndex))
+                for lonIndex in range(lonInsertIndex - self._RADIUS,
+                                      lonInsertIndex + self._RADIUS + 1):
+                    if lonIndex < 0 or lonIndex >= len(lons):
+                        if dataset_wraps:
+                            nearestPoints.append((lonIndex % len(lons),
+                                                  latIndex % len(lons)))
                         else:
                             pass
                     else:
-                        nearestPoints.append((lonInsertIndex + lonIndex, latInsertIndex + latIndex))
+                        nearestPoints.append((lonIndex, latIndex))
 
-
-
+        # sort the points based on closeness within the grid
         input = (inputLon, inputLat)
         nearestPoints.sort(key=lambda coord: (input[0] - lons[coord[0]]) ** 2 + (input[1] - lats[coord[1]]) ** 2)
 
