@@ -67,14 +67,14 @@ class branConfig ():
                                        {"colorbounds": [-0.6, 0.6],
                                         "colormap": plt.cm.jet,
                                         "contourlevels": np.arange(-0.6,0.6,0.1),
-                                        "unit": ur'\u00b0' + 'M',
+                                        "unit": ur'M',
                                         "format": '%5.1f'
                                       },
                                       "eta"),
                               "eta_ano": ("Monthly Average BRAN2.1 Sea Level Anomaly",
                                        {"colorbounds": [-2, 2],
                                         "colormap": plt.cm.RdBu_r,
-                                        "unit": ur'\u00b0' + 'M',
+                                        "unit": ur'M',
                                         "format": '%5.1f'
                                       },
                                       "eta_ano"),
