@@ -15,7 +15,7 @@ from ocean.netcdf.plotter import COMMON_FILES
 
 #Maybe move these into configuration later
 branGraph = "%s_%s_%s_%s"
-branGraph2 = "%s_%s_%s_%s_ds"
+branGraph2 = "%s_%s_%s_%s_depthprf_%s"
 
 server_config = util.get_server_config()
 
@@ -42,7 +42,14 @@ def process(form):
             outputFilename = branGraph % (branProduct["monthly"], varName, regionStr, dateStr[:6])
             outputFileFullPath = os.path.join(server_config['outputDir'], outputFilename)
 
-            outputFilename2 = branGraph2 % (branProduct["monthly"], varName, regionStr, dateStr[:6])
+            if lat_cnt >= 0:
+                lat_str = str(int(round(abs(lat_cnt), 2)*100)) + 'N'
+            else:
+                lat_str = str(int(round(abs(lat_cnt), 2)*100)) + 'S'
+            lon_str = str(int(round(lon_cnt, 2)*100)) + 'E'
+            loc_str = lat_str + lon_str
+
+            outputFilename2 = branGraph2 % (branProduct["monthly"], varName, regionStr, dateStr[:6], loc_str)
             outputFileFullPath2 = os.path.join(server_config['outputDir'], outputFilename2)
             
             if not util.check_files_exist(outputFileFullPath, COMMON_FILES.values()):
