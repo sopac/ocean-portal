@@ -15,7 +15,7 @@ class branConfig ():
        self.variableConfig = {"temp": ("Monthly Average BRAN2.1 Temperature ",
                                        {"colorbounds": [-2, 34],
                                         "colormap": plt.cm.jet,
-                                        "contourlevels": np.arange(10,31,1),
+                                        "contourlevels": np.arange(10,34.1,1),
                                         "unit": ur'\u00b0' + 'C',
                                         "format": '%d'
                                       },
