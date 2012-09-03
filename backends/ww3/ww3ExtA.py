@@ -6,7 +6,7 @@ import math
 from netCDF4 import Dataset
 import numpy as np
 import ocean.util as util
-import extractor
+from ocean.netcdf import extractor
 from angleconv import dirflip
 
 class WaveWatch3Extraction ():
@@ -36,7 +36,10 @@ class WaveWatch3Extraction ():
         nc = Dataset(filez[0], 'r')
         lats = nc.variables['y'][:]
         lons = nc.variables['x'][:]
-        (gridLat, gridLon), (gridLatIndex, gridLonIndex) = xtractor.getGridPoint(inputLat, inputLon, lats, lons)
+        vari = nc.variables[variableName][:]
+        (gridLat, gridLon), (gridLatIndex, gridLonIndex) = xtractor.getGridPoint(inputLat, inputLon,
+                lats, lons, vari)
+
         gridValues = []
         latLonValues = []
         timeseries = []
