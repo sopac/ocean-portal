@@ -1201,7 +1201,6 @@ function updatePage() {
             url: ocean.dataset.url(),
             dataType: 'json',
             beforeSend: function(jqXHR, settings) {
-                console.log("Submitted request");
                 ocean.processing = true;
                 showControl('loadingDiv');
                 $('#error-dialog').dialog('close');
