@@ -55,7 +55,7 @@ class SeaLevelPlotter ():
         height = dataset.variables[self.config.getVariableType(variable)][self.getDateIndex(time[:].tolist(), args["date"])]
         lats = dataset.variables['lat'][:]
         lons = dataset.variables['lon'][:]
-        
+
         delon = lons[1]-lons[0]; delat = lats[1]-lats[0]
         lons = (lons - 0.5*delon).tolist()
         lons.append(lons[-1]+delon)
@@ -63,7 +63,7 @@ class SeaLevelPlotter ():
         lats = (lats - 0.5*delat).tolist()
         lats.append(lats[-1]+delat)
         lats = np.array(lats,np.float64)
- 
+
         args['formattedDate'] = ''
 
         resolution='h'
@@ -86,7 +86,7 @@ class SeaLevelPlotter ():
         plot.plotScale(height, variable, self.config, outputFilename)
 
         dataset.close()
-        
+
         return 0
 
     def getDateIndex(self, timeList, date):
@@ -96,6 +96,7 @@ class SeaLevelPlotter ():
         timeElapsed = datetime.date(int(date[:4]), int(date[4:6]), 15) - self.referenceDate
         index = timeList.index(timeElapsed.days)
         return index
+
 
     def plotTidalGauge(self, outputFilename, saveData=True, **args):
         """
@@ -132,7 +133,7 @@ class SeaLevelPlotter ():
         figure = plt.figure()
         plt.rc('font', size=8)
         plt.title('Monthly sea levels for ' + tidalGaugeName)
-        plt.ylabel('Sea Leve (metres)')
+        plt.ylabel('Sea Level Height (metres)')
         plt.xlabel('Year')
         ax = figure.gca()
         ax.grid(True)
@@ -143,7 +144,12 @@ class SeaLevelPlotter ():
 
         #add legend
         ax.legend([maxPlot, meanPlot, minPlot], ['Max', 'Mean', 'Min'])
-        
+
+        plt.axhline(y=0, color='k')
+        plt.figtext(0.02, 0.02, plotter.getCopyright(), fontsize=6)
+        plt.figtext(0.90, 0.05, "0.0 = Tidal Gauge Zero",
+                    fontsize=8, horizontalalignment='right')
+
         plt.savefig(outputFilename + ".png", dpi=150, bbox_inches='tight', pad_inches=.1)
 
         plt.close()
@@ -209,9 +215,13 @@ class SeaLevelPlotter ():
 #        ax.set_aspect(aspectRatio)
         ax.plot_date(x_date, y_height, 'b-') 
         plt.axhline(y=0, color='k')
+
+        plt.figtext(0.02, 0.02, plotter.getCopyright(), fontsize=6)
+        plt.figtext(0.90, 0.05, "Height relative to GSFC00.1",
+                    fontsize=8, horizontalalignment='right')
+
         plt.savefig(outputFilename + ".png", dpi=150, bbox_inches='tight', pad_inches=.1)
 
         plt.close()
         dataset.close()
         return 0
-         
