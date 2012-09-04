@@ -203,13 +203,17 @@ class SeaLevelPlotter ():
         if saveData:
             file = open(outputFilename + ".txt", 'w')
             writer = csv.writer(file, delimiter='\t')
-            for row in zip(date_label, y_height):
-                writer.writerow(row)
+            writer.writerow(('# Sea Level %s for %s' % (titlePrefix, tidalGaugeName),))
+            writer.writerow(('# Datum: GSFC00.1',))
+            writer.writerow(['YYYY-MM', titlePrefix])
+
+            for date, height in zip(date_label, y_height):
+                writer.writerow([date.strftime('%Y-%m'), height])
             file.close()
 
         figure = plt.figure()
         plt.rc('font', size=8)
-        plt.title(titlePrefix + ' data for ' + tidalGaugeName)
+        plt.title("Sea Level %s for %s" % (titlePrefix, tidalGaugeName))
         plt.ylabel('Sea-Surface Height (mm)')
         plt.xlabel('Year')
         ax = figure.gca()
