@@ -2,7 +2,7 @@
     "id":"reynolds",
     "name":"Reynolds",
     "title": "Sea Surface Temperature - Reynolds",
-    "help": "doc/ReynoldsSSTv2.doc",
+    "help": "/cosppac/comp/ocean-portal/about_reynolds.pdf",
     "variables": [{
         "id":"mean",
         "name":"Mean SST",
@@ -42,6 +42,7 @@
     "id":"ersst",
     "name":"ERSST",
     "title": "Sea Surface Temperature - ERSST",
+    "help": "/cosppac/comp/ocean-portal/about_errst.pdf",
     "variables": [{
         "id":"mean",
         "name":"Mean SST",
@@ -86,6 +87,7 @@
     "id":"ww3",
     "name":"WaveWatch III",
     "title": "WaveWatch III",
+    "help": "/cosppac/comp/ocean-portal/about_ww3.pdf",
     "variables": [{
         "id": "Hs",
         "name": "Significant Wave Height",
@@ -109,6 +111,7 @@
     "id":"bran",
     "name":"BRAN",
     "title": "BRAN 2.1",
+    "help": "/cosppac/comp/ocean-portal/about_bran.pdf",
     "variables": [{
         "id":"temp",
         "name":"Temperature",
@@ -140,7 +143,7 @@
     "id":"sealevel",
     "name":"Sea Level",
     "title": "Sea Level",
-    "help": "doc/ReynoldsSSTv2.doc",
+    "help": "/cosppac/comp/ocean-portal/about_sealevel.pdf",
     "variables": [{
         "id":"alt",
         "name":"Altimetry",
