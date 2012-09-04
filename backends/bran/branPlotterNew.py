@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import pylab as py
 import datetime
 
+from ocean.netcdf.plotter import getCopyright
 
 def load_BRAN_data(input_data_file, var_name, lat_min, lat_max, lon_min, lon_max, depth_min=0, depth_max=0):
 
@@ -275,11 +276,6 @@ def discrete_cmap(cmap_name, n_colours):
     cmap = mpl.cm.get_cmap(cmap_name, n_colours)
     clrs = cmap(range(0, n_colours))
     return mpl.colors.ListedColormap(clrs)
-
-def getCopyright():
-    return ur'\u00A9' + "Commonwealth of Australia "\
-           + datetime.date.today().strftime('%Y')\
-           + "\nAustralian Bureau of Meteorology, COSPPac COMP"
 
 def get_grid_edges(x):
     x = np.array(x)

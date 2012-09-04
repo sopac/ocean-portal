@@ -34,6 +34,11 @@ COMMON_FILES = {
     'scale': '_scale.png',
 }
 
+def getCopyright():
+    return ur'\u00A9' + "Commonwealth of Australia "\
+           + datetime.date.today().strftime('%Y')\
+           + "\nAustralian Bureau of Meteorology, COSPPac COMP"
+
 class Plotter:
     """The base class for plotting netCDF files."""
 
@@ -94,7 +99,7 @@ class Plotter:
         plt.title(title, fontsize=10)
         plt.clim(*config.getColorBounds(variable))
         ax = plt.gca()
-        box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))
+        box = TextArea(getCopyright(), textprops=dict(color='k', fontsize=6))
         copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.3), frameon=False, bbox_transform=ax.transAxes)
 #        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (0,0,1,1), frameon=False, bbox_transform=plt.gcf().transFigure)
         ax.add_artist(copyrightBox)
@@ -243,7 +248,7 @@ class Plotter:
         plt.title(config.getTitle(variable) + args['formattedDate'], fontsize=8)
         plt.clim(*config.getColorBounds(variable))
         ax = plt.gca()
-        box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))
+        box = TextArea(getCopyright(), textprops=dict(color='k', fontsize=6))
         copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.3), frameon=False, bbox_transform=ax.transAxes)
 #        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (0,0,1,1), frameon=False, bbox_transform=plt.gcf().transFigure)
         ax.add_artist(copyrightBox)
@@ -340,7 +345,7 @@ class Plotter:
         plt.title(config.getTitle(variable) + args['formattedDate'], fontsize=8)
         plt.clim(*config.getColorBounds(variable))
         ax = plt.gca()
-        box = TextArea(self.getCopyright(), textprops=dict(color='k', fontsize=6))
+        box = TextArea(getCopyright(), textprops=dict(color='k', fontsize=6))
         copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (-0.1, -0.15), frameon=False, bbox_transform=ax.transAxes)
 #       copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor= (0,0,1,1), frameon=False, bbox_transform=plt.gcf().transFigure)
         ax.add_artist(copyrightBox)
@@ -365,11 +370,6 @@ class Plotter:
         plt.clabel(contourPlt, inline=True, fmt='%3.1f', fontsize=6)
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.8, bbox_extra_artists=[copyrightBox])
         plt.close()
-
-    def getCopyright(self):
-        return ur'\u00A9' + "Commonwealth of Australia "\
-               + datetime.date.today().strftime('%Y')\
-               + "\nAustralian Bureau of Meteorology, COSPPac COMP"
 
     def get_tick_values(self, x_min, x_max, min_ticks=4, max_ticks=9):
         """
