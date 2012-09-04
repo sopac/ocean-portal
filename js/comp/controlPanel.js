@@ -16,7 +16,11 @@ ocean.date = new Date();
 
 /* set up JQuery UI elements */
 $(document).ready(function() {
-    $('.dialog').dialog({ autoOpen: false });
+    $('.dialog').dialog({ autoOpen: false,
+                          resizable: false,
+                          closeOnEscape: false
+                        });
+    $('#loading-dialog').dialog('option', 'modal', true);
 
     // Load up the datasets dialog
     html = '';
@@ -623,17 +627,6 @@ function enlargeImg(img, show) {
     }
 }
 
-
-function loadingImg(show) {
-    var enlargeDiv = $('#loadingDiv');
-    if (show) {
-        enlargeDiv.html('<img src="' + img.src + ' "width="650"/>');
-    }
-    else {
-        enlargeDiv.html('');
-    }
-}
-
 function AveCheck(id, state) {
     this.id = id;
     this.state = state;
@@ -1181,7 +1174,6 @@ function setCompare() {
 function initialise() {
     $('#variableDiv').hide();
     hideControls();
-    hideControl('loadingDiv');
 }
 
 //**********************************************************
@@ -1213,7 +1205,7 @@ function updatePage() {
             dataType: 'json',
             beforeSend: function(jqXHR, settings) {
                 ocean.processing = true;
-                showControl('loadingDiv');
+                $('#loading-dialog').dialog('open');
                 $('#error-dialog').dialog('close');
             },
             success: function(data, textStatus, jqXHR) {
@@ -1234,7 +1226,7 @@ function updatePage() {
             },
             complete: function(jqXHR, textStatus) {
                 ocean.processing = false;
-                hideControl('loadingDiv');
+                $('#loading-dialog').dialog('close');
             }
         });
     }
