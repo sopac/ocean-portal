@@ -1,21 +1,20 @@
 #!/usr/bin/python
 
-
+import datetime
+import csv
+import shutil
+import datetime
 
 from netCDF4 import Dataset
 import numpy as np
-import datetime
-import csv
 import matplotlib.pyplot as plt
 import matplotlib.dates
-import shutil
 
 import seaLevelConfig as rc
 import ocean.util as util
 from ..util import regionConfig
 from ..netcdf import plotter
 from ..netcdf import extractor
-
 
 class SeaLevelPlotter ():
     """ 
@@ -49,7 +48,7 @@ class SeaLevelPlotter ():
         else:
             return -1
         
-        filename = filename + ".nc" 
+        filename = filename + ".nc"
         dataset = Dataset(filename, 'r')
         time = dataset.variables["time"]
         height = dataset.variables[self.config.getVariableType(variable)][self.getDateIndex(time[:].tolist(), args["date"])]
@@ -64,7 +63,11 @@ class SeaLevelPlotter ():
         lats.append(lats[-1]+delat)
         lats = np.array(lats,np.float64)
 
-        args['formattedDate'] = ''
+        date = args['date']
+        date = datetime.date(int(date[:4]),
+                             int(date[4:6]),
+                             int(date[6:]))
+        args['formattedDate'] = date.strftime('%B %Y')
 
         resolution='h'
         if not area=='pac':
