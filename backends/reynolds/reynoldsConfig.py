@@ -9,6 +9,7 @@ class ReynoldsConfig ():
 
     variableConfig = None
     periodPrefix = None
+    subDirs = None
 
     def __init__(self):
         self.variableConfig = {"mean": ("Average Reynolds Sea Surface Temperature: ",
@@ -44,6 +45,16 @@ class ReynoldsConfig ():
                              '12monthly': "12 Monthly ",
                              'yearly': "Yearly ",
                             }
+
+        self.subDirs = ['daily',
+                        # 'weekly',
+                        'monthly',
+                        # '3monthly',
+                        # '6monthly',
+                        'yearly',
+                        # 'yearly_trend',
+                        'decile',
+                       ]
 
     def getTitle(self, variableName):
         return self.variableConfig[variableName][0]
