@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates
 
-import seaLevelConfig as rc
+import sealevelConfig as rc
 import ocean.util as util
 from ..util import regionConfig
 from ..netcdf import plotter

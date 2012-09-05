@@ -5,7 +5,7 @@ import cgi
 
 import ocean.reynolds.reynolds as reynolds
 import ocean.ww3.ww3 as ww3
-import ocean.sealevel.seaLevel as sealevel
+import ocean.sealevel.sealevel as sealevel
 import ocean.ersst.ersst as ersst
 import ocean.bran.bran as bran
 import ocean.util as util
