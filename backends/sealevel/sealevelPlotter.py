@@ -29,7 +29,7 @@ class SeaLevelPlotter ():
 
     def __init__(self):
         """Initialise the plotter by getting the settings ready for the plotting.""" 
-        self.config = rc.SeaLevelConfig()
+        self.config = rc.SealevelConfig()
         self.serverCfg = util.get_server_config()
 
     def plot(self, outputFilename, **args):

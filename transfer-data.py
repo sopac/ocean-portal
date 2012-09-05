@@ -9,6 +9,8 @@ INCLUDE_LIST = [ '*.nc',
                ]
 # file globs to exclude from above
 EXCLUDE_LIST = [ '*_preliminary.nc',
+                 'new/*',
+                 'archive/*',
                ]
 
 import sys
