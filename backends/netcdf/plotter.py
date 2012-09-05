@@ -245,7 +245,13 @@ class Plotter:
             meridians = np.linspace(lllon, urlon, 9)
         m.drawmeridians(meridians, labels=[False, False, False, True], fmt='%.2f', fontsize=6, dashes=[3, 3], color='gray')
 
-        plt.title(config.getTitle(variable) + args['formattedDate'], fontsize=8)
+        title = ''
+        if hasattr(config, 'getPeriodPrefix') and 'period' in args:
+            title += config.getPeriodPrefix(args['period'])
+
+        title += config.getTitle(variable) + args['formattedDate']
+
+        plt.title(title, fontsize=8)
         plt.clim(*config.getColorBounds(variable))
         ax = plt.gca()
         box = TextArea(getCopyright(), textprops=dict(color='k', fontsize=6))
