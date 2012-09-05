@@ -90,7 +90,8 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
     if (u is not None) & (v is not None) & (vlat is not None) & (vlon is not None):
         # Draw vectors
         draw_every, arrow_scale = get_vector_plot_settings(lat_min, lat_max, lon_min, lon_max)
-        draw_vector_plot(m, vlon, vlat, u, v, draw_every=draw_every, arrow_scale=arrow_scale)
+        if draw_every is not None:
+            draw_vector_plot(m, vlon, vlat, u, v, draw_every=draw_every, arrow_scale=arrow_scale)
         
     # Draw colorbar    
     cb = py.colorbar(img, shrink=0.8, spacing='proportional', drawedges='True', orientation='vertical', 
@@ -219,7 +220,9 @@ def draw_vector_plot(m, x, y, u, v, draw_every=1, arrow_scale=10, quiverkey_valu
     q = m.quiver(x, y, u, v, pivot='mid', scale=arrow_scale,
                   minshaft=1, minlength=0.85, headlength=2.5, headaxislength=2.5)
     quiverkey_label = '$' + str(quiverkey_value) + units + '$'
-    py.quiverkey(q, quiverkey_xpos, quiverkey_ypos, quiverkey_value, quiverkey_label, coordinates='figure', 
+    #py.quiverkey(q, quiverkey_xpos, quiverkey_ypos, quiverkey_value, quiverkey_label, coordinates='figure', 
+    #             labelpos='N', labelsep=0.01, fontproperties={'size':'xx-small', 'weight':'1000'})
+    py.quiverkey(q, 1.1, -0.11, quiverkey_value, quiverkey_label, coordinates='axes', 
                  labelpos='N', labelsep=0.01, fontproperties={'size':'xx-small', 'weight':'1000'})
 
 def get_subset_idxs(x, x_min, x_max):
@@ -290,7 +293,10 @@ def get_vector_plot_settings(lat_min, lat_max, lon_min, lon_max):
     lat_extent = lat_max - lat_min
     lon_extent = lon_max - lon_min
     max_extent = max(lat_extent, lon_extent)
-    if max_extent >= 60:
+    if max_extent >= 80:
+        draw_every = None
+        arrow_scale = None
+    elif (max_extent >= 60) & (max_extent < 80):
         draw_every = 10
         arrow_scale = 20
     elif (max_extent >= 20) & (max_extent < 60):
