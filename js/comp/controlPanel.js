@@ -23,7 +23,7 @@ $(document).ready(function() {
     $('#loading-dialog').dialog('option', 'modal', true);
 
     // Load up the datasets dialog
-    html = '';
+    var html = '';
     $.getJSON('config/comp/datasets.json', function(data) {
         $.each(data, function(k, dataset) {
             html += '<h1>' + dataset.name + '</h1>';
