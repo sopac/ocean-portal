@@ -24,6 +24,10 @@ src = [
     'portal.py',
 ]
 
+scripts = [
+    'replicate-portal-data',
+]
+
 backends = [
     'bran',
     'ersst',
@@ -145,5 +149,6 @@ if __name__ == '__main__':
               'ocean': [ os.path.join('resource', r)
                          for r in backend_resources ],
           },
+          scripts=[ os.path.join('src', s) for s in scripts ],
           data_files = data_files,
          )
