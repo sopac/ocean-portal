@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-RSYNC_COMMAND = "rsync -n -ruvx --delete-excluded --include='*/' %(args)s --exclude='*' %(source)s %(dest)s"
+RSYNC_COMMAND = "rsync -ruvxm --delete-excluded --include='*/' %(args)s --exclude='*' %(source)s %(dest)s"
 
 # file globs to transfer
 INCLUDE_LIST = [ '*.nc',
