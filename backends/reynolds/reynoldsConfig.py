@@ -8,39 +8,46 @@ class ReynoldsConfig ():
     """
 
     variableConfig = None
+    periodPrefix = None
 
     def __init__(self):
-       """Does nothing"""
-       self.variableConfig = {"mean": ("Monthly Average Reynolds Sea Surface Temperature: ", 
-                                       {"colorbounds": [-2, 34],
-                                        "colormap": plt.cm.jet,
-                                        "unit": ur'\u00b0' + 'C',
-                                        "format": '%d'
-                                      },
-                                      "sst"),
-                              "anom": ("Monthly Average Reynolds Sea Surface Temperature Anomaly: ",
-                                       {"colorbounds": [-2, 2],
+        self.variableConfig = {"mean": ("Average Reynolds Sea Surface Temperature: ",
+                                        {"colorbounds": [-2, 34],
+                                         "colormap": plt.cm.jet,
+                                         "unit": ur'\u00b0' + 'C',
+                                         "format": '%d'
+                                       },
+                                       "sst"),
+                               "anom": ("Average Reynolds Sea Surface Temperature Anomaly: ",
+                                        {"colorbounds": [-2, 2],
+                                         "colormap": plt.cm.RdBu_r,
+                                         "unit": ur'\u00b0' + 'C',
+                                         "format": '%5.1f'
+                                       },
+                                       "anom"),
+                               "dec": ("Average Reynolds Sea Surface Temperature Deciles: ",
+                                       {"colorbounds": [0, 11],
                                         "colormap": plt.cm.RdBu_r,
-                                        "unit": ur'\u00b0' + 'C',
-                                        "format": '%5.1f'
-                                      },
-                                      "anom"),
-                              "dec": ("Monthly Average Reynolds Sea Surface Temperature Deciles: ",
-                                      {"colorbounds": [0, 11],
-                                       "colormap": plt.cm.RdBu_r,
-                                       "unit": '',
-                                       "format": '%d',
-                                       "labels": ['Lowest on \nrecord', 'Very much \nbelow \naverage \n[1]', 'Below \naverage \n[2-3]', 
-                                                  'Average \n[4-7]', 'Above \naverage \n[8-9]', 'Very much \nabove \naverage \n[10]',
-                                                  'Highest on \nrecord']
-                                      }, 
-                                      "decile")
-                             }
+                                        "unit": '',
+                                        "format": '%d',
+                                        "labels": ['Lowest on \nrecord', 'Very much \nbelow \naverage \n[1]', 'Below \naverage \n[2-3]',
+                                                   'Average \n[4-7]', 'Above \naverage \n[8-9]', 'Very much \nabove \naverage \n[10]',
+                                                   'Highest on \nrecord']
+                                       },
+                                       "decile")
+                              }
 
+        self.periodPrefix = {'daily': "Daily ",
+                             'monthly': "Monthly ",
+                             '3monthly': "3 Monthly ",
+                             '6monthly': "6 Monthly ",
+                             '12monthly': "12 Monthly ",
+                             'yearly': "Yearly ",
+                            }
 
     def getTitle(self, variableName):
         return self.variableConfig[variableName][0]
-    
+
     def getColorBounds(self, variableName):
         return self.variableConfig[variableName][1]['colorbounds']
 
@@ -52,10 +59,10 @@ class ReynoldsConfig ():
 
     def getValueFormat(self, variableName):
         return self.variableConfig[variableName][1]['format']
- 
+
     def getVariableType(self, variableName):
         return self.variableConfig[variableName][2]
- 
+
     def getColorbarLabels(self, variableName):
         labels = []
         try:
@@ -64,6 +71,8 @@ class ReynoldsConfig ():
             pass
         return labels
 
+    def getPeriodPrefix(self, period):
+        return self.periodPrefix[period]
 
 if __name__ == "__main__":
     conf = RyenoldsConfig()
