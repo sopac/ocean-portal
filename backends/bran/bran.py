@@ -41,7 +41,11 @@ def process(form):
                 else:
                     lat_str = str(int(round(abs(lat_cnt), 2)*100)) + 'S'
                 lon_str = str(int(round(lon_cnt, 2)*100)) + 'E'
-                regionStr = '_' + lat_str + lon_str            
+                regionStr = '_' + lat_str + lon_str
+            if not (varName == 'temp' or varName == 'salt'):
+                responseObj["error"] = "To display a depth cross section, please select either Temperature or Salinity variables."
+                response = json.dumps(responseObj)
+                return response
         
         plot_filename = "%s_%s_%s_%s" % (branProduct["monthly"], varName, yearMonthStr, regionStr)
         bgImage_filename = "%s_%s_%s" % (branProduct["monthly"], varName, yearMonthStr)
