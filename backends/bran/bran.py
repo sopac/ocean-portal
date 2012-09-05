@@ -148,7 +148,7 @@ def draw_monthly_mean_surface_plot(varName, yearStr, monthStr, regionStr, bgImag
 
     if draw_background_images:
         # Plot background image layers
-        config = bc.branConfig()
+        config = bc.BranConfig()
         plot = plotter.Plotter()
         plot.contourBasemapEast(data, lats, lons, dataVar, config, bgImage_filename)
         plot.contourBasemapWest(data, lats, lons, dataVar, config, bgImage_filename)
