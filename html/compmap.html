@@ -32,6 +32,21 @@
  #latlonDiv table input {
    margin: 3px;
  }
+
+ .notitle .ui-dialog-titlebar {
+   display: none;
+ }
+
+ #loading-dialog {
+   text-align: center;
+   padding-top: 10px;
+   padding-bottom; 5px;
+ }
+
+ #loading-dialog b {
+   position: relative;
+   top: -12px;
+ }
 </style>
 
 </head>
@@ -115,7 +130,7 @@
   <small><a id="error-dialog-request" href="">Server Request</a></small>
  </p>
 </div>
-<div id="loading-dialog" class="dialog modal">
+<div id="loading-dialog" class="dialog">
   <img src="images/loading.gif" />
   <b>Loading...</b>
 </div>
