@@ -18,9 +18,10 @@ ocean.date = new Date();
 $(document).ready(function() {
     $('.dialog').dialog({ autoOpen: false,
                           resizable: false,
-                          closeOnEscape: false
                         });
     $('#loading-dialog').dialog('option', 'modal', true);
+    $('#loading-dialog').dialog('option', 'dialogClass', 'notitle');
+    $('#loading-dialog').dialog('option', 'closeOnEscape', false);
 
     // Load up the datasets dialog
     var html = '';
