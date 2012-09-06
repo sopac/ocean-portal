@@ -1237,7 +1237,11 @@ function updatePage() {
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                show_error(ocean.dataset.url(), textStatus);
+                if (textStatus == 'parsererror')
+                    show_error(ocean.dataset.url(),
+                               "Unable to parse server response.");
+                else
+                    show_error(ocean.dataset.url(), errorThrown);
             },
             complete: function(jqXHR, textStatus) {
                 ocean.processing = false;
