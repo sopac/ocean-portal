@@ -59,15 +59,15 @@ def process(form):
                 # Plot subsurface data
                 if varName == 'temp':
                     unitStr = 'Degrees Celsius'
-                    varLongName = 'Subsurface Temperature Profile\n'
+                    varLongName = 'Surface and Subsurface Temperature Profile\n'
                     cb_ticks = np.arange(16.0, 30.1, 1.0)
                 elif varName == 'salt':
                     unitStr = 'PSU'
-                    varLongName = 'Subsurface Salinity Profile\n'
+                    varLongName = 'Surface and Subsurface Salinity Profile\n'
                     cb_ticks = np.arange(33, 37.1, 0.5)
 
                 title_date_str = datetime.date(year, month, 1).strftime('%B %Y')
-                titleStr = title_date_str + ': ' + varLongName
+                titleStr = title_date_str + ': \n' + varLongName
                 
                 input_data_file = os.path.join(server_config['dataDir']['bran'], 'monthly', varName, varName + '_' + yearStr + '_' + monthStr + '.nc4')
                 lats1, lons1, zlevels1, zonal_data = branPlotterNew.load_BRAN_data(input_data_file, varName, lat_cnt, lat_cnt, lon_cnt - 5.0, lon_cnt + 5.0, depth_min=0.0, depth_max=300.0)
