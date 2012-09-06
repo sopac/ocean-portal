@@ -112,6 +112,9 @@ def process(form):
                                      serverCfg['rasterURL'],
                                      fileName),
                         COMMON_FILES.values()))
+                util.touch_files(os.path.join(serverCfg['outputDir'],
+                                              fileName),
+                                 COMMON_FILES.values())
         else:
         ####current xml html response
             if periodStr == 'daily':
@@ -147,5 +150,8 @@ def process(form):
                                      serverCfg['rasterURL'],
                                      fileName),
                         COMMON_FILES.values()))
+                util.touch_files(os.path.join(serverCfg['outputDir'],
+                                              fileName),
+                                 COMMON_FILES.values())
 
     return responseObj

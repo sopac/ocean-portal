@@ -179,6 +179,9 @@ def process(form):
                                  serverCfg['rasterURL'],
                                  fileName),
                     COMMON_FILES.values()))
+                util.touch_files(os.path.join(serverCfg['outputDir'],
+                                              fileName),
+                                 COMMON_FILES.values())
 
 	elif mapStr == "trend":
             if "baseYear" in form:
@@ -215,6 +218,9 @@ def process(form):
                                      serverCfg['rasterURL'],
                                      fileName),
                         COMMON_FILES.values()))
+                util.touch_files(os.path.join(serverCfg['outputDir'],
+                                              fileName),
+                                 COMMON_FILES.values())
         else:
         ####current xml html response
             if periodStr == 'monthly':
@@ -245,6 +251,9 @@ def process(form):
                                      serverCfg['rasterURL'],
                                      fileName),
                         COMMON_FILES.values()))
+                util.touch_files(os.path.join(serverCfg['outputDir'],
+                                              fileName),
+                                 COMMON_FILES.values())
 
     return responseObj
 
