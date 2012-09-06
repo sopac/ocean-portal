@@ -5,7 +5,7 @@ RSYNC_COMMAND = "rsync -ruvxm %(flags)s --include='*/' %(args)s --exclude='*' %(
 # file globs to transfer
 INCLUDE_LIST = [ '*.nc',
                  '*.nc4',
-                 '*.txt',
+                 '*.txt.tmp',
                ]
 # file globs to exclude from above
 EXCLUDE_LIST = [ '*_preliminary.nc',
@@ -14,7 +14,7 @@ EXCLUDE_LIST = [ '*_preliminary.nc',
                ]
 
 # default flags to pass if RSYNC_FLAGS isn't defined, other options might be
-# -n (dry-run), --delete-existing or '' to update existing (overwrite)
+# -n (dry-run), --delete-excluded or '' to update existing (overwrite)
 DEFAULT_FLAGS = '--ignore-existing'
 
 import sys

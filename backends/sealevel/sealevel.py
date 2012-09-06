@@ -53,6 +53,10 @@ def process(form):
             # make this a list
             responseObj['img'] = [ responseObj['img'] ]
 
+            util.touch_files(os.path.join(serverCfg['outputDir'],
+                                          fileName),
+                             COMMON_FILES.values())
+
     if "tidalGaugeId" in form:
         tidalGaugeId = form["tidalGaugeId"].value
 
@@ -78,6 +82,10 @@ def process(form):
             responseObj["tid"] = os.path.join(serverCfg['baseURL'],
                                               serverCfg['rasterURL'],
                                               fileName + '.txt')
+            util.touch_files(os.path.join(serverCfg['outputDir'],
+                                          fileName),
+                             [ '.png', '.txt' ])
+
         #plot altimetry 
         var = "alt"
         args["var"] = var
@@ -95,6 +103,9 @@ def process(form):
             responseObj["alt"] = os.path.join(serverCfg['baseURL'],
                                               serverCfg['rasterURL'],
                                               fileName + '.txt')
+            util.touch_files(os.path.join(serverCfg['outputDir'],
+                                          fileName),
+                             [ '.png', '.txt' ])
 
         #plot reconstruction
         var = "rec"
@@ -113,6 +124,9 @@ def process(form):
             responseObj["rec"] = os.path.join(serverCfg['baseURL'],
                                               serverCfg['rasterURL'],
                                               fileName + ".txt")
+            util.touch_files(os.path.join(serverCfg['outputDir'],
+                                          fileName),
+                             [ '.png', '.txt' ])
 
         #plot altimery and reconstruction comparison from 1950
 
