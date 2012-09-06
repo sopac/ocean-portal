@@ -10,4 +10,4 @@ config = ocean.util.get_server_config()
 print config['outputDir']
 EOF`
 
-find $CACHE_DIR -type f -mtime +$KEEP_FOR_DAYS -exec rm '{}' \;
+find $CACHE_DIR -type f -mtime +$KEEP_FOR_DAYS -exec rm -f '{}' \;
