@@ -99,26 +99,32 @@ def process(form):
             responseObj["img"] = os.path.join(server_config['baseURL'], server_config['rasterURL'], plot_filename + '.png')
                 
     return responseObj
-    
-    
+
+
 
 def draw_monthly_mean_surface_plot(varName, yearStr, monthStr, regionStr, bgImage_filename, plot_filename_fullpath=None, draw_background_images=False, plot_data=True):
     
     if varName == 'temp':
         dataVar = 'temp'
         unitStr = 'Degrees Celsius'
-        if regionConfig.regions[regionStr][0] == 'pi':
-            cb_ticks = np.arange(20.0,32.1,1.0)
+        if regionConfig.regions.has_key(regionStr):
+            if regionConfig.regions[regionStr][0] == 'pi':
+                cb_ticks = np.arange(20.0,32.1,1.0)
+            else:
+                cb_ticks = np.arange(0.0,32.1,2.0)
         else:
-            cb_ticks = np.arange(0.0,32.1,2.0)
+                cb_ticks = np.arange(0.0,32.1,2.0)
         varLongName = 'Surface Temperature'
         cb_tick_fmt="%.0f"
         currents = False
     elif varName == 'uvtemp':
         dataVar = 'temp'
         unitStr = 'Degrees Celsius'
-        if regionConfig.regions[regionStr][0] == 'pi':
-            cb_ticks = np.arange(20.0,32.1,1.0)
+        if regionConfig.regions.has_key(regionStr):
+            if regionConfig.regions[regionStr][0] == 'pi':
+                cb_ticks = np.arange(20.0,32.1,1.0)
+            else:
+                cb_ticks = np.arange(0.0,32.1,2.0)
         else:
             cb_ticks = np.arange(0.0,32.1,2.0)
         varLongName = 'Surface Temperature and Currents'
