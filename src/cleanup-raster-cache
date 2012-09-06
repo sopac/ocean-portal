@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+# the number of days to keep files in the raster cache
+KEEP_FOR_DAYS=7
+
+CACHE_DIR=`python << EOF
+import ocean.util
+
+config = ocean.util.get_server_config()
+print config['outputDir']
+EOF`
+
+find $CACHE_DIR -type f -mtime +$KEEP_FOR_DAYS -exec rm -f '{}' \;
