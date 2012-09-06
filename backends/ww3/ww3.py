@@ -1,7 +1,6 @@
 import os
 import os.path
 import sys
-import json
 
 import ww3ExtA
 import ocean.util as util
@@ -91,6 +90,4 @@ def process(form):
                                               serverCfg['rasterURL'],
                                               filename + '.png')
 
-    response = json.dumps(responseObj)
-
-    return response
+    return responseObj

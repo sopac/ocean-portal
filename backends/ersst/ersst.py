@@ -1,7 +1,6 @@
 import os
 import os.path
 import sys
-import json
 
 import ersstPlotter
 import ocean.util as util
@@ -247,6 +246,5 @@ def process(form):
                                      fileName),
                         COMMON_FILES.values()))
 
-    response = json.dumps(responseObj)
-    return response
+    return responseObj
 

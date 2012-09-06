@@ -1,7 +1,6 @@
 import os
 import os.path
 import sys
-import json
 
 import sealevelPlotter
 import ocean.util as util
@@ -117,5 +116,4 @@ def process(form):
 
         #plot altimery and reconstruction comparison from 1950
 
-    response = json.dumps(responseObj)
-    return response
+    return responseObj

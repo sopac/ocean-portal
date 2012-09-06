@@ -1,7 +1,6 @@
 import os
 import os.path
 import sys
-import json
 import datetime
 import numpy as np
 
@@ -44,8 +43,7 @@ def process(form):
                 regionStr = '_' + lat_str + lon_str
             if not (varName == 'temp' or varName == 'salt'):
                 responseObj["error"] = "To display a depth cross section, please select either Temperature or Salinity variables."
-                response = json.dumps(responseObj)
-                return response
+                return responseObj
         
         plot_filename = "%s_%s_%s_%s" % (branProduct["monthly"], varName, yearMonthStr, regionStr)
         bgImage_filename = "%s_%s_%s" % (branProduct["monthly"], varName, yearMonthStr)
@@ -93,8 +91,7 @@ def process(form):
                                COMMON_FILES.values()))
             responseObj["img"] = os.path.join(server_config['baseURL'], server_config['rasterURL'], plot_filename + '.png')
                 
-    response = json.dumps(responseObj)
-    return response
+    return responseObj
     
     
 
