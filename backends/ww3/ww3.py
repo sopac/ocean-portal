@@ -71,11 +71,13 @@ def process(form):
             responseObj['ext'] = os.path.join(serverCfg['baseURL'],
                                               serverCfg['rasterURL'],
                                               filename + '.txt')
+            os.utime(os.path.join(serverCfg['outputDir'], filename + '.txt'),
+                     None)
 
         if not os.path.exists(outputFileName + ".png"):
             timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr, k1, k2)
             try:
-                wc.wavecaller(outputFileName, varStr, gridLat, gridLon, gridValues, mthStr)
+                wc.wavecaller(outputFileName, varStr, gridLat, gridLon, lllatStr,lllonStr, gridValues, mthStr)
             except le.LandError:
 	        responseObj["error"] = "Invalid data point.  Please try another location."
 	    except:
@@ -89,5 +91,7 @@ def process(form):
             responseObj['img'] = os.path.join(serverCfg['baseURL'],
                                               serverCfg['rasterURL'],
                                               filename + '.png')
+            os.utime(os.path.join(serverCfg['outputDir'], filename + '.png'),
+                     None)
 
     return responseObj

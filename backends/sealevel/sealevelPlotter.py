@@ -39,6 +39,8 @@ class SeaLevelPlotter ():
         cntLabel = False
         variable = args["var"]
         area = args["area"]
+        if area == "pac":
+            area = "sealevel"
         if variable == 'alt':
             filename = self.serverCfg["dataDir"]["sealevel"] + "grids/" + "CSIRO_SatAlt_199301_201112"
             self.referenceDate = self.altRefDate

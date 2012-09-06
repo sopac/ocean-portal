@@ -1,3 +1,4 @@
+import os
 import os.path
 import socket
 import datetime
@@ -22,6 +23,13 @@ def check_files_exist(basename, subnames):
 
 def build_response_object(fields, basename, subnames):
     return dict([ (k, basename + v) for (k, v) in zip(fields, subnames) ])
+
+def touch_files(basename, subnames):
+    for n in subnames:
+        try:
+            os.utime(basename + n, None)
+        except OSError:
+            pass # eat it
 
 def get_server_config(hostname=None):
     if not hostname:

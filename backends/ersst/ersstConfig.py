@@ -46,9 +46,10 @@ class ErsstConfig ():
                                          "contourlevels": np.arange(-0.28,0.32,0.04),
                                          "unit": ur'\u00b0' + 'C/Decade',
                                          "format": '%5.2f'
-                                      },
-                                      "linear_trend")
-                              }
+                                       },
+                                       "linear_trend"),
+                               }
+
         self.periodPrefix = {"monthly": "Monthly Average ",
                              "3monthly": "3 Monthly Average ",
                              "6monthly": "6 Monthly Average ",

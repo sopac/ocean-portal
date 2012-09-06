@@ -26,6 +26,7 @@ src = [
 
 scripts = [
     'replicate-portal-data',
+    'cleanup-raster-cache',
 ]
 
 backends = [
