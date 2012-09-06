@@ -125,14 +125,13 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
     return m
 
 
-def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data,
-                          output_filename='noname.png', title='', units='m/s',
-                          cb_ticks=None, cb_tick_fmt="%.0f", cmp_name='jet', 
+def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_all, lons_all, data_sf,
+                          lat_cnt, lon_cnt, output_filename='noname.png', title='', units='m/s',
+                          cb_ticks=None, cb_tick_fmt="%.0f", cmp_name='jet', proj='cyl',
                           product_label_str=None):
     fg = py.figure()
-    
-    gs = mpl.gridspec.GridSpec(8,6)
-    ax1=py.subplot(gs[1:4,:-1])
+    gs = mpl.gridspec.GridSpec(2,5)
+    ax1=py.subplot(gs[1,0:2])
         
     n_colours = cb_ticks.size - 1
     d_cmap = discrete_cmap(cmp_name, n_colours)
@@ -148,16 +147,15 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data,
     # Plot data
     x2, y2 = np.meshgrid(lons2, depths2)
     img = py.pcolormesh(x2, y2, zonal_data, shading='flat', cmap=d_cmap, vmin=cb_ticks.min(), vmax=cb_ticks.max())
-    plt.title(title, fontsize=12)
-    
+        
     ax = plt.gca()
     ax.set_ylim(0,300)
     ax.set_ylim(ax.get_ylim()[::-1]) 
 
     py.ylabel("Depth (m)", fontsize=10)
     py.xlabel("Longitude", fontsize=10)
-    
-    ax2=py.subplot(gs[5:8,:-1])
+    py.subplots_adjust(right=1.0)
+    ax2=py.subplot(gs[1,2:4])
 
     # Draw contour
     x, y = np.meshgrid(lats, depths)
@@ -170,26 +168,58 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data,
     # Plot data
     x2, y2 = np.meshgrid(lats2, depths2)
     img = py.pcolormesh(x2, y2, meridional_data, shading='flat', cmap=d_cmap, vmin=cb_ticks.min(), vmax=cb_ticks.max())
-
+        
     ax = plt.gca()
     ax.set_ylim(0,300)
-    ax.set_ylim(ax.get_ylim()[::-1]) 
+    ax.set_ylim(ax.get_ylim()[::-1])
+    ax.set_yticklabels([''])
 
-    py.ylabel("Depth (m)", fontsize=10)
     py.xlabel("Latitude", fontsize=10)
     
-    cbaxes = fg.add_axes([0.8, 0.1, 0.03, 0.7]) # setup colorbar axes.
+    ax3=py.subplot(gs[0,:-1])
+
+    lat_min = lats[0] - 5.0
+    lat_max = lats[-1] + 5.0
+    lon_min = lons[0] - 20.0
+    lon_max = lons[-1] + 20.0
+    
+    m = Basemap(projection=proj, llcrnrlat=lat_min, llcrnrlon=lon_min, \
+                urcrnrlat=lat_max, urcrnrlon=lon_max, resolution='h')
+    m.drawcoastlines(linewidth=0.1, zorder=6)
+    m.fillcontinents(color='#cccccc', zorder=7)
+    py.hold(True)
+    py.plot([lon_cnt,lon_cnt],[lats[0],lats[-1]], color='k', linestyle='--', linewidth=2, zorder=5)
+    py.plot([lons[0],lons[-1]],[lat_cnt,lat_cnt], color='k', linestyle='--', linewidth=2, zorder=5)
+    
+
+    # Convert centre lat/lons to corner values required for pcolormesh
+    lons2 = get_grid_edges(lons_all)
+    lats2 = get_grid_edges(lats_all)
+        
+    # Plot data
+    x2, y2 = m(*np.meshgrid(lons2, lats2))
+    img = m.pcolormesh(x2, y2, data_sf, shading='flat', cmap=d_cmap, vmin=cb_ticks.min(), vmax=cb_ticks.max())
+    plt.title(title, fontsize=12)
+    
+    parallels, p_dec_places = get_tick_values(lat_min, lat_max, 3, 6)
+    meridians, m_dec_places = get_tick_values(lon_min, lon_max)
+    m.drawparallels(parallels, labels=[True, False, False, False], fmt='%.' + str(p_dec_places) + 'f', 
+                    fontsize=8, dashes=[3, 3], color='gray')
+    m.drawmeridians(meridians, labels=[False, False, False, True], fmt='%.' + str(m_dec_places) + 'f',
+                    fontsize=8, dashes=[3, 3], color='gray')
+    cbaxes = fg.add_axes([0.85, 0.15, 0.03, 0.7]) # setup colorbar axes.
+    
     cb = fg.colorbar(img, spacing='proportional', drawedges='True', cax=cbaxes,orientation='vertical',
-                       extend='both', ticks=cb_ticks)
+                     extend='both', ticks=cb_ticks)
     cb.set_ticklabels([cb_tick_fmt % k for k in cb_ticks])
     cb.set_label(units)
     
     box = TextArea(getCopyright(), textprops=dict(color='k', fontsize=6))
-    copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor=(-0.1, -0.45), frameon=False, bbox_transform=ax.transAxes)
+    copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor=(-1.3, -0.45), frameon=False, bbox_transform=ax.transAxes)
     ax.add_artist(copyrightBox)
 
     box = TextArea(product_label_str, textprops=dict(color='k', fontsize=8))
-    copyrightBox = AnchoredOffsetbox(loc=4, child=box, bbox_to_anchor=(1.040, -0.45), frameon=False, bbox_transform=ax.transAxes)
+    copyrightBox = AnchoredOffsetbox(loc=4, child=box, bbox_to_anchor=(1.4, -0.45), frameon=False, bbox_transform=ax.transAxes)
     ax.add_artist(copyrightBox)
     
     plt.savefig(output_filename, dpi=150, bbox_inches='tight', pad_inches=1.)

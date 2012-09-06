@@ -74,8 +74,15 @@ def process(form):
                 input_data_file = os.path.join(server_config['dataDir']['bran'], 'monthly', varName, varName + '_' + yearStr + '_' + monthStr + '.nc4')
                 lats1, lons1, zlevels1, zonal_data = branPlotterNew.load_BRAN_data(input_data_file, varName, lat_cnt, lat_cnt, lon_cnt - 5.0, lon_cnt + 5.0, depth_min=0.0, depth_max=300.0)
                 lats2, lons2, zlevels2, meridional_data = branPlotterNew.load_BRAN_data(input_data_file, varName, lat_cnt - 5.0, lat_cnt + 5.0, lon_cnt, lon_cnt, depth_min=0.0, depth_max=300.0)
-                branPlotterNew.plot_BRAN_depth_slice(zlevels1, lats2, lons1, zonal_data, meridional_data, output_filename=plot_filename_fullpath + '.png',
+                
+                # Load surface data
+                input_data_file = os.path.join(server_config['dataDir']['bran'], 'monthly', varName, varName + '_' + yearStr + '_' + monthStr + '.nc4')
+                lats, lons, zlevels, data = branPlotterNew.load_BRAN_data(input_data_file, varName, -999.0, 999.0, -999.0, 999.0)
+                  
+                branPlotterNew.plot_BRAN_depth_slice(zlevels1, lats2, lons1, zonal_data, meridional_data, lats, lons, data,
+                                                     lat_cnt, lon_cnt, output_filename=plot_filename_fullpath + '.png',
                                                      units=unitStr, title=titleStr, cb_ticks=cb_ticks, product_label_str='Bluelink Reanalysis 2.1')
+
             else:
                 # Plot surface data
                 if varName in ['temp', 'salt', 'eta', 'uvtemp', 'uveta']:
@@ -148,7 +155,7 @@ def draw_monthly_mean_surface_plot(varName, yearStr, monthStr, regionStr, bgImag
 
     if draw_background_images:
         # Plot background image layers
-        config = bc.branConfig()
+        config = bc.BranConfig()
         plot = plotter.Plotter()
         plot.contourBasemapEast(data, lats, lons, dataVar, config, bgImage_filename)
         plot.contourBasemapWest(data, lats, lons, dataVar, config, bgImage_filename)
