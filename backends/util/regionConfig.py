@@ -20,7 +20,7 @@ regions = {"pi": ("pi",
                   "Cook Islands"),
            "fsm": ("pi", 
                   {"llcrnrlat": 5,
-                   "llcrnrlon": 137,
+                   "llcrnrlon": 150,
                    "urcrnrlat": 11,
                    "urcrnrlon": 164
                   },
