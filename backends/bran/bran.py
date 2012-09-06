@@ -94,10 +94,19 @@ def process(form):
         else:
             responseObj.update(util.build_response_object(
                                COMMON_FILES.keys(),
-                               os.path.join(server_config['baseURL'], server_config['rasterURL'], bgImage_filename),
+                               os.path.join(server_config['baseURL'],
+                                            server_config['rasterURL'],
+                                            bgImage_filename),
                                COMMON_FILES.values()))
-            responseObj["img"] = os.path.join(server_config['baseURL'], server_config['rasterURL'], plot_filename + '.png')
-                
+            responseObj["img"] = os.path.join(server_config['baseURL'],
+                                              server_config['rasterURL'],
+                                              plot_filename + '.png')
+
+            util.touch_files(os.path.join(server_config['outputDir'],
+                                          bgImage_filename),
+                             COMMON_FILES.values())
+            util.touch_files(os.path.join(plot_filename_fullpath),
+                             [ COMMON_FILES['img'] ])
     return responseObj
 
 
