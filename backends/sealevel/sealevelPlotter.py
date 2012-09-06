@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates
 
-import seaLevelConfig as rc
+import sealevelConfig as rc
 import ocean.util as util
 from ..util import regionConfig
 from ..netcdf import plotter
@@ -29,7 +29,7 @@ class SeaLevelPlotter ():
 
     def __init__(self):
         """Initialise the plotter by getting the settings ready for the plotting.""" 
-        self.config = rc.SeaLevelConfig()
+        self.config = rc.SealevelConfig()
         self.serverCfg = util.get_server_config()
 
     def plot(self, outputFilename, **args):

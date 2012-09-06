@@ -1,9 +1,8 @@
 import os
 import os.path
 import sys
-import json
 
-import seaLevelPlotter
+import sealevelPlotter
 import ocean.util as util
 from ocean.netcdf.plotter import COMMON_FILES
 from ..util import productName
@@ -20,7 +19,7 @@ serverCfg = util.get_server_config()
 seaLevelProduct = productName.products["sealevel"]
 
 #get the plotter
-plotter = seaLevelPlotter.SeaLevelPlotter()
+plotter = sealevelPlotter.SeaLevelPlotter()
 
 def process(form): 
     responseObj = {} #this object will be encoded into a json string
@@ -117,5 +116,4 @@ def process(form):
 
         #plot altimery and reconstruction comparison from 1950
 
-    response = json.dumps(responseObj)
-    return response
+    return responseObj

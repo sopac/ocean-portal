@@ -23,7 +23,7 @@ $(document).ready(function() {
     $('#loading-dialog').dialog('option', 'modal', true);
 
     // Load up the datasets dialog
-    html = '';
+    var html = '';
     $.getJSON('config/comp/datasets.json', function(data) {
         $.each(data, function(k, dataset) {
             html += '<h1>' + dataset.name + '</h1>';
@@ -280,34 +280,47 @@ ocean.dsConf = {
                         dataDiv.html('');
                     }
                 },
-                onSelect: function(){
-                              var branLayer = new OpenLayers.Layer.Vector("BRAN Sub-Surface", {
-                                                         preFeatureInsert: function(feature) {
-                                                             this.removeAllFeatures();
-                                                         },
-                                                         onFeatureInsert: function(feature) {
-                                                             var geometry = feature.geometry;
-                                                             $('#latitude').val(Math.round(geometry.y * 1000)/1000);
-                                                             $('#longitude').val(Math.round(geometry.x * 1000)/1000);
-                                                         }
-                                                     });
-                              ocean.mapObj.addLayer(branLayer);
-                              this.panelControls = [
-                                  new OpenLayers.Control.DrawFeature(branLayer,
-                                                   OpenLayers.Handler.Point,
-                                                   {'displayClass': 'olControlDrawFeaturePoint'}),
-                                  new OpenLayers.Control.Navigation()
-                              ];
-                              this.toolbar = new OpenLayers.Control.Panel({
-                                  displayClass: 'olControlEditingToolbar',
-                                  defaultControl: this.panelControls[0]
-                              });
-                              this.toolbar.addControls(this.panelControls);
-                              ocean.mapObj.addControl(this.toolbar);
+                onSelect: function()
+                {
+                    var branLayer = new OpenLayers.Layer.Vector(
+                        "BRAN Sub-Surface",
+                        {
+                            style: {
+                                graphicName: 'cross',
+                                pointRadius: 10,
+                                stroke: false
+                            },
+                            preFeatureInsert: function(feature) {
+                                this.removeAllFeatures();
+                            },
+                            onFeatureInsert: function(feature) {
+                                var geometry = feature.geometry;
+                                $('#latitude').val(Math.round(geometry.y * 1000)/1000);
+                                $('#longitude').val(Math.round(geometry.x * 1000)/1000);
+                            }
+                        });
 
-                              $('#variableDiv').show();
-                              configCalendar();
-                          },
+                    ocean.mapObj.addLayer(branLayer);
+
+                    this.panelControls = [
+                        new OpenLayers.Control.DrawFeature(branLayer,
+                            OpenLayers.Handler.Point, {
+                                'displayClass': 'olControlDrawFeaturePoint'
+                            }),
+                        new OpenLayers.Control.Navigation(),
+                    ];
+
+                    this.toolbar = new OpenLayers.Control.Panel({
+                        displayClass: 'olControlEditingToolbar',
+                        defaultControl: this.panelControls[0]
+                    });
+
+                    this.toolbar.addControls(this.panelControls);
+                    ocean.mapObj.addControl(this.toolbar);
+
+                    $('#variableDiv').show();
+                    configCalendar();
+                },
                 onDeselect: function() {
                                 var layers = map.getLayersByName("BRAN");
                                 var layer;

@@ -2,15 +2,13 @@
 
 import sys
 import cgi
+import json
 
-import ocean.reynolds.reynolds as reynolds
-import ocean.ww3.ww3 as ww3
-import ocean.sealevel.seaLevel as sealevel
-import ocean.ersst.ersst as ersst
-import ocean.bran.bran as bran
 import ocean.util as util
 
-if util.get_server_config()['debug']:
+config = util.get_server_config()
+
+if config['debug']:
     import cgitb
     sys.stderr = sys.stdout
     cgitb.enable()
@@ -20,25 +18,18 @@ form = cgi.FieldStorage()
 print "Content-Type: text/html"     # HTML is following
 print                               # blank line, end of headers
 
+response = {}
 
-if "dataset" in form:
-    """
-    process request and respond the result in JSON format.
-    """
-    response = "{}"
-    datasetStr = form["dataset"].value
-    if datasetStr == "reynolds":
-        response = reynolds.process(form)
-    elif datasetStr == "ersst":
-        response = ersst.process(form)
-    elif datasetStr == "ww3":
-        response = ww3.process(form)
-    elif datasetStr == "bran":
-        response = bran.process(form)
-#        response = {"error": "building"} 
-    elif datasetStr == "sealevel":
-        response = sealevel.process(form)
-    print response
+if 'dataset' in form:
+
+    dataset = form['dataset'].value
+
+    try:
+        module = __import__('ocean.%s.%s' % (dataset, dataset), fromlist=[''])
+        response.update(module.process(form))
+    except ImportError:
+        response['error'] = "Unknown dataset '%s'" % (dataset)
 else:
-    print "{}"
+    response['error'] = "No dataset specified"
 
+json.dump(response, sys.stdout)

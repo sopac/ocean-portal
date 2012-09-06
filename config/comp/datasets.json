@@ -6,12 +6,12 @@
     "variables": [{
         "id":"mean",
         "name":"Mean SST",
-        "periods": ["daily", "weekly", "monthly", "3monthly", "6monthly", "yearly"],
+        "periods": ["daily", "monthly", "yearly"],
         "areas" : ["aus", "eca", "wca", "cor", "nws", "ntr", "swr", "sth", "tas", "glob", "ind", "pac", "sh"]
     },{
         "id":"anom",
         "name":"SST Anomaly",
-        "periods": ["daily", "weekly", "monthly", "3monthly", "6monthly", "yearly"],
+        "periods": ["daily", "monthly", "yearly"],
         "areas" : ["aus", "eca", "wca", "cor", "nws", "ntr", "swr", "sth", "tas", "glob", "ind", "pac", "sh"],
         "average" : {
             "checkboxes" : [{
