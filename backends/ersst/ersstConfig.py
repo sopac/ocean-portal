@@ -48,7 +48,7 @@ class ErsstConfig ():
                                          "format": '%5.2f'
                                        },
                                        "linear_trend"),
-                              }
+                               }
 
         self.periodPrefix = {"monthly": "Monthly Average ",
                              "3monthly": "3 Monthly Average ",
