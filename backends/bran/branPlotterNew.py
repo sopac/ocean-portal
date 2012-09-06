@@ -188,10 +188,9 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
     m.drawcoastlines(linewidth=0.1, zorder=6)
     m.fillcontinents(color='#cccccc', zorder=7)
     py.hold(True)
-    py.plot([lon_cnt,lon_cnt],[lats[0],lats[-1]], color='k', linestyle='--', linewidth=2, zorder=5)
-    py.plot([lons[0],lons[-1]],[lat_cnt,lat_cnt], color='k', linestyle='--', linewidth=2, zorder=5)
+    py.plot([lon_cnt,lon_cnt],[lats[0],lats[-1]], color='k', linestyle='--', linewidth=2, zorder=8)
+    py.plot([lons[0],lons[-1]],[lat_cnt,lat_cnt], color='k', linestyle='--', linewidth=2, zorder=8)
     
-
     # Convert centre lat/lons to corner values required for pcolormesh
     lons2 = get_grid_edges(lons_all)
     lats2 = get_grid_edges(lats_all)
