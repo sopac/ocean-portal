@@ -21,7 +21,7 @@ class BranPlotter ():
 
     def __init__(self):
        """Does nothing"""
-       self.config = rc.branConfig()
+       self.config = rc.BranConfig()
        self.serverCfg = util.get_server_config()
 
     def plot(self, outputFilename, variable, date, area, period):

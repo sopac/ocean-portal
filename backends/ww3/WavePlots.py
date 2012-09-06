@@ -17,8 +17,10 @@ import landerror as le
 from radbearing import meanbearing
 import angleconv as conv
 from formatter import NESWformat
+from ocean.netcdf.plotter import getCopyright
 
 def RosePlot(opath, wdir, units, lat, lon, ilat, ilon, xstr, title, var, binwd):
+
     '''Plots a windrose of angular values in wdir, with annotations
 
        Arguments:
@@ -117,10 +119,8 @@ def RosePlot(opath, wdir, units, lat, lon, ilat, ilon, xstr, title, var, binwd):
     plt.figtext(0.76, 0.1, 'West: %s %s' % (perc[6], units), fontsize=10)
     plt.figtext(0.76, 0.075, 'North West: %s %s' % (perc[7], units), fontsize=10)
     #Bureau of Meteorology Copyright
-    plt.figtext(0.02, 0.02, ur'\u00A9' + "Commonwealth of Australia "\
-               + datetime.date.today().strftime('%Y')\
-               + "\nAustralian Bureau of Meteorology, COSPPac COMP", fontsize=8)
     plt.figtext(0.58, 0.03, u'WAVEWATCH III$^{\u00AE}$', fontsize=10)
+    plt.figtext(0.02, 0.02, getCopyright(), fontsize=8)
     #define image name
     imgname = opath + '.png'
      #write image file
@@ -244,10 +244,8 @@ def HistPlot(opath, wheight, units, lat, lon, ilat, ilon, xstr, title, var, binw
     plt.figtext(0.79, 0.275,'25th Percentile: %s %s' % (q1,units), fontsize=10)
     plt.figtext(0.79, 0.325,'75th Percentile: %s %s' % (q3,units), fontsize=10)
     #Bureau of Meteorology Copyright
-    plt.figtext(0.02, 0.02, ur'\u00A9' + "Commonwealth of Australia "\
-               + datetime.date.today().strftime('%Y')\
-               + "\nAustralian Bureau of Meteorology, COSPPac COMP", fontsize=8)
     plt.figtext(0.65, 0.03, u'WAVEWATCH III$^{\u00AE}$', fontsize=10)
+    plt.figtext(0.02, 0.02, getCopyright(), fontsize=8)
      #define image name
     imgname = opath + '.png'
      #write image file

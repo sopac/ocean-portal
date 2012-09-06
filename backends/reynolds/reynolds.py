@@ -1,7 +1,6 @@
 import os
 import os.path
 import sys
-import json
 
 import reynoldsPlotter
 import ocean.util as util
@@ -27,7 +26,7 @@ CACHE_URL = os.path.join(serverCfg['baseURL'],
 #get the plotter
 plotter = reynoldsPlotter.ReynoldsPlotter()
 
-def process(form): 
+def process(form):
     responseObj = {} #this object will be encoded into a json string
     if "map" in form and "date" in form and "period" in form and "area" in form:
         mapStr = form["map"].value
@@ -149,5 +148,4 @@ def process(form):
                                      fileName),
                         COMMON_FILES.values()))
 
-    response = json.dumps(responseObj)
-    return response
+    return responseObj

@@ -1,21 +1,20 @@
 #!/usr/bin/python
 
-
+import datetime
+import csv
+import shutil
+import datetime
 
 from netCDF4 import Dataset
 import numpy as np
-import datetime
-import csv
 import matplotlib.pyplot as plt
 import matplotlib.dates
-import shutil
 
-import seaLevelConfig as rc
+import sealevelConfig as rc
 import ocean.util as util
 from ..util import regionConfig
 from ..netcdf import plotter
 from ..netcdf import extractor
-
 
 class SeaLevelPlotter ():
     """ 
@@ -30,7 +29,7 @@ class SeaLevelPlotter ():
 
     def __init__(self):
         """Initialise the plotter by getting the settings ready for the plotting.""" 
-        self.config = rc.SeaLevelConfig()
+        self.config = rc.SealevelConfig()
         self.serverCfg = util.get_server_config()
 
     def plot(self, outputFilename, **args):
@@ -51,13 +50,13 @@ class SeaLevelPlotter ():
         else:
             return -1
         
-        filename = filename + ".nc" 
+        filename = filename + ".nc"
         dataset = Dataset(filename, 'r')
         time = dataset.variables["time"]
         height = dataset.variables[self.config.getVariableType(variable)][self.getDateIndex(time[:].tolist(), args["date"])]
         lats = dataset.variables['lat'][:]
         lons = dataset.variables['lon'][:]
-        
+
         delon = lons[1]-lons[0]; delat = lats[1]-lats[0]
         lons = (lons - 0.5*delon).tolist()
         lons.append(lons[-1]+delon)
@@ -65,8 +64,12 @@ class SeaLevelPlotter ():
         lats = (lats - 0.5*delat).tolist()
         lats.append(lats[-1]+delat)
         lats = np.array(lats,np.float64)
- 
-        args['formattedDate'] = ''
+
+        date = args['date']
+        date = datetime.date(int(date[:4]),
+                             int(date[4:6]),
+                             int(date[6:]))
+        args['formattedDate'] = date.strftime('%B %Y')
 
         resolution='h'
         if not area=='pac':
@@ -88,7 +91,7 @@ class SeaLevelPlotter ():
         plot.plotScale(height, variable, self.config, outputFilename)
 
         dataset.close()
-        
+
         return 0
 
     def getDateIndex(self, timeList, date):
@@ -98,6 +101,7 @@ class SeaLevelPlotter ():
         timeElapsed = datetime.date(int(date[:4]), int(date[4:6]), 15) - self.referenceDate
         index = timeList.index(timeElapsed.days)
         return index
+
 
     def plotTidalGauge(self, outputFilename, saveData=True, **args):
         """
@@ -134,7 +138,7 @@ class SeaLevelPlotter ():
         figure = plt.figure()
         plt.rc('font', size=8)
         plt.title('Monthly sea levels for ' + tidalGaugeName)
-        plt.ylabel('Sea Leve (metres)')
+        plt.ylabel('Sea Level Height (metres)')
         plt.xlabel('Year')
         ax = figure.gca()
         ax.grid(True)
@@ -145,7 +149,12 @@ class SeaLevelPlotter ():
 
         #add legend
         ax.legend([maxPlot, meanPlot, minPlot], ['Max', 'Mean', 'Min'])
-        
+
+        plt.axhline(y=0, color='k')
+        plt.figtext(0.02, 0.02, plotter.getCopyright(), fontsize=6)
+        plt.figtext(0.90, 0.05, "0.0 = Tidal Gauge Zero",
+                    fontsize=8, horizontalalignment='right')
+
         plt.savefig(outputFilename + ".png", dpi=150, bbox_inches='tight', pad_inches=.1)
 
         plt.close()
@@ -196,13 +205,17 @@ class SeaLevelPlotter ():
         if saveData:
             file = open(outputFilename + ".txt", 'w')
             writer = csv.writer(file, delimiter='\t')
-            for row in zip(date_label, y_height):
-                writer.writerow(row)
+            writer.writerow(('# Sea Level %s for %s' % (titlePrefix, tidalGaugeName),))
+            writer.writerow(('# Datum: GSFC00.1',))
+            writer.writerow(['YYYY-MM', titlePrefix])
+
+            for date, height in zip(date_label, y_height):
+                writer.writerow([date.strftime('%Y-%m'), height])
             file.close()
 
         figure = plt.figure()
         plt.rc('font', size=8)
-        plt.title(titlePrefix + ' data for ' + tidalGaugeName)
+        plt.title("Sea Level %s for %s" % (titlePrefix, tidalGaugeName))
         plt.ylabel('Sea-Surface Height (mm)')
         plt.xlabel('Year')
         ax = figure.gca()
@@ -211,9 +224,13 @@ class SeaLevelPlotter ():
 #        ax.set_aspect(aspectRatio)
         ax.plot_date(x_date, y_height, 'b-') 
         plt.axhline(y=0, color='k')
+
+        plt.figtext(0.02, 0.02, plotter.getCopyright(), fontsize=6)
+        plt.figtext(0.90, 0.05, "Height relative to GSFC00.1",
+                    fontsize=8, horizontalalignment='right')
+
         plt.savefig(outputFilename + ".png", dpi=150, bbox_inches='tight', pad_inches=.1)
 
         plt.close()
         dataset.close()
         return 0
-         

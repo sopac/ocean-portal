@@ -3,22 +3,19 @@
 import matplotlib.pyplot as plt
 
 
-class SeaLevelConfig ():
-    """ Reynolds configuration
-    """
+class SealevelConfig ():
 
     variableConfig = None
 
     def __init__(self):
-        """Does nothing"""
-        self.variableConfig = {"alt": ("Altimetry Data", 
+        self.variableConfig = {"alt": ("Sea level Altimetry: ",
                                       {"colorbounds": [-300, 300],
                                        "colormap": plt.cm.RdYlBu_r,
                                        "unit": 'mm',
                                        "format": '%d'
                                       },
                                        "height"),
-                               "rec": ("Reconstruction Data",
+                               "rec": ("Sea level Reconstruction: ",
                                       {"colorbounds": [-300, 300],
                                        "colormap": plt.cm.RdYlBu_r,
                                        "unit": 'mm',
@@ -27,6 +24,7 @@ class SeaLevelConfig ():
                                        "height")
                               }
 
+        self.subDirs = [ 'grids', 'tide_gauge' ]
 
     def getTitle(self, variableName):
         return self.variableConfig[variableName][0]

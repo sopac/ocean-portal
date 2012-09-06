@@ -2,8 +2,8 @@
 
 var ocean = ocean || {};
 ocean.controls = ['selectionDiv', 'toggleDiv', 'sliderDiv',
-                  'yearMonthDiv', 'datepickerDiv', 'latlonDiv', 
-                  'tidalGaugeDiv', 'compDiv'];
+                  'yearMonthDiv', 'datepickerDiv', 'latlonDiv',
+                  'tidalGaugeDiv', 'compDiv', 'clearlatlonButton' ];
 ocean.compare = {"flag": true, "limit": 2}
 ocean.processing = false;
 //ocean.average = false;
@@ -18,8 +18,14 @@ ocean.date = new Date();
 $(document).ready(function() {
     $('.dialog').dialog({ autoOpen: false });
 
+    $('#loading-dialog').dialog('option', { 'modal': true,
+                                            'dialogClass': 'notitle',
+                                            'closeOnEscape': false,
+                                            'height': 55,
+                                            'resizable': false });
+
     // Load up the datasets dialog
-    html = '';
+    var html = '';
     $.getJSON('config/comp/datasets.json', function(data) {
         $.each(data, function(k, dataset) {
             html += '<h1>' + dataset.name + '</h1>';
@@ -245,6 +251,8 @@ ocean.dsConf = {
                    + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
                    + "&period=" + ocean.period
                    + "&area=" + ocean.area
+                   + "&lat=" + $('#latitude').val()
+                   + "&lon=" + $('#longitude').val()
                    + "&timestamp=" + new Date().getTime();
                 },
                 data: null,
@@ -268,45 +276,53 @@ ocean.dsConf = {
                     var imgDiv = $('#imgDiv');
                     var dataDiv = $('#dataDiv');
                     var enlargeDiv = $('#enlargeDiv');
-                    if (this.variable.get("id") == "anom" && this.aveCheck.average && data.aveImg != null) {
-                        imgDiv.html('<img src="' + data.aveImg + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
-                        dataDiv.html('<b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C<br>' + '<a href="'+ data.aveData + '" target="_blank"><img src="images/download.png"/></a>');
-
-                    }
-                    else if (data.img != null) {
+                    if (data.img != null) {
                         imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
-                        updateMap("ERSST", data);
+                        updateMap("BRAN", data);
                         dataDiv.html('');
                     }
                 },
-                onSelect: function(){
-                              var ww3Layer = new OpenLayers.Layer.Vector("WaveWatch III", {
-                                                         preFeatureInsert: function(feature) {
-                                                             this.removeAllFeatures();
-                                                         },
-                                                         onFeatureInsert: function(feature) {
-                                                             var geometry = feature.geometry;
-                                                             $('#latitude').val(Math.round(geometry.y * 1000)/1000);
-                                                             $('#longitude').val(Math.round(geometry.x * 1000)/1000);
-                                                         }
-                                                     });
-                              ocean.mapObj.addLayer(ww3Layer);
-                              this.panelControls = [
-                                  new OpenLayers.Control.DrawFeature(ww3Layer,
-                                                   OpenLayers.Handler.Point,
-                                                   {'displayClass': 'olControlDrawFeaturePoint'}),
-                                  new OpenLayers.Control.Navigation()
-                              ];
-                              this.toolbar = new OpenLayers.Control.Panel({
-                                  displayClass: 'olControlEditingToolbar',
-                                  defaultControl: this.panelControls[0]
-                              });
-                              this.toolbar.addControls(this.panelControls);
-                              ocean.mapObj.addControl(this.toolbar);
+                onSelect: function()
+                {
+                    var branLayer = new OpenLayers.Layer.Vector(
+                        "BRAN Sub-Surface",
+                        {
+                            style: {
+                                graphicName: 'cross',
+                                pointRadius: 10,
+                                stroke: false
+                            },
+                            preFeatureInsert: function(feature) {
+                                this.removeAllFeatures();
+                            },
+                            onFeatureInsert: function(feature) {
+                                var geometry = feature.geometry;
+                                $('#latitude').val(Math.round(geometry.y * 1000)/1000);
+                                $('#longitude').val(Math.round(geometry.x * 1000)/1000);
+                            }
+                        });
 
-                              $('#variableDiv').show();
-                              configCalendar();
-                          },
+                    ocean.mapObj.addLayer(branLayer);
+
+                    this.panelControls = [
+                        new OpenLayers.Control.DrawFeature(branLayer,
+                            OpenLayers.Handler.Point, {
+                                'displayClass': 'olControlDrawFeaturePoint'
+                            }),
+                        new OpenLayers.Control.Navigation(),
+                    ];
+
+                    this.toolbar = new OpenLayers.Control.Panel({
+                        displayClass: 'olControlEditingToolbar',
+                        defaultControl: this.panelControls[0]
+                    });
+
+                    this.toolbar.addControls(this.panelControls);
+                    ocean.mapObj.addControl(this.toolbar);
+
+                    $('#variableDiv').show();
+                    configCalendar();
+                },
                 onDeselect: function() {
                                 var layers = map.getLayersByName("BRAN");
                                 var layer;
@@ -315,6 +331,12 @@ ocean.dsConf = {
                                 for (layer in layers) {
                                     map.removeLayer(layers[layer]);
                                 }
+
+                                layers = map.getLayersByName("BRAN Sub-Surface");
+                                for (layer in layers) {
+                                    map.removeLayer(layers[layer]);
+                                }
+
                                 map.removeControl(this.toolbar);
                                 this.toolbar.deactivate();
                                 this.toolbar.destroy();
@@ -326,6 +348,7 @@ ocean.dsConf = {
                                 }
                                 $('#imgDiv').html('');
                                 $('#dataDiv').html('');
+                                hideControl('clearlatlonButton');
                 },
                 selectVariable: function(selection) {
                                     updatePeriodCombo();
@@ -346,6 +369,8 @@ ocean.dsConf = {
                                     }
                                     updateCalDiv();
                                     showControl('selectionDiv');
+                                    showControl('latlonDiv');
+                                    showControl('clearlatlonButton');
                             }
     },
     ww3: {url: function() {return "cgi/portal.py?dataset=ww3"
@@ -540,7 +565,6 @@ ocean.dsConf = {
                               clickout: true,
                               multiple: false,
                               toggle: true,
-                              hover: true,
                               highlightOnly: false
                           });
                           map.addControl(gaugeControl);
@@ -610,17 +634,6 @@ ocean.dsConf = {
 
 function enlargeImg(img, show) {
     var enlargeDiv = $('#enlargeDiv');
-    if (show) {
-        enlargeDiv.html('<img src="' + img.src + ' "width="650"/>');
-    }
-    else {
-        enlargeDiv.html('');
-    }
-}
-
-
-function loadingImg(show) {
-    var enlargeDiv = $('#loadingDiv');
     if (show) {
         enlargeDiv.html('<img src="' + img.src + ' "width="650"/>');
     }
@@ -782,6 +795,18 @@ Ext.onReady(function() {
         }
     }));
 
+    Ext.create('Ext.Button', {
+        html: '<span class="ui-icon ui-icon-close" title="Clear Latitude/Longitude"></span>',
+        margin: { top: 3, bottom: 3 },
+        renderTo: 'clearlatlonButton',
+        handler: function() {
+            /* clear the latitude/longitude */
+            $('#latitude').val('');
+            $('#longitude').val('');
+            /* FIXME: remove the marker from the map */
+        }
+    });
+
     ocean.mapCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'variableCombo',
         fieldLabel: 'Variable',
@@ -916,7 +941,6 @@ function createCheckBoxes(store, records, result, operation, eOpt) {
     records = store.getById('reynolds').variables().getById('anom').get('average').checkboxes; 
     Ext.each(records, function(rec) {
         var name = rec.name;
-//        ocean.dsConf['reynolds'].aveCheck.push(new AveCheck(name, false)); 
         ocean.dsConf['reynolds'].aveCheck[name] = false; 
         Ext.create('Ext.form.field.Checkbox', {
             boxLabel: rec.boxLabel,
@@ -1147,13 +1171,11 @@ function selectRunningInterval(slider, value, thumb, args) {
 function hideControls() {
    var control;
    for (control in ocean.controls) {
-//       document.getElementById(ocean.controls[control]).style.display = 'none';
        $('#' + ocean.controls[control]).hide();
    }
 }
 
 function showControl(control) {
-//    document.getElementById(control).style.display = 'block';
     $('#' + control).show();
 }
 
@@ -1167,7 +1189,6 @@ function setCompare() {
 function initialise() {
     $('#variableDiv').hide();
     hideControls();
-    hideControl('loadingDiv');
 }
 
 //**********************************************************
@@ -1186,7 +1207,6 @@ function updateDate(dateObj) {
 //**********************************************************
 function updatePage() {
     if (!ocean.processing) {
-        ocean.processing = true;
 
         function show_error(url, text)
         {
@@ -1196,15 +1216,14 @@ function updatePage() {
         }
 
         $.ajax({
-            url:  ocean.dataset.url(),
+            url: ocean.dataset.url(),
             dataType: 'json',
             beforeSend: function(jqXHR, settings) {
-                showControl('loadingDiv');
+                ocean.processing = true;
+                $('#loading-dialog').dialog('open');
                 $('#error-dialog').dialog('close');
             },
             success: function(data, textStatus, jqXHR) {
-                hideControl('loadingDiv');
-
                 if (data == null || $.isEmptyObject(data))
                 {
                     show_error(ocean.dataset.url(), "returned no data");
@@ -1222,7 +1241,7 @@ function updatePage() {
             },
             complete: function(jqXHR, textStatus) {
                 ocean.processing = false;
-                hideControl('loadingDiv');
+                $('#loading-dialog').dialog('close');
             }
         });
     }
