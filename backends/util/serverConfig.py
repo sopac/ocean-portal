@@ -49,8 +49,8 @@ servers = {
                  'debug':       True,
                },
     'www4': { 'hostname':  'www4.bom.gov.au',
-              # hard specified to go through the proxy
-              'baseURL':   'http://wdev.bom.gov.au/cosppac/apps/portal/',
+              # goes through the proxy on wdev
+              'baseURL':   '/cosppac/apps/portal/',
               'rasterURL': 'raster/',
               'outputDir': '/web/cosppac/raster/',
               'cacheDir': { 'reynolds': 'cache/reynolds/',
@@ -67,8 +67,8 @@ servers = {
               'debug':       True,
             },
     'hoapp2': { 'hostname':  'hoapp2.bom.gov.au',
-                # hard specified to go through the proxy
-                'baseURL':   'http://www.bom.gov.au/cosppac/apps/portal/',
+                # goes through the proxy on wdev
+                'baseURL':   '/cosppac/apps/portal/',
                 'rasterURL': 'raster/',
                 'outputDir': '/web/cosppac/raster/',
                 'cacheDir': { 'reynolds': 'cache/reynolds/',
