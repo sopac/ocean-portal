@@ -76,7 +76,7 @@ def process(form):
         if not os.path.exists(outputFileName + ".png"):
             timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr, k1, k2)
             try:
-                wc.wavecaller(outputFileName, varStr, gridLat, gridLon, gridValues, mthStr)
+                wc.wavecaller(outputFileName, varStr, gridLat, gridLon, lllatStr,lllonStr, gridValues, mthStr)
             except le.LandError:
 	        responseObj["error"] = "Invalid data point.  Please try another location."
 	    except:

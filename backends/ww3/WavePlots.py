@@ -18,7 +18,7 @@ from radbearing import meanbearing
 import angleconv as conv
 from formatter import NESWformat
 
-def RosePlot(opath,wdir,units,lat,lon,xstr,title,var,binwd):
+def RosePlot(opath, wdir, units, lat, lon, ilat, ilon, xstr, title, var, binwd):
     '''Plots a windrose of angular values in wdir, with annotations
 
        Arguments:
@@ -79,7 +79,7 @@ def RosePlot(opath,wdir,units,lat,lon,xstr,title,var,binwd):
     width = 2*np.pi/N
     length = np.size(wdir)
     #rounded mean bearing for labelling purposes
-    meanbr = round((meanb*180)/(np.pi),2)
+    meanbr = round((meanb*180)/(np.pi),1)
     #set up bar chart properties
     bars = ax.bar(theta, prob, width, bottom=0.0)
     my_cmap = hc.decile_rose()
@@ -90,16 +90,18 @@ def RosePlot(opath,wdir,units,lat,lon,xstr,title,var,binwd):
         bar.set_facecolor(my_cmap(r))
         bar.set_alpha(0.5)
     lpack.rosepack()
+    formilat,formilon =  NESWformat(ilat,ilon)
     formlat,formlon = NESWformat(lat,lon)
     #title of figure
     plt.figtext(0.12,0.92,'%s' % title, fontsize=16, weight=800)
     #various annotations to plot
     plt.figtext(0.76, 0.82,'Probabilities:', fontsize = 10, weight = 550)
-    plt.figtext(0.76, 0.575,'Grid Point & Graph Data:', fontsize=10, weight =550)
-    plt.figtext(0.76, 0.525, 'Latitude: %s' % formlat, fontsize=10)
-    plt.figtext(0.76, 0.5, 'Longitude: %s' % formlon, fontsize=10)
+    plt.figtext(0.76, 0.575,'Location & Plot Data:', fontsize=10, weight =550)
 
-    plt.figtext(0.76, 0.45, 'Data Points: %s' % length, fontsize=10)
+    plt.figtext(0.76, 0.525, 'Input Lat/Lon: %s %s' % (formilat,formilon), fontsize=10)
+    plt.figtext(0.76, 0.5, 'Grid Lat/Lon: %s %s' % (formlat, formlon), fontsize=10)
+
+    plt.figtext(0.76, 0.45, 'Data points: %s' % length, fontsize=10)
     plt.figtext(0.76, 0.425, 'Bins: %s' % int(N), fontsize=10)
     plt.figtext(0.76, 0.4, 'Bin Width: %s %s' % (binwd, degree), fontsize=10)
 
@@ -118,6 +120,7 @@ def RosePlot(opath,wdir,units,lat,lon,xstr,title,var,binwd):
     plt.figtext(0.02, 0.02, ur'\u00A9' + "Commonwealth of Australia "\
                + datetime.date.today().strftime('%Y')\
                + "\nAustralian Bureau of Meteorology, COSPPac COMP", fontsize=8)
+    plt.figtext(0.58, 0.03, u'WAVEWATCH III$^{\u00AE}$', fontsize=10)
     #define image name
     imgname = opath + '.png'
      #write image file
@@ -125,7 +128,7 @@ def RosePlot(opath,wdir,units,lat,lon,xstr,title,var,binwd):
 
     return
 
-def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
+def HistPlot(opath, wheight, units, lat, lon, ilat, ilon, xstr, title, var, binwd):
     '''Returns a normalized, annotated histogram for values of wheight
 
        Arguments:
@@ -176,8 +179,8 @@ def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
     maxx = np.max(wheight)
     minx = np.min(wheight)
     #do some basic statistics on histogram, std. deviation and quartiles.
-    q1 = round(sci.stats.scoreatpercentile(wheight,25),2)
-    q3 = round(sci.stats.scoreatpercentile(wheight,75),2)
+    q1 = round(sci.stats.scoreatpercentile(wheight,25),1)
+    q3 = round(sci.stats.scoreatpercentile(wheight,75),1)
     x=linspace(0,maxx+0.5,Nmax*binperunit)
     #set up figure
     histfig=plt.figure(figsize = (10,7.5))
@@ -213,6 +216,7 @@ def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
     #plt.figtext(0.79,0.175, 'Rogue Wave Height: %s %s' % (2*wavgr,units), fontsize = 10, color = 'm')
     elif var == 'Tm':
         lpack.timepack()
+    formilat, formilon = NESWformat(ilat,ilon)
     formlat, formlon = NESWformat(lat,lon)
     #specify graph grid properties
     xticks = [10,20,30,40,50,60,70,80,90,100]
@@ -220,29 +224,30 @@ def HistPlot(opath,wheight,units,lat,lon,xstr,title,var,binwd):
     plt.grid(True)
     #x,y axis labels and title
     plt.xlabel('%s (%s)' % (xstr,units), fontsize=12)
-    plt.ylabel('Probability', fontsize=12)
+    plt.ylabel('Frequency', fontsize=12)
     plt.figtext(0.10,0.90,'%s' % title, fontsize=16, weight = 800)
     #various annotations for graphics
     plt.figtext(0.79, 0.8, 'Distribution:', fontsize=10, weight=550)
-    plt.figtext(0.79, 0.625, 'Grid Point & Graph Data:',fontsize = 10, weight = 550)
-    plt.figtext(0.79, 0.575, 'Latitude: %s' % formlat, fontsize=10)
-    plt.figtext(0.79, 0.55, 'Longitude: %s' % formlon, fontsize=10)
+    plt.figtext(0.79, 0.625, 'Location & Plot Data:',fontsize = 10, weight = 550)
+    plt.figtext(0.79, 0.575, 'Input Lat/Lon:\n %s %s' % (formilat,formilon), fontsize=10)
+    plt.figtext(0.79, 0.525, 'Grid Lat/Lon:\n %s %s' % (formlat,formlon), fontsize=10)
 
-    plt.figtext(0.79, 0.5, 'Points: %s' % length ,fontsize=10)
-    plt.figtext(0.79, 0.475, 'Bins: %s'  % int(binnum), fontsize=10)
-    plt.figtext(0.79, 0.45, 'Bin Width: %s %s' % (binwd,units), fontsize=10)
+    plt.figtext(0.79, 0.475, 'Data points: %s' % length ,fontsize=10)
+    plt.figtext(0.79, 0.45, 'Bins: %s'  % int(binnum), fontsize=10)
+    plt.figtext(0.79, 0.425, 'Bin Width: %s %s' % (binwd,units), fontsize=10)
     plt.figtext(0.79, 0.4, 'Statistical Information:', fontsize=10, weight=550)
 
-    plt.figtext(0.79, 0.35, 'Mean: %s %s' % (wavgr, units), color='r', fontsize=10)
-    plt.figtext(0.79, 0.325, 'Max: %s %s' % (maxwave, units), fontsize=10)
-    plt.figtext(0.79, 0.3, 'Min: %s %s' % (minwave, units), fontsize=10)
+    plt.figtext(0.79, 0.3, 'Mean: %s %s' % (wavgr, units), color='r', fontsize=10)
+    plt.figtext(0.79, 0.35, 'Max: %s %s' % (maxwave, units), fontsize=10)
+    plt.figtext(0.79, 0.25, 'Min: %s %s' % (minwave, units), fontsize=10)
 
-    plt.figtext(0.79, 0.25,'25th Percentile: %s %s' % (q1,units), fontsize=10)
-    plt.figtext(0.79, 0.225,'75th Percentile: %s %s' % (q3,units), fontsize=10)
+    plt.figtext(0.79, 0.275,'25th Percentile: %s %s' % (q1,units), fontsize=10)
+    plt.figtext(0.79, 0.325,'75th Percentile: %s %s' % (q3,units), fontsize=10)
     #Bureau of Meteorology Copyright
     plt.figtext(0.02, 0.02, ur'\u00A9' + "Commonwealth of Australia "\
                + datetime.date.today().strftime('%Y')\
                + "\nAustralian Bureau of Meteorology, COSPPac COMP", fontsize=8)
+    plt.figtext(0.65, 0.03, u'WAVEWATCH III$^{\u00AE}$', fontsize=10)
      #define image name
     imgname = opath + '.png'
      #write image file
