@@ -98,11 +98,9 @@ def RosePlot(opath, wdir, units, lat, lon, ilat, ilon, xstr, title, var, binwd):
     for r,bar in zip(prob, bars):
         bar.set_facecolor(my_cmap(r))
         bar.set_alpha(0.5)
-    lpack.rosepack()
+    lpack.rosepack(title)
     formilat,formilon =  NESWformat(ilat,ilon)
     formlat,formlon = NESWformat(lat,lon)
-    #title of figure
-    plt.figtext(0.12,0.92,'%s' % title, fontsize=16, weight=800)
     #various annotations to plot
     plt.figtext(0.76, 0.82,'Probabilities:', fontsize = 10, weight = 550)
     plt.figtext(0.76, 0.575,'Location & Plot Data:', fontsize=10, weight = 550)
@@ -218,13 +216,12 @@ def HistPlot(opath, wheight, units, lat, lon, ilat, ilon, xstr, title, var, binw
     plt.ylim(0,maxy+0.01)
     #histax.plot(x, approximate_pdf(x), color = 'black', linewidth=3, alpha=1)
     histax.axvline(wavg, color='r', lw='3')
-
     #choose which legend to display based on variable
     if var == 'Hs':
-        lpack.heightpack(wavg)
+        lpack.heightpack(title,wavg)
     #plt.figtext(0.79,0.175, 'Rogue Wave Height: %s %s' % (2*wavgr,units), fontsize = 10, color = 'm')
     elif var == 'Tm':
-        lpack.timepack()
+        lpack.timepack(title)
     formilat, formilon = NESWformat(ilat,ilon)
     formlat, formlon = NESWformat(lat,lon)
     #specify graph grid properties
