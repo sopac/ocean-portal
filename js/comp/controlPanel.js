@@ -180,9 +180,9 @@ ocean.dsConf = {
                     this.data = data;
                     dateRange = this.data.get('dateRange');
                     minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
-                    maxDate = $.datepick.determineDate(dateRange.maxDate);
+                    maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
                     var minYear = parseInt(dateRange["minYear"]);
-                    var maxYear = maxDate.getFullYear();
+                    var maxYear = parseInt(dateRange["maxYear"]);
                     dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
                         var year = item.data.field1;
                         var filter = item.store.filters.items[0]
@@ -222,7 +222,7 @@ ocean.dsConf = {
                                     dateRange = this.data.get('dateRange');
                                     updateYearCombo(dateRange.yearFilter);
                                     minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
-                                    maxDate = $.datepick.determineDate(dateRange.maxDate);
+                                    maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
                                     if (ocean.date != null) {
                                         if (ocean.date < minDate) {
                                             ocean.date = minDate

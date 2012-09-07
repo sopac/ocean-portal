@@ -33,9 +33,9 @@
         "areas" : ["aus", "eca", "wca", "cor", "nws", "ntr", "swr", "sth", "tas", "glob", "ind", "pac", "sh"]
     }],
     "dateRange" : {
-        "minYear": "1981",
+        "minYear": "1982",
         "maxYear": "2011",
-        "minDate": "19810901",
+        "minDate": "19820101",
         "maxDate": "20111231"
     }
 },{
@@ -79,9 +79,9 @@
     }],
     "dateRange" : {
         "minYear": "1981",
-        "maxYear": "0+",
+        "maxYear": "2011",
         "minDate": "19810901",
-        "maxDate": "-4D"
+        "maxDate": "20111231"
     }
 },{
     "id":"ww3",
