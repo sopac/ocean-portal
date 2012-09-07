@@ -161,10 +161,11 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
     # Plot data
     x2, y2 = np.meshgrid(lons2, depths2)
     img = py.pcolormesh(x2, y2, zonal_data, shading='flat', cmap=d_cmap, vmin=cb_ticks.min(), vmax=cb_ticks.max())
-        
+    
     ax = plt.gca()
     ax.set_ylim(0,300)
     ax.set_ylim(ax.get_ylim()[::-1]) 
+    ax.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(format_longitude))
 
     py.ylabel("Depth (m)", fontsize=10)
     py.xlabel("Longitude", fontsize=10)
@@ -187,6 +188,7 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
     ax.set_ylim(0,300)
     ax.set_ylim(ax.get_ylim()[::-1])
     ax.set_yticklabels([''])
+    ax.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(format_latitude))
 
     py.xlabel("Latitude", fontsize=10)
     
@@ -358,3 +360,19 @@ def get_vector_plot_settings(lat_min, lat_max, lon_min, lon_max):
         draw_every = 1
         arrow_scale = 5
     return draw_every, arrow_scale
+
+    
+def format_longitude(x, pos=None):
+    x = np.mod(x + 180, 360) - 180
+    if x<0:
+        return "{0:.0f}W".format(abs(x))
+    else:
+        return "{0:.0f}E".format(x)
+
+def format_latitude(y, pos=None):
+    if y<0:
+        return "{0:.0f}S".format(abs(y))
+    elif y>0:
+        return "{0:.0f}N".format(y)
+    else:
+        return "EQ"
