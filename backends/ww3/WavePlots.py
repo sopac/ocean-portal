@@ -107,7 +107,7 @@ def RosePlot(opath, wdir, units, lat, lon, ilat, ilon, xstr, title, var, binwd):
     plt.figtext(0.76, 0.4, 'Bins: %s' % int(N), fontsize=10)
     plt.figtext(0.76, 0.375, 'Bin Width: %s %s' % (binwd, degree), fontsize=10)
 
-    plt.figtext(0.76, 0.275, 'Mean True Bearing: %s %s' % (meanbr, degree), color='r', fontsize=10)
+    plt.figtext(0.76, 0.275, 'Mean Bearing: %s%s %s' % (meanbr, degree,'T'), color='r', fontsize=10)
     #display wave direction percentages for 8 primary compass points in the windrose
     plt.figtext(0.76, 0.325, 'Directional Statistics:', fontsize=10, weight=550)
     plt.figtext(0.76, 0.25, 'North: %s %s' % (perc[0], units), fontsize=10)
@@ -166,7 +166,7 @@ def HistPlot(opath, wheight, units, lat, lon, ilat, ilon, xstr, title, var, binw
     #else:
       # print "Error"
     #bins per unit and total number of bins
-    binperunit = 1/binwd
+    binperunit = float(1/binwd)
     binnum = Nmax*binperunit
     initial = round(0.001,3)
     final = round(Nmax+0.001,3)
@@ -227,22 +227,22 @@ def HistPlot(opath, wheight, units, lat, lon, ilat, ilon, xstr, title, var, binw
     plt.ylabel('Frequency', fontsize=12)
     plt.figtext(0.10,0.90,'%s' % title, fontsize=16, weight = 800)
     #various annotations for graphics
-    plt.figtext(0.79, 0.8, 'Distribution:', fontsize=10, weight=550)
-    plt.figtext(0.79, 0.625, 'Location & Plot Data:',fontsize = 10, weight = 550)
-    plt.figtext(0.79, 0.56, 'Input Lat/Lon:\n %s %s' % (formilat,formilon), fontsize=10)
-    plt.figtext(0.79, 0.51, 'Grid Lat/Lon:\n %s %s' % (formlat,formlon), fontsize=10)
+    plt.figtext(0.79, 0.775, 'Distribution:', fontsize=10, weight=550)
+    plt.figtext(0.79, 0.615, 'Location & Plot Data:',fontsize = 10, weight = 550)
+    plt.figtext(0.79, 0.55, 'Input Lat/Lon:\n %s %s' % (formilat,formilon), fontsize=10)
+    plt.figtext(0.79, 0.50, 'Grid Lat/Lon:\n %s %s' % (formlat,formlon), fontsize=10)
 
-    plt.figtext(0.79, 0.475, 'Data points: %s' % length ,fontsize=10)
-    plt.figtext(0.79, 0.45, 'Bins: %s'  % int(binnum), fontsize=10)
-    plt.figtext(0.79, 0.425, 'Bin Width: %s %s' % (binwd,units), fontsize=10)
-    plt.figtext(0.79, 0.375, 'Statistical Information:', fontsize=10, weight=550)
+    plt.figtext(0.79, 0.465, 'Data points: %s' % length ,fontsize=10)
+    plt.figtext(0.79, 0.44, 'Bins: %s'  % int(binnum), fontsize=10)
+    plt.figtext(0.79, 0.415, 'Bin Width: %s %s' % (binwd,units), fontsize=10)
+    plt.figtext(0.79, 0.365, 'Statistical Information:', fontsize=10, weight=550)
 
-    plt.figtext(0.79, 0.275, 'Mean: %s %s' % (round(wavgr,1), units), color='r', fontsize=10)
-    plt.figtext(0.79, 0.325, 'Max: %s %s' % (round(maxwave,1), units), fontsize=10)
-    plt.figtext(0.79, 0.225, 'Min: %s %s' % (round(minwave,1), units), fontsize=10)
+    plt.figtext(0.79, 0.265, 'Mean: %s %s' % (round(wavgr,1), units), color='r', fontsize=10)
+    plt.figtext(0.79, 0.315, 'Max: %s %s' % (round(maxwave,1), units), fontsize=10)
+    plt.figtext(0.79, 0.215, 'Min: %s %s' % (round(minwave,1), units), fontsize=10)
 
-    plt.figtext(0.79, 0.25,'25th Percentile: %s %s' % (round(q1,1),units), fontsize=10)
-    plt.figtext(0.79, 0.3,'75th Percentile: %s %s' % (round(q3,1),units), fontsize=10)
+    plt.figtext(0.79, 0.24,'25th Percentile: %s %s' % (round(q1,1),units), fontsize=10)
+    plt.figtext(0.79, 0.29,'75th Percentile: %s %s' % (round(q3,1),units), fontsize=10)
     #Bureau of Meteorology Copyright
     plt.figtext(0.68, 0.03, u'WAVEWATCH III$^{\u00AE}$', fontsize=10)
     plt.figtext(0.02, 0.02, getCopyright(), fontsize=8)
