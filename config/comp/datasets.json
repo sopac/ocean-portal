@@ -34,9 +34,9 @@
     }],
     "dateRange" : {
         "minYear": "1981",
-        "maxYear": "2011",
+        "maxYear": "0+",
         "minDate": "19810901",
-        "maxDate": "20111231"
+        "maxDate": "-4D"
     }
 },{
     "id":"ersst",
