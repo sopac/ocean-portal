@@ -878,7 +878,7 @@ Ext.onReady(function() {
     ocean.monthStore = Ext.create('Ext.data.Store', {
         fields: ['name', 'id'],
         data: [{'name': 'January', 'id': '01'},
-               {'name': 'Feburary', 'id': '02'},
+               {'name': 'February', 'id': '02'},
                {'name': 'March', 'id': '03'},
                {'name': 'April', 'id': '04'},
                {'name': 'May', 'id': '05'},
