@@ -1,10 +1,12 @@
+#
+# (c) 2012 Commonwealth of Australia
+#     Australian Bureau of Meteorology, COSPPac COMP
+#     All Rights Reserved
+#
+# Author: Sheng Guo <s.guo@bom.gov.au>
+
 """
 Store the server specific configurations
-
-Author: Sheng Guo
-
-(c) Climate and Oceans Support Program for the Pacific(COSPPAC)
-    Bureau of Meteorology, Australia
 
 Don't import config directly, use util.get_server_config()
 """

@@ -78,9 +78,9 @@
         "areas" : ["pi", "cook", "fsm", "fiji", "kiribati", "marshall", "nauru", "niue", "palau", "png", "samoa", "solomon", "tonga", "tuvalu", "vanuatu"]
     }],
     "dateRange" : {
-        "minYear": "1981",
+        "minYear": "1889",
         "maxYear": "2011",
-        "minDate": "19810901",
+        "minDate": "18890101",
         "maxDate": "20111231"
     }
 },{

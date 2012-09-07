@@ -1,3 +1,11 @@
+#
+# (c) 2012 Commonwealth of Australia
+#     Australian Bureau of Meteorology, COSPPac COMP
+#     All Rights Reserved
+#
+# Authors: Sheng Guo <s.guo@bom.gov.au>
+#          Matthew Howie
+
 import os
 import os.path
 import sys

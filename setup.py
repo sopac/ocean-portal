@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+#
+# (c) 2012 Commonwealth of Australia
+#     Australian Bureau of Meteorology, COSPPac COMP
+#     All Rights Reserved
+#
+# Authors: Danielle Madeley <d.madeley@bom.gov.au>
 
 NAME                = 'map-portal'
 VERSION             = '0.1.0'

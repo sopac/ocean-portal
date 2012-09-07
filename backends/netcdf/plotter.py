@@ -1,10 +1,13 @@
 #!/user/bin/python
+#
+# (c) 2012 Commonwealth of Australia
+#     Australian Bureau of Meteorology, COSPPac COMP
+#     All Rights Reserved
+#
+# Authors: Sheng Guo <s.guo@bom.gov.au>
 
 """
 Plotter is the base class for plotting.
-
-Author: Sheng Guo
-(c)Climate and Oceans Support Program for the Pacific(COSPPAC), Bureau of Meteorology, Australia
 """
 
 import os

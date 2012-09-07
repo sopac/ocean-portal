@@ -1,3 +1,12 @@
+#
+# (c) 2012 Commonwealth of Australia
+#     Australian Bureau of Meteorology, COSPPac COMP
+#     All Rights Reserved
+#
+# Authors: Nick Summons <n.summons@bom.gov.au>
+#          Elisabeth Thompson <e.thompson@bom.gov.au>
+#          Danielle Madeley <d.madeley@bom.gov.au>
+
 import netCDF4
 import math
 import numpy as np
@@ -166,6 +175,8 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
     ax.set_ylim(0,300)
     ax.set_ylim(ax.get_ylim()[::-1]) 
     ax.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(format_longitude))
+    ax.tick_params(axis='x', labelsize=8)
+    ax.tick_params(axis='y', labelsize=9)
 
     py.ylabel("Depth (m)", fontsize=10)
     py.xlabel("Longitude", fontsize=10)
@@ -189,7 +200,8 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
     ax.set_ylim(ax.get_ylim()[::-1])
     ax.set_yticklabels([''])
     ax.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(format_latitude))
-
+    ax.tick_params(axis='x', labelsize=8)
+    
     py.xlabel("Latitude", fontsize=10)
     
     ax3=py.subplot(gs[0,:-1])
@@ -364,15 +376,17 @@ def get_vector_plot_settings(lat_min, lat_max, lon_min, lon_max):
     
 def format_longitude(x, pos=None):
     x = np.mod(x + 180, 360) - 180
-    if x<0:
-        return "{0:.0f}W".format(abs(x))
+    if x==-180:
+        return u"{0:.0f}\u00B0".format(abs(x))
+    elif x<0:
+        return u"{0:.0f}\u00B0W".format(abs(x))
     else:
-        return "{0:.0f}E".format(x)
+        return u"{0:.0f}\u00B0E".format(x)
 
 def format_latitude(y, pos=None):
     if y<0:
-        return "{0:.0f}S".format(abs(y))
+        return u"{0:.0f}\u00B0S".format(abs(y))
     elif y>0:
-        return "{0:.0f}N".format(y)
+        return u"{0:.0f}\u00B0N".format(y)
     else:
-        return "EQ"
+        return u"{0:.0f}\u00B0".format(y)

@@ -1,4 +1,11 @@
 #!/usr/bin/env python
+#
+# (c) 2012 Commonwealth of Australia
+#     Australian Bureau of Meteorology, COSPPac COMP
+#     All Rights Reserved
+#
+# Authors: Sheng Guo <s.guo@bom.gov.au>
+#          Matthew Howie
 
 def dirflip(wdir):
     '''Returns wdir angles flipped by 180 degrees (this is useful for switching between oceanographic and meteorologic direction conventions)

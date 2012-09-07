@@ -1,8 +1,12 @@
+#
+# (c) 2012 Commonwealth of Australia
+#     Australian Bureau of Meteorology, COSPPac COMP
+#     All Rights Reserved
+#
+# Authors: Sheng Guo <s.guo@bom.gov.au>
+
 """
 Product ID lookup table
-
-Author: Sheng Guo
-(c)Climate and Oceans Support Program for the Pacific(COSPPAC), Bureau of Meteorology, Australia
 """
 
 products = {"reynolds": {"daily":     "REY00001",

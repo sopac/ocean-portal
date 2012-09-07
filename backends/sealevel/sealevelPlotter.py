@@ -1,4 +1,11 @@
 #!/usr/bin/python
+#
+# (c) 2012 Commonwealth of Australia
+#     Australian Bureau of Meteorology, COSPPac COMP
+#     All Rights Reserved
+#
+# Authors: Sheng Guo <s.guo@bom.gov.au>
+#          Danielle Madeley <d.madeley@bom.gov.au>
 
 import datetime
 import csv
@@ -207,7 +214,7 @@ class SeaLevelPlotter ():
             writer = csv.writer(file, delimiter='\t')
             writer.writerow(('# Sea Level %s for %s' % (titlePrefix, tidalGaugeName),))
             writer.writerow(('# Datum: GSFC00.1',))
-            writer.writerow(['YYYY-MM', titlePrefix])
+            writer.writerow(['Date (YYYY-MM)', '%s (mm)' % titlePrefix])
 
             for date, height in zip(date_label, y_height):
                 writer.writerow([date.strftime('%Y-%m'), height])

@@ -1,4 +1,10 @@
 #!/usr/bin/python
+#
+# (c) 2012 Commonwealth of Australia
+#     Australian Bureau of Meteorology, COSPPac COMP
+#     All Rights Reserved
+#
+# Authors: Elisabeth Thompson <e.thompson@bom.gov.au>
 
 import bisect
 import datetime
