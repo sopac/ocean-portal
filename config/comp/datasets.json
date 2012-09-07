@@ -36,7 +36,7 @@
         "minYear": "1981",
         "maxYear": "2011",
         "minDate": "19810901",
-        "maxDate": "-4D"
+        "maxDate": "20111231"
     }
 },{
     "id":"ersst",
