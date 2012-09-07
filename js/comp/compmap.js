@@ -1,4 +1,10 @@
 /*jslint eqeq: true, undef: true, sloppy: true, sub: true, todo: true, vars: true, white: true, browser: true, windows: true */
+/*
+ * (c) 2012 Commonwealth of Australia
+ * Australian Bureau of Meteorology, COSPPac COMP
+ * All Rights Reserved
+ */
+
 var ocean = ocean || {};
 var map;
 
