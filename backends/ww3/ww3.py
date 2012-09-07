@@ -29,6 +29,8 @@ GridPoints = xt.Extractor()
 
 def process(form):
     responseObj = {} #this object will be encoded into a json string
+    if not (("lllat" in form) and ("lllon" in form)):
+        responseObj["error"] = "Please select a location on the map before pressing submit."
     if "variable" in form and "lllat" in form and "lllon" in form\
         and "urlat" in form and "urlon" in form and "date" in form\
              and "period" in form:
