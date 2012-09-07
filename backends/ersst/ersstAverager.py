@@ -1,4 +1,11 @@
 #!/usr/bin/python
+#
+# (c) 2012 Commonwealth of Australia
+#     Australian Bureau of Meteorology, COSPPac COMP
+#     All Rights Reserved
+#
+# Authors: Sheng Guo <s.guo@bom.gov.au>
+#          Matthew Howie
 
 import numpy as np
 import matplotlib.pyplot as plt

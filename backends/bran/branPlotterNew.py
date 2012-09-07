@@ -1,3 +1,12 @@
+#
+# (c) 2012 Commonwealth of Australia
+#     Australian Bureau of Meteorology, COSPPac COMP
+#     All Rights Reserved
+#
+# Authors: Nick Summons <n.summons@bom.gov.au>
+#          Elisabeth Thompson <e.thompson@bom.gov.au>
+#          Danielle Madeley <d.madeley@bom.gov.au>
+
 import netCDF4
 import math
 import numpy as np

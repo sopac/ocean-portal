@@ -1,16 +1,10 @@
 #!/usr/bin/python
 #
-# AUSTRALIAN BUREAU OF METEOROLOGY
-# NATIONAL CLIMATE CENTRE
-# SECTION: CLIMATE DATA SERVICES - OCEAN CLIMATE
+# (c) 2012 Commonwealth of Australia
+#     Australian Bureau of Meteorology, COSPPac COMP
+#     All Rights Reserved
 #
-# SCRIPT: smoothing.py
-# LANGUAGE: python
-# AUTHOR: Matthew Howie
-# LOCATION: /data/sst/ersst/bin
-#
-# PURPOSE: Simple smoothing of masked 2-D Data using moving window technique
-####################################################################
+# Authors: Matthew Howie
 
 import os
 import sys,getopt
