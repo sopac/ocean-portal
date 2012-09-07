@@ -207,7 +207,7 @@ class SeaLevelPlotter ():
             writer = csv.writer(file, delimiter='\t')
             writer.writerow(('# Sea Level %s for %s' % (titlePrefix, tidalGaugeName),))
             writer.writerow(('# Datum: GSFC00.1',))
-            writer.writerow(['YYYY-MM', titlePrefix])
+            writer.writerow(['Date (YYYY-MM)', '%s (mm)' % titlePrefix])
 
             for date, height in zip(date_label, y_height):
                 writer.writerow([date.strftime('%Y-%m'), height])

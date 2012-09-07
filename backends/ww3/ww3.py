@@ -51,6 +51,7 @@ def process(form):
 
         month = dateStr[4:6]
         k1, k2, mthStr = mc.monthconfig(month)
+        marker = 0
 
         if lllatStr == urlatStr and lllonStr == urlonStr:
             lats,lons,vari = getGrid.getGridPoint(lllatStr,lllonStr,varStr)
@@ -63,6 +64,7 @@ def process(form):
         outputFileName = serverCfg["outputDir"] + filename
 
         if not os.path.exists(outputFileName + ".txt"):
+            marker = 1
             timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr, k1, k2)
             extractor.writeOutput(outputFileName + ".txt", latStr, lonStr, timeseries, gridValues, varStr)
         if not os.path.exists(outputFileName + ".txt"):
@@ -75,7 +77,8 @@ def process(form):
                      None)
 
         if not os.path.exists(outputFileName + ".png"):
-            timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr, k1, k2)
+            if marker == 0:
+                 timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr, k1, k2)
             try:
                 wc.wavecaller(outputFileName, varStr, gridLat, gridLon, lllatStr,lllonStr, gridValues, mthStr)
             except le.LandError:
