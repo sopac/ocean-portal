@@ -132,7 +132,7 @@ ocean.dsConf = {
                                     dateRange = this.data.get('dateRange');
                                     updateYearCombo(dateRange.yearFilter);
                                     minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
-                                    maxDate = $.datepick.determineDate(dateRange.maxDate);
+                                    maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
                                     if (ocean.date != null) {
                                         if (ocean.date < minDate) {
                                             ocean.date = minDate
