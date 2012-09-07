@@ -228,10 +228,9 @@ def HistPlot(opath, wheight, units, lat, lon, ilat, ilon, xstr, title, var, binw
     xticks = [10,20,30,40,50,60,70,80,90,100]
     plt.xticks = xticks, [('%s' % str(x/10))]
     plt.grid(True)
-    #x,y axis labels and title
+    #x,y axis labels
     plt.xlabel('%s (%s)' % (xstr,units), fontsize=12)
     plt.ylabel('Frequency', fontsize=12)
-    plt.figtext(0.10,0.90,'%s' % title, fontsize=16, weight = 800)
     #various annotations for graphics
     plt.figtext(0.79, 0.775, 'Distribution:', fontsize=10, weight=550)
     plt.figtext(0.79, 0.615, 'Location & Plot Data:',fontsize = 10, weight = 550)
