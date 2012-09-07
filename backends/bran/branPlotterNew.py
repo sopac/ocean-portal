@@ -65,6 +65,20 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
 
     m = Basemap(projection=proj, llcrnrlat=lat_min, llcrnrlon=lon_min, \
                 urcrnrlat=lat_max, urcrnrlon=lon_max, resolution='h')
+              
+    lat_extent = np.float(lat_max) - np.float(lat_min)
+    lon_extent = np.float(lon_max) - np.float(lon_min)
+    aspect_ratio = abs(lon_extent / lat_extent)
+
+    if aspect_ratio > 1.7:
+        copyright_label_yadj = -0.35        
+    else:
+        copyright_label_yadj = -0.15
+    
+    if aspect_ratio < 0.7:
+        product_label_xadj = 1.4
+    else:
+        product_label_xadj = 1.04
     
     # Create colormap
     if cb_ticks is None:
@@ -94,11 +108,11 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
             draw_vector_plot(m, vlon, vlat, u, v, draw_every=draw_every, arrow_scale=arrow_scale)
         
     # Draw colorbar    
-    cb = py.colorbar(img, shrink=0.8, spacing='proportional', drawedges='True', orientation='vertical', 
+    cb = py.colorbar(img, shrink=0.8, aspect=20, spacing='proportional', drawedges='True', orientation='vertical', 
                      extend='both', ticks=cb_ticks)
     cb.set_ticklabels([cb_tick_fmt % k for k in cb_ticks])
     cb.set_label(units)
-        
+       
     m.drawcoastlines(linewidth=0.1, zorder=6)
     m.fillcontinents(color='#cccccc', zorder=7)
 
@@ -111,15 +125,15 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
     plt.title(title, fontsize=10)
     
     box = TextArea(getCopyright(), textprops=dict(color='k', fontsize=6))
-    copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor=(-0.1, -0.15), frameon=False, bbox_transform=ax.transAxes)
+    copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor=(-0.1, copyright_label_yadj), frameon=False, bbox_transform=ax.transAxes)
     ax.add_artist(copyrightBox)
     
     if product_label_str is not None:
         box = TextArea(product_label_str, textprops=dict(color='k', fontsize=8))
-        copyrightBox = AnchoredOffsetbox(loc=4, child=box, bbox_to_anchor=(1.040, -0.15), frameon=False, bbox_transform=ax.transAxes)
+        copyrightBox = AnchoredOffsetbox(loc=4, child=box, bbox_to_anchor=(product_label_xadj, copyright_label_yadj), frameon=False, bbox_transform=ax.transAxes)
         ax.add_artist(copyrightBox)
-        
-    plt.savefig(output_filename, dpi=150, bbox_inches='tight', pad_inches=1.)
+    #fig.subplots_adjust(bottom=0.2)
+    plt.savefig(output_filename, dpi=150, bbox_inches='tight', pad_inches=0.6)
     plt.close()
     
     return m
