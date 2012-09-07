@@ -23,11 +23,6 @@ from WavePlots import RosePlot
 from formatter import nameformat
 
 def wavecaller(opath, var, gridLat, gridLon, inputLat, inputLon, pointValues, mthStr):
-    #convert lat,lon to floats
-    lat = float(gridLat)
-    lon = float(gridLon)
-    #convert lat,lon to consistant format
-    latstr,lonstr = nameformat(lat,lon)
     #make a numpy array for extracted data for calculations
     extdata = np.array(pointValues)
     #determine which plot module to call based on variable input
