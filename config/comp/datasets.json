@@ -34,7 +34,7 @@
     }],
     "dateRange" : {
         "minYear": "1981",
-        "maxYear": "0+",
+        "maxYear": "2011",
         "minDate": "19810901",
         "maxDate": "-4D"
     }
