@@ -149,8 +149,10 @@ def HistPlot(opath, wheight, units, lat, lon, ilat, ilon, xstr, title, var, binw
     wavgr = round(wavg,2)
     maxwave = round(np.max(wheight),2)
     minwave = round(np.min(wheight),2)
-    imaxwave = int(np.max(wheight))+ 1
+    imaxwave = int(maxwave)+ 1
+    iminwave = int(minwave)- 1
     Nmax = imaxwave
+    Nmin = iminwave
     length = np.size(wheight)
     debug = False
     #calculate range of data
@@ -167,7 +169,7 @@ def HistPlot(opath, wheight, units, lat, lon, ilat, ilon, xstr, title, var, binw
       # print "Error"
     #bins per unit and total number of bins
     binperunit = float(1/binwd)
-    binnum = Nmax*binperunit
+    binnum = (Nmax - Nmin)*binperunit
     initial = round(0.001,3)
     final = round(Nmax+0.001,3)
 
