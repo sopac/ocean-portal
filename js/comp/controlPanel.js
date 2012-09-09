@@ -80,19 +80,18 @@ function prependImage(image)
 }
 
 ocean.dsConf = {
-    reynolds: {url: function() {return "cgi/portal.py?dataset=reynolds"
-                   + "&map=" + this.variable.get('id')
-                   + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
-                   + "&period=" + ocean.period
-                   + "&area=" + ocean.area
-                   + "&average=" + ocean.dsConf['reynolds'].aveCheck.average
-                   + "&trend=" + ocean.dsConf['reynolds'].aveCheck.trend
-                   + "&runningAve=" + ocean.dsConf['reynolds'].aveCheck.runningAve
-                   + "&runningInterval=" + ocean.dsConf['reynolds'].runningInterval
-                   + "&timestamp=" + new Date().getTime();
-                },
-                data: null,
-                variable: null,
+    reynolds: {params: function() { return {
+                    dataset: 'reynolds',
+                    map: this.variable.get('id'),
+                    date: $.datepick.formatDate(ocean.dateFormat, ocean.date),
+                    period: ocean.period,
+                    area: ocean.area,
+                    average: ocean.dsConf['reynolds'].aveCheck.average,
+                    trend: ocean.dsConf['reynolds'].aveCheck.trend,
+                    runningAve: ocean.dsConf['reynolds'].aveCheck.runningAve,
+                    runningInterval: ocean.dsConf['reynolds'].runningInterval,
+                    timestamp: $.now()
+                }; },
                 aveCheck: {},
                 mainCheck: 'average',
                 runningInterval: 2,
@@ -186,20 +185,20 @@ ocean.dsConf = {
                                }
 //                update
             },
-    ersst: {url: function() {return "cgi/portal.py?dataset=ersst"
-                   + "&map=" + this.variable.get('id')
-                   + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
-                   + "&period=" + ocean.period
-                   + "&baseYear=1900"
-                   + "&area=" + ocean.area
-                   + "&average=" + ocean.dsConf['ersst'].aveCheck.average
-                   + "&trend=" + ocean.dsConf['ersst'].aveCheck.trend
-                   + "&runningAve=" + ocean.dsConf['ersst'].aveCheck.runningAve
-                   + "&runningInterval=" + ocean.dsConf['ersst'].runningInterval
-                   + "&timestamp=" + new Date().getTime();
-                },
+    ersst: {params: function() {return {
+                    dataset: 'ersst',
+                    map: this.variable.get('id'),
+                    date: $.datepick.formatDate(ocean.dateFormat, ocean.date),
+                    period: ocean.period,
+                    baseYear: 1900,
+                    area: ocean.area,
+                    average: ocean.dsConf['ersst'].aveCheck.average,
+                    trend: ocean.dsConf['ersst'].aveCheck.trend,
+                    runningAve: ocean.dsConf['ersst'].aveCheck.runningAve,
+                    runningInterval :ocean.dsConf['ersst'].runningInterval,
+                    timestamp: $.now()
+                }; },
                 data: null,
-                variable: null,
                 aveCheck: {},
                 mainCheck: 'average',
                 runningInterval: 2,
@@ -277,17 +276,17 @@ ocean.dsConf = {
 //                    }
                               }
            },
-    bran: {url: function() {return "cgi/portal.py?dataset=bran"
-                   + "&map=" + this.variable.get('id')
-                   + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
-                   + "&period=" + ocean.period
-                   + "&area=" + ocean.area
-                   + "&lat=" + $('#latitude').val()
-                   + "&lon=" + $('#longitude').val()
-                   + "&timestamp=" + new Date().getTime();
-                },
+    bran: {params: function() {return {
+                    dataset: 'bran',
+                    map: this.variable.get('id'),
+                    date: $.datepick.formatDate(ocean.dateFormat, ocean.date),
+                    period: ocean.period,
+                    area: ocean.area,
+                    lat: $('#latitude').val(),
+                    lon: $('#longitude').val(),
+                    timestamp: $.now()
+                }; },
                 data: null,
-                variable: null,
                 setData: function(data) {
                     this.data = data;
                     dateRange = this.data.get('dateRange');
@@ -404,16 +403,17 @@ ocean.dsConf = {
                                     showControl('clearlatlonButton');
                             }
     },
-    ww3: {url: function() {return "cgi/portal.py?dataset=ww3"
-                                + "&lllat=" + $('#latitude').val()
-                                + "&lllon=" + $('#longitude').val()
-                                + "&urlat=" + $('#latitude').val()
-                                + "&urlon=" + $('#longitude').val()
-                                + "&variable=" + this.variable.get('id')
-                                + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
-                                + "&period=" + ocean.period
-                                + "&timestamp=" + new Date().getTime();
-                           },
+    ww3: {params: function() { return {
+                dataset: 'ww3',
+                lllat: $('#latitude').val(),
+                lllon: $('#longitude').val(),
+                urlat: $('#latitude').val(),
+                urlon: $('#longitude').val(),
+                variable: this.variable.get('id'),
+                date: $.datepick.formatDate(ocean.dateFormat, ocean.date),
+                period: ocean.period,
+                timestamp: $.now()
+            }; },
             data: null,
             panelControls: null,
             toolbar: null,
@@ -522,16 +522,17 @@ ocean.dsConf = {
                                 showControl('latlonDiv');
                             }
     },
-    sealevel: {url: function() {return "cgi/portal.py?dataset=sealevel"
-                                + "&variable=" + this.variable.get('id')
-                                + "&period=" + ocean.period
-                                + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
-                                + "&area=" + ocean.area
-                                + "&lat=" + $('#latitude').val()
-                                + "&lon=" + $('#longitude').val()
-                                + "&tidalGaugeId=" + $('#tgId').val()
-                                + "&timestamp=" + new Date().getTime();
-                           },
+    sealevel: {params: function() { return {
+                dataset: 'sealevel',
+                variable: this.variable.get('id'),
+                period: ocean.period,
+                date: $.datepick.formatDate(ocean.dateFormat, ocean.date),
+                area: ocean.area,
+                lat: $('#latitude').val(),
+                lon: $('#longitude').val(),
+                tidalGaugeId: $('#tgId').val(),
+                timestamp: $.now()
+            }; },
             data: null,
             setData: function(data) {
                 this.data = data;
@@ -1249,7 +1250,8 @@ function updatePage() {
         }
 
         $.ajax({
-            url: ocean.dataset.url(),
+            url: 'cgi/portal.py',
+            data: ocean.dataset.params(),
             dataType: 'json',
             beforeSend: function(jqXHR, settings) {
                 ocean.processing = true;
