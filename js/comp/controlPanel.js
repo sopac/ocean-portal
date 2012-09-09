@@ -681,27 +681,9 @@ function AveCheck(id, state) {
     this.state = state;
 }
 
-//*****************************************************
-//Initialise Datasets
-//*****************************************************
-//
-//Reynolds
 Ext.require(['*']);
 Ext.onReady(function() {
     Ext.Loader.setConfig({enabled:true});
-
-//    Ext.define('Category', {
-//        extend: 'Ext.data.Model',
-//        fields: ['name', 'id', 'dataset'],
-//        idProperty: 'id',
-//        proxy: {
-//            type: 'ajax',
-//            url: 'config/categories.json',
-//            reader: {
-//                type: 'json'
-//            }
-//        }
-//    });
 
     Ext.define('Dataset', {
         extend: 'Ext.data.Model',
@@ -716,7 +698,7 @@ Ext.onReady(function() {
             }
         }
     });
-   
+
     Ext.define('Variable', {
         extend: 'Ext.data.Model',
         idProperty: 'id',
@@ -736,11 +718,6 @@ Ext.onReady(function() {
             }
         }
     });
-
-//    ocean.categories = Ext.create('Ext.data.Store', {
-//        autoLoad: true,
-//        model: 'Category'
-//    });
 
     ocean.datasets = Ext.create('Ext.data.Store', {
         autoLoad: true,
