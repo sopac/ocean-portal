@@ -52,6 +52,33 @@ Date.prototype.getMonthString = function() {
     return (calMonth < 10) ?  ('0' + calMonth) : calMonth + '';
 };
 
+function clearImageDiv()
+{
+    $('#imgDiv').html('');
+    $('#enlargeDiv').html('');
+}
+
+function prependImage(image)
+{
+    var a = $('<a>', {
+        href: image,
+        target: '_blank'
+    }).prependTo($('#imgDiv'));
+
+    var img = $('<img>', {
+        'class': 'thumbnail',
+        src: image + '?' + $.param({ time: $.now() }),
+    }).prependTo(a);
+
+    img.hover(
+        function (e) {
+            enlargeImg(this, true);
+        },
+        function (e) {
+            enlargeImg(this, false);
+        });
+}
+
 ocean.dsConf = {
     reynolds: {url: function() {return "cgi/portal.py?dataset=reynolds"
                    + "&map=" + this.variable.get('id')
@@ -76,7 +103,7 @@ ocean.dsConf = {
                     maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
                     var minYear = parseInt(dateRange["minYear"]);
                     var maxYear = parseInt(dateRange["maxYear"]);
-                    
+
                     dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
                         var year = item.data.field1;
                         var filter = item.store.filters.items[0]
@@ -87,34 +114,29 @@ ocean.dsConf = {
 
                 },
                 callback: function(data) {
-                    var imgDiv = $('#imgDiv');
                     var dataDiv = $('#dataDiv');
-                    var enlargeDiv = $('#enlargeDiv');
-                        if (this.variable.get("id") == "anom" && this.aveCheck.average && data.aveImg != null) {
-                            imgDiv.html('<img src="' + data.aveImg + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+
+                        if (this.variable.get("id") == "anom" &&
+                            this.aveCheck.average && data.aveImg != null)
+                        {
+                            prependImage(data.aveImg);
                             dataDiv.html('<b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C<br>' + '<a href="'+ data.aveData + '" target="_blank"><img src="images/download.png"/></a>');
 
                         }
                         else if (data.img != null) {
                             if (ocean.compare.flag){
                                 var imgChildren = document.getElementById('imgDiv').childNodes;
-                                var imgList = imgDiv.children();
+                                var imgList = $('#imgDiv').children();
                                 if (imgList.length >= ocean.compare.limit) {
                                     $('#imgDiv img:last-child').remove();
-//                                    var last = imgDiv.last()
-//                                    imgDiv.removeChild(imgDiv.lastChild);
                                 }
                                 if (data.img != null) {
-                                    imgDiv.prepend('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
-//                                    img.src = data.img + '?time=' + new Date().getTime();
-//                                    img.width = "150";
-//                                    img.onmouseover = "enlargeImg(this, true)";
-//                                    img.onmouseout = "enlargeImg(this, false)"; 
+                                    prependImage(data.img);
                                 }
-//                                imgDiv.insertBefore(img, imgDiv.firstChild);
                             }
                             else {
-                                imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                                clearImageDiv();
+                                prependImage(data.img);
                             }
                             updateMap("Reynolds", data);
                             dataDiv.html('');
@@ -123,14 +145,14 @@ ocean.dsConf = {
                 onSelect: function(){
                               $('#variableDiv').show();
                               configCalendar(); 
-//                              $( "#datepicker" ).datepick('setDate', -4);
                           },
                 onDeselect: function() {
                     layers = map.getLayersByName("Reynolds")
                     for (layer in layers) {
                         map.removeLayer(layers[layer])
                     }
-                    $('#imgDiv').html('');
+
+                    clearImageDiv();
                 },
                 selectVariable: function(selection) {
                                     updatePeriodCombo();
@@ -197,16 +219,19 @@ ocean.dsConf = {
                         maxYear: maxYear});
                 },
                 callback: function(data) {
-                    var imgDiv = $('#imgDiv');
                     var dataDiv = $('#dataDiv');
-                    var enlargeDiv = $('#enlargeDiv');
-                    if (this.variable.get("id") == "anom" && this.aveCheck.average && data.aveImg != null) {
-                        imgDiv.html('<img src="' + data.aveImg + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+
+                    clearImageDiv();
+
+                    if (this.variable.get("id") == "anom" &&
+                        this.aveCheck.average && data.aveImg != null)
+                    {
+                        prependImage(data.aveImg);
                         dataDiv.html('<b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C<br>' + '<a href="'+ data.aveData + '" target="_blank"><img src="images/download.png"/></a>');
 
                     }
                     else if (data.img != null) {
-                        imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                        prependImage(data.img);
                         updateMap("ERSST", data);
                         dataDiv.html('');
                     }
@@ -220,7 +245,7 @@ ocean.dsConf = {
                     for (layer in layers) {
                         map.removeLayer(layers[layer])
                     }
-                    $('#imgDiv').html('');
+                    clearImageDiv();
                 },
                 selectVariable: function(selection) {
                                     updatePeriodCombo();
@@ -279,11 +304,11 @@ ocean.dsConf = {
                         maxYear: maxYear});
                 },
                 callback: function(data) {
-                    var imgDiv = $('#imgDiv');
                     var dataDiv = $('#dataDiv');
-                    var enlargeDiv = $('#enlargeDiv');
+                    clearImageDiv();
+
                     if (data.img != null) {
-                        imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                        prependImage(data.img);
                         updateMap("BRAN", data);
                         dataDiv.html('');
                     }
@@ -352,7 +377,7 @@ ocean.dsConf = {
                                     this.panelControls[control].deactivate();
                                     this.panelControls[control].destroy();
                                 }
-                                $('#imgDiv').html('');
+                                clearImageDiv();
                                 $('#dataDiv').html('');
                                 hideControl('clearlatlonButton');
                 },
@@ -408,11 +433,13 @@ ocean.dsConf = {
                         maxYear: maxYear});
             },
             callback: function(data) {
-                          var imgDiv = $('#imgDiv');
                           var dataDiv = $('#dataDiv');
+
+                          clearImageDiv();
+
                           if(data.ext != null) {
                               dataDiv.html('<a href="'+ data.ext + '" target="_blank"><img src="images/download.png"/></a>');
-                              imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                              prependImage(data.img);
                           }
                       },
             onSelect: function() {var ww3Layer = new OpenLayers.Layer.Vector("WaveWatch III", {
@@ -468,7 +495,7 @@ ocean.dsConf = {
                                 this.panelControls[control].deactivate();
                                 this.panelControls[control].destroy();
                             }
-                            $('#imgDiv').html('');
+                            clearImageDiv();
                             $('#dataDiv').html('');
                             showControl('yearDiv');
                         },
@@ -532,15 +559,15 @@ ocean.dsConf = {
                 }
             },
             callback: function(data) {
-                var imgDiv = $('#imgDiv');
                 var dataDiv = $('#dataDiv');
-                var enlargeDiv = $('#enlargeDiv');
+
+                clearImageDiv();
+
                 if (data.img != null) {
                     var img;
 
-                    imgDiv.html('');
                     for (img in data.img) {
-                        imgDiv.html(imgDiv.html() + '<img src="' + data.img[img] + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                        prependImage(data.img[img]);
                     }
                     updateSeaLevelMap(data);
                 }
@@ -607,7 +634,7 @@ ocean.dsConf = {
                                 controls[control].deactivate();
                                 controls[control].destroy();
                             }
-                            $('#imgDiv').html('');
+                            clearImageDiv();
                             $('#dataDiv').html('');
                         },
             selectVariable: function(selection) {

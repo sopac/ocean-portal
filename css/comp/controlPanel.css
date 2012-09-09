@@ -89,4 +89,7 @@
   margin: 3px;
 }
 
+.thumbnail {
+  max-width: 100%;
+  height: auto;
 }
