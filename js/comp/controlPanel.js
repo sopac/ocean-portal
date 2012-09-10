@@ -11,10 +11,6 @@ ocean.controls = ['selectionDiv', 'toggleDiv', 'sliderDiv',
                   'tidalGaugeDiv', 'compDiv', 'clearlatlonButton' ];
 ocean.compare = {"flag": true, "limit": 2};
 ocean.processing = false;
-//ocean.average = false;
-//ocean.trend = false;
-//ocean.runningAve = false;
-//ocean.runningAveLen = 2;
 ocean.MIN_YEAR = 1949;
 ocean.dateFormat = 'yyyymmdd';
 ocean.date = new Date();
@@ -784,21 +780,6 @@ Ext.onReady(function() {
         }
     }
 
-//    ocean.categoryCombo = Ext.create('Ext.form.field.ComboBox', {
-//        id: 'categoryCombo',
-//        fieldLabel: 'Category',
-//        labelWidth: 50,
-//        width: 100,
-//        displayField: 'name',
- //       valueField: 'id',
-//        rederTo: 'categoryDiv',
-//        store: ocean.categories,
-//        queryMode: 'local',
-//        listeners: {
-//            'select': selectCategory
-//        }
-//    });
-
     var hbox = Ext.create('Ext.container.Container', {
         layout: {
             type: 'hbox'
@@ -871,7 +852,6 @@ Ext.onReady(function() {
         store: ocean.periods,
         lastQuery: '',
         listeners: {
-//            'select': selectPeriod
             'change': selectPeriod
         }
     });
@@ -1071,7 +1051,6 @@ function selectDataset(event, args) {
     var selection = event.getValue();
     var record = ocean.datasets.getById(selection);
     ocean.dsConf[selection].setData(record);
-//    ocean.dsConf[selection].data = record;
 
     if (ocean.dataset != null) {
         ocean.dataset.onDeselect();
@@ -1107,6 +1086,7 @@ function configCalendar() {
 function createCalendars() {
     var dateRange = ocean.dataset.data.get('dateRange');
     var minDate = ocean.dataset.data.get('dateRange').minDate;
+
     ocean.calendar = $("#datepicker").datepick({
         minDate: dateRange.minDate,
         maxDate: dateRange.maxDate,

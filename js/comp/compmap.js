@@ -90,7 +90,6 @@ function selectCountry(event, args) {
 function setupControls() {
     window.countryCombo.on('select', selectCountry, this);
     window.countryCombo.on('change', selectCountry, this);
-//    window.countryCombo.select('pac');
 }
 
 function centerMap() {
@@ -147,79 +146,9 @@ function updateSeaLevelMap(data){
         map.setBaseLayer(slLayer);
     }
 }
-/*
-This file is part of Ext JS 4
-
-Copyright (c) 2011 Sencha Inc
-
-Contact:  http://www.sencha.com/contact
-
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
-
-If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
-
-*/
-var win;
-//var basemapLegend;
-//var countryCombo;
 
 Ext.require(['*']);
 Ext.onReady(function() {
-    //define model and data store
-//     Ext.define(':
-
-
-    //define information window
-    if (!win) {
-        win = Ext.create('Ext.window.Window', {
-            closable: true,
-            closeAction: 'hide',
-            width: 600,
-            height: 350,
-            layout: 'border',
-            borderStyle: 'padding: 2px',
-            items: [{
-                region: 'center',
-                xtype: 'tabpanel',
-                items: [{
-                    title: 'General Info'
-                }, {
-                    title: 'Altimetry'
-                }, {
-                    title: 'Reconstruction'
-                }, {
-                    title: 'Tidal Gauge Network'
-                }]
-            }]
-        }); 
-    }
-
-//    var regionsGroup = {
-//        xtype: 'fieldset',
- //       title: 'Regions',
-//        collapsible: true,
-//        items: [
-//            {xtype: 'radiogroup',
-//             fieldLabel: 'Regions',
-//             columns: 1,
-//             items: [
-//                 {boxLabel: 'Cook Islands', name: 'regions', inputValue: 'cookislands'},
-//                 {boxLabel: 'Federated States of Micronesia', name: 'regions', inputValue: 'fsm'},
-//                 {boxLabel: 'Fiji', name: 'regions', inputValue: 'fiji', checked: true},
-//                 {boxLabel: 'Kiribati', name: 'regions', inputValue: 'kiribati'},
-//                 {boxLabel: 'Marshall Islands', name: 'regions', inputValue: 'marshall'},
-//                 {boxLabel: 'Nauru', name: 'regions', inputValue: 'nauru'},
-//                 {boxLabel: 'Niue', name: 'regions', inputValue: 'niue'},
-//                 {boxLabel: 'Palau', name: 'regions', inputValue: 'palau'},
-//                 {boxLabel: 'Papua New Guinea', name: 'regions', inputValue: 'png'},
-//                 {boxLabel: 'Somoa', name: 'regions', inputValue: 'somoa'},
-//                 {boxLabel: 'Solomon Islands', name: 'regions', inputValue: 'solomonislands'},
-//                 {boxLabel: 'Tonga', name: 'regions', inputValue: 'tonga'},
-//                 {boxLabel: 'Tuvalu', name: 'regions', inputValue: 'tuvalu'},
-//                 {boxLabel: 'Vanuatu', name: 'regions', inputValue: 'vanuatu'}
-//              ]} 
-//         ]};               
 
     Ext.define('Country', {
         extend: 'Ext.data.Model',
@@ -241,8 +170,6 @@ Ext.onReady(function() {
     window.countryStore.addListener('load', selectDefaultCountry);
 
     function selectDefaultCountry(store, records, result, operation, eOpt) {
-//        window.countryCombo.setValue('pac');
-        
         window.countryCombo.select('pac');
     }
 
@@ -256,11 +183,6 @@ Ext.onReady(function() {
         padding: 5,
         height: '60%',
         width: 180
-//        listeners: {
-//            afterrender: function(combo) {
-//                this.setValue('pac')
-//            }
-//        }
     });
 
     var countryPanel = Ext.create('Ext.panel.Panel', {
@@ -283,13 +205,6 @@ Ext.onReady(function() {
         autoScroll: true,
         height: '35%'
     });
-
-//    legendPanel = Ext.create('Ext.panel.Panel', {
-//        title: 'Legend',
-//        html: '',
-//        autoScroll: true,
-//        height: '20%'
-//    });
 
     Ext.create('Ext.Viewport', {
         layout: {
