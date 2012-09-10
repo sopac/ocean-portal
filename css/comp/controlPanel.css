@@ -125,3 +125,15 @@
   top: 5px;
   z-index: 100;
 }
+
+.download-data {
+  text-decoration: none;
+}
+
+.download-data:hover {
+  text-decoration: underline;
+}
+
+a span.ui-icon {
+  display: inline-block;
+}

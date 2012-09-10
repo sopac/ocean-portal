@@ -93,9 +93,10 @@ function createOutput(image, dataURL, name, extras)
 
     if (dataURL)
         $('<a>', {
+            'class': 'download-data',
             href: dataURL,
             target: '_blank',
-            text: "Download data"
+            html: '<span class="ui-icon ui-icon-arrowreturnthick-1-s"></span>Download Data'
         }).appendTo(div);
 
     if (extras)

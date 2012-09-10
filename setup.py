@@ -104,7 +104,6 @@ data = [
     'images/search.gif',
     'images/calendar-blue.gif',
     'images/blank.png',
-    'images/download.png',
     'images/loading.gif',
     'images/notavail.png',
     'images/climate.jpg',
