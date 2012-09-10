@@ -9,7 +9,7 @@ var ocean = ocean || {};
 ocean.controls = ['selectionDiv', 'toggleDiv', 'sliderDiv',
                   'yearMonthDiv', 'datepickerDiv', 'latlonDiv',
                   'tidalGaugeDiv', 'compDiv', 'clearlatlonButton' ];
-ocean.compare = {"flag": true, "limit": 2}
+ocean.compare = {"flag": true, "limit": 2};
 ocean.processing = false;
 //ocean.average = false;
 //ocean.trend = false;
@@ -67,7 +67,7 @@ function prependImage(image)
 
     var img = $('<img>', {
         'class': 'thumbnail',
-        src: image + '?' + $.param({ time: $.now() }),
+        src: image + '?' + $.param({ time: $.now() })
     }).prependTo(a);
 
     img.hover(
@@ -105,7 +105,7 @@ ocean.dsConf = {
 
                     dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
                         var year = item.data.field1;
-                        var filter = item.store.filters.items[0]
+                        var filter = item.store.filters.items[0];
                             return year >= filter.minYear && year <= filter.maxYear;
                         },
                         minYear: minYear,
@@ -146,9 +146,9 @@ ocean.dsConf = {
                               configCalendar(); 
                           },
                 onDeselect: function() {
-                    layers = map.getLayersByName("Reynolds")
+                    layers = map.getLayersByName("Reynolds");
                     for (layer in layers) {
-                        map.removeLayer(layers[layer])
+                        map.removeLayer(layers[layer]);
                     }
 
                     clearImageDiv();
@@ -161,10 +161,10 @@ ocean.dsConf = {
                                     maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
                                     if (ocean.date != null) {
                                         if (ocean.date < minDate) {
-                                            ocean.date = minDate
+                                            ocean.date = minDate;
                                         }
                                         else if (ocean.date > maxDate) {
-                                            ocean.date = maxDate
+                                            ocean.date = maxDate;
                                         }
                                     }
                                     else {
@@ -211,7 +211,7 @@ ocean.dsConf = {
                     var maxYear = parseInt(dateRange["maxYear"]);
                     dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
                         var year = item.data.field1;
-                        var filter = item.store.filters.items[0]
+                        var filter = item.store.filters.items[0];
                             return year >= filter.minYear && year <= filter.maxYear;
                         },
                         minYear: minYear,
@@ -240,9 +240,9 @@ ocean.dsConf = {
                               configCalendar();
                           },
                 onDeselect: function() {
-                    layers = map.getLayersByName("ERSST")
+                    layers = map.getLayersByName("ERSST");
                     for (layer in layers) {
-                        map.removeLayer(layers[layer])
+                        map.removeLayer(layers[layer]);
                     }
                     clearImageDiv();
                 },
@@ -254,10 +254,10 @@ ocean.dsConf = {
                                     maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
                                     if (ocean.date != null) {
                                         if (ocean.date < minDate) {
-                                            ocean.date = minDate
+                                            ocean.date = minDate;
                                         }
                                         else if (ocean.date > maxDate) {
-                                            ocean.date = maxDate
+                                            ocean.date = maxDate;
                                         }
                                     }
                                     else {
@@ -296,7 +296,7 @@ ocean.dsConf = {
                     var maxYear = parseInt(dateRange["maxYear"]);
                     dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
                         var year = item.data.field1;
-                        var filter = item.store.filters.items[0]
+                        var filter = item.store.filters.items[0];
                             return year >= filter.minYear && year <= filter.maxYear;
                         },
                         minYear: minYear,
@@ -388,10 +388,10 @@ ocean.dsConf = {
                                     maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
                                     if (ocean.date != null) {
                                         if (ocean.date < minDate) {
-                                            ocean.date = minDate
+                                            ocean.date = minDate;
                                         }
                                         else if (ocean.date > maxDate) {
-                                            ocean.date = maxDate
+                                            ocean.date = maxDate;
                                         }
                                     }
                                     else {
@@ -426,7 +426,7 @@ ocean.dsConf = {
                 var maxYear = parseInt(dateRange["maxYear"]);
                 dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
                         var year = item.data.field1;
-                        var filter = item.store.filters.items[0]
+                        var filter = item.store.filters.items[0];
                             return year >= filter.minYear && year <= filter.maxYear;
                         },
                         minYear: minYear,
@@ -507,10 +507,10 @@ ocean.dsConf = {
                                 maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
                                 if (ocean.date != null) {
                                     if (ocean.date < minDate) {
-                                        ocean.date = minDate
+                                        ocean.date = minDate;
                                     }
                                     else if (ocean.date > maxDate) {
-                                        ocean.date = maxDate
+                                        ocean.date = maxDate;
                                     }
                                 }
                                 else {
