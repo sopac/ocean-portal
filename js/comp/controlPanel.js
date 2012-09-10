@@ -364,14 +364,18 @@ ocean.dsConf = {
                     this.panelControls = [
                         new OpenLayers.Control.DrawFeature(branLayer,
                             OpenLayers.Handler.Point, {
-                                'displayClass': 'olControlDrawFeaturePoint'
+                                displayClass: 'olControlDrawFeaturePoint',
+                                title: "Select a point on the map"
                             }),
-                        new OpenLayers.Control.Navigation(),
+                        new OpenLayers.Control.Navigation({
+                                title: "Zoom and pan the map"
+                            }),
                     ];
 
                     this.toolbar = new OpenLayers.Control.Panel({
                         displayClass: 'olControlEditingToolbar',
-                        defaultControl: this.panelControls[0]
+                        defaultControl: this.panelControls[0],
+                        div: document.getElementById('mapControlsToolbar')
                     });
 
                     this.toolbar.addControls(this.panelControls);

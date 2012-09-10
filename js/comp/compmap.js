@@ -18,7 +18,11 @@ $(document).ready(function() {
         controls: [
             new OpenLayers.Control.PanZoomBar(),
             new OpenLayers.Control.MousePosition(),
-            new OpenLayers.Control.LayerSwitcher({"ascending": false}),
+            new OpenLayers.Control.LayerSwitcher({
+                div: document.getElementById('mapControlsLayers'),
+                ascending: false,
+                roundedCorner: false
+            }),
             new OpenLayers.Control.KeyboardDefaults(),
             new OpenLayers.Control.ScaleLine({bottomOutUnits:'', bottomInUnits:''}),
             new OpenLayers.Control.Navigation({dragPanOptions: {enableKinetic: true}})
@@ -199,12 +203,24 @@ Ext.onReady(function() {
             id: 'westDiv',
             collapsible: true,
             title: 'Parameters',
-            width: 220,
-            autoScroll: true,
-            contentEl: 'wrapper',
+            width: 225,
+            border: false,
+            layout: 'border',
             items: [{
                 xtype: 'panel',
+                region: 'north',
                 items: [countryCombo]
+            }, {
+                xtype: 'panel',
+                region: 'center',
+                autoScroll: true,
+                contentEl: 'wrapper'
+            }, {
+                xtype: 'panel',
+                region: 'south',
+                height: 100,
+                title: 'Map Controls',
+                contentEl: 'mapControls'
             }]
         }, {
             xtype: 'panel',
