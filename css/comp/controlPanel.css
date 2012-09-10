@@ -104,6 +104,19 @@
 }
 
 .thumbnail {
+  display: block;
+  position: relative;
+}
+
+.thumbnail img {
   max-width: 100%;
   height: auto;
+}
+
+.thumbnail .overlay {
+  position: absolute;
+  display: block;
+  right: 5px;
+  top: 5px;
+  z-index: 100;
 }

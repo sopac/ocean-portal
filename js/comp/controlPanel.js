@@ -60,13 +60,17 @@ function clearImageDiv()
 
 function prependImage(image)
 {
-    var a = $('<a>', {
-        href: image,
-        target: '_blank'
+    var div = $('<div>', {
+        'class': 'thumbnail'
     }).prependTo($('#imgDiv'));
 
+    var a = $('<a>', {
+        href: image,
+        title: "Click to open in a new window",
+        target: '_blank'
+    }).prependTo(div);
+
     var img = $('<img>', {
-        'class': 'thumbnail',
         src: image + '?' + $.param({ time: $.now() })
     }).prependTo(a);
 
@@ -77,6 +81,10 @@ function prependImage(image)
         function (e) {
             enlargeImg(this, false);
         });
+
+    $('<div>', {
+        'class': 'overlay ui-icon ui-icon-newwin'
+    }).prependTo(div);
 }
 
 ocean.dsConf = {
