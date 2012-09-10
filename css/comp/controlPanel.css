@@ -83,6 +83,7 @@
     width: auto;
     height: auto;
     margin: auto;
+    border: 1px solid black;
 }
 
 #header {
