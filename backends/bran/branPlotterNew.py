@@ -13,6 +13,7 @@ import numpy as np
 import pdb
 from mpl_toolkits.basemap import Basemap
 from matplotlib.offsetbox import AnchoredOffsetbox, TextArea
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pylab as py
@@ -80,7 +81,7 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
     aspect_ratio = abs(lon_extent / lat_extent)
 
     if aspect_ratio > 1.7:
-        copyright_label_yadj = -0.35        
+        copyright_label_yadj = -0.25
     else:
         copyright_label_yadj = -0.15
     
@@ -115,12 +116,6 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
         draw_every, arrow_scale = get_vector_plot_settings(lat_min, lat_max, lon_min, lon_max)
         if draw_every is not None:
             draw_vector_plot(m, vlon, vlat, u, v, draw_every=draw_every, arrow_scale=arrow_scale)
-        
-    # Draw colorbar    
-    cb = py.colorbar(img, shrink=0.8, aspect=20, spacing='proportional', drawedges='True', orientation='vertical', 
-                     extend='both', ticks=cb_ticks)
-    cb.set_ticklabels([cb_tick_fmt % k for k in cb_ticks])
-    cb.set_label(units)
        
     m.drawcoastlines(linewidth=0.1, zorder=6)
     m.fillcontinents(color='#cccccc', zorder=7)
@@ -132,6 +127,14 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
     m.drawmeridians(meridians, labels=[False, False, False, True], fmt='%.' + str(m_dec_places) + 'f',
                     fontsize=8, dashes=[3, 3], color='gray')
     plt.title(title, fontsize=10)
+
+    # Draw colorbar
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size=0.2, pad=0.3)
+    cb = py.colorbar(img, cax=cax, spacing='proportional', drawedges='True', orientation='vertical',
+                     extend='both', ticks=cb_ticks)
+    cb.set_ticklabels([cb_tick_fmt % k for k in cb_ticks])
+    cb.set_label(units)
     
     box = TextArea(getCopyright(), textprops=dict(color='k', fontsize=6))
     copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor=(-0.1, copyright_label_yadj), frameon=False, bbox_transform=ax.transAxes)
