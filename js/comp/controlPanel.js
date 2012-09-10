@@ -54,25 +54,30 @@ Date.prototype.getMonthString = function() {
 
 function clearImageDiv()
 {
-    $('#imgDiv').html('');
+    $('#outputDiv').html('');
     $('#enlargeDiv').html('');
 }
 
-function prependImage(image)
+function createOutput(image, dataURL, name, extras)
 {
     var div = $('<div>', {
         'class': 'thumbnail'
-    }).prependTo($('#imgDiv'));
+    });
+
+    if (name)
+        $('<h2>', {
+            text: name
+        }).appendTo(div);
 
     var a = $('<a>', {
         href: image,
         title: "Click to open in a new window",
         target: '_blank'
-    }).prependTo(div);
+    }).appendTo(div);
 
     var img = $('<img>', {
         src: image + '?' + $.param({ time: $.now() })
-    }).prependTo(a);
+    }).appendTo(a);
 
     img.hover(
         function (e) {
@@ -84,7 +89,31 @@ function prependImage(image)
 
     $('<div>', {
         'class': 'overlay ui-icon ui-icon-newwin'
-    }).prependTo(div);
+    }).appendTo(div);
+
+    if (dataURL)
+        $('<a>', {
+            href: dataURL,
+            target: '_blank',
+            text: "Download data"
+        }).appendTo(div);
+
+    if (extras)
+        $('<span>', {
+            html: extras
+        }).appendTo(div);
+
+    return div;
+}
+
+function appendOutput()
+{
+    createOutput.apply(null, arguments).appendTo($('#outputDiv'));
+}
+
+function prependOutput()
+{
+    createOutput.apply(null, arguments).prependTo($('#outputDiv'));
 }
 
 ocean.dsConf = {
@@ -121,37 +150,33 @@ ocean.dsConf = {
 
                 },
                 callback: function(data) {
-                    var dataDiv = $('#dataDiv');
-
                         if (this.variable.get("id") == "anom" &&
                             this.aveCheck.average && data.aveImg != null)
                         {
-                            prependImage(data.aveImg);
-                            dataDiv.html('<b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C<br>' + '<a href="'+ data.aveData + '" target="_blank"><img src="images/download.png"/></a>');
-
+                            appendOutput(data.aveImg, data.aveData,
+                                         "Average(1981-2010)",
+                                         Math.round(data.mean*100)/100 + '\u00B0C');
                         }
                         else if (data.img != null) {
                             if (ocean.compare.flag){
-                                var imgChildren = document.getElementById('imgDiv').childNodes;
                                 var imgList = $('#imgDiv').children();
                                 if (imgList.length >= ocean.compare.limit) {
-                                    $('#imgDiv img:last-child').remove();
+                                    $('#outputDiv div.thumbnail:last-child').remove();
                                 }
                                 if (data.img != null) {
-                                    prependImage(data.img);
+                                    prependOutput(data.img);
                                 }
                             }
                             else {
                                 clearImageDiv();
-                                prependImage(data.img);
+                                appendOutput(data.img);
                             }
                             updateMap("Reynolds", data);
-                            dataDiv.html('');
                         }
                 },
                 onSelect: function(){
                               $('#variableDiv').show();
-                              configCalendar(); 
+                              configCalendar();
                           },
                 onDeselect: function() {
                     layers = map.getLayersByName("Reynolds");
@@ -226,21 +251,20 @@ ocean.dsConf = {
                         maxYear: maxYear});
                 },
                 callback: function(data) {
-                    var dataDiv = $('#dataDiv');
-
                     clearImageDiv();
 
                     if (this.variable.get("id") == "anom" &&
                         this.aveCheck.average && data.aveImg != null)
                     {
-                        prependImage(data.aveImg);
-                        dataDiv.html('<b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C<br>' + '<a href="'+ data.aveData + '" target="_blank"><img src="images/download.png"/></a>');
+                        appendOutput(data.aveImg, data.aveData,
+                                     "Average(1981-2010)",
+                                     Math.round(data.mean*100)/100 + '\u00B0C'
+                                     );
 
                     }
                     else if (data.img != null) {
-                        prependImage(data.img);
+                        appendOutput(data.img);
                         updateMap("ERSST", data);
-                        dataDiv.html('');
                     }
                 },
                 onSelect: function(){
@@ -311,13 +335,11 @@ ocean.dsConf = {
                         maxYear: maxYear});
                 },
                 callback: function(data) {
-                    var dataDiv = $('#dataDiv');
                     clearImageDiv();
 
                     if (data.img != null) {
-                        prependImage(data.img);
+                        appendOutput(data.img);
                         updateMap("BRAN", data);
-                        dataDiv.html('');
                     }
                 },
                 onSelect: function()
@@ -385,7 +407,6 @@ ocean.dsConf = {
                                     this.panelControls[control].destroy();
                                 }
                                 clearImageDiv();
-                                $('#dataDiv').html('');
                                 hideControl('clearlatlonButton');
                 },
                 selectVariable: function(selection) {
@@ -441,13 +462,10 @@ ocean.dsConf = {
                         maxYear: maxYear});
             },
             callback: function(data) {
-                          var dataDiv = $('#dataDiv');
-
                           clearImageDiv();
 
                           if(data.ext != null) {
-                              dataDiv.html('<a href="'+ data.ext + '" target="_blank"><img src="images/download.png"/></a>');
-                              prependImage(data.img);
+                              appendOutput(data.img, data.ext);
                           }
                       },
             onSelect: function() {var ww3Layer = new OpenLayers.Layer.Vector("WaveWatch III", {
@@ -504,7 +522,6 @@ ocean.dsConf = {
                                 this.panelControls[control].destroy();
                             }
                             clearImageDiv();
-                            $('#dataDiv').html('');
                             showControl('yearDiv');
                         },
             selectVariable: function(selection) {
@@ -568,28 +585,21 @@ ocean.dsConf = {
                 }
             },
             callback: function(data) {
-                var dataDiv = $('#dataDiv');
-
                 clearImageDiv();
 
-                if (data.img != null) {
-                    var img;
-
-                    for (img in data.img) {
-                        prependImage(data.img[img]);
-                    }
+                if (data.img) {
+                    appendOutput(data.img);
                     updateSeaLevelMap(data);
                 }
-                dataDiv.html('');
-                if(data.tid != null) {
-                    dataDiv.html('<a href="'+ data.tid + '" target="_blank">Tidal Gauge Data</a><br/>');
-                }
-                if(data.alt != null) {
-                    dataDiv.html(dataDiv.html() + '<a href="'+ data.alt + '" target="_blank">Altimetry Data</a><br/>');
-                }
-                if(data.rec!= null) {
-                    dataDiv.html(dataDiv.html() + '<a href="'+ data.rec + '" target="_blank">Reconstruction Data</a><br/>');
-                }
+
+                if (data.tidimg)
+                    appendOutput(data.tidimg, data.tidtxt, "Tidal Gauge");
+
+                if (data.altimg)
+                    appendOutput(data.altimg, data.alttxt, "Altimetry");
+
+                if (data.recimg)
+                    appendOutput(data.recimg, data.rectxt, "Reconstruction");
             },
             onSelect: function() {
                           var gaugesLayer = new OpenLayers.Layer.Vector("Tidal gauges", {
@@ -644,7 +654,6 @@ ocean.dsConf = {
                                 controls[control].destroy();
                             }
                             clearImageDiv();
-                            $('#dataDiv').html('');
                         },
             selectVariable: function(selection) {
                                 updatePeriodCombo();

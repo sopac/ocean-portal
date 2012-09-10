@@ -58,8 +58,6 @@ def process(form):
                                  serverCfg['rasterURL'],
                                  fileName),
                     COMMON_FILES.values()))
-            # make this a list
-            responseObj['img'] = [ responseObj['img'] ]
 
             util.touch_files(os.path.join(serverCfg['outputDir'],
                                           fileName),
@@ -84,12 +82,12 @@ def process(form):
         if not os.path.exists(outputFileName + ".png"):
             responseObj['error'] = "Requested image is not available at this time."
         else:
-            responseObj['img'].append(os.path.join(serverCfg['baseURL'],
-                                                   serverCfg['rasterURL'],
-                                                   fileName + '.png'))
-            responseObj["tid"] = os.path.join(serverCfg['baseURL'],
-                                              serverCfg['rasterURL'],
-                                              fileName + '.txt')
+            responseObj.update(util.build_response_object(
+                [ 'tidimg', 'tidtxt' ],
+                os.path.join(serverCfg['baseURL'],
+                             serverCfg['rasterURL'],
+                             fileName),
+                [ '.png', '.txt' ]))
             util.touch_files(os.path.join(serverCfg['outputDir'],
                                           fileName),
                              [ '.png', '.txt' ])
@@ -103,14 +101,14 @@ def process(form):
         if not os.path.exists(outputFileName + ".png"):
             plotter.plotTimeseries(outputFileName, **args)
         if not os.path.exists(outputFileName + ".png"):
-            responseObj["error"] = "Requested image is not available at this time."
+            responseObj['error'] = "Requested image is not available at this time."
         else:
-            responseObj["img"].append(os.path.join(serverCfg['baseURL'],
-                                                   serverCfg['rasterURL'],
-                                                   fileName + '.png'))
-            responseObj["alt"] = os.path.join(serverCfg['baseURL'],
-                                              serverCfg['rasterURL'],
-                                              fileName + '.txt')
+            responseObj.update(util.build_response_object(
+                [ 'altimg', 'alttxt' ],
+                os.path.join(serverCfg['baseURL'],
+                             serverCfg['rasterURL'],
+                             fileName),
+                [ '.png', '.txt' ]))
             util.touch_files(os.path.join(serverCfg['outputDir'],
                                           fileName),
                              [ '.png', '.txt' ])
@@ -124,14 +122,14 @@ def process(form):
         if not os.path.exists(outputFileName + ".png"):
             plotter.plotTimeseries(outputFileName, **args)
         if not os.path.exists(outputFileName + ".png"):
-            responseObj["error"] = "Requested image is not available at this time."
+            responseObj['error'] = "Requested image is not available at this time."
         else:
-            responseObj["img"].append(os.path.join(serverCfg['baseURL'],
-                                                   serverCfg['rasterURL'],
-                                                   fileName + '.png'))
-            responseObj["rec"] = os.path.join(serverCfg['baseURL'],
-                                              serverCfg['rasterURL'],
-                                              fileName + ".txt")
+            responseObj.update(util.build_response_object(
+                [ 'recimg', 'rectxt' ],
+                os.path.join(serverCfg['baseURL'],
+                             serverCfg['rasterURL'],
+                             fileName),
+                [ '.png', '.txt' ]))
             util.touch_files(os.path.join(serverCfg['outputDir'],
                                           fileName),
                              [ '.png', '.txt' ])

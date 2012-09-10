@@ -103,9 +103,14 @@
   margin: 3px;
 }
 
+#outputDiv {
+    padding: 3px;
+}
+
 .thumbnail {
   display: block;
   position: relative;
+  padding-bottom: 12px;
 }
 
 .thumbnail img {
