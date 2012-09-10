@@ -185,10 +185,6 @@ Ext.onReady(function() {
         width: 180
     });
 
-    var countryPanel = Ext.create('Ext.panel.Panel', {
-        items: [countryCombo]
-    });
-
     Ext.create('Ext.Viewport', {
         layout: {
             type: 'border',
@@ -197,37 +193,31 @@ Ext.onReady(function() {
         listeners: {
             afterlayout: centerMap
         },
-        defaults: {
-            split: true
-        },
         items: [{
+            xtype: 'panel',
             region: 'west',
             id: 'westDiv',
             collapsible: true,
             title: 'Parameters',
-            split: false,
             width: 220,
-            height: '100%',
+            autoScroll: true,
             contentEl: 'wrapper',
-            items: [
-                    countryPanel,
-            ]
+            items: [{
+                xtype: 'panel',
+                items: [countryCombo]
+            }]
         }, {
+            xtype: 'panel',
             region: 'center',
             border: false,
             padding: 2,
             height: '100%',
-            items:[
-                Ext.create('Ext.panel.Panel', {
-                    contentEl: 'map',
-                    height: '100%'
-                })
-            ]
+            contentEl: 'map'
         }, {
+            xtype: 'panel',
             region: 'east',
             collapsible: true,
             title: 'Output',
-            split: false,
             width: 220,
             autoScroll: true,
             contentEl: 'outputDiv'
