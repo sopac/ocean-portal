@@ -668,8 +668,9 @@ ocean.dsConf = {
 
 function enlargeImg(img, show) {
     var enlargeDiv = $('#enlargeDiv');
+
     if (show) {
-        enlargeDiv.html('<img src="' + img.src + ' "width="650"/>');
+        enlargeDiv.html('<img src="' + img.src + '" class="imagepreview" />');
     }
     else {
         enlargeDiv.html('');

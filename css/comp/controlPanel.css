@@ -65,10 +65,24 @@
 
 #enlargeDiv {
     position: absolute;
-    bottom: 50px;
-    left: 100px;
-    width: 650px;
     z-index: 1021;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+#enlargeDiv img {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 90%;
+    max-height: 90%;
+    width: auto;
+    height: auto;
+    margin: auto;
 }
 
 #header {
