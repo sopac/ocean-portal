@@ -172,7 +172,7 @@ ocean.dsConf = {
                         }
                 },
                 onSelect: function(){
-                              $('#variableDiv').show();
+                              showControl('variableDiv');
                               configCalendar();
                           },
                 onDeselect: function() {
@@ -265,7 +265,7 @@ ocean.dsConf = {
                     }
                 },
                 onSelect: function(){
-                              $('#variableDiv').show();
+                              showControl('variableDiv');
                               configCalendar();
                           },
                 onDeselect: function() {
@@ -377,7 +377,7 @@ ocean.dsConf = {
                     this.toolbar.addControls(this.panelControls);
                     ocean.mapObj.addControl(this.toolbar);
 
-                    $('#variableDiv').show();
+                    showControl('variableDiv');
                     configCalendar();
                 },
                 onDeselect: function() {
@@ -498,7 +498,7 @@ ocean.dsConf = {
 //                                                       });
 ////                                  ocean.mapObj.addControl(boxControl);
 ////                                  boxControl.activate(); 
-                                  $('#variableDiv').show();
+                                  showControl('variableDiv');
                                   configCalendar(); 
                                  },
             onDeselect: function() {
@@ -628,7 +628,7 @@ ocean.dsConf = {
                                   $('#longitude').val(Math.round(geometry.lon * 1000)/1000);
                               }
                           });
-                          $('#variableDiv').show();
+                          showControl('variableDiv');
                       },
             onDeselect: function() {
                             var layers = map.getLayersByName("Sea Level");

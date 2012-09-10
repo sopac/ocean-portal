@@ -186,24 +186,7 @@ Ext.onReady(function() {
     });
 
     var countryPanel = Ext.create('Ext.panel.Panel', {
-        title: 'Country',
-        autoScroll: true,
-        items: [countryCombo],
-        height: '15%'
-    });
-
-    var datasetPanel = Ext.create('Ext.panel.Panel', {
-        title: 'Dataset',
-        autoScroll: true,
-        height: '50%',
-        contentEl: 'wrapper'
-    });
-
-    var thumbnailPanel = Ext.create('Ext.panel.Panel', {
-        title: 'Thumbnail',
-        contentEl: 'outputDiv',
-        autoScroll: true,
-        height: '35%'
+        items: [countryCombo]
     });
 
     Ext.create('Ext.Viewport', {
@@ -218,50 +201,37 @@ Ext.onReady(function() {
             split: true
         },
         items: [{
-            xtype: 'tabpanel',
             region: 'west',
             id: 'westDiv',
             collapsible: true,
-            title: 'Control Panel',
+            title: 'Parameters',
             split: false,
-//            width: '28%',
             width: 220,
-            items: [{
-                title: 'Maps',
-                padding: 2,
-                items: [
+            height: '100%',
+            contentEl: 'wrapper',
+            items: [
                     countryPanel,
-                    datasetPanel,
-                    thumbnailPanel
-//                    legendPanel
-//                    {
-//                        title: 'Legend',
-//                        items: [
-//                            window.basemapLegend
-//                        ]
-//                    }
-                ]}
-//            {               
-//                title: 'Pilot Projects'
-//            }
             ]
         }, {
             region: 'center',
             border: false,
-//          title: 'Map Panel',
             padding: 2,
-//          width: '72%',
             height: '100%',
             items:[
-                Ext.create('Ext.panel.Panel', {contentEl: 'map', height: '100%'})
-//                Ext.create('Ext.panel.Panel', {contentEl: 'imgDiv', height: '20%'})
+                Ext.create('Ext.panel.Panel', {
+                    contentEl: 'map',
+                    height: '100%'
+                })
             ]
+        }, {
+            region: 'east',
+            collapsible: true,
+            title: 'Output',
+            split: false,
+            width: 220,
+            autoScroll: true,
+            contentEl: 'outputDiv'
         }
-//        {
-//            region: 'south',
-//            html: '<b>Pacific Ocean Demo Project</b><br/> More information will be available soon.',
-//            height: '0%'
-//        }
        ]
     });
 

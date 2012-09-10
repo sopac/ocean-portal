@@ -111,11 +111,12 @@
 .thumbnail {
   display: block;
   position: relative;
+  padding: 3px;
   padding-bottom: 12px;
 }
 
 .thumbnail img {
-  max-width: 100%;
+  max-width: 95%;
   height: auto;
 }
 
