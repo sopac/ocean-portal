@@ -678,10 +678,15 @@ function enlargeImg(img, show) {
     var enlargeDiv = $('#enlargeDiv');
 
     if (show) {
-        enlargeDiv.html('<img src="' + img.src + '" class="imagepreview" />');
+        $('<img>', {
+            src: img.src,
+            'class' : 'imagepreview'
+        }).appendTo(enlargeDiv);
+        enlargeDiv.show();
     }
     else {
         enlargeDiv.html('');
+        enlargeDiv.hide();
     }
 }
 
@@ -1208,6 +1213,7 @@ function setCompare() {
 
 function initialise() {
     $('#variableDiv').hide();
+    $('#enlargeDiv').hide();
     hideControls();
 }
 
