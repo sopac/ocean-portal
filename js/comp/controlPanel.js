@@ -183,6 +183,9 @@ function removePointLayer () {
         this.panelControls[control].deactivate();
         this.panelControls[control].destroy();
     }
+
+    /* remove event handlers */
+    $('#latitude, #longitude').unbind();
 }
 
 ocean.dsConf = {
