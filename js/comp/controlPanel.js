@@ -113,6 +113,64 @@ function prependOutput()
     createOutput.apply(null, arguments).prependTo($('#outputDiv'));
 }
 
+function addPointLayer () {
+    var layer = new OpenLayers.Layer.Vector("point-layer",
+        {
+            style: {
+                graphicName: 'cross',
+                pointRadius: 10,
+                stroke: false
+            },
+            preFeatureInsert: function(feature) {
+                this.removeAllFeatures();
+            },
+            onFeatureInsert: function(feature) {
+                var geometry = feature.geometry;
+                $('#latitude').val(Math.round(geometry.y * 1000) / 1000);
+                $('#longitude').val(Math.round(geometry.x * 1000) / 1000);
+            }
+        });
+
+    ocean.mapObj.addLayer(layer);
+
+    this.panelControls = [
+        new OpenLayers.Control.DrawFeature(layer,
+            OpenLayers.Handler.Point, {
+                displayClass: 'olControlDrawFeaturePoint',
+                title: "Select a point on the map"
+            }),
+        new OpenLayers.Control.Navigation({
+                title: "Zoom and pan the map"
+            }),
+    ];
+
+    this.toolbar = new OpenLayers.Control.Panel({
+        displayClass: 'olControlEditingToolbar',
+        defaultControl: this.panelControls[0],
+        div: document.getElementById('mapControlsToolbar')
+    });
+
+    this.toolbar.addControls(this.panelControls);
+    ocean.mapObj.addControl(this.toolbar);
+}
+
+function removePointLayer () {
+    layers = map.getLayersByName("point-layer");
+    for (layer in layers) {
+        map.removeLayer(layers[layer]);
+    }
+
+    map.removeControl(this.toolbar);
+    this.toolbar.deactivate();
+    this.toolbar.destroy();
+
+    for (control in this.panelControls) {
+        map.removeControl(this.panelControls[control]);
+        this.panelControls[control].deactivate();
+        this.panelControls[control].destroy();
+    }
+}
+
 ocean.dsConf = {
     reynolds: {params: function() { return {
                     dataset: 'reynolds',
@@ -341,45 +399,7 @@ ocean.dsConf = {
                 },
                 onSelect: function()
                 {
-                    var branLayer = new OpenLayers.Layer.Vector(
-                        "BRAN Sub-Surface",
-                        {
-                            style: {
-                                graphicName: 'cross',
-                                pointRadius: 10,
-                                stroke: false
-                            },
-                            preFeatureInsert: function(feature) {
-                                this.removeAllFeatures();
-                            },
-                            onFeatureInsert: function(feature) {
-                                var geometry = feature.geometry;
-                                $('#latitude').val(Math.round(geometry.y * 1000)/1000);
-                                $('#longitude').val(Math.round(geometry.x * 1000)/1000);
-                            }
-                        });
-
-                    ocean.mapObj.addLayer(branLayer);
-
-                    this.panelControls = [
-                        new OpenLayers.Control.DrawFeature(branLayer,
-                            OpenLayers.Handler.Point, {
-                                displayClass: 'olControlDrawFeaturePoint',
-                                title: "Select a point on the map"
-                            }),
-                        new OpenLayers.Control.Navigation({
-                                title: "Zoom and pan the map"
-                            }),
-                    ];
-
-                    this.toolbar = new OpenLayers.Control.Panel({
-                        displayClass: 'olControlEditingToolbar',
-                        defaultControl: this.panelControls[0],
-                        div: document.getElementById('mapControlsToolbar')
-                    });
-
-                    this.toolbar.addControls(this.panelControls);
-                    ocean.mapObj.addControl(this.toolbar);
+                    addPointLayer();
 
                     showControl('variableDiv');
                     configCalendar();
@@ -393,20 +413,7 @@ ocean.dsConf = {
                                     map.removeLayer(layers[layer]);
                                 }
 
-                                layers = map.getLayersByName("BRAN Sub-Surface");
-                                for (layer in layers) {
-                                    map.removeLayer(layers[layer]);
-                                }
-
-                                map.removeControl(this.toolbar);
-                                this.toolbar.deactivate();
-                                this.toolbar.destroy();
- 
-                                for (control in this.panelControls) {
-                                    map.removeControl(this.panelControls[control]);
-                                    this.panelControls[control].deactivate();
-                                    this.panelControls[control].destroy();
-                                }
+                                removePointLayer();
                                 clearImageDiv();
                                 hideControl('clearlatlonButton');
                 },
