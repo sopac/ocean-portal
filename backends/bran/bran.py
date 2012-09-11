@@ -92,6 +92,16 @@ def process(form):
             else:
                 # Plot surface data
                 if varName in ['temp', 'salt', 'eta', 'uvtemp', 'uveta']:
+                    # Display error if chosen region is too large for displaying currents
+                    if varName in ['uvtemp', 'uveta']:
+                        lat_min = regionConfig.regions[regionStr][1]['llcrnrlat']
+                        lat_max = regionConfig.regions[regionStr][1]['urcrnrlat']
+                        lon_min = regionConfig.regions[regionStr][1]['llcrnrlon']
+                        lon_max = regionConfig.regions[regionStr][1]['urcrnrlon']
+                        draw_every, arrow_scale = branPlotterNew.get_vector_plot_settings(lat_min, lat_max, lon_min, lon_max)
+                        if (draw_every is None) or (arrow_scale is None):
+                            responseObj["error"] = "The region is too large for displaying currents.  Please select a smaller region and try again."
+                            return responseObj
                     draw_monthly_mean_surface_plot(varName, yearStr, monthStr, regionStr, bgImage_filename, 
                                                    plot_filename_fullpath=plot_filename_fullpath, 
                                                    draw_background_images=False, plot_data=True)
