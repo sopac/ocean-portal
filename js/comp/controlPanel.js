@@ -169,14 +169,20 @@ function addPointLayer () {
 }
 
 function removePointLayer () {
-    layers = map.getLayersByName("point-layer");
+    var layers = map.getLayersByName("point-layer");
+
+    if (layers.length == 0)
+        return;
+
     for (layer in layers) {
         map.removeLayer(layers[layer]);
     }
 
-    map.removeControl(this.toolbar);
-    this.toolbar.deactivate();
-    this.toolbar.destroy();
+    if (this.toolbar) {
+        map.removeControl(this.toolbar);
+        this.toolbar.deactivate();
+        this.toolbar.destroy();
+    }
 
     for (control in this.panelControls) {
         map.removeControl(this.panelControls[control]);
@@ -186,6 +192,9 @@ function removePointLayer () {
 
     /* remove event handlers */
     $('#latitude, #longitude').unbind();
+
+    this.toolbar = null;
+    this.panelControls = null;
 }
 
 ocean.dsConf = {
