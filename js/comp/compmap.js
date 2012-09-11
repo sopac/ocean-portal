@@ -10,7 +10,9 @@ var map;
 
 window.onerror = function (msg, url, line) {
     $('#error-dialog-content').html("Javascript error: " + msg +
-                                    " &mdash; please reload your browser." +
+                                    " &mdash; please " +
+                                    '<a href="javascript:location.reload()">' +
+                                    "reload</a> your browser." +
                                     "<br/><small>" + url + ":" + line +
                                     "</small>");
     $('#error-dialog-request').hide();

@@ -1214,6 +1214,12 @@ function updateDate(dateObj) {
 function updatePage() {
     if (!ocean.processing) {
 
+        if (!ocean.dataset)
+            return;
+
+        if (!ocean.dataset.variable)
+            return;
+
         function show_error(params, text)
         {
             var url = 'cgi/portal.py?' + $.param(params);
