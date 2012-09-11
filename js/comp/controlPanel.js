@@ -141,7 +141,7 @@ function addPointLayer () {
             }),
         new OpenLayers.Control.Navigation({
                 title: "Zoom and pan the map"
-            }),
+            })
     ];
 
     this.toolbar = new OpenLayers.Control.Panel({
