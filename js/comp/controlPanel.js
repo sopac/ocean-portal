@@ -475,6 +475,7 @@ ocean.dsConf = {
                         /* these variables support cross sections */
                         case 'temp':
                         case 'salt':
+                            removePointLayer();
                             addPointLayer();
                             showControl('latlonDiv');
                             break;
@@ -527,7 +528,6 @@ ocean.dsConf = {
                           }
                       },
             onSelect: function() {
-                addPointLayer();
                 showControl('variableDiv');
                 configCalendar();
             },
@@ -544,27 +544,32 @@ ocean.dsConf = {
                 showControl('yearDiv');
             },
             selectVariable: function(selection) {
-                                updatePeriodCombo();
-                                dateRange = this.data.get('dateRange');
-                                updateYearCombo(dateRange.yearFilter);
-                                minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
-                                maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
-                                if (ocean.date != null) {
-                                    if (ocean.date < minDate) {
-                                        ocean.date = minDate;
-                                    }
-                                    else if (ocean.date > maxDate) {
-                                        ocean.date = maxDate;
-                                    }
-                                }
-                                else {
-                                    ocean.date = maxDate;
-                                }
-                                updateCalDiv();
-                                showControl('selectionDiv');
-                                hideControl('yearDiv');
-                                showControl('latlonDiv');
-                            }
+                updatePeriodCombo();
+                dateRange = this.data.get('dateRange');
+                updateYearCombo(dateRange.yearFilter);
+                minDate = $.datepick.parseDate(ocean.dateFormat,
+                                               dateRange.minDate);
+                maxDate = $.datepick.parseDate(ocean.dateFormat,
+                                               dateRange.maxDate);
+                if (ocean.date != null) {
+                    if (ocean.date < minDate) {
+                        ocean.date = minDate;
+                    }
+                    else if (ocean.date > maxDate) {
+                        ocean.date = maxDate;
+                    }
+                }
+                else {
+                    ocean.date = maxDate;
+                }
+                updateCalDiv();
+                showControl('selectionDiv');
+                hideControl('yearDiv');
+                showControl('latlonDiv');
+
+                removePointLayer();
+                addPointLayer();
+            }
     },
     sealevel: {params: function() { return {
                 dataset: 'sealevel',
