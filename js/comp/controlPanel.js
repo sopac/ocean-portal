@@ -476,62 +476,23 @@ ocean.dsConf = {
                               appendOutput(data.img, data.ext);
                           }
                       },
-            onSelect: function() {var ww3Layer = new OpenLayers.Layer.Vector("WaveWatch III", {
-                                                         preFeatureInsert: function(feature) {
-                                                             this.removeAllFeatures();
-                                                         },
-                                                         onFeatureInsert: function(feature) {
-                                                             var geometry = feature.geometry;
-                                                             $('#latitude').val(Math.round(geometry.y * 1000)/1000);
-                                                             $('#longitude').val(Math.round(geometry.x * 1000)/1000);
-                                                         }
-                                                     });
-                                  ocean.mapObj.addLayer(ww3Layer);
-                                  this.panelControls = [
-                                      new OpenLayers.Control.DrawFeature(ww3Layer,
-                                                       OpenLayers.Handler.Point,
-                                                       {'displayClass': 'olControlDrawFeaturePoint'}),
-                                      new OpenLayers.Control.Navigation()
-                                  ];
-                                  this.toolbar = new OpenLayers.Control.Panel({
-                                      displayClass: 'olControlEditingToolbar',
-                                      defaultControl: this.panelControls[0]
-                                  });
-                                  this.toolbar.addControls(this.panelControls);
-                                  ocean.mapObj.addControl(this.toolbar);
-////                                  var boxControl = new OpenLayers.Control.DrawFeature(ww3Layer,
-////                                                       OpenLayers.Handler.Point);
-//                                                       OpenLayers.Handler.RegularPolygon, 
-//                                                       {
-//                                                           handlerOptions: {
-//                                                               sides: 4
-//                                                           }
-//                                                       });
-////                                  ocean.mapObj.addControl(boxControl);
-////                                  boxControl.activate(); 
-                                  showControl('variableDiv');
-                                  configCalendar(); 
-                                 },
+            onSelect: function() {
+                addPointLayer();
+                showControl('variableDiv');
+                configCalendar();
+            },
             onDeselect: function() {
-                            var layers = map.getLayersByName("WaveWatch III");
-			    var layer;
-			    var control;
+                var layers = map.getLayersByName("WaveWatch III");
+                var layer;
 
-                            for (layer in layers) {
-                                map.removeLayer(layers[layer]);
-                            }
-                            map.removeControl(this.toolbar);
-                            this.toolbar.deactivate();
-                            this.toolbar.destroy();
+                for (layer in layers) {
+                    map.removeLayer(layers[layer]);
+                }
 
-                            for (control in this.panelControls) {
-                                map.removeControl(this.panelControls[control]);
-                                this.panelControls[control].deactivate();
-                                this.panelControls[control].destroy();
-                            }
-                            clearImageDiv();
-                            showControl('yearDiv');
-                        },
+                removePointLayer();
+                clearImageDiv();
+                showControl('yearDiv');
+            },
             selectVariable: function(selection) {
                                 updatePeriodCombo();
                                 dateRange = this.data.get('dateRange');
