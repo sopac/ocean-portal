@@ -1196,8 +1196,10 @@ function updateDate(dateObj) {
 function updatePage() {
     if (!ocean.processing) {
 
-        function show_error(url, text)
+        function show_error(params, text)
         {
+            var url = 'cgi/portal.py?' + $.param(params);
+
             $('#error-dialog-content').html(text);
             $('#error-dialog-request').prop('href', url);
             $('#error-dialog').dialog('open');
@@ -1215,22 +1217,22 @@ function updatePage() {
             success: function(data, textStatus, jqXHR) {
                 if (data == null || $.isEmptyObject(data))
                 {
-                    show_error(ocean.dataset.url(), "returned no data");
+                    show_error(ocean.dataset.params(), "returned no data");
                 }
                 else
                 {
                     if (data.error)
-                        show_error(ocean.dataset.url(), data.error);
+                        show_error(ocean.dataset.params(), data.error);
                     else
                         ocean.dataset.callback(data);
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 if (textStatus == 'parsererror')
-                    show_error(ocean.dataset.url(),
+                    show_error(ocean.dataset.params(),
                                "Unable to parse server response.");
                 else
-                    show_error(ocean.dataset.url(), errorThrown);
+                    show_error(ocean.dataset.params(), errorThrown);
             },
             complete: function(jqXHR, textStatus) {
                 ocean.processing = false;
