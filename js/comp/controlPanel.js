@@ -389,16 +389,29 @@ ocean.dsConf = {
 //                    }
                               }
            },
-    bran: {params: function() {return {
+    bran: {params: function() {
+                  var params = {
                     dataset: 'bran',
                     map: this.variable.get('id'),
                     date: $.datepick.formatDate(ocean.dateFormat, ocean.date),
                     period: ocean.period,
                     area: ocean.area,
-                    lat: $('#latitude').val(),
-                    lon: $('#longitude').val(),
                     timestamp: $.now()
-                }; },
+                  };
+
+                  switch (params.map) {
+                    case 'temp':
+                    case 'salt':
+                        params.lat = $('#latitude').val();
+                        params.lon = $('#longitude').val();
+                        break;
+
+                    default:
+                        break;
+                  }
+
+                  return params;
+                },
                 data: null,
                 setData: function(data) {
                     this.data = data;
