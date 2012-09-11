@@ -9,12 +9,8 @@ var ocean = ocean || {};
 ocean.controls = ['selectionDiv', 'toggleDiv', 'sliderDiv',
                   'yearMonthDiv', 'datepickerDiv', 'latlonDiv',
                   'tidalGaugeDiv', 'compDiv', 'clearlatlonButton' ];
-ocean.compare = {"flag": true, "limit": 2}
+ocean.compare = {"flag": true, "limit": 2};
 ocean.processing = false;
-//ocean.average = false;
-//ocean.trend = false;
-//ocean.runningAve = false;
-//ocean.runningAveLen = 2;
 ocean.MIN_YEAR = 1949;
 ocean.dateFormat = 'yyyymmdd';
 ocean.date = new Date();
@@ -52,20 +48,171 @@ Date.prototype.getMonthString = function() {
     return (calMonth < 10) ?  ('0' + calMonth) : calMonth + '';
 };
 
+function clearImageDiv()
+{
+    $('#outputDiv').html('');
+    $('#enlargeDiv').html('');
+}
+
+function createOutput(image, dataURL, name, extras)
+{
+    var div = $('<div>', {
+        'class': 'thumbnail'
+    });
+
+    if (name)
+        $('<h2>', {
+            text: name
+        }).appendTo(div);
+
+    var a = $('<a>', {
+        href: image,
+        title: "Click to open in a new window",
+        target: '_blank'
+    }).appendTo(div);
+
+    var img = $('<img>', {
+        src: image + '?' + $.param({ time: $.now() })
+    }).appendTo(a);
+
+    img.hover(
+        function (e) {
+            enlargeImg(this, true);
+        },
+        function (e) {
+            enlargeImg(this, false);
+        });
+
+    $('<div>', {
+        'class': 'overlay ui-icon ui-icon-newwin'
+    }).appendTo(div);
+
+    if (dataURL)
+        $('<a>', {
+            'class': 'download-data',
+            href: dataURL,
+            target: '_blank',
+            html: '<span class="ui-icon ui-icon-arrowreturnthick-1-s"></span>Download Data'
+        }).appendTo(div);
+
+    if (extras)
+        $('<span>', {
+            html: extras
+        }).appendTo(div);
+
+    return div;
+}
+
+function appendOutput()
+{
+    createOutput.apply(null, arguments).appendTo($('#outputDiv'));
+}
+
+function prependOutput()
+{
+    createOutput.apply(null, arguments).prependTo($('#outputDiv'));
+}
+
+function addPointLayer () {
+    var layer = new OpenLayers.Layer.Vector("point-layer",
+        {
+            style: {
+                graphicName: 'cross',
+                pointRadius: 10,
+                stroke: false
+            },
+            preFeatureInsert: function(feature) {
+                this.removeAllFeatures();
+            },
+            onFeatureInsert: function(feature) {
+                var geometry = feature.geometry;
+                $('#latitude').val(Math.round(geometry.y * 1000) / 1000);
+                $('#longitude').val(Math.round(geometry.x * 1000) / 1000);
+            }
+        });
+
+    ocean.mapObj.addLayer(layer);
+
+    this.panelControls = [
+        new OpenLayers.Control.DrawFeature(layer,
+            OpenLayers.Handler.Point, {
+                displayClass: 'olControlDrawFeaturePoint',
+                title: "Select a point on the map"
+            }),
+        new OpenLayers.Control.Navigation({
+                title: "Zoom and pan the map"
+            })
+    ];
+
+    this.toolbar = new OpenLayers.Control.Panel({
+        displayClass: 'olControlEditingToolbar',
+        defaultControl: this.panelControls[0],
+        div: document.getElementById('mapControlsToolbar')
+    });
+
+    this.toolbar.addControls(this.panelControls);
+    ocean.mapObj.addControl(this.toolbar);
+
+    /* track changes to the lat/lon and move the feature */
+    $('#latitude, #longitude').change(function () {
+        var lat = $('#latitude').val();
+        var lon = $('#longitude').val();
+
+        layer.removeAllFeatures();
+
+        if (lat != '' && lon != '')
+            layer.addFeatures([
+                new OpenLayers.Feature.Vector(
+                    new OpenLayers.Geometry.Point(lon, lat))
+            ]);
+    });
+
+    /* update the map with the initial lat/lon */
+    $('#latitude').change();
+}
+
+function removePointLayer () {
+    var layers = map.getLayersByName("point-layer");
+
+    if (layers.length == 0)
+        return;
+
+    for (layer in layers) {
+        map.removeLayer(layers[layer]);
+    }
+
+    if (this.toolbar) {
+        map.removeControl(this.toolbar);
+        this.toolbar.deactivate();
+        this.toolbar.destroy();
+    }
+
+    for (control in this.panelControls) {
+        map.removeControl(this.panelControls[control]);
+        this.panelControls[control].deactivate();
+        this.panelControls[control].destroy();
+    }
+
+    /* remove event handlers */
+    $('#latitude, #longitude').unbind();
+
+    this.toolbar = null;
+    this.panelControls = null;
+}
+
 ocean.dsConf = {
-    reynolds: {url: function() {return "cgi/portal.py?dataset=reynolds"
-                   + "&map=" + this.variable.get('id')
-                   + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
-                   + "&period=" + ocean.period
-                   + "&area=" + ocean.area
-                   + "&average=" + ocean.dsConf['reynolds'].aveCheck.average
-                   + "&trend=" + ocean.dsConf['reynolds'].aveCheck.trend
-                   + "&runningAve=" + ocean.dsConf['reynolds'].aveCheck.runningAve
-                   + "&runningInterval=" + ocean.dsConf['reynolds'].runningInterval
-                   + "&timestamp=" + new Date().getTime();
-                },
-                data: null,
-                variable: null,
+    reynolds: {params: function() { return {
+                    dataset: 'reynolds',
+                    map: this.variable.get('id'),
+                    date: $.datepick.formatDate(ocean.dateFormat, ocean.date),
+                    period: ocean.period,
+                    area: ocean.area,
+                    average: ocean.dsConf['reynolds'].aveCheck.average,
+                    trend: ocean.dsConf['reynolds'].aveCheck.trend,
+                    runningAve: ocean.dsConf['reynolds'].aveCheck.runningAve,
+                    runningInterval: ocean.dsConf['reynolds'].runningInterval,
+                    timestamp: $.now()
+                }; },
                 aveCheck: {},
                 mainCheck: 'average',
                 runningInterval: 2,
@@ -76,10 +223,10 @@ ocean.dsConf = {
                     maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
                     var minYear = parseInt(dateRange["minYear"]);
                     var maxYear = parseInt(dateRange["maxYear"]);
-                    
+
                     dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
                         var year = item.data.field1;
-                        var filter = item.store.filters.items[0]
+                        var filter = item.store.filters.items[0];
                             return year >= filter.minYear && year <= filter.maxYear;
                         },
                         minYear: minYear,
@@ -87,50 +234,41 @@ ocean.dsConf = {
 
                 },
                 callback: function(data) {
-                    var imgDiv = $('#imgDiv');
-                    var dataDiv = $('#dataDiv');
-                    var enlargeDiv = $('#enlargeDiv');
-                        if (this.variable.get("id") == "anom" && this.aveCheck.average && data.aveImg != null) {
-                            imgDiv.html('<img src="' + data.aveImg + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
-                            dataDiv.html('<b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C<br>' + '<a href="'+ data.aveData + '" target="_blank"><img src="images/download.png"/></a>');
-
+                        if (this.variable.get("id") == "anom" &&
+                            this.aveCheck.average && data.aveImg != null)
+                        {
+                            appendOutput(data.aveImg, data.aveData,
+                                         "Average(1981-2010)",
+                                         Math.round(data.mean*100)/100 + '\u00B0C');
                         }
                         else if (data.img != null) {
                             if (ocean.compare.flag){
-                                var imgChildren = document.getElementById('imgDiv').childNodes;
-                                var imgList = imgDiv.children();
+                                var imgList = $('#imgDiv').children();
                                 if (imgList.length >= ocean.compare.limit) {
-                                    $('#imgDiv img:last-child').remove();
-//                                    var last = imgDiv.last()
-//                                    imgDiv.removeChild(imgDiv.lastChild);
+                                    $('#outputDiv div.thumbnail:last-child').remove();
                                 }
                                 if (data.img != null) {
-                                    imgDiv.prepend('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>')
-//                                    img.src = data.img + '?time=' + new Date().getTime();
-//                                    img.width = "150";
-//                                    img.onmouseover = "enlargeImg(this, true)";
-//                                    img.onmouseout = "enlargeImg(this, false)"; 
+                                    prependOutput(data.img);
                                 }
-//                                imgDiv.insertBefore(img, imgDiv.firstChild);
                             }
                             else {
-                                imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                                clearImageDiv();
+                                appendOutput(data.img);
                             }
                             updateMap("Reynolds", data);
-                            dataDiv.html('');
                         }
                 },
                 onSelect: function(){
-                              $('#variableDiv').show();
-                              configCalendar(); 
-//                              $( "#datepicker" ).datepick('setDate', -4);
+                              showControl('variableDiv');
+                              configCalendar();
                           },
                 onDeselect: function() {
-                    layers = map.getLayersByName("Reynolds")
+                    layers = map.getLayersByName("Reynolds");
                     for (layer in layers) {
-                        map.removeLayer(layers[layer])
+                        map.removeLayer(layers[layer]);
                     }
-                    $('#imgDiv').html('');
+
+                    clearImageDiv();
                 },
                 selectVariable: function(selection) {
                                     updatePeriodCombo();
@@ -140,10 +278,10 @@ ocean.dsConf = {
                                     maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
                                     if (ocean.date != null) {
                                         if (ocean.date < minDate) {
-                                            ocean.date = minDate
+                                            ocean.date = minDate;
                                         }
                                         else if (ocean.date > maxDate) {
-                                            ocean.date = maxDate
+                                            ocean.date = maxDate;
                                         }
                                     }
                                     else {
@@ -164,20 +302,20 @@ ocean.dsConf = {
                                }
 //                update
             },
-    ersst: {url: function() {return "cgi/portal.py?dataset=ersst"
-                   + "&map=" + this.variable.get('id')
-                   + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
-                   + "&period=" + ocean.period
-                   + "&baseYear=1900"
-                   + "&area=" + ocean.area
-                   + "&average=" + ocean.dsConf['ersst'].aveCheck.average
-                   + "&trend=" + ocean.dsConf['ersst'].aveCheck.trend
-                   + "&runningAve=" + ocean.dsConf['ersst'].aveCheck.runningAve
-                   + "&runningInterval=" + ocean.dsConf['ersst'].runningInterval
-                   + "&timestamp=" + new Date().getTime();
-                },
+    ersst: {params: function() {return {
+                    dataset: 'ersst',
+                    map: this.variable.get('id'),
+                    date: $.datepick.formatDate(ocean.dateFormat, ocean.date),
+                    period: ocean.period,
+                    baseYear: 1900,
+                    area: ocean.area,
+                    average: ocean.dsConf['ersst'].aveCheck.average,
+                    trend: ocean.dsConf['ersst'].aveCheck.trend,
+                    runningAve: ocean.dsConf['ersst'].aveCheck.runningAve,
+                    runningInterval :ocean.dsConf['ersst'].runningInterval,
+                    timestamp: $.now()
+                }; },
                 data: null,
-                variable: null,
                 aveCheck: {},
                 mainCheck: 'average',
                 runningInterval: 2,
@@ -190,37 +328,39 @@ ocean.dsConf = {
                     var maxYear = parseInt(dateRange["maxYear"]);
                     dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
                         var year = item.data.field1;
-                        var filter = item.store.filters.items[0]
+                        var filter = item.store.filters.items[0];
                             return year >= filter.minYear && year <= filter.maxYear;
                         },
                         minYear: minYear,
                         maxYear: maxYear});
                 },
                 callback: function(data) {
-                    var imgDiv = $('#imgDiv');
-                    var dataDiv = $('#dataDiv');
-                    var enlargeDiv = $('#enlargeDiv');
-                    if (this.variable.get("id") == "anom" && this.aveCheck.average && data.aveImg != null) {
-                        imgDiv.html('<img src="' + data.aveImg + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
-                        dataDiv.html('<b>Average(1981-2010)</b> ' + Math.round(data.mean*100)/100 + '\u00B0C<br>' + '<a href="'+ data.aveData + '" target="_blank"><img src="images/download.png"/></a>');
+                    clearImageDiv();
+
+                    if (this.variable.get("id") == "anom" &&
+                        this.aveCheck.average && data.aveImg != null)
+                    {
+                        appendOutput(data.aveImg, data.aveData,
+                                     "Average(1981-2010)",
+                                     Math.round(data.mean*100)/100 + '\u00B0C'
+                                     );
 
                     }
                     else if (data.img != null) {
-                        imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                        appendOutput(data.img);
                         updateMap("ERSST", data);
-                        dataDiv.html('');
                     }
                 },
                 onSelect: function(){
-                              $('#variableDiv').show();
+                              showControl('variableDiv');
                               configCalendar();
                           },
                 onDeselect: function() {
-                    layers = map.getLayersByName("ERSST")
+                    layers = map.getLayersByName("ERSST");
                     for (layer in layers) {
-                        map.removeLayer(layers[layer])
+                        map.removeLayer(layers[layer]);
                     }
-                    $('#imgDiv').html('');
+                    clearImageDiv();
                 },
                 selectVariable: function(selection) {
                                     updatePeriodCombo();
@@ -230,10 +370,10 @@ ocean.dsConf = {
                                     maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
                                     if (ocean.date != null) {
                                         if (ocean.date < minDate) {
-                                            ocean.date = minDate
+                                            ocean.date = minDate;
                                         }
                                         else if (ocean.date > maxDate) {
-                                            ocean.date = maxDate
+                                            ocean.date = maxDate;
                                         }
                                     }
                                     else {
@@ -252,17 +392,30 @@ ocean.dsConf = {
 //                    }
                               }
            },
-    bran: {url: function() {return "cgi/portal.py?dataset=bran"
-                   + "&map=" + this.variable.get('id')
-                   + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
-                   + "&period=" + ocean.period
-                   + "&area=" + ocean.area
-                   + "&lat=" + $('#latitude').val()
-                   + "&lon=" + $('#longitude').val()
-                   + "&timestamp=" + new Date().getTime();
+    bran: {params: function() {
+                  var params = {
+                    dataset: 'bran',
+                    map: this.variable.get('id'),
+                    date: $.datepick.formatDate(ocean.dateFormat, ocean.date),
+                    period: ocean.period,
+                    area: ocean.area,
+                    timestamp: $.now()
+                  };
+
+                  switch (params.map) {
+                    case 'temp':
+                    case 'salt':
+                        params.lat = $('#latitude').val();
+                        params.lon = $('#longitude').val();
+                        break;
+
+                    default:
+                        break;
+                  }
+
+                  return params;
                 },
                 data: null,
-                variable: null,
                 setData: function(data) {
                     this.data = data;
                     dateRange = this.data.get('dateRange');
@@ -272,123 +425,86 @@ ocean.dsConf = {
                     var maxYear = parseInt(dateRange["maxYear"]);
                     dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
                         var year = item.data.field1;
-                        var filter = item.store.filters.items[0]
+                        var filter = item.store.filters.items[0];
                             return year >= filter.minYear && year <= filter.maxYear;
                         },
                         minYear: minYear,
                         maxYear: maxYear});
                 },
                 callback: function(data) {
-                    var imgDiv = $('#imgDiv');
-                    var dataDiv = $('#dataDiv');
-                    var enlargeDiv = $('#enlargeDiv');
+                    clearImageDiv();
+
                     if (data.img != null) {
-                        imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                        appendOutput(data.img);
                         updateMap("BRAN", data);
-                        dataDiv.html('');
                     }
                 },
                 onSelect: function()
                 {
-                    var branLayer = new OpenLayers.Layer.Vector(
-                        "BRAN Sub-Surface",
-                        {
-                            style: {
-                                graphicName: 'cross',
-                                pointRadius: 10,
-                                stroke: false
-                            },
-                            preFeatureInsert: function(feature) {
-                                this.removeAllFeatures();
-                            },
-                            onFeatureInsert: function(feature) {
-                                var geometry = feature.geometry;
-                                $('#latitude').val(Math.round(geometry.y * 1000)/1000);
-                                $('#longitude').val(Math.round(geometry.x * 1000)/1000);
-                            }
-                        });
-
-                    ocean.mapObj.addLayer(branLayer);
-
-                    this.panelControls = [
-                        new OpenLayers.Control.DrawFeature(branLayer,
-                            OpenLayers.Handler.Point, {
-                                'displayClass': 'olControlDrawFeaturePoint'
-                            }),
-                        new OpenLayers.Control.Navigation(),
-                    ];
-
-                    this.toolbar = new OpenLayers.Control.Panel({
-                        displayClass: 'olControlEditingToolbar',
-                        defaultControl: this.panelControls[0]
-                    });
-
-                    this.toolbar.addControls(this.panelControls);
-                    ocean.mapObj.addControl(this.toolbar);
-
-                    $('#variableDiv').show();
+                    showControl('variableDiv');
                     configCalendar();
                 },
                 onDeselect: function() {
-                                var layers = map.getLayersByName("BRAN");
-                                var layer;
-                                var control;
+                    var layers = map.getLayersByName("BRAN");
+                    var layer;
 
-                                for (layer in layers) {
-                                    map.removeLayer(layers[layer]);
-                                }
+                    for (layer in layers) {
+                        map.removeLayer(layers[layer]);
+                    }
 
-                                layers = map.getLayersByName("BRAN Sub-Surface");
-                                for (layer in layers) {
-                                    map.removeLayer(layers[layer]);
-                                }
-
-                                map.removeControl(this.toolbar);
-                                this.toolbar.deactivate();
-                                this.toolbar.destroy();
- 
-                                for (control in this.panelControls) {
-                                    map.removeControl(this.panelControls[control]);
-                                    this.panelControls[control].deactivate();
-                                    this.panelControls[control].destroy();
-                                }
-                                $('#imgDiv').html('');
-                                $('#dataDiv').html('');
-                                hideControl('clearlatlonButton');
+                    removePointLayer();
+                    clearImageDiv();
+                    hideControl('clearlatlonButton');
                 },
                 selectVariable: function(selection) {
-                                    updatePeriodCombo();
-                                    dateRange = this.data.get('dateRange');
-                                    updateYearCombo(dateRange.yearFilter);
-                                    minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
-                                    maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
-                                    if (ocean.date != null) {
-                                        if (ocean.date < minDate) {
-                                            ocean.date = minDate
-                                        }
-                                        else if (ocean.date > maxDate) {
-                                            ocean.date = maxDate
-                                        }
-                                    }
-                                    else {
-                                        ocean.date = maxDate;
-                                    }
-                                    updateCalDiv();
-                                    showControl('selectionDiv');
-                                    showControl('latlonDiv');
-                                    showControl('clearlatlonButton');
-                            }
+                    updatePeriodCombo();
+                    dateRange = this.data.get('dateRange');
+                    updateYearCombo(dateRange.yearFilter);
+                    minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
+                    maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
+                    if (ocean.date != null) {
+                        if (ocean.date < minDate) {
+                            ocean.date = minDate;
+                        }
+                        else if (ocean.date > maxDate) {
+                            ocean.date = maxDate;
+                        }
+                    }
+                    else {
+                        ocean.date = maxDate;
+                    }
+
+                    switch (selection) {
+                        /* these variables support cross sections */
+                        case 'temp':
+                        case 'salt':
+                            removePointLayer();
+                            addPointLayer();
+                            showControl('latlonDiv');
+                            break;
+
+                        default:
+                            removePointLayer();
+                            hideControl('latlonDiv');
+                            break;
+                    }
+
+                    updateCalDiv();
+                    showControl('selectionDiv');
+                    showControl('clearlatlonButton');
+                }
     },
-    ww3: {url: function() {return "cgi/portal.py?dataset=ww3"
-                                + "&lllat=" + $('#latitude').val()
-                                + "&lllon=" + $('#longitude').val()
-                                + "&urlat=" + $('#latitude').val()
-                                + "&urlon=" + $('#longitude').val()
-                                + "&variable=" + this.variable.get('id')
-                                + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
-                                + "&period=" + ocean.period
-                                + "&timestamp=" + new Date().getTime();
-                           },
+    ww3: {params: function() { return {
+                dataset: 'ww3',
+                lllat: $('#latitude').val(),
+                lllon: $('#longitude').val(),
+                urlat: $('#latitude').val(),
+                urlon: $('#longitude').val(),
+                variable: this.variable.get('id'),
+                date: $.datepick.formatDate(ocean.dateFormat, ocean.date),
+                period: ocean.period,
+                timestamp: $.now()
+            }; },
             data: null,
             panelControls: null,
             toolbar: null,
@@ -401,110 +517,74 @@ ocean.dsConf = {
                 var maxYear = parseInt(dateRange["maxYear"]);
                 dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
                         var year = item.data.field1;
-                        var filter = item.store.filters.items[0]
+                        var filter = item.store.filters.items[0];
                             return year >= filter.minYear && year <= filter.maxYear;
                         },
                         minYear: minYear,
                         maxYear: maxYear});
             },
             callback: function(data) {
-                          var imgDiv = $('#imgDiv');
-                          var dataDiv = $('#dataDiv');
+                          clearImageDiv();
+
                           if(data.ext != null) {
-                              dataDiv.html('<a href="'+ data.ext + '" target="_blank"><img src="images/download.png"/></a>');
-                              imgDiv.html('<img src="' + data.img + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
+                              appendOutput(data.img, data.ext);
                           }
                       },
-            onSelect: function() {var ww3Layer = new OpenLayers.Layer.Vector("WaveWatch III", {
-                                                         preFeatureInsert: function(feature) {
-                                                             this.removeAllFeatures();
-                                                         },
-                                                         onFeatureInsert: function(feature) {
-                                                             var geometry = feature.geometry;
-                                                             $('#latitude').val(Math.round(geometry.y * 1000)/1000);
-                                                             $('#longitude').val(Math.round(geometry.x * 1000)/1000);
-                                                         }
-                                                     });
-                                  ocean.mapObj.addLayer(ww3Layer);
-                                  this.panelControls = [
-                                      new OpenLayers.Control.DrawFeature(ww3Layer,
-                                                       OpenLayers.Handler.Point,
-                                                       {'displayClass': 'olControlDrawFeaturePoint'}),
-                                      new OpenLayers.Control.Navigation()
-                                  ];
-                                  this.toolbar = new OpenLayers.Control.Panel({
-                                      displayClass: 'olControlEditingToolbar',
-                                      defaultControl: this.panelControls[0]
-                                  });
-                                  this.toolbar.addControls(this.panelControls);
-                                  ocean.mapObj.addControl(this.toolbar);
-////                                  var boxControl = new OpenLayers.Control.DrawFeature(ww3Layer,
-////                                                       OpenLayers.Handler.Point);
-//                                                       OpenLayers.Handler.RegularPolygon, 
-//                                                       {
-//                                                           handlerOptions: {
-//                                                               sides: 4
-//                                                           }
-//                                                       });
-////                                  ocean.mapObj.addControl(boxControl);
-////                                  boxControl.activate(); 
-                                  $('#variableDiv').show();
-                                  configCalendar(); 
-                                 },
+            onSelect: function() {
+                showControl('variableDiv');
+                configCalendar();
+            },
             onDeselect: function() {
-                            var layers = map.getLayersByName("WaveWatch III");
-			    var layer;
-			    var control;
+                var layers = map.getLayersByName("WaveWatch III");
+                var layer;
 
-                            for (layer in layers) {
-                                map.removeLayer(layers[layer]);
-                            }
-                            map.removeControl(this.toolbar);
-                            this.toolbar.deactivate();
-                            this.toolbar.destroy();
+                for (layer in layers) {
+                    map.removeLayer(layers[layer]);
+                }
 
-                            for (control in this.panelControls) {
-                                map.removeControl(this.panelControls[control]);
-                                this.panelControls[control].deactivate();
-                                this.panelControls[control].destroy();
-                            }
-                            $('#imgDiv').html('');
-                            $('#dataDiv').html('');
-                            showControl('yearDiv');
-                        },
+                removePointLayer();
+                clearImageDiv();
+                showControl('yearDiv');
+            },
             selectVariable: function(selection) {
-                                updatePeriodCombo();
-                                dateRange = this.data.get('dateRange');
-                                updateYearCombo(dateRange.yearFilter);
-                                minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
-                                maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
-                                if (ocean.date != null) {
-                                    if (ocean.date < minDate) {
-                                        ocean.date = minDate
-                                    }
-                                    else if (ocean.date > maxDate) {
-                                        ocean.date = maxDate
-                                    }
-                                }
-                                else {
-                                    ocean.date = maxDate;
-                                }
-                                updateCalDiv();
-                                showControl('selectionDiv');
-                                hideControl('yearDiv');
-                                showControl('latlonDiv');
-                            }
+                updatePeriodCombo();
+                dateRange = this.data.get('dateRange');
+                updateYearCombo(dateRange.yearFilter);
+                minDate = $.datepick.parseDate(ocean.dateFormat,
+                                               dateRange.minDate);
+                maxDate = $.datepick.parseDate(ocean.dateFormat,
+                                               dateRange.maxDate);
+                if (ocean.date != null) {
+                    if (ocean.date < minDate) {
+                        ocean.date = minDate;
+                    }
+                    else if (ocean.date > maxDate) {
+                        ocean.date = maxDate;
+                    }
+                }
+                else {
+                    ocean.date = maxDate;
+                }
+                updateCalDiv();
+                showControl('selectionDiv');
+                hideControl('yearDiv');
+                showControl('latlonDiv');
+
+                removePointLayer();
+                addPointLayer();
+            }
     },
-    sealevel: {url: function() {return "cgi/portal.py?dataset=sealevel"
-                                + "&variable=" + this.variable.get('id')
-                                + "&period=" + ocean.period
-                                + "&date=" + $.datepick.formatDate(ocean.dateFormat, ocean.date)
-                                + "&area=" + ocean.area
-                                + "&lat=" + $('#latitude').val()
-                                + "&lon=" + $('#longitude').val()
-                                + "&tidalGaugeId=" + $('#tgId').val()
-                                + "&timestamp=" + new Date().getTime();
-                           },
+    sealevel: {params: function() { return {
+                dataset: 'sealevel',
+                variable: this.variable.get('id'),
+                period: ocean.period,
+                date: $.datepick.formatDate(ocean.dateFormat, ocean.date),
+                area: ocean.area,
+                lat: $('#latitude').val(),
+                lon: $('#longitude').val(),
+                tidalGaugeId: $('#tgId').val(),
+                timestamp: $.now()
+            }; },
             data: null,
             setData: function(data) {
                 this.data = data;
@@ -532,28 +612,21 @@ ocean.dsConf = {
                 }
             },
             callback: function(data) {
-                var imgDiv = $('#imgDiv');
-                var dataDiv = $('#dataDiv');
-                var enlargeDiv = $('#enlargeDiv');
-                if (data.img != null) {
-                    var img;
+                clearImageDiv();
 
-                    imgDiv.html('');
-                    for (img in data.img) {
-                        imgDiv.html(imgDiv.html() + '<img src="' + data.img[img] + '?time=' + new Date().getTime() + '" width="150" onmouseover="enlargeImg(this, true)" onmouseout="enlargeImg(this, false)"/>');
-                    }
+                if (data.img) {
+                    appendOutput(data.img);
                     updateSeaLevelMap(data);
                 }
-                dataDiv.html('');
-                if(data.tid != null) {
-                    dataDiv.html('<a href="'+ data.tid + '" target="_blank">Tidal Gauge Data</a><br/>');
-                }
-                if(data.alt != null) {
-                    dataDiv.html(dataDiv.html() + '<a href="'+ data.alt + '" target="_blank">Altimetry Data</a><br/>');
-                }
-                if(data.rec!= null) {
-                    dataDiv.html(dataDiv.html() + '<a href="'+ data.rec + '" target="_blank">Reconstruction Data</a><br/>');
-                }
+
+                if (data.tidimg)
+                    appendOutput(data.tidimg, data.tidtxt, "Tidal Gauge");
+
+                if (data.altimg)
+                    appendOutput(data.altimg, data.alttxt, "Altimetry");
+
+                if (data.recimg)
+                    appendOutput(data.recimg, data.rectxt, "Reconstruction");
             },
             onSelect: function() {
                           var gaugesLayer = new OpenLayers.Layer.Vector("Tidal gauges", {
@@ -585,7 +658,7 @@ ocean.dsConf = {
                                   $('#longitude').val(Math.round(geometry.lon * 1000)/1000);
                               }
                           });
-                          $('#variableDiv').show();
+                          showControl('variableDiv');
                       },
             onDeselect: function() {
                             var layers = map.getLayersByName("Sea Level");
@@ -607,8 +680,7 @@ ocean.dsConf = {
                                 controls[control].deactivate();
                                 controls[control].destroy();
                             }
-                            $('#imgDiv').html('');
-                            $('#dataDiv').html('');
+                            clearImageDiv();
                         },
             selectVariable: function(selection) {
                                 updatePeriodCombo();
@@ -640,11 +712,17 @@ ocean.dsConf = {
 
 function enlargeImg(img, show) {
     var enlargeDiv = $('#enlargeDiv');
+
     if (show) {
-        enlargeDiv.html('<img src="' + img.src + ' "width="650"/>');
+        $('<img>', {
+            src: img.src,
+            'class' : 'imagepreview'
+        }).appendTo(enlargeDiv);
+        enlargeDiv.show();
     }
     else {
         enlargeDiv.html('');
+        enlargeDiv.hide();
     }
 }
 
@@ -653,27 +731,9 @@ function AveCheck(id, state) {
     this.state = state;
 }
 
-//*****************************************************
-//Initialise Datasets
-//*****************************************************
-//
-//Reynolds
 Ext.require(['*']);
 Ext.onReady(function() {
     Ext.Loader.setConfig({enabled:true});
-
-//    Ext.define('Category', {
-//        extend: 'Ext.data.Model',
-//        fields: ['name', 'id', 'dataset'],
-//        idProperty: 'id',
-//        proxy: {
-//            type: 'ajax',
-//            url: 'config/categories.json',
-//            reader: {
-//                type: 'json'
-//            }
-//        }
-//    });
 
     Ext.define('Dataset', {
         extend: 'Ext.data.Model',
@@ -688,7 +748,7 @@ Ext.onReady(function() {
             }
         }
     });
-   
+
     Ext.define('Variable', {
         extend: 'Ext.data.Model',
         idProperty: 'id',
@@ -708,11 +768,6 @@ Ext.onReady(function() {
             }
         }
     });
-
-//    ocean.categories = Ext.create('Ext.data.Store', {
-//        autoLoad: true,
-//        model: 'Category'
-//    });
 
     ocean.datasets = Ext.create('Ext.data.Store', {
         autoLoad: true,
@@ -755,21 +810,6 @@ Ext.onReady(function() {
         }
     }
 
-//    ocean.categoryCombo = Ext.create('Ext.form.field.ComboBox', {
-//        id: 'categoryCombo',
-//        fieldLabel: 'Category',
-//        labelWidth: 50,
-//        width: 100,
-//        displayField: 'name',
- //       valueField: 'id',
-//        rederTo: 'categoryDiv',
-//        store: ocean.categories,
-//        queryMode: 'local',
-//        listeners: {
-//            'select': selectCategory
-//        }
-//    });
-
     var hbox = Ext.create('Ext.container.Container', {
         layout: {
             type: 'hbox'
@@ -809,7 +849,8 @@ Ext.onReady(function() {
             /* clear the latitude/longitude */
             $('#latitude').val('');
             $('#longitude').val('');
-            /* FIXME: remove the marker from the map */
+            /* trigger a change */
+            $('#latitude').change();
         }
     });
 
@@ -842,7 +883,6 @@ Ext.onReady(function() {
         store: ocean.periods,
         lastQuery: '',
         listeners: {
-//            'select': selectPeriod
             'change': selectPeriod
         }
     });
@@ -931,14 +971,10 @@ Ext.onReady(function() {
         listeners: {
             'select': function(event, args) {
                 ocean.date.setFullYear(event.getValue());
-            },
-            'expend': function(picker, opts) {
-                var pick = picker;
-            } 
+            }
         }
     });
-//    ocean.yearCombo.getPicker().setAutoScroll(true);
- 
+
     initialise();
 });
 
@@ -1042,7 +1078,6 @@ function selectDataset(event, args) {
     var selection = event.getValue();
     var record = ocean.datasets.getById(selection);
     ocean.dsConf[selection].setData(record);
-//    ocean.dsConf[selection].data = record;
 
     if (ocean.dataset != null) {
         ocean.dataset.onDeselect();
@@ -1078,6 +1113,7 @@ function configCalendar() {
 function createCalendars() {
     var dateRange = ocean.dataset.data.get('dateRange');
     var minDate = ocean.dataset.data.get('dateRange').minDate;
+
     ocean.calendar = $("#datepicker").datepick({
         minDate: dateRange.minDate,
         maxDate: dateRange.maxDate,
@@ -1194,6 +1230,7 @@ function setCompare() {
 
 function initialise() {
     $('#variableDiv').hide();
+    $('#enlargeDiv').hide();
     hideControls();
 }
 
@@ -1214,15 +1251,24 @@ function updateDate(dateObj) {
 function updatePage() {
     if (!ocean.processing) {
 
-        function show_error(url, text)
+        if (!ocean.dataset)
+            return;
+
+        if (!ocean.dataset.variable)
+            return;
+
+        function show_error(params, text)
         {
+            var url = 'cgi/portal.py?' + $.param(params);
+
             $('#error-dialog-content').html(text);
             $('#error-dialog-request').prop('href', url);
             $('#error-dialog').dialog('open');
         }
 
         $.ajax({
-            url: ocean.dataset.url(),
+            url: 'cgi/portal.py',
+            data: ocean.dataset.params(),
             dataType: 'json',
             beforeSend: function(jqXHR, settings) {
                 ocean.processing = true;
@@ -1232,22 +1278,22 @@ function updatePage() {
             success: function(data, textStatus, jqXHR) {
                 if (data == null || $.isEmptyObject(data))
                 {
-                    show_error(ocean.dataset.url(), "returned no data");
+                    show_error(ocean.dataset.params(), "returned no data");
                 }
                 else
                 {
                     if (data.error)
-                        show_error(ocean.dataset.url(), data.error);
+                        show_error(ocean.dataset.params(), data.error);
                     else
                         ocean.dataset.callback(data);
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 if (textStatus == 'parsererror')
-                    show_error(ocean.dataset.url(),
+                    show_error(ocean.dataset.params(),
                                "Unable to parse server response.");
                 else
-                    show_error(ocean.dataset.url(), errorThrown);
+                    show_error(ocean.dataset.params(), errorThrown);
             },
             complete: function(jqXHR, textStatus) {
                 ocean.processing = false;

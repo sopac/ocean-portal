@@ -35,10 +35,6 @@
     border: 2px solid black;
  }
 
- #latlonDiv table input {
-   margin: 3px;
- }
-
  .notitle .ui-dialog-titlebar {
    display: none;
  }
@@ -63,10 +59,8 @@
     <div id="enlargeDiv"></div>
 </div>
 <div id="outputDiv">
-    <div id="dataDiv"></div>
-    <div id="imgDiv"></div>
 </div>
-<div class="wrapper" id="wrapper">
+<div class="wrapper x-hidden" id="wrapper">
       <form action="#">
       <div class="header" id="header">
           <div class="title" id="title" ><h1 id="dstitle" class="dstitle"></h1></div>
@@ -121,6 +115,11 @@
       <div class="bottom" id="bottom"></div>
       </form>
 </div>
+<div id="mapControls" class="x-hidden">
+  <h2>Layer</h2>
+  <div id="mapControlsLayers"></div>
+  <div id="mapControlsToolbar" class="olControlEditingToolbar"></div>
+</div>
 
 <div id="about-datasets" class="dialog" title="About Datasets">
 </div>
@@ -133,7 +132,7 @@
   <a href="mailto:COSPPac_SoftwareSupport@bom.gov.au">COSPPac Software
   Support</a>.
   <br/>
-  <small><a id="error-dialog-request" href="">Server Request</a></small>
+  <small><a id="error-dialog-request" href="" target="_blank">Server Request</a></small>
  </p>
 </div>
 <div id="loading-dialog" class="dialog">

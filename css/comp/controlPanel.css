@@ -65,10 +65,25 @@
 
 #enlargeDiv {
     position: absolute;
-    bottom: 50px;
-    left: 100px;
-    width: 650px;
     z-index: 1021;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+#enlargeDiv img {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 90%;
+    max-height: 90%;
+    width: auto;
+    height: auto;
+    margin: auto;
+    border: 1px solid black;
 }
 
 #header {
@@ -79,18 +94,68 @@
 #left {
 }
 
-#dataDiv {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
+#latlonDiv table input {
+  margin: 3px;
 }
 
-#latDiv {
-    padding-bottom: 5px;
-    padding-top: 5px;
+#outputDiv {
+    padding: 3px;
 }
 
-#lonDiv {
-    padding-bottom: 5px;
-    padding-top: 5px;
+.thumbnail {
+  display: block;
+  position: relative;
+  padding: 3px;
+  padding-bottom: 12px;
+}
+
+.thumbnail img {
+  max-width: 95%;
+  height: auto;
+}
+
+.thumbnail .overlay {
+  position: absolute;
+  display: block;
+  right: 5px;
+  top: 5px;
+  z-index: 100;
+}
+
+.download-data {
+  text-decoration: none;
+}
+
+.download-data:hover {
+  text-decoration: underline;
+}
+
+a span.ui-icon {
+  display: inline-block;
+}
+
+#mapControls {
+  padding: 3px;
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+#mapControls .layersDiv {
+  padding: 3px;
+}
+
+#mapControls .layersDiv .labelSpan {
+  padding-left: 3px;
+}
+
+#mapControlsToolbar {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+}
+
+.dataLbl, .dataLayersDiv, .baseLbl {
+  /* hide the data layers from the layer switcher */
+  display: none;
 }
