@@ -930,14 +930,10 @@ Ext.onReady(function() {
         listeners: {
             'select': function(event, args) {
                 ocean.date.setFullYear(event.getValue());
-            },
-            'expend': function(picker, opts) {
-                var pick = picker;
-            } 
+            }
         }
     });
-//    ocean.yearCombo.getPicker().setAutoScroll(true);
- 
+
     initialise();
 });
 
