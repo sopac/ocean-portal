@@ -250,7 +250,24 @@ Ext.onReady(function() {
             title: 'Output',
             width: 220,
             autoScroll: true,
-            contentEl: 'outputDiv'
+            contentEl: 'outputDiv',
+            tools: [{
+                /* FIXME: how to make them in the style of tool buttons? */
+                /* Report Feedback */
+                html: $('<a>', {
+                    'class': 'ui-icon ui-icon-mail-closed',
+                    title: "Report Feedback",
+                    href: 'mailto:COSPPac_SoftwareSupport@bom.gov.au'
+                }).get(0).outerHTML
+            }, {
+                /* Help Guide */
+                html: $('<a>', {
+                    'class': 'ui-icon ui-icon-help',
+                    title: "User Guide",
+                    href: '/cosppac/comp/ocean-portal/ocean-portal-help.shtml',
+                    target: '_blank'
+                }).get(0).outerHTML
+            }]
         }
        ]
     });
