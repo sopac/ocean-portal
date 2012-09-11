@@ -152,6 +152,20 @@ function addPointLayer () {
 
     this.toolbar.addControls(this.panelControls);
     ocean.mapObj.addControl(this.toolbar);
+
+    /* track changes to the lat/lon and move the feature */
+    $('#latitude, #longitude').change(function () {
+        var lat = $('#latitude').val();
+        var lon = $('#longitude').val();
+
+        layer.removeAllFeatures();
+
+        if (lat != '' && lon != '')
+            layer.addFeatures([
+                new OpenLayers.Feature.Vector(
+                    new OpenLayers.Geometry.Point(lon, lat))
+            ]);
+    });
 }
 
 function removePointLayer () {
