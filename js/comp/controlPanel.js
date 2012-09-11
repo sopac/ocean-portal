@@ -425,46 +425,57 @@ ocean.dsConf = {
                 },
                 onSelect: function()
                 {
-                    addPointLayer();
-
                     showControl('variableDiv');
                     configCalendar();
                 },
                 onDeselect: function() {
-                                var layers = map.getLayersByName("BRAN");
-                                var layer;
-                                var control;
+                    var layers = map.getLayersByName("BRAN");
+                    var layer;
 
-                                for (layer in layers) {
-                                    map.removeLayer(layers[layer]);
-                                }
+                    for (layer in layers) {
+                        map.removeLayer(layers[layer]);
+                    }
 
-                                removePointLayer();
-                                clearImageDiv();
-                                hideControl('clearlatlonButton');
+                    removePointLayer();
+                    clearImageDiv();
+                    hideControl('clearlatlonButton');
                 },
                 selectVariable: function(selection) {
-                                    updatePeriodCombo();
-                                    dateRange = this.data.get('dateRange');
-                                    updateYearCombo(dateRange.yearFilter);
-                                    minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
-                                    maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
-                                    if (ocean.date != null) {
-                                        if (ocean.date < minDate) {
-                                            ocean.date = minDate;
-                                        }
-                                        else if (ocean.date > maxDate) {
-                                            ocean.date = maxDate;
-                                        }
-                                    }
-                                    else {
-                                        ocean.date = maxDate;
-                                    }
-                                    updateCalDiv();
-                                    showControl('selectionDiv');
-                                    showControl('latlonDiv');
-                                    showControl('clearlatlonButton');
-                            }
+                    updatePeriodCombo();
+                    dateRange = this.data.get('dateRange');
+                    updateYearCombo(dateRange.yearFilter);
+                    minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
+                    maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
+                    if (ocean.date != null) {
+                        if (ocean.date < minDate) {
+                            ocean.date = minDate;
+                        }
+                        else if (ocean.date > maxDate) {
+                            ocean.date = maxDate;
+                        }
+                    }
+                    else {
+                        ocean.date = maxDate;
+                    }
+
+                    switch (selection) {
+                        /* these variables support cross sections */
+                        case 'temp':
+                        case 'salt':
+                            addPointLayer();
+                            showControl('latlonDiv');
+                            break;
+
+                        default:
+                            removePointLayer();
+                            hideControl('latlonDiv');
+                            break;
+                    }
+
+                    updateCalDiv();
+                    showControl('selectionDiv');
+                    showControl('clearlatlonButton');
+                }
     },
     ww3: {params: function() { return {
                 dataset: 'ww3',
