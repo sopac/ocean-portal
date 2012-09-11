@@ -8,6 +8,20 @@
 var ocean = ocean || {};
 var map;
 
+window.onerror = function (msg, url, line) {
+    $('#error-dialog-content').html("Javascript error: " + msg +
+                                    " &mdash; please reload your browser." +
+                                    "<br/><small>" + url + ":" + line +
+                                    "</small>");
+    $('#error-dialog-request').hide();
+    $('#error-dialog').dialog('option', { 'modal': true,
+                                          'dialogClass': 'notitle',
+                                          'closeOnEscape': false });
+    $('#error-dialog').dialog('open');
+
+    return false;
+}
+
 $(document).ready(function() {
     map = new OpenLayers.Map("map", {
         resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
