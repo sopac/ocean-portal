@@ -805,7 +805,8 @@ Ext.onReady(function() {
             /* clear the latitude/longitude */
             $('#latitude').val('');
             $('#longitude').val('');
-            /* FIXME: remove the marker from the map */
+            /* trigger a change */
+            $('#latitude').change();
         }
     });
 
