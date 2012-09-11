@@ -166,6 +166,9 @@ function addPointLayer () {
                     new OpenLayers.Geometry.Point(lon, lat))
             ]);
     });
+
+    /* update the map with the initial lat/lon */
+    $('#latitude').change();
 }
 
 function removePointLayer () {
