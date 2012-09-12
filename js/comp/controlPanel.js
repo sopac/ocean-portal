@@ -950,8 +950,8 @@ Ext.onReady(function() {
         store: ocean.monthStore,
         listeners: {
             'select': function(event, args) {
-                ocean.date.setMonth(event.getValue() - 1);
-            } 
+                ocean.date.setMonth(parseInt(event.getValue()) - 1, 1);
+            }
         }
     });
 
@@ -970,7 +970,9 @@ Ext.onReady(function() {
         store: yearRange,
         listeners: {
             'select': function(event, args) {
-                ocean.date.setFullYear(event.getValue());
+                ocean.date.setFullYear(event.getValue(),
+                                       ocean.monthCombo.getValue() - 1,
+                                       1);
             }
         }
     });
@@ -1128,11 +1130,9 @@ function createCalendars() {
                       replace(/\{link:close\}/, '')
                    }),
         showOtherMonths: true,
-        onSelect: updateDate,
-//        onShow: beforeShow,
-//        onDate: checkPeriod,
-//        onChangeMonthYear: monthOrYearChanged,
-//        onClose: closed,
+        onSelect: function (dateObj) {
+            ocean.date = dateObj.length? dateObj[0] : null
+        },
         showOnFocus: false
     });
     $( "#datepicker" ).mousedown(function() {
@@ -1201,6 +1201,12 @@ function updateCalDiv() {
     else {
         hideControl('datepickerDiv');
         showControl('yearMonthDiv');
+
+        if (ocean.period == 'yearly')
+            hideControl('monthDiv');
+        else /* monthly, 3 monthly, 6 monthly */
+            showControl('monthDiv');
+
         ocean.monthCombo.select(ocean.date.getMonthString());
         ocean.yearCombo.select(ocean.date.getFullYear());
     }
@@ -1233,17 +1239,6 @@ function initialise() {
     $('#enlargeDiv').hide();
     hideControls();
 }
-
-//**********************************************************
-//Datepicker setup
-//**********************************************************
-var average;
-
-function updateDate(dateObj) {
-    ocean.date = dateObj.length? dateObj[0] : null;
-}
-
-
 
 //**********************************************************
 //Ajax processing
