@@ -644,7 +644,7 @@ ocean.dsConf = {
                     protocol: new OpenLayers.Protocol.HTTP({
                         url: 'config/comp/tidalGauges.txt',
                         format: new OpenLayers.Format.Text({
-                            extractStyles: false,
+                            extractStyles: false
                         })
                     }),
                     style: {
