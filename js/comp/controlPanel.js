@@ -243,10 +243,10 @@ ocean.dsConf = {
                         }
                         else if (data.img != null) {
                             if (ocean.compare.flag){
-                                var imgList = $('#imgDiv').children();
-                                if (imgList.length >= ocean.compare.limit) {
+                                while ($('#outputDiv div.thumbnail').length >= ocean.compare.limit) {
                                     $('#outputDiv div.thumbnail:last-child').remove();
                                 }
+
                                 if (data.img != null) {
                                     prependOutput(data.img);
                                 }
