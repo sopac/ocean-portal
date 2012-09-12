@@ -100,7 +100,6 @@ data = [
     'js/comp/controlPanel.js',
     'js/comp/compmap.js',
 #   'js/sst.js',
-    'images/dot.png',
     'images/search.gif',
     'images/calendar-blue.gif',
     'images/blank.png',

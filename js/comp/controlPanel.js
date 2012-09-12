@@ -243,10 +243,10 @@ ocean.dsConf = {
                         }
                         else if (data.img != null) {
                             if (ocean.compare.flag){
-                                var imgList = $('#imgDiv').children();
-                                if (imgList.length >= ocean.compare.limit) {
+                                while ($('#outputDiv div.thumbnail').length >= ocean.compare.limit) {
                                     $('#outputDiv div.thumbnail:last-child').remove();
                                 }
+
                                 if (data.img != null) {
                                     prependOutput(data.img);
                                 }
@@ -629,37 +629,111 @@ ocean.dsConf = {
                     appendOutput(data.recimg, data.rectxt, "Reconstruction");
             },
             onSelect: function() {
-                          var gaugesLayer = new OpenLayers.Layer.Vector("Tidal gauges", {
-                              strategies: [new OpenLayers.Strategy.BBOX({resFactor: 1.1})],
-                              protocol: new OpenLayers.Protocol.HTTP({
-                                  url: "config/comp/tidalGauges.txt",
-                                  format: new OpenLayers.Format.Text()
-                              }),
-                              'calculateInRange' : function() { return true;}
-                          });
-//                          gaugesLayer.display(false)
-                          ocean.mapObj.addLayer(gaugesLayer);
-                          gaugesLayer.redraw(true);
-                          var gaugeControl = new OpenLayers.Control.SelectFeature(gaugesLayer, {
-                              clickout: true,
-                              multiple: false,
-                              toggle: true,
-                              highlightOnly: false
-                          });
-                          map.addControl(gaugeControl);
-                          gaugeControl.activate();
-                          gaugesLayer.events.on({
-                              'featureselected': function(event) {
-                                  gauge = event.feature;
-                                  geometry = gauge.geometry.getBounds().getCenterLonLat();
-                                  $('#tidalgauge').val(gauge.attributes.title);
-                                  $('#tgId').val(gauge.attributes.description);
-                                  $('#latitude').val(Math.round(geometry.lat * 1000)/1000);
-                                  $('#longitude').val(Math.round(geometry.lon * 1000)/1000);
-                              }
-                          });
-                          showControl('variableDiv');
-                      },
+                var filter = new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                    property: 'region',
+                    value: 'pac'
+                });
+
+                var gaugesLayer = new OpenLayers.Layer.Vector(
+                    "Tidal gauges", {
+                    strategies: [
+                        new OpenLayers.Strategy.Fixed(),
+                        new OpenLayers.Strategy.Filter({ filter: filter })
+                    ],
+                    protocol: new OpenLayers.Protocol.HTTP({
+                        url: 'config/comp/tidalGauges.txt',
+                        format: new OpenLayers.Format.Text({
+                            extractStyles: false,
+                        })
+                    }),
+                    style: {
+                        pointRadius: 5,
+                        strokeWidth: 1,
+                        strokeColor: 'white',
+                        fillColor: 'black',
+                        fillOpacity: 0.8
+                    }
+                });
+
+                ocean.mapObj.addLayer(gaugesLayer);
+                gaugesLayer.redraw(true);
+
+                var gaugeControl = new OpenLayers.Control.SelectFeature(
+                    gaugesLayer, {
+                    clickout: true,
+                    onSelect: function (gauge) {
+                        gauge.attributes.selected = true;
+
+                        geometry = gauge.geometry.getBounds().getCenterLonLat();
+                        $('#tidalgauge').val(gauge.attributes.title);
+                        $('#tgId').val(gauge.attributes.id);
+                        $('#latitude').val(Math.round(geometry.lat * 1000)/1000);
+                        $('#longitude').val(Math.round(geometry.lon * 1000)/1000);
+
+                        /* highlight the selected feature */
+                        gauge.style = {
+                            pointRadius: 6,
+                            strokeWidth: 2,
+                            strokeColor: 'red',
+                            fillColor: 'black',
+                            fillOpacity: 0.8
+                        };
+                        gaugesLayer.drawFeature(gauge);
+                    },
+                    onUnselect: function (gauge) {
+                        gauge.attributes.selected = false;
+
+                        $('#tidalgauge').val('');
+                        $('#tgId').val('');
+                        $('#latitude').val('');
+                        $('#longitude').val('');
+
+                        /* unhighlight the feature */
+                        gauge.style = null;
+                        gaugesLayer.drawFeature(gauge);
+                    }
+                });
+
+                var gaugeHover = new OpenLayers.Control.SelectFeature(
+                    gaugesLayer, {
+                    hover: true,
+                    highlightOnly: true,
+                    eventListeners: {
+                        featurehighlighted: function (e) {
+                            var gauge = e.feature;
+                            var col = gauge.attributes.selected ? 'red' : 'white';
+
+                            gaugesLayer.drawFeature(gauge, {
+                                label: gauge.attributes.title,
+                                labelAlign: 'rb',
+                                labelXOffset: 15,
+                                labelYOffset: 10,
+                                fontColor: 'red',
+                                fontWeight: 'bold',
+                                pointRadius: 5,
+                                strokeWidth: 2,
+                                strokeColor: 'red',
+                                fillColor: 'black',
+                                fillOpacity: 0.9
+                            });
+                        },
+                        featureunhighlighted: function (e) {
+                            var gauge = e.feature;
+
+                            gaugesLayer.drawFeature(gauge);
+                        }
+                    }
+                });
+
+                map.addControl(gaugeHover);
+                map.addControl(gaugeControl);
+
+                gaugeHover.activate();
+                gaugeControl.activate();
+
+                showControl('variableDiv');
+            },
             onDeselect: function() {
                             var layers = map.getLayersByName("Sea Level");
                             var layer;
@@ -950,8 +1024,8 @@ Ext.onReady(function() {
         store: ocean.monthStore,
         listeners: {
             'select': function(event, args) {
-                ocean.date.setMonth(event.getValue() - 1);
-            } 
+                ocean.date.setMonth(parseInt(event.getValue()) - 1, 1);
+            }
         }
     });
 
@@ -970,7 +1044,9 @@ Ext.onReady(function() {
         store: yearRange,
         listeners: {
             'select': function(event, args) {
-                ocean.date.setFullYear(event.getValue());
+                ocean.date.setFullYear(event.getValue(),
+                                       ocean.monthCombo.getValue() - 1,
+                                       1);
             }
         }
     });
@@ -1128,11 +1204,9 @@ function createCalendars() {
                       replace(/\{link:close\}/, '')
                    }),
         showOtherMonths: true,
-        onSelect: updateDate,
-//        onShow: beforeShow,
-//        onDate: checkPeriod,
-//        onChangeMonthYear: monthOrYearChanged,
-//        onClose: closed,
+        onSelect: function (dateObj) {
+            ocean.date = dateObj.length? dateObj[0] : null
+        },
         showOnFocus: false
     });
     $( "#datepicker" ).mousedown(function() {
@@ -1201,6 +1275,12 @@ function updateCalDiv() {
     else {
         hideControl('datepickerDiv');
         showControl('yearMonthDiv');
+
+        if (ocean.period == 'yearly')
+            hideControl('monthDiv');
+        else /* monthly, 3 monthly, 6 monthly */
+            showControl('monthDiv');
+
         ocean.monthCombo.select(ocean.date.getMonthString());
         ocean.yearCombo.select(ocean.date.getFullYear());
     }
@@ -1233,17 +1313,6 @@ function initialise() {
     $('#enlargeDiv').hide();
     hideControls();
 }
-
-//**********************************************************
-//Datepicker setup
-//**********************************************************
-var average;
-
-function updateDate(dateObj) {
-    ocean.date = dateObj.length? dateObj[0] : null;
-}
-
-
 
 //**********************************************************
 //Ajax processing
