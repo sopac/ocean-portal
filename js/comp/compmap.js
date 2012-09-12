@@ -59,6 +59,7 @@ $(document).ready(function() {
                      "bathymetry_1000", "bathymetry_200", "bathymetry_0",
                      "land", "maritime", "capitals", "countries"]
         }, {
+            transitionEffect: 'resize',
             wrapDateLine: true
         });
 
@@ -67,6 +68,7 @@ $(document).ready(function() {
             map: "reynolds",
             layers: ["sst_left", "sst_right", "land", "coastline"]
         }, {
+            transitionEffect: 'resize',
             wrapDateLine: true
         });
 
@@ -130,10 +132,11 @@ function updateMap(layerName, data){
     else{
         var sstLayer = new OpenLayers.Layer.MapServer(layerName,
             "cgi/getMap", {
-	    map: 'reynolds',
+            map: 'reynolds',
             layers: ["sst_left", "sst_right", "land", "coastline"],
             raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
         }, {
+            transitionEffect: 'resize',
             wrapDateLine: true
         });
 
@@ -155,10 +158,11 @@ function updateSeaLevelMap(data){
     else{
         var slLayer = new OpenLayers.Layer.MapServer("Sea Level",
             "cgi/getMap", {
-	    map: 'sealevel',
+            map: 'sealevel',
             layers: ["sl_left", "sl_right", "land", "coastline"],
             raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
         }, {
+            transitionEffect: 'resize',
             wrapDateLine: true
         });
 
