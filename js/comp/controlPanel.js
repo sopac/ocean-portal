@@ -660,7 +660,7 @@ ocean.dsConf = {
 
                         geometry = gauge.geometry.getBounds().getCenterLonLat();
                         $('#tidalgauge').val(gauge.attributes.title);
-                        $('#tgId').val(gauge.attributes.description);
+                        $('#tgId').val(gauge.attributes.id);
                         $('#latitude').val(Math.round(geometry.lat * 1000)/1000);
                         $('#longitude').val(Math.round(geometry.lon * 1000)/1000);
 
