@@ -23,12 +23,13 @@ tidalGauge = {
 EOF
 
 read # skip the first line
-while IFS=$TAB read lat lon name id; do
+while IFS=$TAB read lat lon name id region; do
 	cat << EOF
     "$id": {
         'name': "$name",
         'lat': $lat,
         'lon': $lon,
+	'region': "$region",
     },
 EOF
 done

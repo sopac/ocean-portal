@@ -629,10 +629,17 @@ ocean.dsConf = {
                     appendOutput(data.recimg, data.rectxt, "Reconstruction");
             },
             onSelect: function() {
+                var filter = new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                    property: 'region',
+                    value: 'pac'
+                });
+
                 var gaugesLayer = new OpenLayers.Layer.Vector(
                     "Tidal gauges", {
                     strategies: [
-                        new OpenLayers.Strategy.Fixed()
+                        new OpenLayers.Strategy.Fixed(),
+                        new OpenLayers.Strategy.Filter({ filter: filter })
                     ],
                     protocol: new OpenLayers.Protocol.HTTP({
                         url: 'config/comp/tidalGauges.txt',
