@@ -655,24 +655,35 @@ ocean.dsConf = {
                 var gaugeControl = new OpenLayers.Control.SelectFeature(
                     gaugesLayer, {
                     clickout: true,
-                    multiple: false,
-                    toggle: true,
-                    highlightOnly: false
-                });
-
-                map.addControl(gaugeControl);
-                gaugeControl.activate();
-
-                gaugesLayer.events.on({
-                    'featureselected': function(event) {
-                        gauge = event.feature;
+                    onSelect: function (gauge) {
                         geometry = gauge.geometry.getBounds().getCenterLonLat();
                         $('#tidalgauge').val(gauge.attributes.title);
                         $('#tgId').val(gauge.attributes.description);
                         $('#latitude').val(Math.round(geometry.lat * 1000)/1000);
                         $('#longitude').val(Math.round(geometry.lon * 1000)/1000);
+
+                        /* highlight the selected feature */
+                        gaugesLayer.drawFeature(gauge, {
+                            pointRadius: 6,
+                            strokeWidth: 2,
+                            strokeColor: 'red',
+                            fillColor: 'black',
+                            fillOpacity: 0.8
+                        });
+                    },
+                    onUnselect: function (gauge) {
+                        $('#tidalgauge').val('');
+                        $('#tgId').val('');
+                        $('#latitude').val('');
+                        $('#longitude').val('');
+
+                        /* unhighlight the feature */
+                        gaugesLayer.drawFeature(gauge);
                     }
                 });
+
+                map.addControl(gaugeControl);
+                gaugeControl.activate();
 
                 showControl('variableDiv');
             },
