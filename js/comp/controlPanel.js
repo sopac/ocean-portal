@@ -629,37 +629,53 @@ ocean.dsConf = {
                     appendOutput(data.recimg, data.rectxt, "Reconstruction");
             },
             onSelect: function() {
-                          var gaugesLayer = new OpenLayers.Layer.Vector("Tidal gauges", {
-                              strategies: [new OpenLayers.Strategy.BBOX({resFactor: 1.1})],
-                              protocol: new OpenLayers.Protocol.HTTP({
-                                  url: "config/comp/tidalGauges.txt",
-                                  format: new OpenLayers.Format.Text()
-                              }),
-                              'calculateInRange' : function() { return true;}
-                          });
-//                          gaugesLayer.display(false)
-                          ocean.mapObj.addLayer(gaugesLayer);
-                          gaugesLayer.redraw(true);
-                          var gaugeControl = new OpenLayers.Control.SelectFeature(gaugesLayer, {
-                              clickout: true,
-                              multiple: false,
-                              toggle: true,
-                              highlightOnly: false
-                          });
-                          map.addControl(gaugeControl);
-                          gaugeControl.activate();
-                          gaugesLayer.events.on({
-                              'featureselected': function(event) {
-                                  gauge = event.feature;
-                                  geometry = gauge.geometry.getBounds().getCenterLonLat();
-                                  $('#tidalgauge').val(gauge.attributes.title);
-                                  $('#tgId').val(gauge.attributes.description);
-                                  $('#latitude').val(Math.round(geometry.lat * 1000)/1000);
-                                  $('#longitude').val(Math.round(geometry.lon * 1000)/1000);
-                              }
-                          });
-                          showControl('variableDiv');
-                      },
+                var gaugesLayer = new OpenLayers.Layer.Vector(
+                    "Tidal gauges", {
+                    strategies: [
+                        new OpenLayers.Strategy.Fixed()
+                    ],
+                    protocol: new OpenLayers.Protocol.HTTP({
+                        url: 'config/comp/tidalGauges.txt',
+                        format: new OpenLayers.Format.Text({
+                            extractStyles: false,
+                            defaultStyle: {
+                                pointRadius: 5,
+                                strokeWidth: 1,
+                                strokeColor: 'white',
+                                fillColor: 'black',
+                                fillOpacity: 0.8
+                            }
+                        })
+                    }),
+                });
+
+                ocean.mapObj.addLayer(gaugesLayer);
+                gaugesLayer.redraw(true);
+
+                var gaugeControl = new OpenLayers.Control.SelectFeature(
+                    gaugesLayer, {
+                    clickout: true,
+                    multiple: false,
+                    toggle: true,
+                    highlightOnly: false
+                });
+
+                map.addControl(gaugeControl);
+                gaugeControl.activate();
+
+                gaugesLayer.events.on({
+                    'featureselected': function(event) {
+                        gauge = event.feature;
+                        geometry = gauge.geometry.getBounds().getCenterLonLat();
+                        $('#tidalgauge').val(gauge.attributes.title);
+                        $('#tgId').val(gauge.attributes.description);
+                        $('#latitude').val(Math.round(geometry.lat * 1000)/1000);
+                        $('#longitude').val(Math.round(geometry.lon * 1000)/1000);
+                    }
+                });
+
+                showControl('variableDiv');
+            },
             onDeselect: function() {
                             var layers = map.getLayersByName("Sea Level");
                             var layer;
