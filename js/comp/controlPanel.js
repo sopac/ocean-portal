@@ -116,6 +116,7 @@ function prependOutput()
 function addPointLayer () {
     var layer = new OpenLayers.Layer.Vector("point-layer",
         {
+            wrapDateLine: true,
             style: {
                 graphicName: 'cross',
                 pointRadius: 10,
@@ -637,6 +638,7 @@ ocean.dsConf = {
 
                 var gaugesLayer = new OpenLayers.Layer.Vector(
                     "Tidal gauges", {
+                    wrapDateLine: true,
                     strategies: [
                         new OpenLayers.Strategy.Fixed(),
                         new OpenLayers.Strategy.Filter({ filter: filter })
@@ -644,7 +646,7 @@ ocean.dsConf = {
                     protocol: new OpenLayers.Protocol.HTTP({
                         url: 'config/comp/tidalGauges.txt',
                         format: new OpenLayers.Format.Text({
-                            extractStyles: false,
+                            extractStyles: false
                         })
                     }),
                     style: {
