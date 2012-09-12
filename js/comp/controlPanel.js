@@ -638,15 +638,15 @@ ocean.dsConf = {
                         url: 'config/comp/tidalGauges.txt',
                         format: new OpenLayers.Format.Text({
                             extractStyles: false,
-                            defaultStyle: {
-                                pointRadius: 5,
-                                strokeWidth: 1,
-                                strokeColor: 'white',
-                                fillColor: 'black',
-                                fillOpacity: 0.8
-                            }
                         })
                     }),
+                    style: {
+                        pointRadius: 5,
+                        strokeWidth: 1,
+                        strokeColor: 'white',
+                        fillColor: 'black',
+                        fillOpacity: 0.8
+                    }
                 });
 
                 ocean.mapObj.addLayer(gaugesLayer);
@@ -656,6 +656,8 @@ ocean.dsConf = {
                     gaugesLayer, {
                     clickout: true,
                     onSelect: function (gauge) {
+                        gauge.attributes.selected = true;
+
                         geometry = gauge.geometry.getBounds().getCenterLonLat();
                         $('#tidalgauge').val(gauge.attributes.title);
                         $('#tgId').val(gauge.attributes.description);
@@ -663,26 +665,64 @@ ocean.dsConf = {
                         $('#longitude').val(Math.round(geometry.lon * 1000)/1000);
 
                         /* highlight the selected feature */
-                        gaugesLayer.drawFeature(gauge, {
+                        gauge.style = {
                             pointRadius: 6,
                             strokeWidth: 2,
                             strokeColor: 'red',
                             fillColor: 'black',
                             fillOpacity: 0.8
-                        });
+                        };
+                        gaugesLayer.drawFeature(gauge);
                     },
                     onUnselect: function (gauge) {
+                        gauge.attributes.selected = false;
+
                         $('#tidalgauge').val('');
                         $('#tgId').val('');
                         $('#latitude').val('');
                         $('#longitude').val('');
 
                         /* unhighlight the feature */
+                        gauge.style = null;
                         gaugesLayer.drawFeature(gauge);
                     }
                 });
 
+                var gaugeHover = new OpenLayers.Control.SelectFeature(
+                    gaugesLayer, {
+                    hover: true,
+                    highlightOnly: true,
+                    eventListeners: {
+                        featurehighlighted: function (e) {
+                            var gauge = e.feature;
+                            var col = gauge.attributes.selected ? 'red' : 'white';
+
+                            gaugesLayer.drawFeature(gauge, {
+                                label: gauge.attributes.title,
+                                labelAlign: 'rb',
+                                labelXOffset: 15,
+                                labelYOffset: 10,
+                                fontColor: 'red',
+                                fontWeight: 'bold',
+                                pointRadius: 5,
+                                strokeWidth: 2,
+                                strokeColor: 'red',
+                                fillColor: 'black',
+                                fillOpacity: 0.9
+                            });
+                        },
+                        featureunhighlighted: function (e) {
+                            var gauge = e.feature;
+
+                            gaugesLayer.drawFeature(gauge);
+                        }
+                    }
+                });
+
+                map.addControl(gaugeHover);
                 map.addControl(gaugeControl);
+
+                gaugeHover.activate();
                 gaugeControl.activate();
 
                 showControl('variableDiv');
