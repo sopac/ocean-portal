@@ -249,7 +249,7 @@ def HistPlot(opath, wheight, units, lat, lon, ilat, ilon, xstr, title, var, binw
     plt.figtext(0.79, 0.24,'25th Percentile: %s %s' % (round(q1,1),units), fontsize=10)
     plt.figtext(0.79, 0.29,'75th Percentile: %s %s' % (round(q3,1),units), fontsize=10)
     #Bureau of Meteorology Copyright
-    plt.figtext(0.68, 0.03, u'WAVEWATCH III$^{\u00AE}$', fontsize=10)
+    plt.figtext(0.68, 0.03, u'WAVEWATCH III$^{\u24C7}$', fontsize=10)
     plt.figtext(0.02, 0.02, getCopyright(), fontsize=8)
      #define image name
     imgname = opath + '.png'
