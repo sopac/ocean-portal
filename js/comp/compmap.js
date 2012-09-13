@@ -24,6 +24,20 @@ window.onerror = function (msg, url, line) {
     return false;
 }
 
+$(document).ready(function() {
+    /* work out which region file to load */
+    switch(location.search)
+    {
+        case '?aus':
+            ocean.config = 'aus';
+            break;
+
+        default:
+            ocean.config = 'pac';
+            break;
+    }
+});
+
 function createMap () {
     map = new OpenLayers.Map("map", {
         resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
@@ -170,28 +184,31 @@ function updateSeaLevelMap(data){
 Ext.require(['*']);
 Ext.onReady(function() {
 
+    var countrylisturl = [ 'config', ocean.config, 'countryList.json' ].join('/');
+    console.log(countrylisturl);
+
     Ext.define('Country', {
         extend: 'Ext.data.Model',
         fields: ['name', 'abbr', 'zoom', 'lat', 'long', 'extend'],
         idProperty: 'abbr',
         proxy: {
             type: 'ajax',
-            url: 'config/comp/countryList.json',
+            url: countrylisturl,
             reader: {
                 type: 'json'
             }
         }
-    });  
+    });
 
     window.countryStore = new Ext.data.Store({
         autoLoad: true,
-        model: 'Country'
-    });    
-    window.countryStore.addListener('load', selectDefaultCountry);
-
-    function selectDefaultCountry(store, records, result, operation, eOpt) {
-        window.countryCombo.select('pac');
-    }
+        model: 'Country',
+        listeners: {
+            load: function () {
+                window.countryCombo.select(ocean.config);
+            }
+        }
+    });
 
     window.countryCombo = Ext.create('Ext.form.field.ComboBox', {
         fieldLabel: 'Select a country/region',
