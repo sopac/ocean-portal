@@ -113,23 +113,6 @@ function createMap () {
     mapBaseLayerChanged(null);
 }
 
-function selectCountry(event, args) {
-    var selection = event.getValue();
-    var record = window.countryStore.getById(selection);
-    var zoom = record.get('zoom');
-    map.zoomTo(zoom);
-    map.panTo(new OpenLayers.LonLat(record.get('long'), record.get('lat')));
-
-
-    ocean.area = selection;
-}
-
-//this is a callback funtion, invoked when Extjs loading is finished
-function setupControls() {
-    window.countryCombo.on('select', selectCountry, this);
-    window.countryCombo.on('change', selectCountry, this);
-}
-
 function updateMap(layerName, data){
     ocean.map_scale = data.scale;
 
@@ -185,7 +168,6 @@ Ext.require(['*']);
 Ext.onReady(function() {
 
     var countrylisturl = [ 'config', ocean.config, 'countryList.json' ].join('/');
-    console.log(countrylisturl);
 
     Ext.define('Country', {
         extend: 'Ext.data.Model',
@@ -210,6 +192,19 @@ Ext.onReady(function() {
         }
     });
 
+    function selectCountry(event, args) {
+        var selection = event.getValue();
+        var record = window.countryStore.getById(selection);
+
+        if (!record)
+            return;
+
+        map.zoomTo(record.get('zoom'));
+        map.panTo(new OpenLayers.LonLat(record.get('long'), record.get('lat')));
+
+        ocean.area = selection;
+    }
+
     window.countryCombo = Ext.create('Ext.form.field.ComboBox', {
         fieldLabel: 'Select a country/region',
         labelAlign: 'top',
@@ -219,7 +214,11 @@ Ext.onReady(function() {
         queryMode: 'local',
         padding: 5,
         height: '60%',
-        width: 180
+        width: 180,
+        listeners: {
+            select: selectCountry,
+            change: selectCountry
+        }
     });
 
     Ext.create('Ext.Viewport', {
@@ -290,7 +289,4 @@ Ext.onReady(function() {
         }
        ]
     });
-
-
-    setupControls();
   });
