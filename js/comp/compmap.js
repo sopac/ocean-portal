@@ -8,28 +8,55 @@
 var ocean = ocean || {};
 var map;
 
-window.onerror = function (msg, url, line) {
-    $('#error-dialog-content').html("Javascript error: " + msg +
-                                    " &mdash; please " +
-                                    '<a href="javascript:location.reload()">' +
-                                    "reload</a> your browser." +
-                                    "<br/><small>" + url + ":" + line +
-                                    "</small>");
+function fatal_error(msg)
+{
+    $('#error-dialog-content').html(msg);
     $('#error-dialog-request').hide();
     $('#error-dialog').dialog('option', { 'modal': true,
                                           'dialogClass': 'notitle',
                                           'closeOnEscape': false });
     $('#error-dialog').dialog('open');
+}
 
+window.onerror = function (msg, url, line) {
+    fatal_error("Javascript error: " + msg + " &mdash; please " +
+                '<a href="javascript:location.reload()">' +
+                "reload</a> your browser." + "<br/><small>"
+                + url + ":" + line + "</small>");
     return false;
 }
+
+$(document).ready(function() {
+    /* work out which region file to load */
+    if (location.search == '')
+        ocean.config = 'pac';
+    else
+        ocean.config = location.search.slice(1);
+
+    /* request the portals config */
+    $.getJSON('config/comp/portals.json')
+        .success(function(data, status_, xhr) {
+            ocean.configProps = data[ocean.config];
+
+            if (!ocean.configProps) {
+                fatal_error("No portal called '" + ocean.config + "'.");
+                return;
+            }
+
+            $('title').html(ocean.configProps.name + " Ocean Maps Portal");
+
+        })
+        .error(function (xhr, status_, error) {
+            fatal_error("Error loading portals config " + "&mdash; " + error);
+        });
+});
 
 function createMap () {
     map = new OpenLayers.Map("map", {
         resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
         maxResolution: 0.087890625,
         maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
-        // restrictedExtent: new OpenLayers.Bounds(-255, -52, -145, 20),
+        // restrictedExtent: ocean.configProps.extents,
         controls: [
             new OpenLayers.Control.PanZoomBar(),
             new OpenLayers.Control.MousePosition(),
@@ -99,23 +126,6 @@ function createMap () {
     mapBaseLayerChanged(null);
 }
 
-function selectCountry(event, args) {
-    var selection = event.getValue();
-    var record = window.countryStore.getById(selection);
-    var zoom = record.get('zoom');
-    map.zoomTo(zoom);
-    map.panTo(new OpenLayers.LonLat(record.get('long'), record.get('lat')));
-
-
-    ocean.area = selection;
-}
-
-//this is a callback funtion, invoked when Extjs loading is finished
-function setupControls() {
-    window.countryCombo.on('select', selectCountry, this);
-    window.countryCombo.on('change', selectCountry, this);
-}
-
 function updateMap(layerName, data){
     ocean.map_scale = data.scale;
 
@@ -170,27 +180,42 @@ function updateSeaLevelMap(data){
 Ext.require(['*']);
 Ext.onReady(function() {
 
+    var countrylisturl = [ 'config', ocean.config, 'countryList.json' ].join('/');
+
     Ext.define('Country', {
         extend: 'Ext.data.Model',
         fields: ['name', 'abbr', 'zoom', 'lat', 'long', 'extend'],
         idProperty: 'abbr',
         proxy: {
             type: 'ajax',
-            url: 'config/comp/countryList.json',
+            url: countrylisturl,
             reader: {
                 type: 'json'
             }
         }
-    });  
+    });
 
     window.countryStore = new Ext.data.Store({
         autoLoad: true,
-        model: 'Country'
-    });    
-    window.countryStore.addListener('load', selectDefaultCountry);
+        model: 'Country',
+        listeners: {
+            load: function () {
+                window.countryCombo.select(ocean.config);
+            }
+        }
+    });
 
-    function selectDefaultCountry(store, records, result, operation, eOpt) {
-        window.countryCombo.select('pac');
+    function selectCountry(event, args) {
+        var selection = event.getValue();
+        var record = window.countryStore.getById(selection);
+
+        if (!record)
+            return;
+
+        map.zoomTo(record.get('zoom'));
+        map.panTo(new OpenLayers.LonLat(record.get('long'), record.get('lat')));
+
+        ocean.area = selection;
     }
 
     window.countryCombo = Ext.create('Ext.form.field.ComboBox', {
@@ -202,7 +227,11 @@ Ext.onReady(function() {
         queryMode: 'local',
         padding: 5,
         height: '60%',
-        width: 180
+        width: 180,
+        listeners: {
+            select: selectCountry,
+            change: selectCountry
+        }
     });
 
     Ext.create('Ext.Viewport', {
@@ -273,7 +302,4 @@ Ext.onReady(function() {
         }
        ]
     });
-
-
-    setupControls();
   });
