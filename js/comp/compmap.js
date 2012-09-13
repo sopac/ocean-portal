@@ -36,6 +36,21 @@ $(document).ready(function() {
             ocean.config = 'pac';
             break;
     }
+
+    /* request the portals config */
+    $.getJSON('config/comp/portals.json')
+        .success(function(data, status_, xhr) {
+            ocean.configProps = data[ocean.config];
+        })
+        .error(function (xhr, status_, error) {
+            $('#error-dialog-content').html("Error loading portals config " +
+                                            "&mdash; " + error);
+            $('#error-dialog-request').hide();
+            $('#error-dialog').dialog('option', { 'modal': true,
+                                                  'dialogClass': 'notitle',
+                                                  'closeOnEscape': false });
+            $('#error-dialog').dialog('open');
+        });
 });
 
 function createMap () {
@@ -43,7 +58,7 @@ function createMap () {
         resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
         maxResolution: 0.087890625,
         maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
-        // restrictedExtent: new OpenLayers.Bounds(-255, -52, -145, 20),
+        // restrictedExtent: ocean.configProps.extents,
         controls: [
             new OpenLayers.Control.PanZoomBar(),
             new OpenLayers.Control.MousePosition(),
