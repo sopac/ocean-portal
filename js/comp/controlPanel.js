@@ -630,11 +630,31 @@ ocean.dsConf = {
                     appendOutput(data.recimg, data.rectxt, "Reconstruction");
             },
             onSelect: function() {
-                var filter = new OpenLayers.Filter.Comparison({
-                    type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                    property: 'region',
-                    value: 'pac'
-                });
+                /* generate a list of filters for the configured tidal
+                 * gauge regions */
+                var filter;
+                var filters = $.map(ocean.configProps.tidalGaugeRegions,
+                    function (elem) {
+                        return new OpenLayers.Filter.Comparison({
+                            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                            property: 'region',
+                            value: elem
+                        });
+
+                        return new OpenLayers.Strategy.Filter({
+                            filter: filter
+                        });
+                    });
+
+                if (filters.length > 1)
+                    filter = new OpenLayers.Filter.Logical({
+                        type: OpenLayers.Filter.Logical.OR,
+                        filters: filters
+                    });
+                else if (filters.length == 1)
+                    filter = filters[0];
+                else
+                    console.error("Abort: should not be reached");
 
                 var gaugesLayer = new OpenLayers.Layer.Vector(
                     "Tidal gauges", {
