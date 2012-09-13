@@ -8,48 +8,46 @@
 var ocean = ocean || {};
 var map;
 
-window.onerror = function (msg, url, line) {
-    $('#error-dialog-content').html("Javascript error: " + msg +
-                                    " &mdash; please " +
-                                    '<a href="javascript:location.reload()">' +
-                                    "reload</a> your browser." +
-                                    "<br/><small>" + url + ":" + line +
-                                    "</small>");
+function fatal_error(msg)
+{
+    $('#error-dialog-content').html(msg);
     $('#error-dialog-request').hide();
     $('#error-dialog').dialog('option', { 'modal': true,
                                           'dialogClass': 'notitle',
                                           'closeOnEscape': false });
     $('#error-dialog').dialog('open');
+}
 
+window.onerror = function (msg, url, line) {
+    fatal_error("Javascript error: " + msg + " &mdash; please " +
+                '<a href="javascript:location.reload()">' +
+                "reload</a> your browser." + "<br/><small>"
+                + url + ":" + line + "</small>");
     return false;
 }
 
 $(document).ready(function() {
     /* work out which region file to load */
-    switch(location.search)
-    {
-        case '?aus':
-            ocean.config = 'aus';
-            break;
-
-        default:
-            ocean.config = 'pac';
-            break;
-    }
+    if (location.search == '')
+        ocean.config = 'pac';
+    else
+        ocean.config = location.search.slice(1);
 
     /* request the portals config */
     $.getJSON('config/comp/portals.json')
         .success(function(data, status_, xhr) {
             ocean.configProps = data[ocean.config];
+
+            if (!ocean.configProps) {
+                fatal_error("No portal called '" + ocean.config + "'.");
+                return;
+            }
+
+            $('title').html(ocean.configProps.name + " Ocean Maps Portal");
+
         })
         .error(function (xhr, status_, error) {
-            $('#error-dialog-content').html("Error loading portals config " +
-                                            "&mdash; " + error);
-            $('#error-dialog-request').hide();
-            $('#error-dialog').dialog('option', { 'modal': true,
-                                                  'dialogClass': 'notitle',
-                                                  'closeOnEscape': false });
-            $('#error-dialog').dialog('open');
+            fatal_error("Error loading portals config " + "&mdash; " + error);
         });
 });
 

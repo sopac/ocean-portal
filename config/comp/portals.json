@@ -5,7 +5,7 @@
         "tidalGaugeRegions": [ "pac" ]
     },
     "aus": {
-        "name": "Australia",
+        "name": "Australian",
         "extents": [ 0, 0, 0, 0 ],
         "tidalGaugeRegions": [ "aubaseline", "au" ]
     }
