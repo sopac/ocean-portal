@@ -1073,7 +1073,9 @@ Ext.onReady(function() {
         }
     });
 
-    initialise();
+    $('#variableDiv').hide();
+    $('#enlargeDiv').hide();
+    hideControls();
 });
 
 function createCheckBoxes(store, records, result, operation, eOpt) {
@@ -1090,7 +1092,7 @@ function createCheckBoxes(store, records, result, operation, eOpt) {
             id: rec.name,
             handler: function(checkbox, checked) {
                 if (checkbox.id == ocean.dataset.mainCheck) {
-		    var checkboxId;
+                    var checkboxId;
 
                     ocean.dataset.aveCheck[checkbox.id] = checked;
                     this.setValue(checked);
@@ -1325,15 +1327,6 @@ function showControl(control) {
 
 function hideControl(control) {
     $('#' + control).hide();
-}
-
-function setCompare() {
-}
-
-function initialise() {
-    $('#variableDiv').hide();
-    $('#enlargeDiv').hide();
-    hideControls();
 }
 
 //**********************************************************
