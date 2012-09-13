@@ -188,7 +188,7 @@ class Plotter:
         shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_west.pgw')
 
     def contourBasemapEast(self, data, lats, lons, variable, config, outputFile,\
-                        lllat=-90, lllon=0, urlat=90, urlon=180, proj=_DEFAULT_PROJ,\
+                        lllat=-90, lllon=0, urlat=90, urlon=180.5, proj=_DEFAULT_PROJ,\
                         contourLines=False,  worldfile=None):
         """
         Plot the input data using the specified project and save the plot to the output file.
@@ -317,7 +317,7 @@ class Plotter:
         shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_west.pgw')
 
     def plotBasemapEast(self, data, lats, lons, variable, config, outputFile,\
-                        lllat=-90, lllon=0, urlat=90, urlon=180,
+                        lllat=-90, lllon=0, urlat=90, urlon=180.5,
                         proj=_DEFAULT_PROJ, worldfile='east.pgw'):
         """
         Plot the input data using the specified project and save the plot to the output file.

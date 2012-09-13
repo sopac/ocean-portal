@@ -86,8 +86,10 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
         copyright_label_yadj = -0.15
     
     if aspect_ratio < 0.7:
+        copyright_label_xadj = -0.2
         product_label_xadj = 1.4
     else:
+        copyright_label_xadj = -0.1
         product_label_xadj = 1.04
     
     # Create colormap
@@ -137,7 +139,7 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
     cb.set_label(units)
     
     box = TextArea(getCopyright(), textprops=dict(color='k', fontsize=6))
-    copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor=(-0.1, copyright_label_yadj), frameon=False, bbox_transform=ax.transAxes)
+    copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor=(copyright_label_xadj, copyright_label_yadj), frameon=False, bbox_transform=ax.transAxes)
     ax.add_artist(copyrightBox)
     
     if product_label_str is not None:
@@ -280,9 +282,7 @@ def draw_vector_plot(m, x, y, u, v, draw_every=1, arrow_scale=10, quiverkey_valu
     q = m.quiver(x, y, u, v, pivot='mid', scale=arrow_scale,
                   minshaft=1, minlength=0.85, headlength=2.5, headaxislength=2.5)
     quiverkey_label = '$' + str(quiverkey_value) + units + '$'
-    #py.quiverkey(q, quiverkey_xpos, quiverkey_ypos, quiverkey_value, quiverkey_label, coordinates='figure', 
-    #             labelpos='N', labelsep=0.01, fontproperties={'size':'xx-small', 'weight':'1000'})
-    py.quiverkey(q, 1.1, -0.11, quiverkey_value, quiverkey_label, coordinates='axes', 
+    py.quiverkey(q, 1.08, -0.07, quiverkey_value, quiverkey_label, coordinates='axes',
                  labelpos='N', labelsep=0.01, fontproperties={'size':'xx-small', 'weight':'1000'})
 
 def get_subset_idxs(x, x_min, x_max):

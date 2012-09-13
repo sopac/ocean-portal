@@ -8,6 +8,22 @@
 var ocean = ocean || {};
 var map;
 
+window.onerror = function (msg, url, line) {
+    $('#error-dialog-content').html("Javascript error: " + msg +
+                                    " &mdash; please " +
+                                    '<a href="javascript:location.reload()">' +
+                                    "reload</a> your browser." +
+                                    "<br/><small>" + url + ":" + line +
+                                    "</small>");
+    $('#error-dialog-request').hide();
+    $('#error-dialog').dialog('option', { 'modal': true,
+                                          'dialogClass': 'notitle',
+                                          'closeOnEscape': false });
+    $('#error-dialog').dialog('open');
+
+    return false;
+}
+
 $(document).ready(function() {
     map = new OpenLayers.Map("map", {
         resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
@@ -18,7 +34,11 @@ $(document).ready(function() {
         controls: [
             new OpenLayers.Control.PanZoomBar(),
             new OpenLayers.Control.MousePosition(),
-            new OpenLayers.Control.LayerSwitcher({"ascending": false}),
+            new OpenLayers.Control.LayerSwitcher({
+                div: document.getElementById('mapControlsLayers'),
+                ascending: false,
+                roundedCorner: false
+            }),
             new OpenLayers.Control.KeyboardDefaults(),
             new OpenLayers.Control.ScaleLine({bottomOutUnits:'', bottomInUnits:''}),
             new OpenLayers.Control.Navigation({dragPanOptions: {enableKinetic: true}})
@@ -39,6 +59,7 @@ $(document).ready(function() {
                      "bathymetry_1000", "bathymetry_200", "bathymetry_0",
                      "land", "maritime", "capitals", "countries"]
         }, {
+            transitionEffect: 'resize',
             wrapDateLine: true
         });
 
@@ -47,6 +68,7 @@ $(document).ready(function() {
             map: "reynolds",
             layers: ["sst_left", "sst_right", "land", "coastline"]
         }, {
+            transitionEffect: 'resize',
             wrapDateLine: true
         });
 
@@ -90,7 +112,6 @@ function selectCountry(event, args) {
 function setupControls() {
     window.countryCombo.on('select', selectCountry, this);
     window.countryCombo.on('change', selectCountry, this);
-//    window.countryCombo.select('pac');
 }
 
 function centerMap() {
@@ -111,10 +132,11 @@ function updateMap(layerName, data){
     else{
         var sstLayer = new OpenLayers.Layer.MapServer(layerName,
             "cgi/getMap", {
-	    map: 'reynolds',
+            map: 'reynolds',
             layers: ["sst_left", "sst_right", "land", "coastline"],
             raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
         }, {
+            transitionEffect: 'resize',
             wrapDateLine: true
         });
 
@@ -136,10 +158,11 @@ function updateSeaLevelMap(data){
     else{
         var slLayer = new OpenLayers.Layer.MapServer("Sea Level",
             "cgi/getMap", {
-	    map: 'sealevel',
+            map: 'sealevel',
             layers: ["sl_left", "sl_right", "land", "coastline"],
             raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
         }, {
+            transitionEffect: 'resize',
             wrapDateLine: true
         });
 
@@ -147,79 +170,9 @@ function updateSeaLevelMap(data){
         map.setBaseLayer(slLayer);
     }
 }
-/*
-This file is part of Ext JS 4
-
-Copyright (c) 2011 Sencha Inc
-
-Contact:  http://www.sencha.com/contact
-
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
-
-If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
-
-*/
-var win;
-//var basemapLegend;
-//var countryCombo;
 
 Ext.require(['*']);
 Ext.onReady(function() {
-    //define model and data store
-//     Ext.define(':
-
-
-    //define information window
-    if (!win) {
-        win = Ext.create('Ext.window.Window', {
-            closable: true,
-            closeAction: 'hide',
-            width: 600,
-            height: 350,
-            layout: 'border',
-            borderStyle: 'padding: 2px',
-            items: [{
-                region: 'center',
-                xtype: 'tabpanel',
-                items: [{
-                    title: 'General Info'
-                }, {
-                    title: 'Altimetry'
-                }, {
-                    title: 'Reconstruction'
-                }, {
-                    title: 'Tidal Gauge Network'
-                }]
-            }]
-        }); 
-    }
-
-//    var regionsGroup = {
-//        xtype: 'fieldset',
- //       title: 'Regions',
-//        collapsible: true,
-//        items: [
-//            {xtype: 'radiogroup',
-//             fieldLabel: 'Regions',
-//             columns: 1,
-//             items: [
-//                 {boxLabel: 'Cook Islands', name: 'regions', inputValue: 'cookislands'},
-//                 {boxLabel: 'Federated States of Micronesia', name: 'regions', inputValue: 'fsm'},
-//                 {boxLabel: 'Fiji', name: 'regions', inputValue: 'fiji', checked: true},
-//                 {boxLabel: 'Kiribati', name: 'regions', inputValue: 'kiribati'},
-//                 {boxLabel: 'Marshall Islands', name: 'regions', inputValue: 'marshall'},
-//                 {boxLabel: 'Nauru', name: 'regions', inputValue: 'nauru'},
-//                 {boxLabel: 'Niue', name: 'regions', inputValue: 'niue'},
-//                 {boxLabel: 'Palau', name: 'regions', inputValue: 'palau'},
-//                 {boxLabel: 'Papua New Guinea', name: 'regions', inputValue: 'png'},
-//                 {boxLabel: 'Somoa', name: 'regions', inputValue: 'somoa'},
-//                 {boxLabel: 'Solomon Islands', name: 'regions', inputValue: 'solomonislands'},
-//                 {boxLabel: 'Tonga', name: 'regions', inputValue: 'tonga'},
-//                 {boxLabel: 'Tuvalu', name: 'regions', inputValue: 'tuvalu'},
-//                 {boxLabel: 'Vanuatu', name: 'regions', inputValue: 'vanuatu'}
-//              ]} 
-//         ]};               
 
     Ext.define('Country', {
         extend: 'Ext.data.Model',
@@ -241,8 +194,6 @@ Ext.onReady(function() {
     window.countryStore.addListener('load', selectDefaultCountry);
 
     function selectDefaultCountry(store, records, result, operation, eOpt) {
-//        window.countryCombo.setValue('pac');
-        
         window.countryCombo.select('pac');
     }
 
@@ -256,40 +207,7 @@ Ext.onReady(function() {
         padding: 5,
         height: '60%',
         width: 180
-//        listeners: {
-//            afterrender: function(combo) {
-//                this.setValue('pac')
-//            }
-//        }
     });
-
-    var countryPanel = Ext.create('Ext.panel.Panel', {
-        title: 'Country',
-        autoScroll: true,
-        items: [countryCombo],
-        height: '15%'
-    });
-
-    var datasetPanel = Ext.create('Ext.panel.Panel', {
-        title: 'Dataset',
-        autoScroll: true,
-        height: '50%',
-        contentEl: 'wrapper'
-    });
-
-    var thumbnailPanel = Ext.create('Ext.panel.Panel', {
-        title: 'Thumbnail',
-        contentEl: 'outputDiv',
-        autoScroll: true,
-        height: '35%'
-    });
-
-//    legendPanel = Ext.create('Ext.panel.Panel', {
-//        title: 'Legend',
-//        html: '',
-//        autoScroll: true,
-//        height: '20%'
-//    });
 
     Ext.create('Ext.Viewport', {
         layout: {
@@ -299,54 +217,64 @@ Ext.onReady(function() {
         listeners: {
             afterlayout: centerMap
         },
-        defaults: {
-            split: true
-        },
         items: [{
-            xtype: 'tabpanel',
+            xtype: 'panel',
             region: 'west',
             id: 'westDiv',
             collapsible: true,
-            title: 'Control Panel',
-            split: false,
-//            width: '28%',
-            width: 220,
+            title: 'Parameters',
+            width: 225,
+            border: false,
+            layout: 'border',
             items: [{
-                title: 'Maps',
-                padding: 2,
-                items: [
-                    countryPanel,
-                    datasetPanel,
-                    thumbnailPanel
-//                    legendPanel
-//                    {
-//                        title: 'Legend',
-//                        items: [
-//                            window.basemapLegend
-//                        ]
-//                    }
-                ]}
-//            {               
-//                title: 'Pilot Projects'
-//            }
-            ]
+                xtype: 'panel',
+                region: 'north',
+                items: [countryCombo]
+            }, {
+                xtype: 'panel',
+                region: 'center',
+                autoScroll: true,
+                contentEl: 'wrapper'
+            }, {
+                xtype: 'panel',
+                region: 'south',
+                height: 100,
+                title: 'Map Controls',
+                contentEl: 'mapControls'
+            }]
         }, {
+            xtype: 'panel',
             region: 'center',
             border: false,
-//          title: 'Map Panel',
             padding: 2,
-//          width: '72%',
             height: '100%',
-            items:[
-                Ext.create('Ext.panel.Panel', {contentEl: 'map', height: '100%'})
-//                Ext.create('Ext.panel.Panel', {contentEl: 'imgDiv', height: '20%'})
-            ]
+            contentEl: 'map'
+        }, {
+            xtype: 'panel',
+            region: 'east',
+            collapsible: true,
+            title: 'Output',
+            width: 220,
+            autoScroll: true,
+            contentEl: 'outputDiv',
+            tools: [{
+                /* FIXME: how to make them in the style of tool buttons? */
+                /* Report Feedback */
+                html: $('<a>', {
+                    'class': 'ui-icon ui-icon-mail-closed',
+                    title: "Report Feedback",
+                    href: 'mailto:COSPPac_SoftwareSupport@bom.gov.au'
+                }).get(0).outerHTML
+            }, {
+                /* Help Guide */
+                html: $('<a>', {
+                    'class': 'ui-icon ui-icon-help',
+                    title: "User Guide",
+                    href: '/cosppac/comp/ocean-portal/ocean-portal-help.shtml',
+                    target: '_blank'
+                }).get(0).outerHTML
+            }]
         }
-//        {
-//            region: 'south',
-//            html: '<b>Pacific Ocean Demo Project</b><br/> More information will be available soon.',
-//            height: '0%'
-//        }
        ]
     });
 
