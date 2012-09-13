@@ -65,8 +65,10 @@ function createMap () {
                 ascending: false,
                 roundedCorner: false
             }),
-            new OpenLayers.Control.KeyboardDefaults(),
-            new OpenLayers.Control.ScaleLine({bottomOutUnits:'', bottomInUnits:''}),
+            new OpenLayers.Control.ScaleLine({
+                bottomOutUnits: '',
+                bottomInUnits: ''
+            }),
             new OpenLayers.Control.Navigation({
                 dragPanOptions: { enableKinetic: true },
                 documentDrag: true
@@ -75,6 +77,17 @@ function createMap () {
         eventListeners: {
            'changelayer': mapBaseLayerChanged
         }
+    });
+
+    /* add keyboard controls separately so we can disable them when required */
+    var keyboardControls = new OpenLayers.Control.KeyboardDefaults();
+    map.addControl(keyboardControls);
+
+    $('input').focusin(function () {
+        keyboardControls.deactivate();
+    });
+    $('input').focusout(function () {
+        keyboardControls.activate();
     });
 
     ocean.mapObj = map;
