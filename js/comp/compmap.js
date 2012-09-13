@@ -208,6 +208,8 @@ Ext.onReady(function() {
         }
     });
 
+    createMap();
+
     window.countryStore = new Ext.data.Store({
         autoLoad: true,
         model: 'Country',
@@ -252,9 +254,6 @@ Ext.onReady(function() {
             type: 'border',
             padding: 2
         },
-        listeners: {
-            afterlayout: createMap
-        },
         items: [{
             xtype: 'panel',
             region: 'west',
@@ -286,7 +285,12 @@ Ext.onReady(function() {
             border: false,
             padding: 2,
             height: '100%',
-            contentEl: 'map'
+            contentEl: 'map',
+            listeners: {
+                afterlayout: function() {
+                    map.updateSize();
+                }
+            }
         }, {
             xtype: 'panel',
             region: 'east',
