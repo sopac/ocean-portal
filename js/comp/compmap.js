@@ -24,13 +24,12 @@ window.onerror = function (msg, url, line) {
     return false;
 }
 
-$(document).ready(function() {
+function createMap () {
     map = new OpenLayers.Map("map", {
         resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
         maxResolution: 0.087890625,
-        minExtent: new OpenLayers.Bounds(-1, -1, -1, -1),
         maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
-        restrictedExtent: new OpenLayers.Bounds(-254.75303, -51.78606, -144.49137, 20.13191),
+        // restrictedExtent: new OpenLayers.Bounds(-255, -52, -145, 20),
         controls: [
             new OpenLayers.Control.PanZoomBar(),
             new OpenLayers.Control.MousePosition(),
@@ -41,7 +40,10 @@ $(document).ready(function() {
             }),
             new OpenLayers.Control.KeyboardDefaults(),
             new OpenLayers.Control.ScaleLine({bottomOutUnits:'', bottomInUnits:''}),
-            new OpenLayers.Control.Navigation({dragPanOptions: {enableKinetic: true}})
+            new OpenLayers.Control.Navigation({
+                dragPanOptions: { enableKinetic: true },
+                documentDrag: true
+            })
         ],
         eventListeners: {
            'changelayer': mapBaseLayerChanged
@@ -95,7 +97,7 @@ $(document).ready(function() {
     }
 
     mapBaseLayerChanged(null);
-});
+}
 
 function selectCountry(event, args) {
     var selection = event.getValue();
@@ -112,12 +114,6 @@ function selectCountry(event, args) {
 function setupControls() {
     window.countryCombo.on('select', selectCountry, this);
     window.countryCombo.on('change', selectCountry, this);
-}
-
-function centerMap() {
-    if (map) {
-        map.setCenter(new OpenLayers.LonLat(173.00000, -13.11418), 0);
-    }
 }
 
 function updateMap(layerName, data){
@@ -215,7 +211,7 @@ Ext.onReady(function() {
             padding: 2
         },
         listeners: {
-            afterlayout: centerMap
+            afterlayout: createMap
         },
         items: [{
             xtype: 'panel',

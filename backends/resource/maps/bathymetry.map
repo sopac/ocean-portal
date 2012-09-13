@@ -6,6 +6,11 @@ MAP
     IMAGECOLOR     135 216 250 
     FONTSET        "../fonts/fonts.list"
 #    SYMBOLSET      "../symbols/symbols35.sym"
+#
+    PROJECTION
+        "init=epsg:4326"
+    END
+
     EXTENT         -180 -90 180 90
     
     LAYER # States polygon layer begins here
