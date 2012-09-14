@@ -58,14 +58,17 @@ class ErsstPlotter ():
                       + self.config.getTitle(variable)\
                       + util.format_old_date(inputDate)
             elif period=='3monthly' or period == '6monthly': 
-            	filename = self.serverCfg["dataDir"]["ersst"] + "/" + period + "/ersst." + date[:6] + "ave"
+            	if period=='3monthly':
+                    filename = self.serverCfg["dataDir"]["ersst"] + "/seasonalclim/ersst." + date[:6] + "3mthavg"
+                elif period=='6monthly':
+                    filename = self.serverCfg["dataDir"]["ersst"] + "/seasonalclim/ersst." + date[:6] + "6mthavg"
 		title = self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + util.format_old_date(dateRange.getMonths(date, period[:1])[0]) \
                       + " to "\
                       + util.format_old_date(inputDate)
             elif period == '12monthly': 
-            	filename = self.serverCfg["dataDir"]["ersst"] + "/" + period + "/ersst." + date[:6] + "ave"
+            	filename = self.serverCfg["dataDir"]["ersst"] + "/seasonalclim/ersst." + date[:6] + "12mthavg"
 		title = self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + util.format_old_date(dateRange.getMonths(date, period[:2])[0])\
