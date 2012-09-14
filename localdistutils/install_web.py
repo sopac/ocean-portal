@@ -52,8 +52,6 @@ class install_web(Command):
         if self.root and not dir.startswith(self.root):
             dir = change_root(self.root, dir)
 
-        print 'install dir: %s' % dir
-
         self.outfiles = self.copy_tree(self.build_dir, dir)
 
     def get_inputs(self):

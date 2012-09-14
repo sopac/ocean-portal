@@ -21,14 +21,16 @@ class build_web(Command):
     user_options = [
         ('build-dir=', 'd', "directory to \"build\" to"),
         ('force', 'f', "forcibly build everything (ignore file timestamps"),
+        ('compress', None, "Compress (minify) web resources"),
         ]
 
-    boolean_options = [ 'force' ]
+    boolean_options = [ 'force', 'compress' ]
 
     def initialize_options(self):
         self.build_dir = None
         self.build_base = None
         self.force = None
+        self.compress = None
         self.web_files = []
 
         self.outfiles = []
@@ -58,18 +60,23 @@ class build_web(Command):
         for f in self.web_files:
             inf = convert_path(f)
             outf = os.path.join(self.build_dir, f)
-            log.debug("minifying: %s -> %s" % (f, outf))
 
             self.mkpath(os.path.dirname(outf))
-            input = open(inf, 'r')
-            output = open(outf, 'wb')
 
-            # copy 6 lines of the header
-            for l in range(6):
-                output.write(input.readline())
+            if self.compress:
+                log.info("minifying %s -> %s" % (f, outf))
 
-            jsm.minify(input, output)
-            input.close()
-            output.close()
+                input = open(inf, 'r')
+                output = open(outf, 'wb')
+
+                # copy 5 lines of the header
+                for l in range(6):
+                    output.write(input.readline())
+
+                jsm.minify(input, output)
+                input.close()
+                output.close()
+            else:
+                self.copy_file(inf, outf)
 
             self.outfiles.append(outf)
