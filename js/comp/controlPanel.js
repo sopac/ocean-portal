@@ -826,6 +826,7 @@ function enlargeImg(img, show) {
 
     if (show) {
         enlargeDiv.stop(true, true);
+        $('#enlargeDiv img').remove();
         $('<img>', {
             src: img.src,
             'class' : 'imagepreview'
