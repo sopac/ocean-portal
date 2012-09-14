@@ -69,6 +69,10 @@ class build_web(Command):
                 input = open(inf, 'r')
                 output = open(outf, 'wb')
 
+                if f.endswith('.js'):
+                    # eat the first line (JSLint directive)
+                    input.readline()
+
                 # copy 5 lines of the header
                 for l in range(6):
                     output.write(input.readline())
