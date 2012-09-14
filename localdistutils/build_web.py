@@ -38,6 +38,7 @@ class build_web(Command):
     def finalize_options(self):
         self.set_undefined_options('build',
             ('build_base', 'build_base'),
+            ('compress', 'compress'),
             ('force', 'force'))
 
         if self.build_dir is None:
