@@ -822,15 +822,21 @@ function enlargeImg(img, show) {
     var enlargeDiv = $('#enlargeDiv');
 
     if (show) {
+        enlargeDiv.stop(true, true);
         $('<img>', {
             src: img.src,
             'class' : 'imagepreview'
         }).appendTo(enlargeDiv);
+        enlargeDiv.fadeIn(100);
         enlargeDiv.show();
     }
     else {
-        enlargeDiv.html('');
-        enlargeDiv.hide();
+        enlargeDiv.stop(true, true);
+        enlargeDiv.delay(100);
+        enlargeDiv.fadeOut(150, function () {
+            enlargeDiv.html('');
+            enlargeDiv.hide();
+        });
     }
 }
 
