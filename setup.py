@@ -86,6 +86,12 @@ html = [
     'compmap.html',
 ]
 
+script_substitutions = {
+    # development version, compressed version
+    'jquery.js': ('jquery-1.8.1.js', 'jquery-1.8.1.min.js'),
+    'ext-all.js': ('ext-all-dev.js', 'ext-all.js'),
+}
+
 web_files = [
     'css/common.css',
 #   'css/sst.css',
@@ -142,7 +148,6 @@ if __name__ == '__main__':
 
     data_files = \
         [ ('/var/www/cgi-bin/portal', [ os.path.join('src', s) for s in src ]) ] + \
-        [ (BASE_PATH, [ os.path.join('html', h) for h in html ]) ] + \
         [ (os.path.join(BASE_PATH, d), list(f))
             for d, f in itertools.groupby(data, lambda e: os.path.dirname(e)) ]
 
@@ -165,6 +170,12 @@ if __name__ == '__main__':
           },
           scripts=[ os.path.join('src', s) for s in scripts ],
           data_files = data_files,
+
+          # FIXME: BASE_PATH here is ignored because I'm lazy, BASE_PATH from
+          # web_files is used
+          html_files = (BASE_PATH,
+                        [ os.path.join('html', h) for h in html ],
+                        script_substitutions),
           web_files = (BASE_PATH, web_files),
 
           # extend distutils

@@ -6,6 +6,8 @@
 # Authors: Danielle Madeley <d.madeley@bom.gov.au>
 
 import os.path
+import subprocess
+import re
 
 from distutils.core import Command
 from distutils.util import convert_path
@@ -45,9 +47,13 @@ class build_web(Command):
             self.build_dir = os.path.join(self.build_base, 'web')
 
         self.web_files = self.distribution.web_files[1]
+        (_, self.html_files, self.html_subst) = self.distribution.html_files
+
+        if not self.compress:
+            self.compress = False
 
     def get_source_files(self):
-        return self.web_files
+        return self.web_files + self.html_files
 
     def run(self):
         self.mkpath(self.build_dir)
@@ -83,5 +89,23 @@ class build_web(Command):
                 output.close()
             else:
                 self.copy_file(inf, outf)
+
+            self.outfiles.append(outf)
+
+        # build a regular expression to substitute the HTML files
+        regex = ';'.join([ 's/{{%s}}/%s/' % (
+            re.escape(k), re.escape(v[self.compress]))
+            for k, v in self.html_subst.iteritems() ])
+
+        for f in self.html_files:
+            inf = convert_path(f)
+            outf = os.path.join(self.build_dir, os.path.basename(f))
+
+            log.info("substituting %s -> %s" % (f, outf))
+            output = open(outf, 'wb')
+
+            # use sed, because I like sed
+            subprocess.check_call(['sed', regex, inf], stdout=output)
+            output.close()
 
             self.outfiles.append(outf)

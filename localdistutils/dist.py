@@ -10,5 +10,6 @@ from distutils.dist import Distribution
 class PortalDist(Distribution):
     def __init__(self, attrs=None):
         self.web_files = None
+        self.html_files = None
 
         Distribution.__init__(self, attrs)
