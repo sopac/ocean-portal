@@ -102,11 +102,35 @@
     padding: 3px;
 }
 
+.outputgroup {
+    border-top: 1px solid #ababab;
+    padding-top: 3px;
+}
+
+.outputgroup:first-child {
+    border-top: none;
+    padding-top: none;
+}
+
+.outputgroup .date {
+    text-align: center;
+    color: #ababab;
+}
+
+.outputgroup:first-child .date {
+    display: none;
+}
+
+.outputgroup .date:before,
+.outputgroup .date:after {
+    content: " - ";
+}
+
 .thumbnail {
   display: block;
   position: relative;
   padding: 3px;
-  padding-bottom: 12px;
+  padding-bottom: 6px;
 }
 
 .thumbnail img {

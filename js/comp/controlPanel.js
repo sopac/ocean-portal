@@ -8,8 +8,8 @@
 var ocean = ocean || {};
 ocean.controls = ['selectionDiv', 'toggleDiv', 'sliderDiv',
                   'yearMonthDiv', 'datepickerDiv', 'latlonDiv',
-                  'tidalGaugeDiv', 'compDiv', 'clearlatlonButton' ];
-ocean.compare = {"flag": true, "limit": 2};
+                  'tidalGaugeDiv', 'clearlatlonButton' ];
+ocean.compare = { limit: 24 };
 ocean.processing = false;
 ocean.MIN_YEAR = 1949;
 ocean.dateFormat = 'yyyymmdd';
@@ -52,6 +52,22 @@ function clearImageDiv()
 {
     $('#outputDiv').html('');
     $('#enlargeDiv').html('');
+}
+
+function prependOutputSet()
+{
+    while ($('#outputDiv div.outputgroup').length >= ocean.compare.limit) {
+        $('#outputDiv div.outputgroup:last').remove();
+    }
+
+    var div = $('<div>', {
+        'class': 'outputgroup'
+    }).prependTo($('#outputDiv'));
+
+    var span = $('<p>', {
+        'class': 'date',
+        text: new Date().toLocaleTimeString()
+    }).appendTo(div);
 }
 
 function createOutput(image, dataURL, name, extras)
@@ -105,12 +121,12 @@ function createOutput(image, dataURL, name, extras)
 
 function appendOutput()
 {
-    createOutput.apply(null, arguments).appendTo($('#outputDiv'));
+    createOutput.apply(null, arguments).appendTo($('#outputDiv .outputgroup:first'));
 }
 
 function prependOutput()
 {
-    createOutput.apply(null, arguments).prependTo($('#outputDiv'));
+    createOutput.apply(null, arguments).prependTo($('#outputDiv .outputgroup:first'));
 }
 
 function addPointLayer () {
@@ -243,19 +259,8 @@ ocean.dsConf = {
                                          Math.round(data.mean*100)/100 + '\u00B0C');
                         }
                         else if (data.img != null) {
-                            if (ocean.compare.flag){
-                                while ($('#outputDiv div.thumbnail').length >= ocean.compare.limit) {
-                                    $('#outputDiv div.thumbnail:last-child').remove();
-                                }
-
-                                if (data.img != null) {
-                                    prependOutput(data.img);
-                                }
-                            }
-                            else {
-                                clearImageDiv();
-                                appendOutput(data.img);
-                            }
+                            prependOutputSet();
+                            appendOutput(data.img);
                             updateMap("Reynolds", data);
                         }
                 },
@@ -290,7 +295,6 @@ ocean.dsConf = {
                                     }
                                     updateCalDiv();
                                     showControl('selectionDiv');
-                                    showControl('compDiv');
 
 //                    if (selection === 'anom') {
 //                        showControl('toggleDiv')
@@ -336,7 +340,7 @@ ocean.dsConf = {
                         maxYear: maxYear});
                 },
                 callback: function(data) {
-                    clearImageDiv();
+                    prependOutputSet();
 
                     if (this.variable.get("id") == "anom" &&
                         this.aveCheck.average && data.aveImg != null)
@@ -357,10 +361,13 @@ ocean.dsConf = {
                               configCalendar();
                           },
                 onDeselect: function() {
-                    layers = map.getLayersByName("ERSST");
+                    var layers = map.getLayersByName("ERSST");
+                    var layer;
+
                     for (layer in layers) {
                         map.removeLayer(layers[layer]);
                     }
+
                     clearImageDiv();
                 },
                 selectVariable: function(selection) {
@@ -433,7 +440,7 @@ ocean.dsConf = {
                         maxYear: maxYear});
                 },
                 callback: function(data) {
-                    clearImageDiv();
+                    prependOutputSet();
 
                     if (data.img != null) {
                         appendOutput(data.img);
@@ -525,12 +532,12 @@ ocean.dsConf = {
                         maxYear: maxYear});
             },
             callback: function(data) {
-                          clearImageDiv();
+                prependOutputSet();
 
-                          if(data.ext != null) {
-                              appendOutput(data.img, data.ext);
-                          }
-                      },
+                if(data.ext != null) {
+                    appendOutput(data.img, data.ext);
+                }
+            },
             onSelect: function() {
                 showControl('variableDiv');
                 configCalendar();
@@ -613,7 +620,7 @@ ocean.dsConf = {
                 }
             },
             callback: function(data) {
-                clearImageDiv();
+                prependOutputSet();
 
                 if (data.img) {
                     appendOutput(data.img);
@@ -1002,20 +1009,6 @@ Ext.onReady(function() {
             updatePage();
         }
     });
-
-    ocean.plotComp = Ext.create('Ext.form.field.Checkbox', {
-            boxLabel: 'Plot Comparison',
-            renderTo: 'compDiv',
-            width: 150,
-            name: 'plotComp',
-            id: 'plotComp',
-            checked: ocean.compare.flag,
-            listeners: {
-                'change': function(checkbox, newValue, oldValue, opts) {
-                        ocean.compare.flag = newValue;
-                    } 
-            }});
-//    ocean.plotComp.setDisabled(true);
 
     ocean.monthStore = Ext.create('Ext.data.Store', {
         fields: ['name', 'id'],
