@@ -617,7 +617,7 @@ ocean.dsConf = {
 
                 if (data.img) {
                     appendOutput(data.img);
-                    updateSeaLevelMap(data);
+                    updateMap("Sea Level", data);
                 }
 
                 if (data.tidimg)

@@ -3,19 +3,16 @@ MAP
     SHAPEPATH      "layers"
     IMAGECOLOR     255 255 255
     FONTSET        "../fonts/fonts.list"
-#    SYMBOLSET      "../symbols/symbols35.sym"
-#    EXTENT         134 -26 214 23
     EXTENT         -180 -90 180 90
     SIZE           6000 3000
     CONFIG         "MS_ERRORFILE" "/tmp/mserror.log"
-#    CONFIG         "PROJ_LIB"    "/usr/local/share/proj/"
 
     PROJECTION
         "init=epsg:4326"
     END
 
     LAYER # MODIS raster layer begins here
-        NAME         sl_left
+        NAME         raster_left
         DATA         "%eastFileName%"
         STATUS       ON
         DEBUG        5
@@ -26,7 +23,7 @@ MAP
     END # MODIS raster layer ends here
 
 LAYER # MODIS raster layer begins here
-        NAME         sl_right
+        NAME         raster_right
         DATA         "%westFileName%"
         STATUS       ON
         DEBUG        5

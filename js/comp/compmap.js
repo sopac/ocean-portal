@@ -105,15 +105,6 @@ function createMap () {
             wrapDateLine: true
         });
 
-    var sstLayer = new OpenLayers.Layer.MapServer("SST",
-        'cgi/getMap', {
-            map: "reynolds",
-            layers: ["sst_left", "sst_right", "land", "coastline"]
-        }, {
-            transitionEffect: 'resize',
-            wrapDateLine: true
-        });
-
     /* Add gauge points */
     map.addLayers([bathymetryLayer]);
     map.setBaseLayer(bathymetryLayer);
@@ -149,44 +140,18 @@ function updateMap(layerName, data){
         layer.redraw(true);
     }
     else{
-        var sstLayer = new OpenLayers.Layer.MapServer(layerName,
-            "cgi/getMap", {
-            map: 'reynolds',
-            layers: ["sst_left", "sst_right", "land", "coastline"],
+        var layer = new OpenLayers.Layer.MapServer(layerName,
+            'cgi/getMap', {
+            map: 'raster',
+            layers: ['raster_left', 'raster_right', 'land', 'coastline'],
             raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
         }, {
             transitionEffect: 'resize',
             wrapDateLine: true
         });
 
-        map.addLayer(sstLayer);
-        map.setBaseLayer(sstLayer);
-    }
-}
-
-
-function updateSeaLevelMap(data){
-    ocean.map_scale = data.scale;
-
-    if (map.getLayersByName("Sea Level").length != 0) {
-        var layer = map.getLayersByName("Sea Level")[0];
+        map.addLayer(layer);
         map.setBaseLayer(layer);
-        layer.params["raster"] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw];
-        layer.redraw(true);
-    }
-    else{
-        var slLayer = new OpenLayers.Layer.MapServer("Sea Level",
-            "cgi/getMap", {
-            map: 'sealevel',
-            layers: ["sl_left", "sl_right", "land", "coastline"],
-            raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
-        }, {
-            transitionEffect: 'resize',
-            wrapDateLine: true
-        });
-
-        map.addLayer(slLayer);
-        map.setBaseLayer(slLayer);
     }
 }
 
