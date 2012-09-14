@@ -64,6 +64,10 @@ class build_web(Command):
             input = open(inf, 'r')
             output = open(outf, 'wb')
 
+            # copy 6 lines of the header
+            for l in range(6):
+                output.write(input.readline())
+
             jsm.minify(input, output)
             input.close()
             output.close()
