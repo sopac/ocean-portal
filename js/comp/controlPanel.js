@@ -44,8 +44,8 @@ $(document).ready(function() {
 });
 
 Date.prototype.getMonthString = function() {
-    var calMonth = this.getMonth() + 1;
-    return (calMonth < 10) ?  ('0' + calMonth) : calMonth + '';
+    var calMonth = String(this.getMonth() + 1);
+    return (calMonth < 10) ?  ('0' + calMonth) : calMonth;
 };
 
 function clearImageDiv()
