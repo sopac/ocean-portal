@@ -91,6 +91,11 @@ function createOutput(image, dataURL, name, extras)
         src: image + '?' + $.param({ time: $.now() })
     }).appendTo(a);
 
+    div.hide();
+    img.load(function () {
+        div.slideDown();
+    });
+
     img.hover(
         function (e) {
             enlargeImg(this, true);
