@@ -252,19 +252,19 @@ MAP
         DATA         southern_pac 
         STATUS       ON
         TYPE         POLYGON
-	
+
 	CLASS
             NAME 'land'
-      
+
             STYLE
-                COLOR      241 235 183
-                OUTLINECOLOR  241 235 183
-                WIDTH 2
+                COLOR      229 222 201
+                OUTLINECOLOR  197 137 9
+                WIDTH 1
                 ANTIALIAS TRUE
             END
 	END
     END # States polygon layer ends here
-  
+
     LAYER # States polygon layer begins here
         NAME       maritime
         DATA         World_Maritime_Boundaries
