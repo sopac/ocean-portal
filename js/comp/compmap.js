@@ -262,7 +262,6 @@ Ext.onReady(function() {
             collapsible: true,
             title: 'Output',
             width: 220,
-            autoScroll: true,
             contentEl: 'outputDiv',
             tools: [{
                 /* FIXME: how to make them in the style of tool buttons? */

@@ -68,6 +68,9 @@ function prependOutputSet()
         'class': 'date',
         text: new Date().toLocaleTimeString()
     }).appendTo(div);
+
+    /* scroll to the top of the output div */
+    $('#outputDiv').animate({ scrollTop: 0 }, 75);
 }
 
 function createOutput(image, dataURL, name, extras)
