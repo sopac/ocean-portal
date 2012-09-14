@@ -28,7 +28,7 @@ def main():
         queryMap = urlparse.parse_qs(os.environ["QUERY_STRING"])
         queryMap['map'] = util.get_resource('maps', form['map'].value + '.map')
 
-        if form['map'].value in [ 'reynolds', 'sealevel' ]:
+        if form['map'].value in [ 'raster' ]:
             raster = form["raster"].value
             rasters = string.split(raster, " ")
             for file in rasters:

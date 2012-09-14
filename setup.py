@@ -52,10 +52,7 @@ backend_resources = [
     'west.pgw',
     'subwest.pgw',
     'maps/bathymetry.map',
-#   'maps/plainworld.map',
-    'maps/reynolds.map',
-    'maps/sealevel.map',
-#   'maps/sst.map',
+    'maps/raster.map',
     'fonts/fonts.list',
     'fonts/Vera.ttf',
     'fonts/VeraMono.ttf',
@@ -76,8 +73,6 @@ map_layers = [
     'bathymetry_9000',
     'bathymetry_10000',
     'ocean',
-    'land',
-    'coastline',
     'pacific_islands_capitals',
     'southern_pac',
     'World_Maritime_Boundaries',
@@ -89,17 +84,28 @@ html = [
     'compmap.html',
 ]
 
-data = [
+script_substitutions = {
+    # development version, compressed version
+    'jquery.js': ('jquery-1.8.1.js', 'jquery-1.8.1.min.js'),
+    'ext-all.js': ('ext-all-dev.js', 'ext-all.js'),
+}
+
+web_files = [
     'css/common.css',
 #   'css/sst.css',
     'css/comp/controlPanel.css',
-    'config/comp/datasets.json',
-    'config/comp/period.json',
-    'config/comp/tidalGauges.txt',
-    'config/comp/countryList.json',
     'js/comp/controlPanel.js',
     'js/comp/compmap.js',
 #   'js/sst.js',
+]
+
+data = [
+    'config/comp/datasets.json',
+    'config/comp/period.json',
+    'config/comp/portals.json',
+    'config/comp/tidalGauges.txt',
+    'config/aus/countryList.json',
+    'config/pac/countryList.json',
     'images/search.gif',
     'images/calendar-blue.gif',
     'images/blank.png',
@@ -120,6 +126,13 @@ backend_resources += [ os.path.join('maps', 'layers', '%s.%s' % (l, ext))
 if __name__ == '__main__':
     from distutils.core import setup
     from distutils.command.bdist_rpm import bdist_rpm
+
+    from localdistutils.dist import PortalDist
+    from localdistutils.build import build
+    from localdistutils.build_web import build_web
+    from localdistutils.install import install
+    from localdistutils.install_web import install_web
+
     import itertools
 
     # add Requires: for RPM
@@ -133,7 +146,6 @@ if __name__ == '__main__':
 
     data_files = \
         [ ('/var/www/cgi-bin/portal', [ os.path.join('src', s) for s in src ]) ] + \
-        [ (BASE_PATH, [ os.path.join('html', h) for h in html ]) ] + \
         [ (os.path.join(BASE_PATH, d), list(f))
             for d, f in itertools.groupby(data, lambda e: os.path.dirname(e)) ]
 
@@ -156,4 +168,20 @@ if __name__ == '__main__':
           },
           scripts=[ os.path.join('src', s) for s in scripts ],
           data_files = data_files,
+
+          # FIXME: BASE_PATH here is ignored because I'm lazy, BASE_PATH from
+          # web_files is used
+          html_files = (BASE_PATH,
+                        [ os.path.join('html', h) for h in html ],
+                        script_substitutions),
+          web_files = (BASE_PATH, web_files),
+
+          # extend distutils
+          distclass=PortalDist,
+          cmdclass={
+              'build': build,
+              'build_web': build_web,
+              'install': install,
+              'install_web': install_web,
+          },
          )

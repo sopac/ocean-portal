@@ -20,6 +20,8 @@ print >> manifest, 'include generate-manifest.py'
 
 for d in data:
     print >> manifest, 'include %s' % d
+for w in web_files:
+    print >> manifest, 'include %s' % w
 for r in backend_resources:
     print >> manifest, 'include %s' % os.path.join('backends', 'resource', r)
 for h in html:

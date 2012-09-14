@@ -617,7 +617,7 @@ ocean.dsConf = {
 
                 if (data.img) {
                     appendOutput(data.img);
-                    updateSeaLevelMap(data);
+                    updateMap("Sea Level", data);
                 }
 
                 if (data.tidimg)
@@ -630,11 +630,31 @@ ocean.dsConf = {
                     appendOutput(data.recimg, data.rectxt, "Reconstruction");
             },
             onSelect: function() {
-                var filter = new OpenLayers.Filter.Comparison({
-                    type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                    property: 'region',
-                    value: 'pac'
-                });
+                /* generate a list of filters for the configured tidal
+                 * gauge regions */
+                var filter;
+                var filters = $.map(ocean.configProps.tidalGaugeRegions,
+                    function (elem) {
+                        return new OpenLayers.Filter.Comparison({
+                            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                            property: 'region',
+                            value: elem
+                        });
+
+                        return new OpenLayers.Strategy.Filter({
+                            filter: filter
+                        });
+                    });
+
+                if (filters.length > 1)
+                    filter = new OpenLayers.Filter.Logical({
+                        type: OpenLayers.Filter.Logical.OR,
+                        filters: filters
+                    });
+                else if (filters.length == 1)
+                    filter = filters[0];
+                else
+                    console.error("Abort: should not be reached");
 
                 var gaugesLayer = new OpenLayers.Layer.Vector(
                     "Tidal gauges", {
@@ -1053,7 +1073,9 @@ Ext.onReady(function() {
         }
     });
 
-    initialise();
+    $('#variableDiv').hide();
+    $('#enlargeDiv').hide();
+    hideControls();
 });
 
 function createCheckBoxes(store, records, result, operation, eOpt) {
@@ -1070,7 +1092,7 @@ function createCheckBoxes(store, records, result, operation, eOpt) {
             id: rec.name,
             handler: function(checkbox, checked) {
                 if (checkbox.id == ocean.dataset.mainCheck) {
-		    var checkboxId;
+                    var checkboxId;
 
                     ocean.dataset.aveCheck[checkbox.id] = checked;
                     this.setValue(checked);
@@ -1305,15 +1327,6 @@ function showControl(control) {
 
 function hideControl(control) {
     $('#' + control).hide();
-}
-
-function setCompare() {
-}
-
-function initialise() {
-    $('#variableDiv').hide();
-    $('#enlargeDiv').hide();
-    hideControls();
 }
 
 //**********************************************************

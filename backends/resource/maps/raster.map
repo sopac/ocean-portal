@@ -1,0 +1,54 @@
+MAP
+    IMAGETYPE      PNG24
+    SHAPEPATH      "layers"
+    IMAGECOLOR     255 255 255
+    FONTSET        "../fonts/fonts.list"
+    EXTENT         -180 -90 180 90
+    SIZE           6000 3000
+    CONFIG         "MS_ERRORFILE" "/tmp/mserror.log"
+
+    PROJECTION
+        "init=epsg:4326"
+    END
+
+    LAYER # MODIS raster layer begins here
+        NAME         raster_left
+        DATA         "%eastFileName%"
+        STATUS       ON
+        DEBUG        5
+        TYPE         RASTER
+        VALIDATION
+            'eastFileName' 'png$'
+        END
+    END # MODIS raster layer ends here
+
+LAYER # MODIS raster layer begins here
+        NAME         raster_right
+        DATA         "%westFileName%"
+        STATUS       ON
+        DEBUG        5
+        TYPE         RASTER
+        VALIDATION
+            'westFileName' 'png$'
+        END
+    END # MODIS raster layer ends here
+
+LAYER # States polygon layer begins here
+    NAME         land
+    DATA         southern_pac
+    STATUS       ON
+    TYPE         POLYGON
+
+        CLASS
+      NAME 'land'
+
+            STYLE
+                COLOR      241 235 183
+                OUTLINECOLOR  50 50 50
+                WIDTH 1
+                ANTIALIAS TRUE
+            END
+        END
+  END # States polygon layer ends here
+
+END

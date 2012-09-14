@@ -8,28 +8,55 @@
 var ocean = ocean || {};
 var map;
 
-window.onerror = function (msg, url, line) {
-    $('#error-dialog-content').html("Javascript error: " + msg +
-                                    " &mdash; please " +
-                                    '<a href="javascript:location.reload()">' +
-                                    "reload</a> your browser." +
-                                    "<br/><small>" + url + ":" + line +
-                                    "</small>");
+function fatal_error(msg)
+{
+    $('#error-dialog-content').html(msg);
     $('#error-dialog-request').hide();
     $('#error-dialog').dialog('option', { 'modal': true,
                                           'dialogClass': 'notitle',
                                           'closeOnEscape': false });
     $('#error-dialog').dialog('open');
+}
 
+window.onerror = function (msg, url, line) {
+    fatal_error("Javascript error: " + msg + " &mdash; please " +
+                '<a href="javascript:location.reload()">' +
+                "reload</a> your browser." + "<br/><small>"
+                + url + ":" + line + "</small>");
     return false;
 }
+
+$(document).ready(function() {
+    /* work out which region file to load */
+    if (location.search == '')
+        ocean.config = 'pac';
+    else
+        ocean.config = location.search.slice(1);
+
+    /* request the portals config */
+    $.getJSON('config/comp/portals.json')
+        .success(function(data, status_, xhr) {
+            ocean.configProps = data[ocean.config];
+
+            if (!ocean.configProps) {
+                fatal_error("No portal called '" + ocean.config + "'.");
+                return;
+            }
+
+            $('title').html(ocean.configProps.name + " Ocean Maps Portal");
+
+        })
+        .error(function (xhr, status_, error) {
+            fatal_error("Error loading portals config " + "&mdash; " + error);
+        });
+});
 
 function createMap () {
     map = new OpenLayers.Map("map", {
         resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
         maxResolution: 0.087890625,
         maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
-        // restrictedExtent: new OpenLayers.Bounds(-255, -52, -145, 20),
+        // restrictedExtent: ocean.configProps.extents,
         controls: [
             new OpenLayers.Control.PanZoomBar(),
             new OpenLayers.Control.MousePosition(),
@@ -38,8 +65,10 @@ function createMap () {
                 ascending: false,
                 roundedCorner: false
             }),
-            new OpenLayers.Control.KeyboardDefaults(),
-            new OpenLayers.Control.ScaleLine({bottomOutUnits:'', bottomInUnits:''}),
+            new OpenLayers.Control.ScaleLine({
+                bottomOutUnits: '',
+                bottomInUnits: ''
+            }),
             new OpenLayers.Control.Navigation({
                 dragPanOptions: { enableKinetic: true },
                 documentDrag: true
@@ -48,6 +77,17 @@ function createMap () {
         eventListeners: {
            'changelayer': mapBaseLayerChanged
         }
+    });
+
+    /* add keyboard controls separately so we can disable them when required */
+    var keyboardControls = new OpenLayers.Control.KeyboardDefaults();
+    map.addControl(keyboardControls);
+
+    $('input').focusin(function () {
+        keyboardControls.deactivate();
+    });
+    $('input').focusout(function () {
+        keyboardControls.activate();
     });
 
     ocean.mapObj = map;
@@ -60,15 +100,6 @@ function createMap () {
                      "bathymetry_4000", "bathymetry_3000", "bathymetry_2000",
                      "bathymetry_1000", "bathymetry_200", "bathymetry_0",
                      "land", "maritime", "capitals", "countries"]
-        }, {
-            transitionEffect: 'resize',
-            wrapDateLine: true
-        });
-
-    var sstLayer = new OpenLayers.Layer.MapServer("SST",
-        'cgi/getMap', {
-            map: "reynolds",
-            layers: ["sst_left", "sst_right", "land", "coastline"]
         }, {
             transitionEffect: 'resize',
             wrapDateLine: true
@@ -99,23 +130,6 @@ function createMap () {
     mapBaseLayerChanged(null);
 }
 
-function selectCountry(event, args) {
-    var selection = event.getValue();
-    var record = window.countryStore.getById(selection);
-    var zoom = record.get('zoom');
-    map.zoomTo(zoom);
-    map.panTo(new OpenLayers.LonLat(record.get('long'), record.get('lat')));
-
-
-    ocean.area = selection;
-}
-
-//this is a callback funtion, invoked when Extjs loading is finished
-function setupControls() {
-    window.countryCombo.on('select', selectCountry, this);
-    window.countryCombo.on('change', selectCountry, this);
-}
-
 function updateMap(layerName, data){
     ocean.map_scale = data.scale;
 
@@ -126,49 +140,25 @@ function updateMap(layerName, data){
         layer.redraw(true);
     }
     else{
-        var sstLayer = new OpenLayers.Layer.MapServer(layerName,
-            "cgi/getMap", {
-            map: 'reynolds',
-            layers: ["sst_left", "sst_right", "land", "coastline"],
+        var layer = new OpenLayers.Layer.MapServer(layerName,
+            'cgi/getMap', {
+            map: 'raster',
+            layers: ['raster_left', 'raster_right', 'land'],
             raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
         }, {
             transitionEffect: 'resize',
             wrapDateLine: true
         });
 
-        map.addLayer(sstLayer);
-        map.setBaseLayer(sstLayer);
-    }
-}
-
-
-function updateSeaLevelMap(data){
-    ocean.map_scale = data.scale;
-
-    if (map.getLayersByName("Sea Level").length != 0) {
-        var layer = map.getLayersByName("Sea Level")[0];
+        map.addLayer(layer);
         map.setBaseLayer(layer);
-        layer.params["raster"] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw];
-        layer.redraw(true);
-    }
-    else{
-        var slLayer = new OpenLayers.Layer.MapServer("Sea Level",
-            "cgi/getMap", {
-            map: 'sealevel',
-            layers: ["sl_left", "sl_right", "land", "coastline"],
-            raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
-        }, {
-            transitionEffect: 'resize',
-            wrapDateLine: true
-        });
-
-        map.addLayer(slLayer);
-        map.setBaseLayer(slLayer);
     }
 }
 
 Ext.require(['*']);
 Ext.onReady(function() {
+
+    var countrylisturl = [ 'config', ocean.config, 'countryList.json' ].join('/');
 
     Ext.define('Country', {
         extend: 'Ext.data.Model',
@@ -176,21 +166,36 @@ Ext.onReady(function() {
         idProperty: 'abbr',
         proxy: {
             type: 'ajax',
-            url: 'config/comp/countryList.json',
+            url: countrylisturl,
             reader: {
                 type: 'json'
             }
         }
-    });  
+    });
+
+    createMap();
 
     window.countryStore = new Ext.data.Store({
         autoLoad: true,
-        model: 'Country'
-    });    
-    window.countryStore.addListener('load', selectDefaultCountry);
+        model: 'Country',
+        listeners: {
+            load: function () {
+                window.countryCombo.select(ocean.config);
+            }
+        }
+    });
 
-    function selectDefaultCountry(store, records, result, operation, eOpt) {
-        window.countryCombo.select('pac');
+    function selectCountry(event, args) {
+        var selection = event.getValue();
+        var record = window.countryStore.getById(selection);
+
+        if (!record)
+            return;
+
+        map.zoomTo(record.get('zoom'));
+        map.panTo(new OpenLayers.LonLat(record.get('long'), record.get('lat')));
+
+        ocean.area = selection;
     }
 
     window.countryCombo = Ext.create('Ext.form.field.ComboBox', {
@@ -202,16 +207,17 @@ Ext.onReady(function() {
         queryMode: 'local',
         padding: 5,
         height: '60%',
-        width: 180
+        width: 180,
+        listeners: {
+            select: selectCountry,
+            change: selectCountry
+        }
     });
 
     Ext.create('Ext.Viewport', {
         layout: {
             type: 'border',
             padding: 2
-        },
-        listeners: {
-            afterlayout: createMap
         },
         items: [{
             xtype: 'panel',
@@ -244,7 +250,12 @@ Ext.onReady(function() {
             border: false,
             padding: 2,
             height: '100%',
-            contentEl: 'map'
+            contentEl: 'map',
+            listeners: {
+                afterlayout: function() {
+                    map.updateSize();
+                }
+            }
         }, {
             xtype: 'panel',
             region: 'east',
@@ -273,7 +284,4 @@ Ext.onReady(function() {
         }
        ]
     });
-
-
-    setupControls();
   });
