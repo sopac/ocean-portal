@@ -73,8 +73,6 @@ map_layers = [
     'bathymetry_9000',
     'bathymetry_10000',
     'ocean',
-    'land',
-    'coastline',
     'pacific_islands_capitals',
     'southern_pac',
     'World_Maritime_Boundaries',
