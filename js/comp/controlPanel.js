@@ -64,10 +64,21 @@ function prependOutputSet()
         'class': 'outputgroup'
     }).prependTo($('#outputDiv'));
 
-    var span = $('<p>', {
+    /* remove button */
+    $('<span>', {
+        'class': 'close-button ui-icon ui-icon-close',
+        title: "Remove",
+        click: function () {
+            div.fadeTo('fast', 0);
+            div.slideUp('fast', function () { div.remove(); });
+        }
+    }).appendTo(div);
+
+    $('<p>', {
         'class': 'date',
         text: new Date().toLocaleTimeString()
     }).appendTo(div);
+
 
     /* scroll to the top of the output div */
     $('#outputDiv').animate({ scrollTop: 0 }, 75);

@@ -106,6 +106,7 @@
 }
 
 .outputgroup {
+    position: relative;
     border-top: 1px solid #ababab;
     padding-top: 3px;
 }
@@ -118,6 +119,23 @@
 .outputgroup .date {
     text-align: center;
     color: #ababab;
+}
+
+.outputgroup .close-button {
+    display: none;
+}
+
+.outputgroup ~ .outputgroup:hover .close-button {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.outputgroup ~ .outputgroup:hover .close-button:hover {
+    opacity: 1.0;
 }
 
 .outputgroup:first-child .date {
