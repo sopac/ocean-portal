@@ -96,6 +96,7 @@ function createOutput(image, dataURL, name, extras)
         }).appendTo(div);
 
     var a = $('<a>', {
+        'class': 'raster',
         href: image,
         title: "Click to open in a new window",
         target: '_blank'

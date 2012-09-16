@@ -159,12 +159,17 @@
   height: auto;
 }
 
-.thumbnail .overlay {
+.thumbnail .raster + .overlay {
   position: absolute;
   display: block;
-  right: 5px;
+  right: 15px;
   top: 5px;
   z-index: 100;
+  opacity: 0.5;
+}
+
+.thumbnail .raster:hover + .overlay {
+  opacity: 1.0;
 }
 
 .download-data {
