@@ -112,8 +112,8 @@
 }
 
 .outputgroup:first-child {
-    border-top: none;
-    padding-top: none;
+    border-top: 0;
+    padding-top: 0;
 }
 
 .outputgroup .date {
