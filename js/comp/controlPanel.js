@@ -848,10 +848,22 @@ function enlargeImg(img, show) {
     if (show) {
         enlargeDiv.stop(true, true);
         $('#enlargeDiv img').remove();
-        $('<img>', {
+        var eimg = $('<img>', {
             src: img.src,
             'class' : 'imagepreview'
         }).appendTo(enlargeDiv);
+
+        /* fix broken positioning in IE7 */
+        if ($.browser.msie && $.browser.version == '7.0') {
+            var eimgraw = eimg.get(0);
+
+            var offset = eimg.offset();
+            eimg.offset({
+                top: offset.top + enlargeDiv.height() / 2 - eimgraw.height / 2,
+                left: offset.left + enlargeDiv.width() / 2 - eimgraw.width / 2
+            });
+        }
+
         enlargeDiv.fadeIn(100);
         enlargeDiv.show();
     }
