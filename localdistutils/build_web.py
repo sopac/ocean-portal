@@ -15,6 +15,7 @@ from distutils.util import convert_path
 from distutils import log
 
 from jsmin import JavascriptMinify
+import util
 
 class build_web(Command):
 
@@ -48,6 +49,8 @@ class build_web(Command):
 
         self.web_files = self.distribution.web_files[1]
         (_, self.html_files, self.html_subst) = self.distribution.html_files
+
+        self.version = util.get_version()
 
         if not self.compress:
             self.compress = False
@@ -96,6 +99,7 @@ class build_web(Command):
         regex = ';'.join([ 's/{{%s}}/%s/' % (
             re.escape(k), re.escape(v[self.compress]))
             for k, v in self.html_subst.iteritems() ])
+        regex += ';s/{{VERSION}}/%s/' % (re.escape(self.version))
 
         for f in self.html_files:
             inf = convert_path(f)
