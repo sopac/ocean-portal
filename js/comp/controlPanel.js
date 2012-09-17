@@ -17,7 +17,10 @@ ocean.date = new Date();
 
 /* set up JQuery UI elements */
 $(document).ready(function() {
-    $('.dialog').dialog({ autoOpen: false });
+    $('.dialog').dialog({
+        autoOpen: false,
+        resizable: false
+    });
 
     $('#loading-dialog').dialog('option', { 'modal': true,
                                             'dialogClass': 'notitle',
