@@ -34,6 +34,7 @@ $(document).ready(function() {
         resizable: false
     });
 
+    /* set up the loading dialog */
     $('#loading-dialog').dialog('option', { 'modal': true,
                                             'dialogClass': 'notitle',
                                             'closeOnEscape': false,
@@ -55,6 +56,12 @@ $(document).ready(function() {
         });
 
         $('#about-datasets').html(html);
+    });
+
+    /* show the tidal gauge name in the title text */
+    $('#tidalgauge').hover(function () {
+        /* copy the value into the title */
+        this.title = this.value;
     });
 });
 
