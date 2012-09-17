@@ -43,7 +43,7 @@ $(document).ready(function() {
                 return;
             }
 
-            $('title').html(ocean.configProps.name + " Ocean Maps Portal");
+            document.title = ocean.configProps.name + " Ocean Maps Portal";
 
         })
         .error(function (xhr, status_, error) {
