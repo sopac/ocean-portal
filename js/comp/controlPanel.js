@@ -15,8 +15,20 @@ ocean.MIN_YEAR = 1949;
 ocean.dateFormat = 'yyyymmdd';
 ocean.date = new Date();
 
+var LABEL_WIDTH;
+var FIELD_WIDTH;
+
 /* set up JQuery UI elements */
 $(document).ready(function() {
+    /* synchronise the Ext label and field widths with CSS */
+    LABEL_WIDTH = $('.controlvar .label').width();
+    FIELD_WIDTH = $('.controlvar .field').width() + LABEL_WIDTH;
+
+    /* Hack ExtJS field classes into non-ExtJS fields */
+    $('.controlvar .label').addClass('x-form-item x-form-item-label');
+    $('.controlvar .field').addClass('x-form-item x-form-text x-form-field x-border-box');
+
+    /* initialise dialogs */
     $('.dialog').dialog({
         autoOpen: false,
         resizable: false
@@ -28,7 +40,7 @@ $(document).ready(function() {
                                             'height': 55,
                                             'resizable': false });
 
-    // Load up the datasets dialog
+    /* Load up the datasets dialog */
     var html = '';
     $.getJSON('config/comp/datasets.json', function(data) {
         $.each(data, function(k, dataset) {
@@ -953,14 +965,14 @@ Ext.onReady(function() {
             type: 'hbox'
         },
         renderTo: 'datasetDiv',
-        width: 185
+        width: 200
     });
 
     ocean.datasetCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'datasetCombo',
         fieldLabel: 'Dataset',
-        labelWidth: 50,
-        width: 155,
+        labelWidth: LABEL_WIDTH,
+        width: FIELD_WIDTH,
         displayField: 'name',
         valueField: 'id',
         store: ocean.datasets,
@@ -995,8 +1007,8 @@ Ext.onReady(function() {
     ocean.mapCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'variableCombo',
         fieldLabel: 'Variable',
-        labelWidth: 50,
-        width: 155,
+        labelWidth: LABEL_WIDTH,
+        width: FIELD_WIDTH,
         displayField: 'name',
         valueField: 'id',
         renderTo: 'variableDiv',
@@ -1011,8 +1023,8 @@ Ext.onReady(function() {
     ocean.periodCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'periodCombo',
         fieldLabel: 'Period',
-        labelWidth: 50,
-        width: 155,
+        labelWidth: LABEL_WIDTH,
+        width: FIELD_WIDTH,
         displayField: 'name',
         valueField: 'id',
         renderTo: 'selectionDiv',
@@ -1029,7 +1041,7 @@ Ext.onReady(function() {
         renderTo: 'sliderDiv',
         hideLabel: true,
         id: 'runningAveSlider',
-        width: 155,
+        width: FIELD_WIDTH,
         minValue: 2,
         maxValue: 15,
         listeners: {
@@ -1064,8 +1076,8 @@ Ext.onReady(function() {
     ocean.monthCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'monthCombo',
         fieldLabel: 'Month',
-        labelWidth: 40,
-        width: 155,
+        labelWidth: LABEL_WIDTH,
+        width: FIELD_WIDTH,
         displayField: 'name',
         valueField: 'id',
         renderTo: 'monthDiv',
@@ -1085,8 +1097,8 @@ Ext.onReady(function() {
     ocean.yearCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'yearCombo',
         fieldLabel: 'Year',
-        labelWidth: 40,
-        width: 155,
+        labelWidth: LABEL_WIDTH,
+        width: FIELD_WIDTH,
         renderTo: 'yearDiv',
         queryMode: 'local',
         autoScroll: true,

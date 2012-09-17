@@ -5,31 +5,13 @@
  */
 
 #wrapper {
-    width: 200px;
     padding: 5px;
-}
-
-#centre {
-    width: 200px;
-    padding-left: 10px;
-    display: inline;
-}
-
-#right {
-    width: 200px;
-}
-
-#left {
-    width: 150px;
-}
-
-#bottom {
-    clear: both;
 }
 
 #header {
     clear: both;
     padding-bottom: 10px;
+    height: 45px;
 }
 
 #title {
@@ -43,16 +25,6 @@
 
 #datepickerDiv {
     padding-bottom: 10px;
-}
-
-#compDiv {
-    padding-bottom: 10px;
-}
-
-
-#map {
-    position: relative;
-    z-index: 2;
 }
 
 #legendDiv {
@@ -84,18 +56,6 @@
     height: auto;
     margin: auto;
     border: 1px solid black;
-}
-
-#header {
-    width: 190px;
-    height: 45px;
-}
-
-#left {
-}
-
-#latlonDiv table input {
-  margin: 3px;
 }
 
 #outputDiv {
@@ -234,4 +194,29 @@ a span.ui-icon {
 
 .dialog {
   display: none;
+}
+
+.controlgroup {
+  margin-bottom: 6px;
+}
+
+.controlgroup .right {
+  margin-left: 65px;
+}
+
+.controlvar {
+  padding: 1px;
+}
+
+.controlvar .label {
+  display: inline-block;
+  width: 60px;
+}
+
+.controlvar .field {
+  width: 105px;
+}
+
+.datepicker {
+  cursor: pointer;
 }
