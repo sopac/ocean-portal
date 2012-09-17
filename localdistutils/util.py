@@ -14,4 +14,4 @@ def get_version():
     (stdout, _) = proc.communicate()
     proc.wait()
 
-    return stdout
+    return stdout.strip()

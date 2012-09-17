@@ -7,7 +7,6 @@
 # Authors: Danielle Madeley <d.madeley@bom.gov.au>
 
 NAME                = 'map-portal'
-VERSION             = '0.1.0'
 DESCRIPTION         = 'Map Portal'
 LONG_DESCRIPTION    = """\
 COMP Group Climate Portal
@@ -132,6 +131,7 @@ if __name__ == '__main__':
     from localdistutils.build_web import build_web
     from localdistutils.install import install
     from localdistutils.install_web import install_web
+    from localdistutils import util
 
     import itertools
 
@@ -150,7 +150,7 @@ if __name__ == '__main__':
             for d, f in itertools.groupby(data, lambda e: os.path.dirname(e)) ]
 
     setup(name=NAME,
-          version=VERSION,
+          version=util.get_version(),
           author=AUTHOR,
           author_email=AUTHOR_EMAIL,
           url=URL,
