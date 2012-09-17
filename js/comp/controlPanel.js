@@ -111,6 +111,12 @@ function createOutput(image, dataURL, name, extras)
 
     div.hide();
     img.load(function () {
+        /* this kludge is required for IE7, where it turns out you can't do
+         * slideDown on a block contained in a relative positioned parent
+         * unless that block has a defined height */
+        if ($.browser.msie && $.browser.version == '7.0')
+            div.css('height', div.height());
+
         div.slideDown();
     });
 
