@@ -184,6 +184,13 @@ a span.ui-icon {
   display: inline-block;
 }
 
+.download-data .ui-icon {
+  opacity: 0.75;
+}
+.download-data:hover .ui-icon {
+  opacity: 1.0;
+}
+
 #mapControls {
   padding: 3px;
   position: relative;
