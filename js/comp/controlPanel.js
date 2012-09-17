@@ -51,12 +51,6 @@ Date.prototype.getMonthString = function() {
     return (calMonth < 10) ?  ('0' + calMonth) : calMonth;
 };
 
-function clearImageDiv()
-{
-    $('#outputDiv').html('');
-    $('#enlargeDiv').html('');
-}
-
 function prependOutputSet()
 {
     while ($('#outputDiv div.outputgroup').length >= ocean.compare.limit) {
@@ -302,8 +296,6 @@ ocean.dsConf = {
                     for (layer in layers) {
                         map.removeLayer(layers[layer]);
                     }
-
-                    clearImageDiv();
                 },
                 selectVariable: function(selection) {
                                     updatePeriodCombo();
@@ -396,8 +388,6 @@ ocean.dsConf = {
                     for (layer in layers) {
                         map.removeLayer(layers[layer]);
                     }
-
-                    clearImageDiv();
                 },
                 selectVariable: function(selection) {
                                     updatePeriodCombo();
@@ -490,7 +480,6 @@ ocean.dsConf = {
                     }
 
                     removePointLayer();
-                    clearImageDiv();
                     hideControl('clearlatlonButton');
                 },
                 selectVariable: function(selection) {
@@ -580,7 +569,6 @@ ocean.dsConf = {
                 }
 
                 removePointLayer();
-                clearImageDiv();
                 showControl('yearDiv');
             },
             selectVariable: function(selection) {
@@ -812,7 +800,6 @@ ocean.dsConf = {
                                 controls[control].deactivate();
                                 controls[control].destroy();
                             }
-                            clearImageDiv();
                         },
             selectVariable: function(selection) {
                                 updatePeriodCombo();
