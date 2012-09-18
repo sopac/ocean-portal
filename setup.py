@@ -113,6 +113,7 @@ data = [
     'images/climate.jpg',
     'images/bom_logo.gif',
     'images/bathymetry_ver.png',
+    'images/email.png',
 ]
 
 # CODE BEGINS

@@ -222,5 +222,10 @@ a span.ui-icon {
 }
 
 .x-tool-email {
-  /* FIXME */
+  background-position: center, 0px 0px;
+  background-image: url(../../images/email.png), url(../../lib/extjs-4.1.1/resources/themes/images/gray/tools/tool-sprite-tpl.gif) !important;
+}
+
+.x-tool-email:hover {
+  background-position: center, -15px 0px;
 }
