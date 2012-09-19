@@ -99,11 +99,7 @@ function createMap () {
     var bathymetryLayer = new OpenLayers.Layer.MapServer("Bathymetry",
         'cgi/getMap', {
             map: "bathymetry",
-            layers: ["bathymetry_10000", "bathymetry_9000", "bathymetry_8000",
-                     "bathymetry_7000", "bathymetry_6000", "bathymetry_5000",
-                     "bathymetry_4000", "bathymetry_3000", "bathymetry_2000",
-                     "bathymetry_1000", "bathymetry_200", "bathymetry_0",
-                     "land", "maritime", "capitals", "countries"]
+            layers: ["bathymetry", "land", "maritime", "capitals", "countries"]
         }, {
             transitionEffect: 'resize',
             wrapDateLine: true
