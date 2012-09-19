@@ -23,10 +23,6 @@
     text-align: right;
 }
 
-#datepickerDiv {
-    padding-bottom: 10px;
-}
-
 #legendDiv {
     position: absolute;
     bottom: 40px;
@@ -197,7 +193,8 @@ a span.ui-icon {
 }
 
 .controlgroup {
-  margin-bottom: 6px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .controlgroup .right {
