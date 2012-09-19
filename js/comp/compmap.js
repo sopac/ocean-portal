@@ -33,6 +33,8 @@ $(document).ready(function() {
     else
         ocean.config = location.search.slice(1);
 
+    createMap();
+
     /* request the portals config */
     $.getJSON('config/comp/portals.json')
         .success(function(data, status_, xhr) {
@@ -44,10 +46,6 @@ $(document).ready(function() {
             }
 
             document.title = ocean.configProps.name + " Ocean Maps Portal";
-
-            /* set map restrictions here */
-            if (!map)
-                createMap();
 
             map.setOptions({
                 restrictedExtent: new OpenLayers.Bounds(ocean.configProps.extents)
@@ -178,8 +176,6 @@ Ext.onReady(function() {
             }
         }
     });
-
-    createMap();
 
     window.countryStore = new Ext.data.Store({
         autoLoad: true,
