@@ -15,6 +15,7 @@ from distutils.util import convert_path
 from distutils import log
 
 from jsmin import JavascriptMinify
+from cssmin import cssmin
 import util
 
 class build_web(Command):
@@ -87,7 +88,11 @@ class build_web(Command):
                 for l in range(6):
                     output.write(input.readline())
 
-                jsm.minify(input, output)
+                if f.endswith('.js'):
+                    jsm.minify(input, output)
+                elif f.endswith('.css'):
+                    output.write(cssmin(input.read()))
+
                 input.close()
                 output.close()
             else:
