@@ -218,11 +218,16 @@ a span.ui-icon {
   cursor: pointer;
 }
 
-.x-tool-email {
-  background-position: center, 0px 0px;
-  background-image: url(../../images/email.png), url(../../lib/extjs-4.1.1/resources/themes/images/gray/tools/tool-sprite-tpl.gif) !important;
+.ie7-compat {
+  background-position: 0px 0px;
+  background-image: url(../../lib/extjs-4.1.1/resources/themes/images/gray/tools/tool-sprite-tpl.gif) !important;
 }
 
-.x-tool-email:hover {
-  background-position: center, -15px 0px;
+.x-tool-email {
+  background-position: center;
+  background-image: url(../../images/email.png) !important;
+}
+
+.ie7-compat:hover {
+  background-position: -15px 0px;
 }

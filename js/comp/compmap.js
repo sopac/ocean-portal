@@ -265,6 +265,7 @@ Ext.onReady(function() {
             tools: [{
                 /* Report Feedback */
                 type: 'email',
+                cls: 'ie7-compat',
                 tooltip: "Report Feedback",
                 tooltipType: 'title',
                 handler: function () {
