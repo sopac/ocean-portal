@@ -45,6 +45,13 @@ $(document).ready(function() {
 
             document.title = ocean.configProps.name + " Ocean Maps Portal";
 
+            /* set map restrictions here */
+            if (!map)
+                createMap();
+
+            map.setOptions({
+                restrictedExtent: new OpenLayers.Bounds(ocean.configProps.extents)
+            });
         })
         .error(function (xhr, status_, error) {
             fatal_error("Error loading portals config " + "&mdash; " + error);
@@ -56,7 +63,6 @@ function createMap () {
         resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
         maxResolution: 0.087890625,
         maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
-        // restrictedExtent: ocean.configProps.extents,
         controls: [
             new OpenLayers.Control.PanZoomBar(),
             new OpenLayers.Control.MousePosition(),
@@ -192,8 +198,9 @@ Ext.onReady(function() {
         if (!record)
             return;
 
-        map.zoomTo(record.get('zoom'));
-        map.panTo(new OpenLayers.LonLat(record.get('long'), record.get('lat')));
+        map.setCenter(new OpenLayers.LonLat(record.get('long'),
+                                            record.get('lat')),
+                      record.get('zoom'));
 
         ocean.area = selection;
     }
