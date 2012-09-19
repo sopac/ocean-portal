@@ -274,7 +274,7 @@ MAP
 	END
     END # States polygon layer ends here
 
-    LAYER # States polygon layer begins here
+    LAYER
         NAME       maritime
         DATA         World_Maritime_Boundaries
         STATUS       ON
@@ -288,13 +288,20 @@ MAP
         END
     END
 
-    LAYER # States polygon layer begins here
+    SYMBOL
+        NAME "natcap"
+        TYPE TRUETYPE
+        FONT sans
+        FILLED true
+        ANTIALIAS true
+        CHARACTER "&#9733;"
+    END
+
+    LAYER
         NAME         countries
         DATA         pacific_islands_capitals
         STATUS       ON
         TYPE         ANNOTATION
-        LABELMINSCALEDENOM    50
-        LABELMAXSCALEDENOM    400
 
         PROCESSING "LABEL_NO_CLIP=True"
         LABELITEM    "NAME"
@@ -305,8 +312,8 @@ MAP
                 COLOR 0 0 0
                 SHADOWSIZE 1 1
                 TYPE TRUETYPE
-                FONT vera_sans
-                SIZE 10
+                FONT sans
+                SIZE 11
                 MAXLENGTH 10
                 WRAP ' '
                 ANTIALIAS TRUE
@@ -316,9 +323,9 @@ MAP
                 FORCE FALSE
             END # end of label
         END
-    END # States polygon layer ends here
+    END
 
-    LAYER # States polygon layer begins here
+    LAYER
         NAME         capitals
         DATA         pacific_islands_capitals
         STATUS       ON
@@ -326,8 +333,8 @@ MAP
 
         LABELITEM    "NAME"
         CLASSITEM    "SCALERANK"
-        LABELMINSCALEDENOM    1
-        LABELMAXSCALEDENOM    200
+        MINSCALEDENOM    1
+        MAXSCALEDENOM    200
 
         CLASS
             EXPRESSION ([SCALERANK]==2)
@@ -335,14 +342,20 @@ MAP
                 COLOR 0 0 0
                 SHADOWSIZE 1 1
                 TYPE TRUETYPE
-                FONT vera_sans_mono
+                FONT sans
                 SIZE 8
                 ANTIALIAS TRUE
                 POSITION AUTO
                 PARTIALS FALSE
                 FORCE FALSE
             END # end of label
+
+            STYLE
+                SYMBOL "natcap"
+                COLOR 0 0 0
+                SIZE 8
+            END
         END
-    END # States polygon layer ends here
+    END
 
 END

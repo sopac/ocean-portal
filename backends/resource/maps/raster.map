@@ -5,7 +5,6 @@ MAP
     FONTSET        "../fonts/fonts.list"
     EXTENT         -180 -90 180 90
     SIZE           6000 3000
-    CONFIG         "MS_ERRORFILE" "/tmp/mserror.log"
 
     PROJECTION
         "init=epsg:4326"
@@ -22,7 +21,7 @@ MAP
         END
     END # MODIS raster layer ends here
 
-LAYER # MODIS raster layer begins here
+    LAYER # MODIS raster layer begins here
         NAME         raster_right
         DATA         "%westFileName%"
         STATUS       ON
@@ -33,14 +32,14 @@ LAYER # MODIS raster layer begins here
         END
     END # MODIS raster layer ends here
 
-LAYER # States polygon layer begins here
-    NAME         land
-    DATA         southern_pac
-    STATUS       ON
-    TYPE         POLYGON
+    LAYER # States polygon layer begins here
+        NAME         land
+        DATA         southern_pac
+        STATUS       ON
+        TYPE         POLYGON
 
         CLASS
-      NAME 'land'
+            NAME 'land'
 
             STYLE
                 COLOR      241 235 183
@@ -48,7 +47,80 @@ LAYER # States polygon layer begins here
                 WIDTH 1
                 ANTIALIAS TRUE
             END
+         END
+    END # States polygon layer ends here
+
+    SYMBOL
+        NAME "natcap"
+        TYPE TRUETYPE
+        FONT sans
+        FILLED true
+        ANTIALIAS true
+        CHARACTER "&#9733;"
+    END
+
+    LAYER
+        NAME         countries
+        DATA         pacific_islands_capitals
+        STATUS       ON
+        TYPE         ANNOTATION
+
+        PROCESSING "LABEL_NO_CLIP=True"
+        LABELITEM    "NAME"
+        CLASSITEM    "SCALERANK"
+        MINSCALEDENOM    1
+        MAXSCALEDENOM    100
+
+        CLASS
+            EXPRESSION ([SCALERANK]==1)
+            LABEL
+                COLOR 0 0 0
+                SHADOWSIZE 1 1
+                TYPE TRUETYPE
+                FONT sans
+                SIZE 11
+                MAXLENGTH 10
+                WRAP ' '
+                ANTIALIAS TRUE
+                POSITION AUTO
+                PARTIALS FALSE
+                OFFSET 1 1
+                FORCE FALSE
+            END # end of label
         END
-  END # States polygon layer ends here
+    END
+
+    LAYER
+        NAME         capitals
+        DATA         pacific_islands_capitals
+        STATUS       ON
+        TYPE         ANNOTATION
+
+        LABELITEM    "NAME"
+        CLASSITEM    "SCALERANK"
+        MINSCALEDENOM    1
+        MAXSCALEDENOM    100
+
+        CLASS
+            EXPRESSION ([SCALERANK]==2)
+            LABEL
+                COLOR 0 0 0
+                SHADOWSIZE 1 1
+                TYPE TRUETYPE
+                FONT sans
+                SIZE 8
+                ANTIALIAS TRUE
+                POSITION AUTO
+                PARTIALS FALSE
+                FORCE FALSE
+            END # end of label
+
+            STYLE
+                SYMBOL "natcap"
+                COLOR 0 0 0
+                SIZE 8
+            END
+        END
+    END
 
 END

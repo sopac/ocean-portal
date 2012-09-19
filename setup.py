@@ -53,8 +53,7 @@ backend_resources = [
     'maps/bathymetry.map',
     'maps/raster.map',
     'fonts/fonts.list',
-    'fonts/Vera.ttf',
-    'fonts/VeraMono.ttf',
+    'fonts/DejaVuSans.ttf',
 ]
 
 map_layer_extensions = ['dbf', 'prj', 'shp', 'shx' ]

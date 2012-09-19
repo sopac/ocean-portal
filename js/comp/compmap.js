@@ -143,7 +143,7 @@ function updateMap(layerName, data){
         var layer = new OpenLayers.Layer.MapServer(layerName,
             'cgi/getMap', {
             map: 'raster',
-            layers: ['raster_left', 'raster_right', 'land'],
+            layers: ['raster_left', 'raster_right', 'land', 'capitals', 'countries'],
             raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
         }, {
             transitionEffect: 'resize',
