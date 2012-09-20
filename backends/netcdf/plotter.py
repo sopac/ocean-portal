@@ -402,7 +402,7 @@ class Plotter:
             test_interval = math.pow(10, dif_exp) * k
             start_value = np.ceil(x_min/test_interval)*test_interval
             ticks = np.arange(start_value, x_max + eps, test_interval)
-            if (ticks.size >= min_ticks) & (ticks.size <= max_ticks):
+            if (ticks.size >= min_ticks) and (ticks.size <= max_ticks):
                 break
         
         # Determine number of decimal places required for labels

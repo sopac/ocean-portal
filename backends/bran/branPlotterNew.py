@@ -33,10 +33,10 @@ def load_BRAN_data(input_data_file, var_name, lat_min, lat_max, lon_min, lon_max
     dimensions = nc.variables[var_name].dimensions
 
     # Load lat/lon values
-    if ('xt_ocean' in dimensions) & ('yt_ocean' in dimensions):
+    if ('xt_ocean' in dimensions) and ('yt_ocean' in dimensions):
         lons = nc.variables['xt_ocean'][:]
         lats = nc.variables['yt_ocean'][:]
-    elif ('xu_ocean' in dimensions) & ('yu_ocean' in dimensions):
+    elif ('xu_ocean' in dimensions) and ('yu_ocean' in dimensions):
         lons = nc.variables['xu_ocean'][:]
         lats = nc.variables['yu_ocean'][:]
     if 'zt_ocean' in dimensions:
@@ -113,7 +113,7 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
     img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap, vmin=cb_ticks.min(), vmax=cb_ticks.max())
     ax = plt.gca()
     
-    if (u is not None) & (v is not None) & (vlat is not None) & (vlon is not None):
+    if (u is not None) and (v is not None) and (vlat is not None) and (vlon is not None):
         # Draw vectors
         draw_every, arrow_scale = get_vector_plot_settings(lat_min, lat_max, lon_min, lon_max)
         if draw_every is not None:
@@ -286,7 +286,7 @@ def draw_vector_plot(m, x, y, u, v, draw_every=1, arrow_scale=10, quiverkey_valu
                  labelpos='N', labelsep=0.01, fontproperties={'size':'xx-small', 'weight':'1000'})
 
 def get_subset_idxs(x, x_min, x_max):
-    valid_idxs = [i for i,x_i in enumerate(x) if (x_i >= x_min) & (x_i <= x_max)]
+    valid_idxs = [i for i,x_i in enumerate(x) if (x_i >= x_min) and (x_i <= x_max)]
     if len(valid_idxs) > 0:
         start_idx = valid_idxs[0]
         end_idx = valid_idxs[-1]
@@ -321,7 +321,7 @@ def get_tick_values(x_min, x_max, min_ticks=4, max_ticks=9):
         test_interval = math.pow(10, dif_exp) * k
         start_value = np.ceil(x_min/test_interval)*test_interval
         ticks = np.arange(start_value, x_max + eps, test_interval)
-        if (ticks.size >= min_ticks) & (ticks.size <= max_ticks):
+        if (ticks.size >= min_ticks) and (ticks.size <= max_ticks):
             break
     
     # Determine number of decimal places required for labels
@@ -356,19 +356,19 @@ def get_vector_plot_settings(lat_min, lat_max, lon_min, lon_max):
     if max_extent >= 80:
         draw_every = None
         arrow_scale = None
-    elif (max_extent >= 60) & (max_extent < 80):
+    elif (max_extent >= 60) and (max_extent < 80):
         draw_every = 10
         arrow_scale = 20
-    elif (max_extent >= 20) & (max_extent < 60):
+    elif (max_extent >= 20) and (max_extent < 60):
         draw_every = 5
         arrow_scale = 15
-    elif (max_extent >= 10) & (max_extent < 20):
+    elif (max_extent >= 10) and (max_extent < 20):
         draw_every = 5
         arrow_scale = 10
-    elif (max_extent >= 7) & (max_extent < 10):
+    elif (max_extent >= 7) and (max_extent < 10):
         draw_every = 4
         arrow_scale = 5
-    elif (max_extent >= 4) & (max_extent < 7):
+    elif (max_extent >= 4) and (max_extent < 7):
         draw_every = 3
         arrow_scale = 5
     else:

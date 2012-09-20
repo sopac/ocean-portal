@@ -42,7 +42,7 @@ def process(form):
         if ("lat" in form) and ("lon" in form):
             lat_cnt = np.float(form["lat"].value)
             lon_cnt = np.mod(np.float(form["lon"].value),360.0)
-            if (lon_cnt >= 0) & (lon_cnt <= 360) & (lat_cnt >= -90) & (lat_cnt <= 90):
+            if (lon_cnt >= 0) and (lon_cnt <= 360) and (lat_cnt >= -90) and (lat_cnt <= 90):
                 if lat_cnt >= 0:
                     lat_str = str(int(round(abs(lat_cnt), 2)*100)) + 'N'
                 else:
