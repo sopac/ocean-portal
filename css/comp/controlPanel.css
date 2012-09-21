@@ -25,6 +25,7 @@
 
 #legendDiv {
     position: absolute;
+    pointer-events: none;
     bottom: 40px;
     left: 10px;
     width: 100px;
