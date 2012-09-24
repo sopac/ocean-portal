@@ -231,29 +231,16 @@ class Plotter:
 #        m.fillcontinents(color='#F1EBB7', zorder=7)
         m.fillcontinents(color='#cccccc', zorder=7)
 
-        #parallels = self.get_tick_values(lllon, urlon)
-        #meridians = self.get_tick_values(lllat, urlat)
-        if math.fabs(lllat - urlat) < 2:
-            parallels = np.linspace(lllat, urlat, 2)
-        elif math.fabs(lllat - urlat) < 5:
-            parallels = np.linspace(lllat, urlat, 4)
-        else:
-            parallels = np.linspace(lllat, urlat, 9)
-        m.drawparallels(parallels, labels=[True, False, False, False], fmt='%.2f', fontsize=6, dashes=[3, 3], color='gray')
-        if math.fabs(lllon - urlon) < 2:
-            meridians = np.linspace(lllon, urlon, 2)
-        elif math.fabs(lllon - urlon) < 5:
-            meridians = np.linspace(lllon, urlon, 4)
-        else:
-            meridians = np.linspace(lllon, urlon, 9)
-        m.drawmeridians(meridians, labels=[False, False, False, True], fmt='%.2f', fontsize=6, dashes=[3, 3], color='gray')
+        parallels, p_dec_places = self.get_tick_values(lllat, urlat)
+        meridians, m_dec_places = self.get_tick_values(lllon, urlon)
+        m.drawparallels(parallels, labels=[True, False, False, False], fmt='%.' + str(p_dec_places) + 'f', fontsize=6, dashes=[3, 3], color='gray')
+        m.drawmeridians(meridians, labels=[False, False, False, True], fmt='%.' + str(m_dec_places) + 'f', fontsize=6, dashes=[3, 3], color='gray')
 
         title = ''
         if hasattr(config, 'getPeriodPrefix') and 'period' in args:
             title += config.getPeriodPrefix(args['period'])
 
         title += config.getTitle(variable) + args['formattedDate']
-
         plt.title(title, fontsize=8)
         plt.clim(*config.getColorBounds(variable))
         ax = plt.gca()
@@ -380,7 +367,7 @@ class Plotter:
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.8, bbox_extra_artists=[copyrightBox])
         plt.close()
 
-    def get_tick_values(self, x_min, x_max, min_ticks=4, max_ticks=9):
+    def get_tick_values(self, x_min, x_max, min_ticks=4):
         """
         Automatically determine best latitude / longitude tick values for plotting.
 
@@ -388,7 +375,6 @@ class Plotter:
             x_min       Minimum lat/lon value
             x_max       Maximum lat/lon value
             min_ticks   Minimum number of ticks
-            max_ticks   Maximum number of ticks    
 
         Example usage: 
             get_tick_values(-30,30) -> [-30., -20., -10., 0., 10., 20., 30.]
@@ -402,7 +388,7 @@ class Plotter:
             test_interval = math.pow(10, dif_exp) * k
             start_value = np.ceil(x_min/test_interval)*test_interval
             ticks = np.arange(start_value, x_max + eps, test_interval)
-            if (ticks.size >= min_ticks) and (ticks.size <= max_ticks):
+            if (ticks.size >= min_ticks):
                 break
         
         # Determine number of decimal places required for labels
@@ -415,4 +401,3 @@ class Plotter:
             dec_places = 0
         
         return ticks, int(dec_places)
-
