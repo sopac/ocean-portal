@@ -25,7 +25,9 @@ form = cgi.FieldStorage()
 print "Content-Type: text/html"     # HTML is following
 print                               # blank line, end of headers
 
-response = {}
+response = {
+    'version': util.__version__,
+}
 
 if 'dataset' in form:
 

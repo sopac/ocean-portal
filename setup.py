@@ -129,6 +129,7 @@ if __name__ == '__main__':
 
     from localdistutils.dist import PortalDist
     from localdistutils.build import build
+    from localdistutils.build_py import build_py
     from localdistutils.build_web import build_web
     from localdistutils.install import install
     from localdistutils.install_web import install_web
@@ -181,6 +182,7 @@ if __name__ == '__main__':
           distclass=PortalDist,
           cmdclass={
               'build': build,
+              'build_py': build_py,
               'build_web': build_web,
               'install': install,
               'install_web': install_web,
