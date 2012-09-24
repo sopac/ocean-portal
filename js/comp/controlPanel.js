@@ -555,18 +555,6 @@ ocean.dsConf = {
             toolbar: null,
             setData: function(data) {
                 this.data = data;
-                dateRange = this.data.get('dateRange');
-                minDate = $.datepick.parseDate(ocean.dateFormat, dateRange.minDate);
-                maxDate = $.datepick.parseDate(ocean.dateFormat, dateRange.maxDate);
-                var minYear = parseInt(dateRange["minYear"]);
-                var maxYear = parseInt(dateRange["maxYear"]);
-                dateRange.yearFilter = Ext.create('Ext.util.Filter', {filterFn: function (item) {
-                        var year = item.data.field1;
-                        var filter = item.store.filters.items[0];
-                            return year >= filter.minYear && year <= filter.maxYear;
-                        },
-                        minYear: minYear,
-                        maxYear: maxYear});
             },
             callback: function(data) {
                 prependOutputSet();
@@ -577,7 +565,6 @@ ocean.dsConf = {
             },
             onSelect: function() {
                 showControl('variableDiv');
-                configCalendar();
             },
             onDeselect: function() {
                 var layers = map.getLayersByName("WaveWatch III");
@@ -592,23 +579,6 @@ ocean.dsConf = {
             },
             selectVariable: function(selection) {
                 updatePeriodCombo();
-                dateRange = this.data.get('dateRange');
-                updateYearCombo(dateRange.yearFilter);
-                minDate = $.datepick.parseDate(ocean.dateFormat,
-                                               dateRange.minDate);
-                maxDate = $.datepick.parseDate(ocean.dateFormat,
-                                               dateRange.maxDate);
-                if (ocean.date != null) {
-                    if (ocean.date < minDate) {
-                        ocean.date = minDate;
-                    }
-                    else if (ocean.date > maxDate) {
-                        ocean.date = maxDate;
-                    }
-                }
-                else {
-                    ocean.date = maxDate;
-                }
                 updateCalDiv();
                 showControl('selectionDiv');
                 hideControl('yearDiv');
