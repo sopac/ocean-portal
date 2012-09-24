@@ -299,7 +299,7 @@ def get_subset_idxs(x, x_min, x_max):
         end_idx = None
     return start_idx, end_idx
 
-def get_tick_values(x_min, x_max, min_ticks=4, max_ticks=9):
+def get_tick_values(x_min, x_max, min_ticks=4):
     """
     Automatically determine best latitude / longitude tick values for plotting.
 
@@ -307,7 +307,6 @@ def get_tick_values(x_min, x_max, min_ticks=4, max_ticks=9):
         x_min       Minimum lat/lon value
         x_max       Maximum lat/lon value
         min_ticks   Minimum number of ticks
-        max_ticks   Maximum number of ticks    
 
     Example usage: 
         get_tick_values(-30,30) -> [-30., -20., -10., 0., 10., 20., 30.]
@@ -321,7 +320,7 @@ def get_tick_values(x_min, x_max, min_ticks=4, max_ticks=9):
         test_interval = math.pow(10, dif_exp) * k
         start_value = np.ceil(x_min/test_interval)*test_interval
         ticks = np.arange(start_value, x_max + eps, test_interval)
-        if (ticks.size >= min_ticks) and (ticks.size <= max_ticks):
+        if (ticks.size >= min_ticks):
             break
     
     # Determine number of decimal places required for labels
