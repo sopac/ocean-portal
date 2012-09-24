@@ -1093,7 +1093,7 @@ Ext.onReady(function() {
         store: ocean.monthStore,
         listeners: {
             'select': function(event, args) {
-                ocean.date.setMonth(parseInt(event.getValue()) - 1, 1);
+                ocean.date.setMonth(parseInt(event.getValue(), 10) - 1, 1);
             }
         }
     });
