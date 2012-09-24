@@ -94,7 +94,7 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
     
     # Create colormap
     if cb_ticks is None:
-        cb_ticks,junk = get_tick_values(data.min(), data.max(), 6, 12)
+        cb_ticks,junk = get_tick_values(data.min(), data.max(), 6)
     n_colours = cb_ticks.size - 1
     d_cmap = discrete_cmap(cmp_name, n_colours)
     
@@ -233,7 +233,7 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
     img = m.pcolormesh(x2, y2, data_sf, shading='flat', cmap=d_cmap, vmin=cb_ticks.min(), vmax=cb_ticks.max())
     plt.title(title, fontsize=12)
     
-    parallels, p_dec_places = get_tick_values(lat_min, lat_max, 3, 6)
+    parallels, p_dec_places = get_tick_values(lat_min, lat_max, 3)
     meridians, m_dec_places = get_tick_values(lon_min, lon_max)
     m.drawparallels(parallels, labels=[True, False, False, False], fmt='%.' + str(p_dec_places) + 'f', 
                     fontsize=8, dashes=[3, 3], color='gray')
