@@ -231,8 +231,8 @@ class Plotter:
 #        m.fillcontinents(color='#F1EBB7', zorder=7)
         m.fillcontinents(color='#cccccc', zorder=7)
 
-        parallels, p_dec_places = self.get_tick_values(lllat, urlat)
-        meridians, m_dec_places = self.get_tick_values(lllon, urlon)
+        parallels, p_dec_places = get_tick_values(lllat, urlat)
+        meridians, m_dec_places = get_tick_values(lllon, urlon)
         m.drawparallels(parallels, labels=[True, False, False, False], fmt='%.' + str(p_dec_places) + 'f', fontsize=6, dashes=[3, 3], color='gray')
         m.drawmeridians(meridians, labels=[False, False, False, True], fmt='%.' + str(m_dec_places) + 'f', fontsize=6, dashes=[3, 3], color='gray')
 
@@ -367,37 +367,37 @@ class Plotter:
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.8, bbox_extra_artists=[copyrightBox])
         plt.close()
 
-    def get_tick_values(self, x_min, x_max, min_ticks=4):
-        """
-        Automatically determine best latitude / longitude tick values for plotting.
+def get_tick_values(x_min, x_max, min_ticks=4):
+    """
+    Automatically determine best latitude / longitude tick values for plotting.
 
-        Input arguments:
-            x_min       Minimum lat/lon value
-            x_max       Maximum lat/lon value
-            min_ticks   Minimum number of ticks
+    Input arguments:
+        x_min       Minimum lat/lon value
+        x_max       Maximum lat/lon value
+        min_ticks   Minimum number of ticks
 
-        Example usage: 
-            get_tick_values(-30,30) -> [-30., -20., -10., 0., 10., 20., 30.]
-        """
-        eps = 0.0001
-        
-        # Calculate base 10 exponent of the value range
-        dif_exp = np.floor(np.log10(x_max - x_min))
-        
-        for k in [1.0,0.5,0.2]:
-            test_interval = math.pow(10, dif_exp) * k
-            start_value = np.ceil(x_min/test_interval)*test_interval
-            ticks = np.arange(start_value, x_max + eps, test_interval)
-            if (ticks.size >= min_ticks):
-                break
-        
-        # Determine number of decimal places required for labels
-        if dif_exp <= 0:
-            if k >= 1.0:
-                dec_places = abs(dif_exp)
-            else:
-                dec_places = abs(dif_exp) + 1
+    Example usage:
+        get_tick_values(-30,30) -> [-30., -20., -10., 0., 10., 20., 30.]
+    """
+    eps = 0.0001
+
+    # Calculate base 10 exponent of the value range
+    dif_exp = np.floor(np.log10(x_max - x_min))
+
+    for k in [1.0,0.5,0.2]:
+        test_interval = math.pow(10, dif_exp) * k
+        start_value = np.ceil(x_min/test_interval)*test_interval
+        ticks = np.arange(start_value, x_max + eps, test_interval)
+        if (ticks.size >= min_ticks):
+            break
+
+    # Determine number of decimal places required for labels
+    if dif_exp <= 0:
+        if k >= 1.0:
+            dec_places = abs(dif_exp)
         else:
-            dec_places = 0
-        
-        return ticks, int(dec_places)
+            dec_places = abs(dif_exp) + 1
+    else:
+        dec_places = 0
+
+    return ticks, int(dec_places)

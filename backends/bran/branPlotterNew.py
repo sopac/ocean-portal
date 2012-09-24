@@ -20,6 +20,7 @@ import pylab as py
 import datetime
 
 from ocean.netcdf.plotter import getCopyright
+from ocean.netcdf.plotter import get_tick_values
 
 def load_BRAN_data(input_data_file, var_name, lat_min, lat_max, lon_min, lon_max, depth_min=0, depth_max=0):
 
@@ -299,40 +300,6 @@ def get_subset_idxs(x, x_min, x_max):
         end_idx = None
     return start_idx, end_idx
 
-def get_tick_values(x_min, x_max, min_ticks=4):
-    """
-    Automatically determine best latitude / longitude tick values for plotting.
-
-    Input arguments:
-        x_min       Minimum lat/lon value
-        x_max       Maximum lat/lon value
-        min_ticks   Minimum number of ticks
-
-    Example usage: 
-        get_tick_values(-30,30) -> [-30., -20., -10., 0., 10., 20., 30.]
-    """
-    eps = 0.0001
-    
-    # Calculate base 10 exponent of the value range
-    dif_exp = np.floor(np.log10(x_max - x_min))
-    
-    for k in [1.0,0.5,0.2]:
-        test_interval = math.pow(10, dif_exp) * k
-        start_value = np.ceil(x_min/test_interval)*test_interval
-        ticks = np.arange(start_value, x_max + eps, test_interval)
-        if (ticks.size >= min_ticks):
-            break
-    
-    # Determine number of decimal places required for labels
-    if dif_exp <= 0:
-        if k >= 1.0:
-            dec_places = abs(dif_exp)
-        else:
-            dec_places = abs(dif_exp) + 1
-    else:
-        dec_places = 0
-    
-    return ticks, int(dec_places)
 
 def discrete_cmap(cmap_name, n_colours):
     cmap = mpl.cm.get_cmap(cmap_name, n_colours)
