@@ -55,6 +55,7 @@ def main():
     etag = '"%s"' % hash
 
     filename = '/tmp/blah/%s.png' % hash
+    tmp_filename = '%s.tmp' % filename
 
     # determine whether or not we need to call into mapserver
     try:
@@ -70,7 +71,7 @@ def main():
     # call mapserver if required
     if call_mapserver:
         with os.tmpfile() as tmpfile:
-            with open(filename, 'wb') as cachefile:
+            with open(tmp_filename, 'wb') as cachefile:
                 os.environ['QUERY_STRING'] = queryString
                 subprocess.call(config['mapservPath'], stdout=tmpfile)
 
@@ -84,8 +85,9 @@ def main():
 
         # pngcrush the cached tile
         with open(os.devnull, 'wb') as devnull:
-            subprocess.call([ 'pngcrush', '-ow', filename ],
-                            stdout=devnull, stderr=devnull)
+            subprocess.check_call([ 'pngcrush', tmp_filename, filename ],
+                                  stdout=devnull, stderr=devnull)
+        os.remove(tmp_filename)
 
     else:
         try:
