@@ -5,7 +5,7 @@
 #     All Rights Reserved
 #
 # Authors: Sheng Guo <s.guo@bom.gov.au>
-
+#          Nicholas Summons <n.summons@bom.gov.au>
 """
 Plotter is the base class for plotting.
 """
@@ -84,20 +84,10 @@ class Plotter:
 	m.drawcoastlines(linewidth=0.1, zorder=6)
         m.fillcontinents(color='#F1EBB7', zorder=7)
 
-        if math.fabs(lllat - urlat) < 2:
-            parallels = np.linspace(lllat, urlat, 2)
-        elif math.fabs(lllat - urlat) < 5:
-            parallels = np.linspace(lllat, urlat, 4)
-        else:
-            parallels = np.linspace(lllat, urlat, 9)
-        m.drawparallels(parallels, labels=[True, False, False, False], fmt='%.2f', fontsize=6, dashes=[3, 3], color='gray')
-        if math.fabs(lllon - urlon) < 2:
-            meridians = np.linspace(lllon, urlon, 2)
-        elif math.fabs(lllon - urlon) < 5:
-            meridians = np.linspace(lllon, urlon, 4)
-        else:
-            meridians = np.linspace(lllon, urlon, 9)
-        m.drawmeridians(meridians, labels=[False, False, False, True], fmt='%.2f', fontsize=6, dashes=[3, 3], color='gray')
+        parallels, p_dec_places = get_tick_values(lllat, urlat)
+        meridians, m_dec_places = get_tick_values(lllon, urlon)
+        m.drawparallels(parallels, labels=[True, False, False, False], fmt='%.' + str(p_dec_places) + 'f', fontsize=6, dashes=[3, 3], color='gray')
+        m.drawmeridians(meridians, labels=[False, False, False, True], fmt='%.' + str(m_dec_places) + 'f', fontsize=6, dashes=[3, 3], color='gray')
 
         plt.title(title, fontsize=10)
         plt.clim(*config.getColorBounds(variable))
@@ -401,3 +391,46 @@ def get_tick_values(x_min, x_max, min_ticks=4):
         dec_places = 0
 
     return ticks, int(dec_places)
+
+def discrete_cmap(cmap_name, intervals, extend='both'):
+    """
+    Generate a discrete colour map by subsetting from a continuous matplotlib colour map.
+
+    Input arguments
+    ---------------
+    cmap_name   -> Name of colour map (e.g. 'jet')
+    intervals   -> Number of colour intervals (excluding out of range colour flags)
+    extend      -> Specify whether to add extra colours for values that are out of range.
+                   Options are 'both', 'min', 'max' or 'neither'.
+    """
+    if extend == 'both':
+        n_colours = intervals + 2
+    elif extend == 'min' or extend == 'max':
+        n_colours = intervals + 1
+    else:
+        n_colours = intervals
+
+    cmap = mpl.cm.get_cmap(cmap_name, n_colours)
+    clrs = cmap(range(n_colours))
+
+    if extend == 'both':
+        min_colour = clrs[0,:]
+        max_colour = clrs[-1,:]
+        intv_colours = clrs[1:-1,:]
+    elif extend == 'min':
+        min_colour = clrs[0,:]
+        max_colour = None
+        intv_colours = clrs[1:,:]
+    elif extend == 'max':
+        min_colour = None
+        max_colour = clrs[-1,:]
+        intv_colours = clrs[:-1,:]
+    else:
+        intv_colours = clrs
+
+    cmap = mpl.colors.ListedColormap(intv_colours)
+    if min_colour is not None:
+        cmap.set_under(min_colour)
+    if max_colour is not None:
+        cmap.set_over(max_colour)
+    return cmap

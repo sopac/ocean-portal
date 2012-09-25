@@ -21,6 +21,7 @@ import datetime
 
 from ocean.netcdf.plotter import getCopyright
 from ocean.netcdf.plotter import get_tick_values
+from ocean.netcdf.plotter import discrete_cmap
 
 def load_BRAN_data(input_data_file, var_name, lat_min, lat_max, lon_min, lon_max, depth_min=0, depth_max=0):
 
@@ -67,7 +68,6 @@ def load_BRAN_data(input_data_file, var_name, lat_min, lat_max, lon_min, lon_max
     
     return lats, lons, zlevels, data
 
-
 def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
                            output_filename='noname.png', title='', units='m/s',
                            cb_ticks=None, cb_tick_fmt="%.0f", cmp_name='jet', 
@@ -111,7 +111,8 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
         
     # Plot data
     x2, y2 = m(*np.meshgrid(lons2, lats2))
-    img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap, vmin=cb_ticks.min(), vmax=cb_ticks.max())
+    img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap)
+    img.set_clim(cb_ticks.min(), cb_ticks.max())
     ax = plt.gca()
     
     if (u is not None) and (v is not None) and (vlat is not None) and (vlon is not None):
@@ -152,7 +153,6 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
     plt.close()
     
     return m
-
 
 def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_all, lons_all, data_sf,
                           lat_cnt, lon_cnt, output_filename='noname.png', title='', units='m/s',
@@ -260,7 +260,6 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
     
     return
 
-
 def draw_vector_plot(m, x, y, u, v, draw_every=1, arrow_scale=10, quiverkey_value=0.5, units='ms^{-1}', 
                      quiverkey_xpos=0.25, quiverkey_ypos=0.28):
     # Draw vector plot
@@ -300,12 +299,6 @@ def get_subset_idxs(x, x_min, x_max):
         end_idx = None
     return start_idx, end_idx
 
-
-def discrete_cmap(cmap_name, n_colours):
-    cmap = mpl.cm.get_cmap(cmap_name, n_colours)
-    clrs = cmap(range(0, n_colours))
-    return mpl.colors.ListedColormap(clrs)
-
 def get_grid_edges(x):
     x = np.array(x)
     cntrs = (x[1:] + x[0:-1]) / 2.0
@@ -342,7 +335,6 @@ def get_vector_plot_settings(lat_min, lat_max, lon_min, lon_max):
         arrow_scale = 5
     return draw_every, arrow_scale
 
-    
 def format_longitude(x, pos=None):
     x = np.mod(x + 180, 360) - 180
     if x==-180:
