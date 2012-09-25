@@ -54,7 +54,7 @@ def main():
     hash = m.hexdigest()
     etag = '"%s"' % hash
 
-    filename = '/tmp/blah/%s.png' % hash
+    filename = os.path.join(config['outputDir'], 'maptiles', '%s.png' % hash)
     tmp_filename = '%s.tmp' % filename
 
     # determine whether or not we need to call into mapserver
