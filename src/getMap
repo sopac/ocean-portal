@@ -62,7 +62,7 @@ def main():
     except KeyError:
         pass
 
-    filename = '/tmp/blah/%s' % hash
+    filename = '/tmp/blah/%s.png' % hash
 
     # determine whether or not we need to call into mapserver
     try:
@@ -77,15 +77,26 @@ def main():
 
     # call mapserver if required
     if call_mapserver:
-        with open(filename, 'wb') as cachefile:
-            os.environ['QUERY_STRING'] = queryString
-            subprocess.call(config['mapservPath'], stdout=cachefile)
+        with os.tmpfile() as tmpfile:
+            with open(filename, 'wb') as cachefile:
+                os.environ['QUERY_STRING'] = queryString
+                subprocess.call(config['mapservPath'], stdout=tmpfile)
+
+                # remove the first two lines from the tmpfile to make it a png
+                tmpfile.seek(0)
+                tmpfile.readline()
+                tmpfile.readline()
+
+                # copy it to the output file
+                shutil.copyfileobj(tmpfile, cachefile)
 
     # play the cached file to the web server
     with open(filename, 'rb') as cachefile:
         print 'Status: 200 Ok'
+        print 'Content-Type: image/png'
         print 'ETag: %s' % etag
         print 'Cache-Control: max-age=3600' # FIXME: value?
+        print
 
         shutil.copyfileobj(cachefile, sys.stdout)
 
