@@ -90,6 +90,11 @@ def main():
                 # copy it to the output file
                 shutil.copyfileobj(tmpfile, cachefile)
 
+        # pngcrush the cached tile
+        with open(os.devnull, 'wb') as devnull:
+            subprocess.call([ 'pngcrush', '-ow', filename ],
+                            stdout=devnull, stderr=devnull)
+
     # play the cached file to the web server
     with open(filename, 'rb') as cachefile:
         print 'Status: 200 Ok'
