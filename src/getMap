@@ -54,14 +54,6 @@ def main():
     hash = m.hexdigest()
     etag = '"%s"' % hash
 
-    try:
-        if os.environ['HTTP_IF_NONE_MATCH'] == etag:
-            print 'Status: 304 Not Modified'
-            print
-            return
-    except KeyError:
-        pass
-
     filename = '/tmp/blah/%s.png' % hash
 
     # determine whether or not we need to call into mapserver
@@ -95,12 +87,22 @@ def main():
             subprocess.call([ 'pngcrush', '-ow', filename ],
                             stdout=devnull, stderr=devnull)
 
+    else:
+        try:
+            if os.environ['HTTP_IF_NONE_MATCH'] == etag:
+                print 'Status: 304 Not Modified'
+                print
+                return
+        except KeyError:
+            pass
+
     # play the cached file to the web server
     with open(filename, 'rb') as cachefile:
         print 'Status: 200 Ok'
         print 'Content-Type: image/png'
         print 'ETag: %s' % etag
         print 'Cache-Control: max-age=3600' # FIXME: value?
+        print 'X-Tile-Cached:', 'no' if call_mapserver else 'yes'
         print
 
         shutil.copyfileobj(cachefile, sys.stdout)
