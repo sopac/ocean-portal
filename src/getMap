@@ -9,10 +9,13 @@
 
 import os
 import os.path
+import sys
 import re
 import subprocess
 import urlparse
 import urllib
+import hashlib
+import shutil
 
 import ocean.util as util
 
@@ -21,6 +24,7 @@ def main():
 
     queryMap = urlparse.parse_qs(os.environ["QUERY_STRING"])
 
+    # update the query string
     if 'map' in queryMap:
         map = queryMap['map'][0]
         queryMap['map'] = util.get_resource('maps', map + '.map')
@@ -42,8 +46,48 @@ def main():
                                                             filename)
 
     queryString = urllib.urlencode(queryMap, True)
-    os.environ['QUERY_STRING'] = queryString
-    subprocess.call(config['mapservPath'])
+
+    # calculate the etag from the query string
+    m = hashlib.sha256()
+    m.update(queryString)
+
+    hash = m.hexdigest()
+    etag = '"%s"' % hash
+
+    try:
+        if os.environ['HTTP_IF_NONE_MATCH'] == etag:
+            print 'Status: 304 Not Modified'
+            print
+            return
+    except KeyError:
+        pass
+
+    filename = '/tmp/blah/%s' % hash
+
+    # determine whether or not we need to call into mapserver
+    try:
+        cache_mtime = os.path.getmtime(filename)
+        call_mapserver = \
+                cache_mtime < os.path.getmtime(queryMap['eastFileName']) or \
+                cache_mtime < os.path.getmtime(queryMap['eastFileName'])
+    except os.error:
+        call_mapserver = True
+    except KeyError:
+        call_mapserver = not os.path.exists(filename)
+
+    # call mapserver if required
+    if call_mapserver:
+        with open(filename, 'wb') as cachefile:
+            os.environ['QUERY_STRING'] = queryString
+            subprocess.call(config['mapservPath'], stdout=cachefile)
+
+    # play the cached file to the web server
+    with open(filename, 'rb') as cachefile:
+        print 'Status: 200 Ok'
+        print 'ETag: %s' % etag
+        print 'Cache-Control: max-age=3600' # FIXME: value?
+
+        shutil.copyfileobj(cachefile, sys.stdout)
 
 if __name__ == '__main__':
     main()
