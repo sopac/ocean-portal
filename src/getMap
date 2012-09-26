@@ -71,15 +71,24 @@ def main():
     # call mapserver if required
     if call_mapserver:
         with os.tmpfile() as tmpfile:
+            os.environ['QUERY_STRING'] = queryString
+            subprocess.call(config['mapservPath'], stdout=tmpfile)
+
+            # remove the first two lines from the tmpfile to make it a png
+            tmpfile.seek(0)
+            content_type = tmpfile.readline().strip().split(' ', 2)[1]
+
+            # check to see if mapserver generated an error
+            if content_type != 'image/png':
+                print 'Status: 500 Internal Server Error'
+                print 'Content-type: %s' % content_type
+                print
+                print tmpfile.read()
+                return
+
+            tmpfile.readline()
+
             with open(tmp_filename, 'wb') as cachefile:
-                os.environ['QUERY_STRING'] = queryString
-                subprocess.call(config['mapservPath'], stdout=tmpfile)
-
-                # remove the first two lines from the tmpfile to make it a png
-                tmpfile.seek(0)
-                tmpfile.readline()
-                tmpfile.readline()
-
                 # copy it to the output file
                 shutil.copyfileobj(tmpfile, cachefile)
 
