@@ -213,11 +213,11 @@ def draw_monthly_mean_surface_plot(varName, yearStr, monthStr, regionStr, bgImag
         else:
             lats2 = None; lons2 = None
             u = None; v = None
-            contourLines = True
+            contourLines = False #True
         
         # Plot surface data
-        branPlotterNew.plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
-                                             output_filename=plot_filename_fullpath + '.png', title=title, units=unitStr,
-                                             cb_ticks=cb_ticks, cb_tick_fmt=cb_tick_fmt, cmp_name='jet', proj='cyl',
-                                             contourLines=contourLines, product_label_str='Bluelink Reanalysis 2.1',
-                                             vlat=lats2, vlon=lons2, u=u, v=v)
+        branPlotterNew.plot_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
+                                         output_filename=plot_filename_fullpath + '.png', title=title, units=unitStr,
+                                         cb_ticks=cb_ticks, cb_tick_fmt=cb_tick_fmt, cmp_name='jet', proj='cyl',
+                                         contourLines=contourLines, product_label_str='Bluelink Reanalysis 2.1',
+                                         vlat=lats2, vlon=lons2, u=u, v=v)

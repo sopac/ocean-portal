@@ -68,11 +68,11 @@ def load_BRAN_data(input_data_file, var_name, lat_min, lat_max, lon_min, lon_max
     
     return lats, lons, zlevels, data
 
-def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
-                           output_filename='noname.png', title='', units='m/s',
-                           cb_ticks=None, cb_tick_fmt="%.0f", cmp_name='jet', 
-                           contourLines=False, proj='cyl', product_label_str=None,
-                           vlat=None, vlon=None, u=None, v=None):
+def plot_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
+                      output_filename='noname.png', title='', units='m/s',
+                      cb_ticks=None, cb_tick_fmt="%.0f", cmp_name='jet',
+                      contourLines=False, proj='cyl', product_label_str=None,
+                      vlat=None, vlon=None, u=None, v=None):
 
     m = Basemap(projection=proj, llcrnrlat=lat_min, llcrnrlon=lon_min, \
                 urcrnrlat=lat_max, urcrnrlon=lon_max, resolution='h')
@@ -102,7 +102,7 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
     # Draw contour
     if contourLines:
         x, y = m(*np.meshgrid(lons, lats))
-        ctr = m.contour(x, y, data, levels=cb_ticks, colors='k', linewidths=0.4)
+        ctr = py.contour(x, y, data, levels=cb_ticks, colors='k', linewidths=0.4)
         plt.clabel(ctr, inline=True, fmt=cb_tick_fmt, fontsize=8)
 
     # Convert centre lat/lons to corner values required for pcolormesh
@@ -148,11 +148,9 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
         box = TextArea(product_label_str, textprops=dict(color='k', fontsize=8))
         copyrightBox = AnchoredOffsetbox(loc=4, child=box, bbox_to_anchor=(product_label_xadj, copyright_label_yadj), frameon=False, bbox_transform=ax.transAxes)
         ax.add_artist(copyrightBox)
-    #fig.subplots_adjust(bottom=0.2)
+
     plt.savefig(output_filename, dpi=150, bbox_inches='tight', pad_inches=0.6)
     plt.close()
-    
-    return m
 
 def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_all, lons_all, data_sf,
                           lat_cnt, lon_cnt, output_filename='noname.png', title='', units='m/s',
