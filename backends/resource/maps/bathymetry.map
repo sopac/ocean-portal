@@ -276,7 +276,7 @@ MAP
 
     LAYER
         NAME       maritime
-        DATA         World_Maritime_Boundaries
+        DATA         COSPPac_EEZs
         STATUS       ON
         TYPE         LINE
         CLASS

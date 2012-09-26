@@ -73,7 +73,7 @@ map_layers = [
     'ocean',
     'pacific_islands_capitals',
     'southern_pac',
-    'World_Maritime_Boundaries',
+    'COSPPac_EEZs',
 ]
 
 BASE_PATH = 'share/portal'
