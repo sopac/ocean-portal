@@ -41,21 +41,20 @@ $(document).ready(function() {
                                             'height': 55,
                                             'resizable': false });
 
-    /* Load up the datasets dialog */
-    var html = '';
     $.getJSON('config/comp/datasets.json', function(data) {
+        var dialog = $('#about-datasets');
+
         $.each(data, function(k, dataset) {
-            html += '<h1>' + dataset.name + '</h1>';
-            html += '<ul>';
+            /* Add to the datasets dialog */
+            $('<h1>', { text: dataset.name }).appendTo(dialog);
+
+            var ul = $('<ul>').appendTo(dialog);
 
             $.each(dataset.variables, function(k, variable) {
-                html += '<li>' + variable.name + '</li>';
+                $('<li>', { text: variable.name }).appendTo(ul);
             });
 
-            html += '</ul>';
         });
-
-        $('#about-datasets').html(html);
     });
 
     /* show the tidal gauge name in the title text */
