@@ -8,21 +8,6 @@
     padding: 5px;
 }
 
-#header {
-    clear: both;
-    padding-bottom: 10px;
-    height: 45px;
-}
-
-#title {
-    float: left;
-    text-align: left;
-}
-
-#help {
-    text-align: right;
-}
-
 #legendDiv {
     position: absolute;
     pointer-events: none;
