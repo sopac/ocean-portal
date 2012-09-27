@@ -85,7 +85,7 @@ def main():
             # check to see if mapserver generated an error
             if content_type != 'image/png':
                 print 'Status: 500 Internal Server Error'
-                print 'Content-type: %s' % content_type
+                print 'Content-Type: %s' % content_type
                 print
                 print tmpfile.read()
                 return
