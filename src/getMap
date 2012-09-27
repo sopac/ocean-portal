@@ -19,9 +19,13 @@ import shutil
 
 import ocean.util as util
 
-def main():
-    config = util.get_server_config()
+config = util.get_server_config()
 
+if config['debug']:
+    import cgitb
+    cgitb.enable()
+
+def main():
     queryMap = urlparse.parse_qs(os.environ["QUERY_STRING"])
 
     # update the query string
