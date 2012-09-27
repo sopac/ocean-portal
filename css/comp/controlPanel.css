@@ -4,7 +4,7 @@
  * All Rights Reserved
  */
 
-#wrapper {
+#controlPanel {
     padding: 5px;
 }
 
@@ -214,7 +214,7 @@ a span.ui-icon {
 }
 
 .controlvar .field {
-  width: 105px;
+  width: 130px;
 }
 
 .datepicker {

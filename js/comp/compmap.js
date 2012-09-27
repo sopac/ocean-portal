@@ -89,10 +89,10 @@ function createMap () {
     var keyboardControls = new OpenLayers.Control.KeyboardDefaults();
     map.addControl(keyboardControls);
 
-    $('input').focusin(function () {
+    $(':input').focusin(function () {
         keyboardControls.deactivate();
     });
-    $('input').focusout(function () {
+    $(':input').focusout(function () {
         keyboardControls.activate();
     });
 
@@ -255,7 +255,7 @@ Ext.onReady(function() {
                 xtype: 'panel',
                 region: 'center',
                 autoScroll: true,
-                contentEl: 'wrapper'
+                contentEl: 'controlPanel'
             }, {
                 xtype: 'panel',
                 region: 'south',

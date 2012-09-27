@@ -91,7 +91,6 @@ script_substitutions = {
 }
 
 web_files = [
-    'css/common.css',
 #   'css/sst.css',
     'css/comp/controlPanel.css',
     'js/comp/controlPanel.js',
