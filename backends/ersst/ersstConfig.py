@@ -63,15 +63,10 @@ class ErsstConfig ():
                              "12monthly": "12 Monthly Average "
                              }
 
-        self.subDirs = ['12monthly',
-                        '6monthly',
+        self.subDirs = ['seasonalclim',
                         'decile',
                         'trend',
-                        'yearly_trend',
-                        '3monthly',
-                        'averages',
-                        'monthly',
-                        'yearly'
+                        'monthly'
                        ]
 
     def getTitle(self, variableName):
