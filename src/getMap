@@ -89,6 +89,7 @@ def main():
             if content_type != 'image/png':
                 print 'Status: 500 Internal Server Error'
                 print 'Content-Type: %s' % content_type
+                print 'X-Portal-Version: %s' % util.__version__
                 print
                 print tmpfile.read()
                 return
@@ -109,6 +110,7 @@ def main():
         try:
             if os.environ['HTTP_IF_NONE_MATCH'] == etag:
                 print 'Status: 304 Not Modified'
+                print 'X-Portal-Version: %s' % util.__version__
                 print
                 return
         except KeyError:
@@ -121,6 +123,7 @@ def main():
         print 'ETag: %s' % etag
         print 'Cache-Control: max-age=3600' # FIXME: value?
         print 'X-Tile-Cached:', 'no' if call_mapserver else 'yes'
+        print 'X-Portal-Version: %s' % util.__version__
         print
 
         shutil.copyfileobj(cachefile, sys.stdout)
