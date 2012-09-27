@@ -7,6 +7,7 @@
 # Authors: Sheng Guo <s.guo@bom.gov.au>
 #          Danielle Madeley <d.madeley@bom.gov.au>
 
+import os
 import sys
 import cgi
 import json
@@ -19,14 +20,12 @@ if config['debug']:
     import cgitb
     cgitb.enable()
 
+if 'PORTALPATH' in os.environ:
+    os.environ['PATH'] = os.environ['PORTALPATH']
+
 form = cgi.FieldStorage()
 
-print "Content-Type: text/html"     # HTML is following
-print                               # blank line, end of headers
-
-response = {
-    'version': util.__version__,
-}
+response = {}
 
 if 'dataset' in form:
 
@@ -39,5 +38,9 @@ if 'dataset' in form:
         response['error'] = "Unknown dataset '%s'" % (dataset)
 else:
     response['error'] = "No dataset specified"
+
+print 'Content-Type: application/json'
+print 'X-Portal-Version: %s' % util.__version__
+print
 
 json.dump(response, sys.stdout)

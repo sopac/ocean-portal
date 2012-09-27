@@ -25,6 +25,9 @@ if config['debug']:
     import cgitb
     cgitb.enable()
 
+if 'PORTALPATH' in os.environ:
+    os.environ['PATH'] = os.environ['PORTALPATH']
+
 def main():
     queryMap = urlparse.parse_qs(os.environ["QUERY_STRING"])
 
