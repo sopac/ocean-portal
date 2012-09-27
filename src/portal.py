@@ -17,7 +17,6 @@ config = util.get_server_config()
 
 if config['debug']:
     import cgitb
-    sys.stderr = sys.stdout
     cgitb.enable()
 
 form = cgi.FieldStorage()
