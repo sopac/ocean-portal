@@ -153,11 +153,6 @@ function selectMapLayer(name)
     var disable = $('.outputgroup input[type=radio]').length < 1;
     var radio = $('#mapControls .baseLayersDiv input[value="Output"]');
     radio.attr('disabled', disable);
-
-    if (disable)
-        radio.next().addClass('disabled');
-    else
-        radio.next().removeClass('disabled');
 }
 
 function updateMap (data) {

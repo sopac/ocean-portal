@@ -577,16 +577,8 @@ ocean.dsConf = {
             },
             onSelect: function() {
                 showControl('variableDiv');
-                selectMapLayer("Bathymetry");
             },
             onDeselect: function() {
-                var layers = map.getLayersByName("WaveWatch III");
-                var layer;
-
-                for (layer in layers) {
-                    map.removeLayer(layers[layer]);
-                }
-
                 removePointLayer();
                 showControl('yearDiv');
             },
@@ -656,8 +648,6 @@ ocean.dsConf = {
                     appendOutput(data.recimg, data.rectxt, "Reconstruction");
             },
             onSelect: function() {
-                selectMapLayer("Bathymetry");
-
                 /* generate a list of filters for the configured tidal
                  * gauge regions */
                 var filter;
@@ -1218,6 +1208,7 @@ function selectDataset(event, args) {
     varCombo.bindStore(record.variables());
     varCombo.clearValue();
 
+    selectMapLayer("Bathymetry");
     ocean.dataset.onSelect();
 }
 

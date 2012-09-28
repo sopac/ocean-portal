@@ -250,6 +250,6 @@ a span.ui-icon {
   background-position: -15px 0px;
 }
 
-label.disabled {
+input[disabled] + label {
   color: #cccccc;
 }
