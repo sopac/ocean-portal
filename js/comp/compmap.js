@@ -79,7 +79,9 @@ function createMap () {
             })
         ],
         eventListeners: {
-           'changelayer': mapBaseLayerChanged
+            addlayer: _updateDisabled,
+            removelayer: _updateDisabled,
+            changelayer: mapBaseLayerChanged
         }
     });
 
@@ -115,7 +117,7 @@ function createMap () {
     });
 
     map.addLayers([bathymetryLayer, outputLayer]);
-    selectMapLayer("Bathymetry");
+    map.setBaseLayer(bathymetryLayer);
 
     function mapBaseLayerChanged(evt) {
         var layerName;
@@ -138,9 +140,21 @@ function createMap () {
         }
 
         $('.outputgroup input[type=radio]').attr('disabled', !enableOL);
+        _updateDisabled();
     }
 
     mapBaseLayerChanged(null);
+}
+
+function _updateDisabled ()
+{
+    /* determine whether to disable Output
+     * on a timeout because OpenLayers changes the DOM */
+    window.setTimeout(function () {
+        var disable = $('.outputgroup input[type=radio]').length < 1;
+        var radio = $('#mapControls .baseLayersDiv input[value="Output"]');
+        radio.attr('disabled', disable);
+    }, 5);
 }
 
 function selectMapLayer(name)
@@ -148,11 +162,7 @@ function selectMapLayer(name)
     var layer = map.getLayersByName(name)[0];
 
     map.setBaseLayer(layer);
-
-    /* determine whether to disable Output */
-    var disable = $('.outputgroup input[type=radio]').length < 1;
-    var radio = $('#mapControls .baseLayersDiv input[value="Output"]');
-    radio.attr('disabled', disable);
+    _updateDisabled();
 }
 
 function updateMap (data) {
@@ -160,7 +170,7 @@ function updateMap (data) {
 
     ocean.map_scale = data.scale;
 
-    selectMapLayer("Output");
+    map.setBaseLayer(layer);
     layer.params['raster'] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw];
     layer.redraw(true);
 }
