@@ -23,24 +23,28 @@ if config['debug']:
 if 'PORTALPATH' in os.environ:
     os.environ['PATH'] = os.environ['PORTALPATH']
 
-form = cgi.FieldStorage()
+def main():
+    form = cgi.FieldStorage()
 
-response = {}
+    response = {}
 
-if 'dataset' in form:
+    if 'dataset' in form:
 
-    dataset = form['dataset'].value
+        dataset = form['dataset'].value
 
-    try:
-        module = __import__('ocean.%s.%s' % (dataset, dataset), fromlist=[''])
-        response.update(module.process(form))
-    except ImportError:
-        response['error'] = "Unknown dataset '%s'" % (dataset)
-else:
-    response['error'] = "No dataset specified"
+        try:
+            module = __import__('ocean.%s.%s' % (dataset, dataset), fromlist=[''])
+            response.update(module.process(form))
+        except ImportError:
+            response['error'] = "Unknown dataset '%s'" % (dataset)
+    else:
+        response['error'] = "No dataset specified"
 
-print 'Content-Type: application/json'
-print 'X-Portal-Version: %s' % util.__version__
-print
+    print 'Content-Type: application/json'
+    print 'X-Portal-Version: %s' % util.__version__
+    print
 
-json.dump(response, sys.stdout)
+    json.dump(response, sys.stdout)
+
+if __name__ == '__main__':
+    main()
