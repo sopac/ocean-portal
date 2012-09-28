@@ -98,20 +98,29 @@ function createMap () {
 
     var bathymetryLayer = new OpenLayers.Layer.MapServer("Bathymetry",
         'cgi/getMap', {
-            map: "bathymetry",
-            layers: ["bathymetry", "land", "maritime", "capitals", "countries"]
+            map: 'bathymetry',
+            layers: ['bathymetry', 'land', 'maritime', 'capitals', 'countries']
         }, {
             transitionEffect: 'resize',
             wrapDateLine: true
         });
 
-    /* Add gauge points */
-    map.addLayers([bathymetryLayer]);
-    map.setBaseLayer(bathymetryLayer);
+    var outputLayer = new OpenLayers.Layer.MapServer("Output",
+        'cgi/getMap', {
+        map: 'raster',
+        layers: ['raster_left', 'raster_right', 'land', 'capitals', 'countries']
+    }, {
+        transitionEffect: 'resize',
+        wrapDateLine: true
+    });
+
+    map.addLayers([bathymetryLayer, outputLayer]);
+    selectMapLayer("Bathymetry");
 
     function mapBaseLayerChanged(evt) {
         var layerName;
         var legendDiv = $('#legendDiv');
+        var enableOL = false;
 
         if (evt)
             layerName = evt.layer.name;
@@ -124,35 +133,41 @@ function createMap () {
                 legendDiv.html('<p><img src="' + ocean.map_scale + '" />');
             else
                 legendDiv.html('<p></p>');
+
+            enableOL = true;
         }
+
+        $('.outputgroup input[type=radio]').attr('disabled', !enableOL);
     }
 
     mapBaseLayerChanged(null);
 }
 
-function updateMap(layerName, data){
+function selectMapLayer(name)
+{
+    var layer = map.getLayersByName(name)[0];
+
+    map.setBaseLayer(layer);
+
+    /* determine whether to disable Output */
+    var disable = $('.outputgroup input[type=radio]').length < 1;
+    var radio = $('#mapControls .baseLayersDiv input[value="Output"]');
+    radio.attr('disabled', disable);
+
+    if (disable)
+        radio.next().addClass('disabled');
+    else
+        radio.next().removeClass('disabled');
+}
+
+function updateMap (data) {
+    var layer = map.getLayersByName("Output")[0];
+
     ocean.map_scale = data.scale;
 
-    if (map.getLayersByName(layerName).length != 0) {
-        layer = map.getLayersByName(layerName)[0]
-        map.setBaseLayer(layer);
-        layer.params["raster"] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw];
-        layer.redraw(true);
-    }
-    else{
-        var layer = new OpenLayers.Layer.MapServer(layerName,
-            'cgi/getMap', {
-            map: 'raster',
-            layers: ['raster_left', 'raster_right', 'land', 'capitals', 'countries'],
-            raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
-        }, {
-            transitionEffect: 'resize',
-            wrapDateLine: true
-        });
-
-        map.addLayer(layer);
-        map.setBaseLayer(layer);
-    }
+    selectMapLayer("Output");
+    layer.params['raster'] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw];
+    layer.redraw(true);
 }
 
 Ext.require(['*']);

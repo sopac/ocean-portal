@@ -112,10 +112,26 @@
   position: relative;
   padding: 3px;
   padding-bottom: 6px;
+  padding-left: 1.5em;
+}
+
+.thumbnail input[type=radio] {
+  vertical-align: middle;
+  margin-top: -50%;
+  position: relative;
+  left: -1.5em;
+  margin-right: -1.5em;
+  width: 1.5em;
+}
+
+.thumbnail .raster {
+  display: inline-block;
+  max-width: 90%;
+  height: auto;
 }
 
 .thumbnail img {
-  max-width: 95%;
+  max-width: 100%;
   height: auto;
 }
 
@@ -136,6 +152,7 @@
 
 .download-data {
   text-decoration: none;
+  display: block;
 }
 
 .download-data:hover {
@@ -231,4 +248,8 @@ a span.ui-icon {
 
 .ie7-compat:hover {
   background-position: -15px 0px;
+}
+
+label.disabled {
+  color: #cccccc;
 }

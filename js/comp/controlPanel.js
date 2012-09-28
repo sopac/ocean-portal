@@ -84,8 +84,22 @@ function prependOutputSet()
         'class': 'close-button ui-icon ui-icon-close',
         title: "Remove",
         click: function () {
+            /* if this is the selected layer, switch back to Bathymetry */
+            if (div.find(':checked').length > 0) {
+                /* remove this now, so that selectMapLayer() disables
+                 * appropriately */
+                div.find(':checked').remove();
+                /* select a new layer in case it isn't disabled */
+                $('.outputgroup input[type=radio]:first')
+                    .attr('checked', 'checked')
+                    .change();
+                selectMapLayer("Bathymetry");
+            }
+
             div.fadeTo('fast', 0);
-            div.slideUp('fast', function () { div.remove(); });
+            div.slideUp('fast', function () {
+                div.remove();
+            });
         }
     }).appendTo(div);
 
@@ -99,16 +113,30 @@ function prependOutputSet()
     $('#outputDiv').animate({ scrollTop: 0 }, 75);
 }
 
-function createOutput(image, dataURL, name, extras)
+function createOutput(image, dataURL, name, extras, data)
 {
     var div = $('<div>', {
         'class': 'thumbnail'
     });
 
-    if (name)
+    if (name) {
         $('<h2>', {
             text: name
         }).appendTo(div);
+    }
+
+    if (data) {
+        $('<input>', {
+            type: 'radio',
+            name: 'outputLayer',
+            title: "Set as map layer",
+            checked: true
+        })
+        .appendTo(div)
+        .change(function () {
+            updateMap(data);
+        });
+    }
 
     var a = $('<a>', {
         'class': 'raster',
@@ -297,12 +325,13 @@ ocean.dsConf = {
                         {
                             appendOutput(data.aveImg, data.aveData,
                                          "Average(1981-2010)",
-                                         Math.round(data.mean*100)/100 + '\u00B0C');
+                                         Math.round(data.mean*100)/100 + '\u00B0C',
+                                         data);
                         }
                         else if (data.img != null) {
                             prependOutputSet();
-                            appendOutput(data.img);
-                            updateMap("Reynolds", data);
+                            appendOutput(data.img, null, null, null, data);
+                            updateMap(data);
                         }
                 },
                 onSelect: function(){
@@ -310,10 +339,6 @@ ocean.dsConf = {
                               configCalendar();
                           },
                 onDeselect: function() {
-                    layers = map.getLayersByName("Reynolds");
-                    for (layer in layers) {
-                        map.removeLayer(layers[layer]);
-                    }
                 },
                 selectVariable: function(selection) {
                                     updatePeriodCombo();
@@ -386,13 +411,14 @@ ocean.dsConf = {
                     {
                         appendOutput(data.aveImg, data.aveData,
                                      "Average(1981-2010)",
-                                     Math.round(data.mean*100)/100 + '\u00B0C'
+                                     Math.round(data.mean*100)/100 + '\u00B0C',
+                                     data
                                      );
 
                     }
                     else if (data.img != null) {
-                        appendOutput(data.img);
-                        updateMap("ERSST", data);
+                        appendOutput(data.img, null, null, null, data);
+                        updateMap(data);
                     }
                 },
                 onSelect: function(){
@@ -400,12 +426,6 @@ ocean.dsConf = {
                               configCalendar();
                           },
                 onDeselect: function() {
-                    var layers = map.getLayersByName("ERSST");
-                    var layer;
-
-                    for (layer in layers) {
-                        map.removeLayer(layers[layer]);
-                    }
                 },
                 selectVariable: function(selection) {
                                     updatePeriodCombo();
@@ -480,8 +500,8 @@ ocean.dsConf = {
                     prependOutputSet();
 
                     if (data.img != null) {
-                        appendOutput(data.img);
-                        updateMap("BRAN", data);
+                        appendOutput(data.img, null, null, null, data);
+                        updateMap(data);
                     }
                 },
                 onSelect: function()
@@ -490,13 +510,6 @@ ocean.dsConf = {
                     configCalendar();
                 },
                 onDeselect: function() {
-                    var layers = map.getLayersByName("BRAN");
-                    var layer;
-
-                    for (layer in layers) {
-                        map.removeLayer(layers[layer]);
-                    }
-
                     removePointLayer();
                     hideControl('clearlatlonButton');
                 },
@@ -564,6 +577,7 @@ ocean.dsConf = {
             },
             onSelect: function() {
                 showControl('variableDiv');
+                selectMapLayer("Bathymetry");
             },
             onDeselect: function() {
                 var layers = map.getLayersByName("WaveWatch III");
@@ -628,8 +642,8 @@ ocean.dsConf = {
                 prependOutputSet();
 
                 if (data.img) {
-                    appendOutput(data.img);
-                    updateMap("Sea Level", data);
+                    appendOutput(data.img, null, null, null, data);
+                    updateMap(data);
                 }
 
                 if (data.tidimg)
@@ -642,6 +656,8 @@ ocean.dsConf = {
                     appendOutput(data.recimg, data.rectxt, "Reconstruction");
             },
             onSelect: function() {
+                selectMapLayer("Bathymetry");
+
                 /* generate a list of filters for the configured tidal
                  * gauge regions */
                 var filter;
@@ -769,13 +785,7 @@ ocean.dsConf = {
                 showControl('variableDiv');
             },
             onDeselect: function() {
-                            var layers = map.getLayersByName("Sea Level");
-                            var layer;
                             var control;
-
-                            for (layer in layers) {
-                                map.removeLayer(layers[layer]);
-                            }
 
                             layers = map.getLayersByName("Tidal gauges");
                             for (layer in layers) {
