@@ -47,4 +47,8 @@ def main():
     json.dump(response, sys.stdout)
 
 if __name__ == '__main__':
-    main()
+    if config.get('profile', False):
+        import cProfile
+        cProfile.run('main()', '/tmp/portal.profile')
+    else:
+        main()
