@@ -1,0 +1,53 @@
+Ocean Map Portal 0.2.0
+======================
+
+"小娃撑小艇" (A little child paddles a little boat)
+    --On the Lake, Bai Juyi
+
+New Features:
+
+ - Australian portal (Danni)
+ - map tile caching and compression (Danni)
+ - Improved layout on small screens, take advantage of available space (Danni)
+ - Consistent look and feel (Danni)
+ - 24 comparison plots (Danni)
+ - New library versions: OpenLayers, ExtJS, jQuery (Danni)
+ - Lat/lon markers automatically update from lat/lon changes (Danni)
+ - Hover over tidal gauges to see their names (Danni)
+ - Improved client side caching (Danni)
+ - Compressing JS/CSS resources to reduce bandwidth (Danni)
+ - Map improvements: landmask resolution, labels (Danni, Jason)
+ - only showing COSPPac EEZs (Danni)
+ - code cleanups (Danni and Nick)
+
+Bugs Fixed:
+
+ - remove white line on map at 180th meridian (Nick)
+ - plotting fixes (Nick)
+ - Fix date handling bugs in 31 day months (Danni)
+ - handling the months August and September correctly (Danni)
+ - general bug fixes (Danni, Nick, Jason)
+
+Ocean Map Portal 0.1.0
+======================
+
+First release!
+
+Features:
+
+ - Package portal, remove hardcoded paths (Danni)
+ - Filter date ranges based on dataset (Sheng)
+ - Initial portal (Sheng)
+ - BRAN 2.1 (Nick, Billie)
+ - WW3 (Jason)
+ - ERSST (Luke Guarde)
+ - Reynolds SST (Matt Howie)
+ - Sealevel (Luke Guarde, Danni)
+ - About Files (Grant, Billie and Nick)
+
+Bugs Fixed:
+
+ - Standardise plots (Jason, Nick, Billie)
+ - Give error when selected point on land (Jason)
+ - Website doesn't render properly in IE (Danni)
+ - General bug fixes (Danni, Sheng, Billie, Jason, Nick)
