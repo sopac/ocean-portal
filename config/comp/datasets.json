@@ -67,11 +67,6 @@
             "periods" : ["monthly", "yearly"]
         }
     },{
-        "id":"trend",
-        "name":"SST Trend Map",
-        "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
-        "areas" : ["pi", "cook", "fsm", "fiji", "kiribati", "marshall", "nauru", "niue", "palau", "png", "samoa", "solomon", "tonga", "tuvalu", "vanuatu"]
-    },{
         "id":"dec",
         "name":"SST Deciles",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
@@ -79,9 +74,9 @@
     }],
     "dateRange" : {
         "minYear": "1889",
-        "maxYear": "2011",
+        "maxYear": "2012",
         "minDate": "18890101",
-        "maxDate": "20111231"
+        "maxDate": "20120831"
     }
 },{
     "id":"ww3",

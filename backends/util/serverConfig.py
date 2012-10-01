@@ -32,6 +32,7 @@ servers = {
                              },
                  'mapservPath': '/usr/libexec/mapserv',
                  'debug':       True,
+                 'profile':     False,
                },
     'tunceli': { 'hostname':  'tunceli.bom.gov.au',
                  'baseURL':   '/portal/',

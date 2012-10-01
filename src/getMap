@@ -1,47 +1,132 @@
 #!/usr/bin/python
-#This cgi script is to generate tidal gauge pages
+#
+# (c) 2012 Commonwealth of Australia
+#     Australian Bureau of Meteorology, COSPPac COMP
+#     All Rights Reserved
+#
+# Authors: Danielle Madeley <d.madeley@bom.gov.au>
+#          Sheng Guo <s.guo@bom.gov.au>
 
 import os
 import os.path
-import re
-import cgi
-import cgitb
 import sys
+import re
 import subprocess
 import urlparse
 import urllib
-import string
+import hashlib
+import shutil
 
 import ocean.util as util
 
-sys.stderr = sys.stdout
-cgitb.enable()
+config = util.get_server_config()
 
-MAP_EAST_PATTERN = re.compile('east.png$')
-MAP_WEST_PATTERN = re.compile('west.png$')
+if config['debug']:
+    import cgitb
+    cgitb.enable()
+
+if 'PORTALPATH' in os.environ:
+    os.environ['PATH'] = os.environ['PORTALPATH']
 
 def main():
-    config = util.get_server_config()
-    form = cgi.FieldStorage()
+    queryMap = urlparse.parse_qs(os.environ["QUERY_STRING"])
 
-    if "map" in form:
-        queryMap = urlparse.parse_qs(os.environ["QUERY_STRING"])
-        queryMap['map'] = util.get_resource('maps', form['map'].value + '.map')
+    # update the query string
+    if 'map' in queryMap:
+        map = queryMap['map'][0]
+        queryMap['map'] = util.get_resource('maps', map + '.map')
 
-        if form['map'].value in [ 'reynolds', 'sealevel' ]:
-            raster = form["raster"].value
-            rasters = string.split(raster, " ")
+        if map == 'raster':
+            rasters = queryMap['raster'][0].split(' ')
+
+            MAP_EAST_PATTERN = re.compile('east.png$')
+            MAP_WEST_PATTERN = re.compile('west.png$')
+
             for file in rasters:
-                url, filename = os.path.split(file)
+                filename = os.path.basename(file)
 
                 if MAP_EAST_PATTERN.search(filename):
-                    queryMap["eastFileName"] = os.path.join(config['outputDir'], filename)
+                    queryMap['eastFileName'] = os.path.join(config['outputDir'],
+                                                            filename)
                 elif MAP_WEST_PATTERN.search(filename):
-                    queryMap["westFileName"] = os.path.join(config['outputDir'], filename)
+                    queryMap['westFileName'] = os.path.join(config['outputDir'],
+                                                            filename)
 
-        queryString = urllib.urlencode(queryMap, True)
-        os.environ["QUERY_STRING"] = queryString
-        subprocess.call(config['mapservPath'])
+    queryString = urllib.urlencode(queryMap, True)
 
-main()
+    # calculate the etag from the query string
+    m = hashlib.sha256()
+    m.update(queryString)
 
+    hash = m.hexdigest()
+    etag = '"%s"' % hash
+
+    filename = os.path.join(config['outputDir'], 'maptiles', '%s.png' % hash)
+    tmp_filename = '%s.tmp' % filename
+
+    # determine whether or not we need to call into mapserver
+    try:
+        cache_mtime = os.path.getmtime(filename)
+        call_mapserver = \
+                cache_mtime < os.path.getmtime(queryMap['eastFileName']) or \
+                cache_mtime < os.path.getmtime(queryMap['eastFileName'])
+    except os.error:
+        call_mapserver = True
+    except KeyError:
+        call_mapserver = not os.path.exists(filename)
+
+    # call mapserver if required
+    if call_mapserver:
+        with os.tmpfile() as tmpfile:
+            os.environ['QUERY_STRING'] = queryString
+            subprocess.call(config['mapservPath'], stdout=tmpfile)
+
+            # remove the first two lines from the tmpfile to make it a png
+            tmpfile.seek(0)
+            content_type = tmpfile.readline().strip().split(' ', 2)[1]
+
+            # check to see if mapserver generated an error
+            if content_type != 'image/png':
+                print 'Status: 500 Internal Server Error'
+                print 'Content-Type: %s' % content_type
+                print 'X-Portal-Version: %s' % util.__version__
+                print
+                print tmpfile.read()
+                return
+
+            tmpfile.readline()
+
+            with open(tmp_filename, 'wb') as cachefile:
+                # copy it to the output file
+                shutil.copyfileobj(tmpfile, cachefile)
+
+        # pngcrush the cached tile
+        with open(os.devnull, 'wb') as devnull:
+            subprocess.check_call([ 'pngcrush', tmp_filename, filename ],
+                                  stdout=devnull, stderr=devnull)
+        os.remove(tmp_filename)
+
+    else:
+        try:
+            if os.environ['HTTP_IF_NONE_MATCH'] == etag:
+                print 'Status: 304 Not Modified'
+                print 'X-Portal-Version: %s' % util.__version__
+                print
+                return
+        except KeyError:
+            pass
+
+    # play the cached file to the web server
+    with open(filename, 'rb') as cachefile:
+        print 'Status: 200 Ok'
+        print 'Content-Type: image/png'
+        print 'ETag: %s' % etag
+        print 'Cache-Control: max-age=3600' # FIXME: value?
+        print 'X-Tile-Cached:', 'no' if call_mapserver else 'yes'
+        print 'X-Portal-Version: %s' % util.__version__
+        print
+
+        shutil.copyfileobj(cachefile, sys.stdout)
+
+if __name__ == '__main__':
+    main()

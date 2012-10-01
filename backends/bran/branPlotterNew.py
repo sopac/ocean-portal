@@ -20,6 +20,8 @@ import pylab as py
 import datetime
 
 from ocean.netcdf.plotter import getCopyright
+from ocean.netcdf.plotter import get_tick_values
+from ocean.netcdf.plotter import discrete_cmap
 
 def load_BRAN_data(input_data_file, var_name, lat_min, lat_max, lon_min, lon_max, depth_min=0, depth_max=0):
 
@@ -33,10 +35,10 @@ def load_BRAN_data(input_data_file, var_name, lat_min, lat_max, lon_min, lon_max
     dimensions = nc.variables[var_name].dimensions
 
     # Load lat/lon values
-    if ('xt_ocean' in dimensions) & ('yt_ocean' in dimensions):
+    if ('xt_ocean' in dimensions) and ('yt_ocean' in dimensions):
         lons = nc.variables['xt_ocean'][:]
         lats = nc.variables['yt_ocean'][:]
-    elif ('xu_ocean' in dimensions) & ('yu_ocean' in dimensions):
+    elif ('xu_ocean' in dimensions) and ('yu_ocean' in dimensions):
         lons = nc.variables['xu_ocean'][:]
         lats = nc.variables['yu_ocean'][:]
     if 'zt_ocean' in dimensions:
@@ -66,12 +68,11 @@ def load_BRAN_data(input_data_file, var_name, lat_min, lat_max, lon_min, lon_max
     
     return lats, lons, zlevels, data
 
-
-def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
-                           output_filename='noname.png', title='', units='m/s',
-                           cb_ticks=None, cb_tick_fmt="%.0f", cmp_name='jet', 
-                           contourLines=False, proj='cyl', product_label_str=None,
-                           vlat=None, vlon=None, u=None, v=None):
+def plot_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
+                      output_filename='noname.png', title='', units='m/s',
+                      cb_ticks=None, cb_tick_fmt="%.0f", cmp_name='jet',
+                      contourLines=False, proj='cyl', product_label_str=None,
+                      vlat=None, vlon=None, u=None, v=None):
 
     m = Basemap(projection=proj, llcrnrlat=lat_min, llcrnrlon=lon_min, \
                 urcrnrlat=lat_max, urcrnrlon=lon_max, resolution='h')
@@ -94,14 +95,14 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
     
     # Create colormap
     if cb_ticks is None:
-        cb_ticks,junk = get_tick_values(data.min(), data.max(), 6, 12)
+        cb_ticks,junk = get_tick_values(data.min(), data.max(), 6)
     n_colours = cb_ticks.size - 1
     d_cmap = discrete_cmap(cmp_name, n_colours)
     
     # Draw contour
     if contourLines:
         x, y = m(*np.meshgrid(lons, lats))
-        ctr = m.contour(x, y, data, levels=cb_ticks, colors='k', linewidths=0.4)
+        ctr = py.contour(x, y, data, levels=cb_ticks, colors='k', linewidths=0.4)
         plt.clabel(ctr, inline=True, fmt=cb_tick_fmt, fontsize=8)
 
     # Convert centre lat/lons to corner values required for pcolormesh
@@ -110,10 +111,11 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
         
     # Plot data
     x2, y2 = m(*np.meshgrid(lons2, lats2))
-    img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap, vmin=cb_ticks.min(), vmax=cb_ticks.max())
+    img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap)
+    img.set_clim(cb_ticks.min(), cb_ticks.max())
     ax = plt.gca()
     
-    if (u is not None) & (v is not None) & (vlat is not None) & (vlon is not None):
+    if (u is not None) and (v is not None) and (vlat is not None) and (vlon is not None):
         # Draw vectors
         draw_every, arrow_scale = get_vector_plot_settings(lat_min, lat_max, lon_min, lon_max)
         if draw_every is not None:
@@ -146,12 +148,9 @@ def plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
         box = TextArea(product_label_str, textprops=dict(color='k', fontsize=8))
         copyrightBox = AnchoredOffsetbox(loc=4, child=box, bbox_to_anchor=(product_label_xadj, copyright_label_yadj), frameon=False, bbox_transform=ax.transAxes)
         ax.add_artist(copyrightBox)
-    #fig.subplots_adjust(bottom=0.2)
+
     plt.savefig(output_filename, dpi=150, bbox_inches='tight', pad_inches=0.6)
     plt.close()
-    
-    return m
-
 
 def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_all, lons_all, data_sf,
                           lat_cnt, lon_cnt, output_filename='noname.png', title='', units='m/s',
@@ -233,7 +232,7 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
     img = m.pcolormesh(x2, y2, data_sf, shading='flat', cmap=d_cmap, vmin=cb_ticks.min(), vmax=cb_ticks.max())
     plt.title(title, fontsize=12)
     
-    parallels, p_dec_places = get_tick_values(lat_min, lat_max, 3, 6)
+    parallels, p_dec_places = get_tick_values(lat_min, lat_max, 3)
     meridians, m_dec_places = get_tick_values(lon_min, lon_max)
     m.drawparallels(parallels, labels=[True, False, False, False], fmt='%.' + str(p_dec_places) + 'f', 
                     fontsize=8, dashes=[3, 3], color='gray')
@@ -258,7 +257,6 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
     plt.close()
     
     return
-
 
 def draw_vector_plot(m, x, y, u, v, draw_every=1, arrow_scale=10, quiverkey_value=0.5, units='ms^{-1}', 
                      quiverkey_xpos=0.25, quiverkey_ypos=0.28):
@@ -286,7 +284,7 @@ def draw_vector_plot(m, x, y, u, v, draw_every=1, arrow_scale=10, quiverkey_valu
                  labelpos='N', labelsep=0.01, fontproperties={'size':'xx-small', 'weight':'1000'})
 
 def get_subset_idxs(x, x_min, x_max):
-    valid_idxs = [i for i,x_i in enumerate(x) if (x_i >= x_min) & (x_i <= x_max)]
+    valid_idxs = [i for i,x_i in enumerate(x) if (x_i >= x_min) and (x_i <= x_max)]
     if len(valid_idxs) > 0:
         start_idx = valid_idxs[0]
         end_idx = valid_idxs[-1]
@@ -298,47 +296,6 @@ def get_subset_idxs(x, x_min, x_max):
         start_idx = None
         end_idx = None
     return start_idx, end_idx
-
-def get_tick_values(x_min, x_max, min_ticks=4, max_ticks=9):
-    """
-    Automatically determine best latitude / longitude tick values for plotting.
-
-    Input arguments:
-        x_min       Minimum lat/lon value
-        x_max       Maximum lat/lon value
-        min_ticks   Minimum number of ticks
-        max_ticks   Maximum number of ticks    
-
-    Example usage: 
-        get_tick_values(-30,30) -> [-30., -20., -10., 0., 10., 20., 30.]
-    """
-    eps = 0.0001
-    
-    # Calculate base 10 exponent of the value range
-    dif_exp = np.floor(np.log10(x_max - x_min))
-    
-    for k in [1.0,0.5,0.2]:
-        test_interval = math.pow(10, dif_exp) * k
-        start_value = np.ceil(x_min/test_interval)*test_interval
-        ticks = np.arange(start_value, x_max + eps, test_interval)
-        if (ticks.size >= min_ticks) & (ticks.size <= max_ticks):
-            break
-    
-    # Determine number of decimal places required for labels
-    if dif_exp <= 0:
-        if k >= 1.0:
-            dec_places = abs(dif_exp)
-        else:
-            dec_places = abs(dif_exp) + 1
-    else:
-        dec_places = 0
-    
-    return ticks, int(dec_places)
-
-def discrete_cmap(cmap_name, n_colours):
-    cmap = mpl.cm.get_cmap(cmap_name, n_colours)
-    clrs = cmap(range(0, n_colours))
-    return mpl.colors.ListedColormap(clrs)
 
 def get_grid_edges(x):
     x = np.array(x)
@@ -356,19 +313,19 @@ def get_vector_plot_settings(lat_min, lat_max, lon_min, lon_max):
     if max_extent >= 80:
         draw_every = None
         arrow_scale = None
-    elif (max_extent >= 60) & (max_extent < 80):
+    elif (max_extent >= 60) and (max_extent < 80):
         draw_every = 10
         arrow_scale = 20
-    elif (max_extent >= 20) & (max_extent < 60):
+    elif (max_extent >= 20) and (max_extent < 60):
         draw_every = 5
         arrow_scale = 15
-    elif (max_extent >= 10) & (max_extent < 20):
+    elif (max_extent >= 10) and (max_extent < 20):
         draw_every = 5
         arrow_scale = 10
-    elif (max_extent >= 7) & (max_extent < 10):
+    elif (max_extent >= 7) and (max_extent < 10):
         draw_every = 4
         arrow_scale = 5
-    elif (max_extent >= 4) & (max_extent < 7):
+    elif (max_extent >= 4) and (max_extent < 7):
         draw_every = 3
         arrow_scale = 5
     else:
@@ -376,7 +333,6 @@ def get_vector_plot_settings(lat_min, lat_max, lon_min, lon_max):
         arrow_scale = 5
     return draw_every, arrow_scale
 
-    
 def format_longitude(x, pos=None):
     x = np.mod(x + 180, 360) - 180
     if x==-180:

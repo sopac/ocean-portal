@@ -1,22 +1,24 @@
 MAP
     IMAGETYPE      PNG
-#  EXTENT         -179.99166666666667 -50.99166666666667 179.99166666666667 10.00000000000
     SIZE           600 600
     SHAPEPATH      "layers"
-    IMAGECOLOR     135 216 250 
+    IMAGECOLOR     135 216 250
     FONTSET        "../fonts/fonts.list"
-#    SYMBOLSET      "../symbols/symbols35.sym"
+    PROJECTION
+        "init=epsg:4326"
+    END
+
     EXTENT         -180 -90 180 90
-    
+
     LAYER # States polygon layer begins here
         NAME         ocean
         DATA         ocean
         STATUS       ON
         TYPE         POLYGON
-	
+
 	CLASS
             NAME 'ocean'
-      
+
             STYLE
                 COLOR      0 128 192
                 OUTLINECOLOR 0 128 192
@@ -25,19 +27,31 @@ MAP
             END
 	END
     END # States polygon layer ends here
-  
+
+    LAYER
+        NAME	bathymetry
+        TYPE	POLYGON
+        STATUS	ON
+        CONNECTIONTYPE UNION
+        CONNECTION "bathymetry_0,bathymetry_200,bathymetry_1000,bathymetry_2000,bathymetry_3000,bathymetry_4000,bathymetry_5000,bathymetry_6000,bathymetry_7000,bathymetry_8000,bathymetry_9000,bathymetry_10000"
+        STYLEITEM "AUTO"
+
+        CLASS
+        END
+    END
+
     LAYER
         NAME         bathymetry_0
         DATA         bathymetry_0
         STATUS       ON
         TYPE         POLYGON
-	
+
 	CLASS
             NAME 'bathymetry_0'
-      
+
             STYLE
                 COLOR      135 216 250
-                OUTLINECOLOR 135 216 250 
+                OUTLINECOLOR 135 216 250
                 WIDTH 2
                 ANTIALIAS TRUE
             END
@@ -49,64 +63,64 @@ MAP
         DATA         bathymetry_200
         STATUS       ON
         TYPE         POLYGON
-	
+
 	CLASS
             NAME 'bathymetry_200'
-      
+
             STYLE
                 COLOR      69 194 248
-                OUTLINECOLOR 69 194 248 
+                OUTLINECOLOR 69 194 248
                 WIDTH 2
                 ANTIALIAS TRUE
             END
 	END
     END
-  
+
     LAYER
         NAME         bathymetry_1000
         DATA         bathymetry_1000
         STATUS       ON
         TYPE         POLYGON
-	
+
 	CLASS
             NAME 'bathymetry_1000'
-      
+
             STYLE
                 COLOR      45 186 247
-                OUTLINECOLOR 45 186 247 
+                OUTLINECOLOR 45 186 247
                 WIDTH 2
                 ANTIALIAS TRUE
             END
 	END
     END
-  
+
     LAYER
         NAME         bathymetry_2000
         DATA         bathymetry_2000
         STATUS       ON
         TYPE         POLYGON
-	
+
 	CLASS
             NAME 'bathymetry_2000'
-      
+
             STYLE
                 COLOR      18 177 245
-                OUTLINECOLOR 18 177 245 
+                OUTLINECOLOR 18 177 245
                 WIDTH 2
                 ANTIALIAS TRUE
             END
 	END
     END
-  
+
     LAYER
         NAME         bathymetry_3000
         DATA         bathymetry_3000
         STATUS       ON
         TYPE         POLYGON
-	
+
 	CLASS
             NAME 'bathymetry_3000'
-      
+
             STYLE
                 COLOR      9 160 225
                 OUTLINECOLOR 9 160 225
@@ -115,16 +129,16 @@ MAP
             END
 	END
     END
-  
+
     LAYER
         NAME         bathymetry_4000
         DATA         bathymetry_4000
         STATUS       ON
         TYPE         POLYGON
-	
+
 	CLASS
             NAME 'bathymetry_4000'
-      
+
             STYLE
                 COLOR      7 141 199
                 OUTLINECOLOR 7 141 199
@@ -133,16 +147,16 @@ MAP
             END
 	END
     END
-  
+
     LAYER
         NAME         bathymetry_5000
         DATA         bathymetry_5000
         STATUS       ON
         TYPE         POLYGON
-	
+
 	CLASS
             NAME 'bathymetry_5000'
-      
+
             STYLE
                 COLOR      6 125 176
                 OUTLINECOLOR 6 125 176
@@ -151,16 +165,16 @@ MAP
             END
 	END
     END
-  
+
     LAYER
         NAME         bathymetry_6000
         DATA         bathymetry_6000
         STATUS       ON
         TYPE         POLYGON
-	
+
 	CLASS
             NAME 'bathymetry_6000'
-      
+
             STYLE
                 COLOR      6 114 159
                 OUTLINECOLOR  6 114 159
@@ -169,16 +183,16 @@ MAP
             END
 	END
     END
-  
+
     LAYER
         NAME         bathymetry_7000
         DATA         bathymetry_7000
         STATUS       ON
         TYPE         POLYGON
-	
+
 	CLASS
             NAME 'bathymetry_7000'
-      
+
             STYLE
                 COLOR      5 101 141
                 OUTLINECOLOR 5 101 141
@@ -187,16 +201,16 @@ MAP
             END
 	END
     END
-  
+
     LAYER
         NAME         bathymetry_8000
         DATA         bathymetry_8000
         STATUS       ON
         TYPE         POLYGON
-	
+
 	CLASS
             NAME 'bathymetry_8000'
-      
+
             STYLE
                 COLOR      4 71 100
                 OUTLINECOLOR 4 71 100
@@ -205,16 +219,16 @@ MAP
             END
 	END
     END
-  
+
     LAYER
         NAME         bathymetry_9000
         DATA         bathymetry_9000
         STATUS       ON
         TYPE         POLYGON
-	
+
 	CLASS
             NAME 'bathymetry_9000'
-      
+
             STYLE
                 COLOR      2 52 77
                 OUTLINECOLOR  2 52 77
@@ -223,16 +237,16 @@ MAP
             END
 	END
     END
-  
+
     LAYER
         NAME         bathymetry_10000
         DATA         bathymetry_10000
         STATUS       ON
         TYPE         POLYGON
-	
+
 	CLASS
             NAME 'bathymetry_10000'
-      
+
             STYLE
                 COLOR      0 29 43
                 OUTLINECOLOR 0 29 43
@@ -241,28 +255,28 @@ MAP
             END
 	END
     END
-  
+
     LAYER # States polygon layer begins here
         NAME         land
-        DATA         southern_pac 
+        DATA         southern_pac
         STATUS       ON
         TYPE         POLYGON
-	
+
 	CLASS
             NAME 'land'
-      
+
             STYLE
-                COLOR      241 235 183
-                OUTLINECOLOR  241 235 183
-                WIDTH 2
+                COLOR      229 222 201
+                OUTLINECOLOR  197 137 9
+                WIDTH 1
                 ANTIALIAS TRUE
             END
 	END
     END # States polygon layer ends here
-  
-    LAYER # States polygon layer begins here
+
+    LAYER
         NAME       maritime
-        DATA         World_Maritime_Boundaries
+        DATA         COSPPac_EEZs
         STATUS       ON
         TYPE         LINE
         CLASS
@@ -274,13 +288,20 @@ MAP
         END
     END
 
-    LAYER # States polygon layer begins here
+    SYMBOL
+        NAME "natcap"
+        TYPE TRUETYPE
+        FONT sans
+        FILLED true
+        ANTIALIAS true
+        CHARACTER "&#9733;"
+    END
+
+    LAYER
         NAME         countries
         DATA         pacific_islands_capitals
         STATUS       ON
         TYPE         ANNOTATION
-        LABELMINSCALEDENOM    50
-        LABELMAXSCALEDENOM    400
 
         PROCESSING "LABEL_NO_CLIP=True"
         LABELITEM    "NAME"
@@ -289,26 +310,22 @@ MAP
             EXPRESSION ([SCALERANK]==1)
             LABEL
                 COLOR 0 0 0
-#                SHADOWCOLOR 255 255 255
                 SHADOWSIZE 1 1
                 TYPE TRUETYPE
-                FONT vera_sans
-                SIZE 10
+                FONT sans
+                SIZE 11
                 MAXLENGTH 10
                 WRAP ' '
                 ANTIALIAS TRUE
                 POSITION AUTO
-                PARTIALS FALSE 
+                PARTIALS FALSE
                 OFFSET 1 1
-#                MINFEATURESIZE AUTO
-#                MINDISTANCE 300
-#                BUFFER 4
                 FORCE FALSE
             END # end of label
         END
-    END # States polygon layer ends here
+    END
 
-    LAYER # States polygon layer begins here
+    LAYER
         NAME         capitals
         DATA         pacific_islands_capitals
         STATUS       ON
@@ -316,27 +333,29 @@ MAP
 
         LABELITEM    "NAME"
         CLASSITEM    "SCALERANK"
-        LABELMINSCALEDENOM    1
-        LABELMAXSCALEDENOM    200
+        MINSCALEDENOM    1
+        MAXSCALEDENOM    200
 
         CLASS
             EXPRESSION ([SCALERANK]==2)
             LABEL
                 COLOR 0 0 0
-#                SHADOWCOLOR 255 255 255
                 SHADOWSIZE 1 1
                 TYPE TRUETYPE
-                FONT vera_sans_mono
+                FONT sans
                 SIZE 8
                 ANTIALIAS TRUE
                 POSITION AUTO
                 PARTIALS FALSE
-#                MINDISTANCE 300
-#                BUFFER 4
                 FORCE FALSE
             END # end of label
-        END
-    END # States polygon layer ends here
 
+            STYLE
+                SYMBOL "natcap"
+                COLOR 0 0 0
+                SIZE 8
+            END
+        END
+    END
 
 END

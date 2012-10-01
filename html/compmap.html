@@ -9,27 +9,29 @@
 <html>
 <head> 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
-<title>Pacific Ocean Maps</title> 
+<title>Ocean Maps Portal Loading...</title>
 
-<script type="text/javascript" src="lib/ext/ext-all-debug.js"></script>
-<script type="text/javascript" src="lib/OpenLayers/OpenLayers.js"></script>
-<script type="text/javascript" src="lib/jquery/jquery-1.8.0.js"></script>
+<script type="text/javascript" src="lib/extjs-4.1.1/{{ext-all.js}}"></script>
+<script type="text/javascript" src="lib/OpenLayers/{{OpenLayers.js}}"></script>
+<script type="text/javascript" src="lib/jquery/{{jquery.js}}"></script>
 <script type="text/javascript" src="lib/jquery/js/jquery-ui-1.8.22.custom.min.js"></script>
 <script type="text/javascript" src="lib/jquery/jquery.datepick.js"></script>
 <script type="text/javascript" src="lib/jquery/jquery.datepick.ext.js"></script>
 
-<script type="text/javascript" src="js/comp/controlPanel.js"></script>
-<script type="text/javascript" src="js/comp/compmap.js"></script>
+<script type="text/javascript" src="js/comp/controlPanel.js?v={{VERSION}}"></script>
+<script type="text/javascript" src="js/comp/compmap.js?v={{VERSION}}"></script>
 
-<link rel="stylesheet" type="text/css" href="lib/ext/resources/css/ext-all.css" />
+<link rel="stylesheet" type="text/css" href="lib/extjs-4.1.1/resources/css/ext-all-gray.css" />
 <link rel="stylesheet" type="text/css" href="lib/jquery/css/smoothness/jquery-ui-1.8.22.custom.css"/>
 <link rel="stylesheet" type="text/css" href="lib/jquery/jquery.datepick.css" />
 
 <link rel="stylesheet" type="text/css" href="css/common.css" /> 
-<link rel="stylesheet" type="text/css" href="css/comp/controlPanel.css" />
+<link rel="stylesheet" type="text/css" href="css/comp/controlPanel.css?v={{VERSION}}" />
 
 <style>
  #map {
+    position: relative;
+    z-index: 2;
     width: 100%;
     height: 100%;
     border: 2px solid black;
@@ -42,7 +44,7 @@
  #loading-dialog {
    text-align: center;
    padding-top: 10px;
-   padding-bottom; 5px;
+   padding-bottom: 5px;
  }
 
  #loading-dialog b {
@@ -58,67 +60,74 @@
     <div id="legendDiv"></div>
     <div id="enlargeDiv"></div>
 </div>
+
 <div id="outputDiv">
 </div>
-<div class="wrapper x-hidden" id="wrapper">
-      <form action="#">
-      <div class="header" id="header">
-          <div class="title" id="title" ><h1 id="dstitle" class="dstitle"></h1></div>
-          <div class="help" id="help" ><a href="" target="_blank" id="dshelp" class="dshelp"></a></div>
-      </div>
-      <div class="left" id="left" style="width:150px;">
-          <div class="categoryDiv" id="categoryDiv"></div>
-          <div class="datasetDiv" id="datasetDiv"></div>
-          <div class="variableDiv" id="variableDiv"></div>
-      </div>
-      <div class="centre" id="centre">
-          <div class="selectionDiv" id="selectionDiv"></div>
-          <div class="toggleDiv" id="toggleDiv"></div>
-          <div class="sliderDiv" id="sliderDiv"></div>
-      </div>
-      <div class="right" id="right">
-          <div class="yearMonthDiv" id="yearMonthDiv">
-              <div class="monthDiv" id="monthDiv"></div>
-              <div class="yearDiv" id="yearDiv"></div>
-          </div>
-          <div class="datepickerDiv" id="datepickerDiv">
-              <input type="text" id="datepicker" readonly="readonly" style="width: 80px"/>
-          </div>
-          <div class="tidalGaugeDiv" id="tidalGaugeDiv">
-              <small>Click a tidal gauge on the map to select.</small><br/><br/>
-              Selected Tidal Gauge:
-	      <input type="text" id="tidalgauge" readonly="readonly" style="width: 150px;"/>
-              <input type="hidden" id="tgId"/>
-          </div>
-          <div class="latlonDiv" id="latlonDiv">
-            <small>Click on the map to select a location.</small>
-            <table>
-              <tr>
-                <td>Latitude:</td>
-                <td>
-                  <input type="text" id="latitude" style="width: 70px;"/>
-                  <div id="clearlatlonButton" style="display:inline;"></div>
-                </td>
-              </tr>
-              <tr>
-                <td>Longitude:</td>
-                <td>
-                  <input type="text" id="longitude" style="width: 70px;"/>
-                </td>
-              </tr>
-            </table>
-          </div>
-          <div class="compDiv" id="compDiv"></div>
 
-          <div class="submitbuttonDiv" id="submitbuttonDiv"></div>
+<div class="x-hidden" id="wrapper">
+      <form action="#">
+      <div id="header">
+          <div id="title" >
+            <h1 id="dstitle"></h1>
+          </div>
+          <div id="help" >
+            <a href="" target="_blank" id="dshelp"></a>
+          </div>
       </div>
-      <div class="bottom" id="bottom"></div>
+
+      <div class="controlgroup">
+          <div class="controlvar" id="categoryDiv"></div>
+          <div class="controlvar" id="datasetDiv"></div>
+          <div class="controlvar" id="variableDiv"></div>
+      </div>
+      <div class="controlgroup">
+          <div class="controlvar" id="selectionDiv"></div>
+          <div class="controlvar" id="toggleDiv"></div>
+          <div class="controlvar" id="sliderDiv"></div>
+      </div>
+      <div class="controlgroup">
+          <div class="controlvar" id="yearMonthDiv">
+              <div class="controlvar" id="monthDiv"></div>
+              <div class="controlvar" id="yearDiv"></div>
+          </div>
+          <div class="controlvar" id="datepickerDiv">
+              <span class="label">Day:</span>
+              <input type="text" id="datepicker" class="field datepicker"
+                     title="Click to open calendar"
+                     readonly="readonly"/>
+          </div>
+          <div id="tidalGaugeDiv">
+            <small class="hint">Click a tidal gauge on the map to select.</small>
+            <div class="controlvar">
+                <span class="label">Gauge:</span>
+                <input type="text" id="tidalgauge" class="field" readonly="readonly"/>
+            </div>
+            <input type="hidden" id="tgId"/>
+          </div>
+          <div id="latlonDiv">
+            <small class="hint">Click on the map to select a location.</small>
+            <div class="controlvar">
+              <span class="label">Latitude:</span>
+              <input type="text" id="latitude" class="field"/>
+              <div id="clearlatlonButton" style="display:inline;"></div>
+            </div>
+            <div class="controlvar">
+              <span class="label">Longitude:</span>
+              <input type="text" id="longitude" class="field"/>
+            </div>
+          </div>
+
+          <div class="controlgroup right">
+            <div class="controlvar" id="submitbuttonDiv"></div>
+          </div>
+      </div>
       </form>
 </div>
 <div id="mapControls" class="x-hidden">
   <h2>Layer</h2>
   <div id="mapControlsLayers"></div>
   <div id="mapControlsToolbar" class="olControlEditingToolbar"></div>
+  <p class="version">Version: {{VERSION}}</p>
 </div>
 
 <div id="about-datasets" class="dialog" title="About Datasets">

@@ -5,7 +5,7 @@
 #     All Rights Reserved
 #
 # Authors: Sheng Guo <s.guo@bom.gov.au>
-
+#          Nicholas Summons <n.summons@bom.gov.au>
 """
 Plotter is the base class for plotting.
 """
@@ -84,20 +84,10 @@ class Plotter:
 	m.drawcoastlines(linewidth=0.1, zorder=6)
         m.fillcontinents(color='#F1EBB7', zorder=7)
 
-        if math.fabs(lllat - urlat) < 2:
-            parallels = np.linspace(lllat, urlat, 2)
-        elif math.fabs(lllat - urlat) < 5:
-            parallels = np.linspace(lllat, urlat, 4)
-        else:
-            parallels = np.linspace(lllat, urlat, 9)
-        m.drawparallels(parallels, labels=[True, False, False, False], fmt='%.2f', fontsize=6, dashes=[3, 3], color='gray')
-        if math.fabs(lllon - urlon) < 2:
-            meridians = np.linspace(lllon, urlon, 2)
-        elif math.fabs(lllon - urlon) < 5:
-            meridians = np.linspace(lllon, urlon, 4)
-        else:
-            meridians = np.linspace(lllon, urlon, 9)
-        m.drawmeridians(meridians, labels=[False, False, False, True], fmt='%.2f', fontsize=6, dashes=[3, 3], color='gray')
+        parallels, p_dec_places = get_tick_values(lllat, urlat)
+        meridians, m_dec_places = get_tick_values(lllon, urlon)
+        m.drawparallels(parallels, labels=[True, False, False, False], fmt='%.' + str(p_dec_places) + 'f', fontsize=6, dashes=[3, 3], color='gray')
+        m.drawmeridians(meridians, labels=[False, False, False, True], fmt='%.' + str(m_dec_places) + 'f', fontsize=6, dashes=[3, 3], color='gray')
 
         plt.title(title, fontsize=10)
         plt.clim(*config.getColorBounds(variable))
@@ -231,29 +221,16 @@ class Plotter:
 #        m.fillcontinents(color='#F1EBB7', zorder=7)
         m.fillcontinents(color='#cccccc', zorder=7)
 
-        #parallels = self.get_tick_values(lllon, urlon)
-        #meridians = self.get_tick_values(lllat, urlat)
-        if math.fabs(lllat - urlat) < 2:
-            parallels = np.linspace(lllat, urlat, 2)
-        elif math.fabs(lllat - urlat) < 5:
-            parallels = np.linspace(lllat, urlat, 4)
-        else:
-            parallels = np.linspace(lllat, urlat, 9)
-        m.drawparallels(parallels, labels=[True, False, False, False], fmt='%.2f', fontsize=6, dashes=[3, 3], color='gray')
-        if math.fabs(lllon - urlon) < 2:
-            meridians = np.linspace(lllon, urlon, 2)
-        elif math.fabs(lllon - urlon) < 5:
-            meridians = np.linspace(lllon, urlon, 4)
-        else:
-            meridians = np.linspace(lllon, urlon, 9)
-        m.drawmeridians(meridians, labels=[False, False, False, True], fmt='%.2f', fontsize=6, dashes=[3, 3], color='gray')
+        parallels, p_dec_places = get_tick_values(lllat, urlat)
+        meridians, m_dec_places = get_tick_values(lllon, urlon)
+        m.drawparallels(parallels, labels=[True, False, False, False], fmt='%.' + str(p_dec_places) + 'f', fontsize=6, dashes=[3, 3], color='gray')
+        m.drawmeridians(meridians, labels=[False, False, False, True], fmt='%.' + str(m_dec_places) + 'f', fontsize=6, dashes=[3, 3], color='gray')
 
         title = ''
         if hasattr(config, 'getPeriodPrefix') and 'period' in args:
             title += config.getPeriodPrefix(args['period'])
 
         title += config.getTitle(variable) + args['formattedDate']
-
         plt.title(title, fontsize=8)
         plt.clim(*config.getColorBounds(variable))
         ax = plt.gca()
@@ -380,39 +357,80 @@ class Plotter:
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.8, bbox_extra_artists=[copyrightBox])
         plt.close()
 
-    def get_tick_values(self, x_min, x_max, min_ticks=4, max_ticks=9):
-        """
-        Automatically determine best latitude / longitude tick values for plotting.
+def get_tick_values(x_min, x_max, min_ticks=4):
+    """
+    Automatically determine best latitude / longitude tick values for plotting.
 
-        Input arguments:
-            x_min       Minimum lat/lon value
-            x_max       Maximum lat/lon value
-            min_ticks   Minimum number of ticks
-            max_ticks   Maximum number of ticks    
+    Input arguments:
+        x_min       Minimum lat/lon value
+        x_max       Maximum lat/lon value
+        min_ticks   Minimum number of ticks
 
-        Example usage: 
-            get_tick_values(-30,30) -> [-30., -20., -10., 0., 10., 20., 30.]
-        """
-        eps = 0.0001
-        
-        # Calculate base 10 exponent of the value range
-        dif_exp = np.floor(np.log10(x_max - x_min))
-        
-        for k in [1.0,0.5,0.2]:
-            test_interval = math.pow(10, dif_exp) * k
-            start_value = np.ceil(x_min/test_interval)*test_interval
-            ticks = np.arange(start_value, x_max + eps, test_interval)
-            if (ticks.size >= min_ticks) & (ticks.size <= max_ticks):
-                break
-        
-        # Determine number of decimal places required for labels
-        if dif_exp <= 0:
-            if k >= 1.0:
-                dec_places = abs(dif_exp)
-            else:
-                dec_places = abs(dif_exp) + 1
+    Example usage:
+        get_tick_values(-30,30) -> [-30., -20., -10., 0., 10., 20., 30.]
+    """
+    eps = 0.0001
+
+    # Calculate base 10 exponent of the value range
+    dif_exp = np.floor(np.log10(x_max - x_min))
+
+    for k in [1.0,0.5,0.2]:
+        test_interval = math.pow(10, dif_exp) * k
+        start_value = np.ceil(x_min/test_interval)*test_interval
+        ticks = np.arange(start_value, x_max + eps, test_interval)
+        if (ticks.size >= min_ticks):
+            break
+
+    # Determine number of decimal places required for labels
+    if dif_exp <= 0:
+        if k >= 1.0:
+            dec_places = abs(dif_exp)
         else:
-            dec_places = 0
-        
-        return ticks, int(dec_places)
+            dec_places = abs(dif_exp) + 1
+    else:
+        dec_places = 0
 
+    return ticks, int(dec_places)
+
+def discrete_cmap(cmap_name, intervals, extend='both'):
+    """
+    Generate a discrete colour map by subsetting from a continuous matplotlib colour map.
+
+    Input arguments
+    ---------------
+    cmap_name   -> Name of colour map (e.g. 'jet')
+    intervals   -> Number of colour intervals (excluding out of range colour flags)
+    extend      -> Specify whether to add extra colours for values that are out of range.
+                   Options are 'both', 'min', 'max' or 'neither'.
+    """
+    if extend == 'both':
+        n_colours = intervals + 2
+    elif extend == 'min' or extend == 'max':
+        n_colours = intervals + 1
+    else:
+        n_colours = intervals
+
+    cmap = mpl.cm.get_cmap(cmap_name, n_colours)
+    clrs = cmap(range(n_colours))
+
+    if extend == 'both':
+        min_colour = clrs[0,:]
+        max_colour = clrs[-1,:]
+        intv_colours = clrs[1:-1,:]
+    elif extend == 'min':
+        min_colour = clrs[0,:]
+        max_colour = None
+        intv_colours = clrs[1:,:]
+    elif extend == 'max':
+        min_colour = None
+        max_colour = clrs[-1,:]
+        intv_colours = clrs[:-1,:]
+    else:
+        intv_colours = clrs
+
+    cmap = mpl.colors.ListedColormap(intv_colours)
+    if min_colour is not None:
+        cmap.set_under(min_colour)
+    if max_colour is not None:
+        cmap.set_over(max_colour)
+    return cmap

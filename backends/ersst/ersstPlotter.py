@@ -49,58 +49,61 @@ class ErsstPlotter ():
 
         inputDate = datetime.date(year, month, day)
  
-	centerLabel = False
+        centerLabel = False
 
-	if variable == 'mean' or variable == 'anom':
+        if variable == 'mean' or variable == 'anom':
             if period=='monthly':
                 filename = self.serverCfg["dataDir"]["ersst"] + period + "/" + "ersst." + date[:6]
-		title = self.config.getPeriodPrefix(period)\
+                title = self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + util.format_old_date(inputDate)
             elif period=='3monthly' or period == '6monthly': 
-            	filename = self.serverCfg["dataDir"]["ersst"] + "/" + period + "/ersst." + date[:6] + "ave"
-		title = self.config.getPeriodPrefix(period)\
+                if period=='3monthly':
+                    filename = self.serverCfg["dataDir"]["ersst"] + "seasonalclim/ersst_v3b_" + date[:6] + "_3mthavg"
+                elif period=='6monthly':
+                    filename = self.serverCfg["dataDir"]["ersst"] + "seasonalclim/ersst_v3b_" + date[:6] + "_6mthavg"
+                title = self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + util.format_old_date(dateRange.getMonths(date, period[:1])[0]) \
                       + " to "\
                       + util.format_old_date(inputDate)
             elif period == '12monthly': 
-            	filename = self.serverCfg["dataDir"]["ersst"] + "/" + period + "/ersst." + date[:6] + "ave"
-		title = self.config.getPeriodPrefix(period)\
+                filename = self.serverCfg["dataDir"]["ersst"] + "seasonalclim/ersst_v3b_" + date[:6] + "_12mthavg"
+                title = self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + util.format_old_date(dateRange.getMonths(date, period[:2])[0])\
                       + " to "\
                       + util.format_old_date(inputDate)
-	elif variable=='dec':
-	    centerLabel = True
+        elif variable=='dec':
+            centerLabel = True
             baseYear = args["baseYear"]
             if period=='monthly':
                 filename = self.serverCfg["dataDir"]["ersst"] + "decile/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
-		title = self.config.getPeriodPrefix(period)\
+                title = self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + util.format_old_date(inputDate)
             elif period=='3monthly' or period == '6monthly': 
                 filename = self.serverCfg["dataDir"]["ersst"] + "decile/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
-		title = self.config.getPeriodPrefix(period)\
+                title = self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + util.format_old_date(dateRange.getMonths(date, period[:1])[0]) \
                       + " to "\
                       + util.format_old_date(inputDate)
             elif period == '12monthly': 
                 filename = self.serverCfg["dataDir"]["ersst"] + "decile/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
-		title = self.config.getPeriodPrefix(period)\
+                title = self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + util.format_old_date(dateRange.getMonths(date, period[:2])[0]) \
                       + " to "\
                       + util.format_old_date(inputDate)
 
-	elif variable=='trend':
+        elif variable=='trend':
             baseYear = args["baseYear"]
             if period=='monthly':
                 filename = self.serverCfg["dataDir"]["ersst"] + "trend/" + period\
                          + "/" + baseYear + "/"  + "ersst." + period\
                          + "_[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9]lin" + date[4:6]
-		title = self.config.getPeriodPrefix(period)\
+                title = self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + inputDate.strftime('%B')\
                       + " (" + baseYear + " - " + inputDate.strftime('%Y') + ")"
@@ -108,7 +111,7 @@ class ErsstPlotter ():
                 filename = self.serverCfg["dataDir"]["ersst"] + "trend/" + period\
                          + "/" + baseYear + "/"  + "ersst." + period\
                          + "_[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9]lin" + date[4:6]
-		title = self.config.getPeriodPrefix(period)\
+                title = self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + dateRange.getMonths(date, period[:1])[0].strftime('%B')\
                       + " to "\
@@ -118,7 +121,7 @@ class ErsstPlotter ():
                 filename = self.serverCfg["dataDir"]["ersst"] + "trend/" + period\
                          + "/" + baseYear + "/"  + "ersst." + period\
                          + "_[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9]lin" + date[4:6]
-		title = self.config.getPeriodPrefix(period)\
+                title = self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + dateRange.getMonths(date, period[:2])[0].strftime('%B')\
                       + " to "\
@@ -126,7 +129,7 @@ class ErsstPlotter ():
                       + " (" + baseYear + " - " + inputDate.strftime('%Y') + ")"
         else:
             return -1
-	
+
         filename = filename + ".nc" 
         filename = glob.glob(filename)[0]
         dataset = Dataset(filename, 'r')
@@ -138,9 +141,9 @@ class ErsstPlotter ():
         lons = np.array(lons,np.float64)
         lats = np.array(lats,np.float64)
 
-	sst = sm.smooth(sst, 5)
+        sst = sm.smooth(sst, 5)
 
-	contourLines = True
+        contourLines = True
 
         resolution='h'
         if not area=='pac':
@@ -152,7 +155,7 @@ class ErsstPlotter ():
                   regionConfig.regions[area][1]["llcrnrlon"],\
                   regionConfig.regions[area][1]["urcrnrlat"],\
                   regionConfig.regions[area][1]["urcrnrlon"],\
-		  res=resolution, proj="cyl",\
+                  res=resolution, proj="cyl",\
                   contourLines=contourLines, centerLabel=centerLabel)
         plot.contourBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
         plot.contourBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
@@ -161,5 +164,3 @@ class ErsstPlotter ():
         dataset.close()
         
         return 0
-
-

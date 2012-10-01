@@ -42,7 +42,7 @@ def process(form):
         if ("lat" in form) and ("lon" in form):
             lat_cnt = np.float(form["lat"].value)
             lon_cnt = np.mod(np.float(form["lon"].value),360.0)
-            if (lon_cnt >= 0) & (lon_cnt <= 360) & (lat_cnt >= -90) & (lat_cnt <= 90):
+            if (lon_cnt >= 0) and (lon_cnt <= 360) and (lat_cnt >= -90) and (lat_cnt <= 90):
                 if lat_cnt >= 0:
                     lat_str = str(int(round(abs(lat_cnt), 2)*100)) + 'N'
                 else:
@@ -213,11 +213,11 @@ def draw_monthly_mean_surface_plot(varName, yearStr, monthStr, regionStr, bgImag
         else:
             lats2 = None; lons2 = None
             u = None; v = None
-            contourLines = True
+            contourLines = False #True
         
         # Plot surface data
-        branPlotterNew.plot_BRAN_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
-                                             output_filename=plot_filename_fullpath + '.png', title=title, units=unitStr,
-                                             cb_ticks=cb_ticks, cb_tick_fmt=cb_tick_fmt, cmp_name='jet', proj='cyl',
-                                             contourLines=contourLines, product_label_str='Bluelink Reanalysis 2.1',
-                                             vlat=lats2, vlon=lons2, u=u, v=v)
+        branPlotterNew.plot_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
+                                         output_filename=plot_filename_fullpath + '.png', title=title, units=unitStr,
+                                         cb_ticks=cb_ticks, cb_tick_fmt=cb_tick_fmt, cmp_name='jet', proj='cyl',
+                                         contourLines=contourLines, product_label_str='Bluelink Reanalysis 2.1',
+                                         vlat=lats2, vlon=lons2, u=u, v=v)

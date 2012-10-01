@@ -8,29 +8,59 @@
 var ocean = ocean || {};
 var map;
 
-window.onerror = function (msg, url, line) {
-    $('#error-dialog-content').html("Javascript error: " + msg +
-                                    " &mdash; please " +
-                                    '<a href="javascript:location.reload()">' +
-                                    "reload</a> your browser." +
-                                    "<br/><small>" + url + ":" + line +
-                                    "</small>");
+function fatal_error(msg)
+{
+    $('#error-dialog-content').html(msg);
     $('#error-dialog-request').hide();
     $('#error-dialog').dialog('option', { 'modal': true,
                                           'dialogClass': 'notitle',
                                           'closeOnEscape': false });
     $('#error-dialog').dialog('open');
+}
 
+window.onerror = function (msg, url, line) {
+    fatal_error("Javascript error: " + msg + " &mdash; please " +
+                '<a href="javascript:location.reload()">' +
+                "reload</a> your browser." + "<br/><small>"
+                + url + ":" + line + "</small>");
     return false;
 }
 
 $(document).ready(function() {
+    /* work out which region file to load */
+    if (location.search == '')
+        ocean.config = 'pac';
+    else
+        ocean.config = location.search.slice(1);
+
+    createMap();
+
+    /* request the portals config */
+    $.getJSON('config/comp/portals.json')
+        .success(function(data, status_, xhr) {
+            ocean.configProps = data[ocean.config];
+
+            if (!ocean.configProps) {
+                fatal_error("No portal called '" + ocean.config + "'.");
+                return;
+            }
+
+            document.title = ocean.configProps.name + " Ocean Maps Portal";
+
+            map.setOptions({
+                restrictedExtent: new OpenLayers.Bounds(ocean.configProps.extents)
+            });
+        })
+        .error(function (xhr, status_, error) {
+            fatal_error("Error loading portals config " + "&mdash; " + error);
+        });
+});
+
+function createMap () {
     map = new OpenLayers.Map("map", {
         resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
         maxResolution: 0.087890625,
-        minExtent: new OpenLayers.Bounds(-1, -1, -1, -1),
         maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
-        restrictedExtent: new OpenLayers.Bounds(-254.75303, -51.78606, -144.49137, 20.13191),
         controls: [
             new OpenLayers.Control.PanZoomBar(),
             new OpenLayers.Control.MousePosition(),
@@ -39,46 +69,60 @@ $(document).ready(function() {
                 ascending: false,
                 roundedCorner: false
             }),
-            new OpenLayers.Control.KeyboardDefaults(),
-            new OpenLayers.Control.ScaleLine({bottomOutUnits:'', bottomInUnits:''}),
-            new OpenLayers.Control.Navigation({dragPanOptions: {enableKinetic: true}})
+            new OpenLayers.Control.ScaleLine({
+                bottomOutUnits: '',
+                bottomInUnits: ''
+            }),
+            new OpenLayers.Control.Navigation({
+                dragPanOptions: { enableKinetic: true },
+                documentDrag: true
+            })
         ],
         eventListeners: {
-           'changelayer': mapBaseLayerChanged
+            addlayer: _updateDisabled,
+            removelayer: _updateDisabled,
+            changelayer: mapBaseLayerChanged
         }
+    });
+
+    /* add keyboard controls separately so we can disable them when required */
+    var keyboardControls = new OpenLayers.Control.KeyboardDefaults();
+    map.addControl(keyboardControls);
+
+    $('input').focusin(function () {
+        keyboardControls.deactivate();
+    });
+    $('input').focusout(function () {
+        keyboardControls.activate();
     });
 
     ocean.mapObj = map;
 
     var bathymetryLayer = new OpenLayers.Layer.MapServer("Bathymetry",
         'cgi/getMap', {
-            map: "bathymetry",
-            layers: ["bathymetry_10000", "bathymetry_9000", "bathymetry_8000",
-                     "bathymetry_7000", "bathymetry_6000", "bathymetry_5000",
-                     "bathymetry_4000", "bathymetry_3000", "bathymetry_2000",
-                     "bathymetry_1000", "bathymetry_200", "bathymetry_0",
-                     "land", "maritime", "capitals", "countries"]
+            map: 'bathymetry',
+            layers: ['bathymetry', 'land', 'maritime', 'capitals', 'countries']
         }, {
             transitionEffect: 'resize',
             wrapDateLine: true
         });
 
-    var sstLayer = new OpenLayers.Layer.MapServer("SST",
+    var outputLayer = new OpenLayers.Layer.MapServer("Output",
         'cgi/getMap', {
-            map: "reynolds",
-            layers: ["sst_left", "sst_right", "land", "coastline"]
-        }, {
-            transitionEffect: 'resize',
-            wrapDateLine: true
-        });
+        map: 'raster',
+        layers: ['raster_left', 'raster_right', 'land', 'capitals', 'countries']
+    }, {
+        transitionEffect: 'resize',
+        wrapDateLine: true
+    });
 
-    /* Add gauge points */
-    map.addLayers([bathymetryLayer]);
+    map.addLayers([bathymetryLayer, outputLayer]);
     map.setBaseLayer(bathymetryLayer);
 
     function mapBaseLayerChanged(evt) {
         var layerName;
         var legendDiv = $('#legendDiv');
+        var enableOL = false;
 
         if (evt)
             layerName = evt.layer.name;
@@ -91,88 +135,50 @@ $(document).ready(function() {
                 legendDiv.html('<p><img src="' + ocean.map_scale + '" />');
             else
                 legendDiv.html('<p></p>');
+
+            enableOL = true;
         }
+
+        $('.outputgroup input[type=radio]').attr('disabled', !enableOL);
+        _updateDisabled();
     }
 
     mapBaseLayerChanged(null);
-});
-
-function selectCountry(event, args) {
-    var selection = event.getValue();
-    var record = window.countryStore.getById(selection);
-    var zoom = record.get('zoom');
-    map.zoomTo(zoom);
-    map.panTo(new OpenLayers.LonLat(record.get('long'), record.get('lat')));
-
-
-    ocean.area = selection;
 }
 
-//this is a callback funtion, invoked when Extjs loading is finished
-function setupControls() {
-    window.countryCombo.on('select', selectCountry, this);
-    window.countryCombo.on('change', selectCountry, this);
+function _updateDisabled ()
+{
+    /* determine whether to disable Output
+     * on a timeout because OpenLayers changes the DOM */
+    window.setTimeout(function () {
+        var disable = $('.outputgroup input[type=radio]').length < 1;
+        var radio = $('#mapControls .baseLayersDiv input[value="Output"]');
+        radio.attr('disabled', disable);
+    }, 5);
 }
 
-function centerMap() {
-    if (map) {
-        map.setCenter(new OpenLayers.LonLat(173.00000, -13.11418), 0);
-    }
+function selectMapLayer(name)
+{
+    var layer = map.getLayersByName(name)[0];
+
+    map.setBaseLayer(layer);
+    _updateDisabled();
 }
 
-function updateMap(layerName, data){
+function updateMap (data) {
+    var layer = map.getLayersByName("Output")[0];
+
     ocean.map_scale = data.scale;
 
-    if (map.getLayersByName(layerName).length != 0) {
-        layer = map.getLayersByName(layerName)[0]
-        map.setBaseLayer(layer);
-        layer.params["raster"] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw];
-        layer.redraw(true);
-    }
-    else{
-        var sstLayer = new OpenLayers.Layer.MapServer(layerName,
-            "cgi/getMap", {
-            map: 'reynolds',
-            layers: ["sst_left", "sst_right", "land", "coastline"],
-            raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
-        }, {
-            transitionEffect: 'resize',
-            wrapDateLine: true
-        });
-
-        map.addLayer(sstLayer);
-        map.setBaseLayer(sstLayer);
-    }
-}
-
-
-function updateSeaLevelMap(data){
-    ocean.map_scale = data.scale;
-
-    if (map.getLayersByName("Sea Level").length != 0) {
-        var layer = map.getLayersByName("Sea Level")[0];
-        map.setBaseLayer(layer);
-        layer.params["raster"] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw];
-        layer.redraw(true);
-    }
-    else{
-        var slLayer = new OpenLayers.Layer.MapServer("Sea Level",
-            "cgi/getMap", {
-            map: 'sealevel',
-            layers: ["sl_left", "sl_right", "land", "coastline"],
-            raster: [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw]
-        }, {
-            transitionEffect: 'resize',
-            wrapDateLine: true
-        });
-
-        map.addLayer(slLayer);
-        map.setBaseLayer(slLayer);
-    }
+    map.setBaseLayer(layer);
+    layer.params['raster'] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw];
+    layer.redraw(true);
 }
 
 Ext.require(['*']);
 Ext.onReady(function() {
+
+    var countrylisturl = [ 'config', ocean.config, 'countryList.json' ].join('/');
 
     Ext.define('Country', {
         extend: 'Ext.data.Model',
@@ -180,21 +186,35 @@ Ext.onReady(function() {
         idProperty: 'abbr',
         proxy: {
             type: 'ajax',
-            url: 'config/comp/countryList.json',
+            url: countrylisturl,
             reader: {
                 type: 'json'
             }
         }
-    });  
+    });
 
     window.countryStore = new Ext.data.Store({
         autoLoad: true,
-        model: 'Country'
-    });    
-    window.countryStore.addListener('load', selectDefaultCountry);
+        model: 'Country',
+        listeners: {
+            load: function () {
+                window.countryCombo.select(ocean.config);
+            }
+        }
+    });
 
-    function selectDefaultCountry(store, records, result, operation, eOpt) {
-        window.countryCombo.select('pac');
+    function selectCountry(event, args) {
+        var selection = event.getValue();
+        var record = window.countryStore.getById(selection);
+
+        if (!record)
+            return;
+
+        map.setCenter(new OpenLayers.LonLat(record.get('long'),
+                                            record.get('lat')),
+                      record.get('zoom'));
+
+        ocean.area = selection;
     }
 
     window.countryCombo = Ext.create('Ext.form.field.ComboBox', {
@@ -206,16 +226,17 @@ Ext.onReady(function() {
         queryMode: 'local',
         padding: 5,
         height: '60%',
-        width: 180
+        width: 180,
+        listeners: {
+            select: selectCountry,
+            change: selectCountry
+        }
     });
 
     Ext.create('Ext.Viewport', {
         layout: {
             type: 'border',
             padding: 2
-        },
-        listeners: {
-            afterlayout: centerMap
         },
         items: [{
             xtype: 'panel',
@@ -248,36 +269,38 @@ Ext.onReady(function() {
             border: false,
             padding: 2,
             height: '100%',
-            contentEl: 'map'
+            contentEl: 'map',
+            listeners: {
+                afterlayout: function() {
+                    map.updateSize();
+                }
+            }
         }, {
             xtype: 'panel',
             region: 'east',
             collapsible: true,
             title: 'Output',
             width: 220,
-            autoScroll: true,
             contentEl: 'outputDiv',
             tools: [{
-                /* FIXME: how to make them in the style of tool buttons? */
                 /* Report Feedback */
-                html: $('<a>', {
-                    'class': 'ui-icon ui-icon-mail-closed',
-                    title: "Report Feedback",
-                    href: 'mailto:COSPPac_SoftwareSupport@bom.gov.au'
-                }).get(0).outerHTML
+                type: 'email',
+                cls: 'ie7-compat',
+                tooltip: "Report Feedback",
+                tooltipType: 'title',
+                handler: function () {
+                    window.open('mailto:COSPPac_SoftwareSupport@bom.gov.au', '_self');
+                }
             }, {
                 /* Help Guide */
-                html: $('<a>', {
-                    'class': 'ui-icon ui-icon-help',
-                    title: "User Guide",
-                    href: '/cosppac/comp/ocean-portal/ocean-portal-help.shtml',
-                    target: '_blank'
-                }).get(0).outerHTML
+                type: 'help',
+                tooltip: "Help Guide",
+                tooltipType: 'title',
+                handler: function () {
+                    window.open('/cosppac/comp/ocean-portal/ocean-portal-help.shtml', '_blank');
+                }
             }]
         }
        ]
     });
-
-
-    setupControls();
   });
