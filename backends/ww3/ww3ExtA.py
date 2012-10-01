@@ -57,7 +57,7 @@ class WaveWatch3Extraction ():
         lats, latl, latr = slice(nc.variables['y'], inputLat)
         lons, lonl, lonr = slice(nc.variables['x'], inputLon)
 
-        vari = nc.variables[variableName][:, latl:latr]
+        vari = nc.variables[variableName][:, latl:latr, lonl:lonr]
         (gridLat, gridLon), (gridLatIndex, gridLonIndex) = \
                 xtractor.getGridPoint(inputLat, inputLon, lats, lons, vari)
 
