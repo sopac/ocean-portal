@@ -50,9 +50,12 @@ class WaveWatch3Extraction ():
         inputLat = float(inputLat)
         inputLon = float(inputLon)
 
+        assert -90 < inputLat < 90
+        assert -180 < inputLon < 180
+
         nc = Dataset(filez[0], 'r')
         lats, latl, latr = slice(nc.variables['y'], inputLat)
-        lons = nc.variables['x'][:]
+        lons, lonl, lonr = slice(nc.variables['x'], inputLon)
 
         vari = nc.variables[variableName][:, latl:latr]
         (gridLat, gridLon), (gridLatIndex, gridLonIndex) = \
@@ -60,6 +63,7 @@ class WaveWatch3Extraction ():
 
         # add the indexes from the sliced array
         gridLatIndex += latl
+        gridLonIndex += lonl
 
         gridValues = []
         latLonValues = []
