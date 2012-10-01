@@ -49,6 +49,7 @@ def main():
 if __name__ == '__main__':
     if config.get('profile', False):
         import cProfile
-        cProfile.run('main()', '/tmp/portal.profile')
+
+        cProfile.run('main()', '/tmp/portal.profile.%s' % os.getpid())
     else:
         main()

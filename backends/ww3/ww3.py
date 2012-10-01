@@ -9,6 +9,7 @@
 import os
 import os.path
 import sys
+import copy
 
 import ww3ExtA
 import ocean.util as util
@@ -76,7 +77,7 @@ def process(form):
         if not os.path.exists(outputFileName + ".txt"):
             marker = 1
             timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr, k1, k2)
-            dataVals = gridValues
+            dataVals = copy.copy(gridValues)
             extractor.writeOutput(outputFileName + ".txt", latStr, lonStr, timeseries, dataVals, varStr)
         if not os.path.exists(outputFileName + ".txt"):
             responseObj["error"] = "Error occured during the extraction."

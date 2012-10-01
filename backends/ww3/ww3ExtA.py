@@ -50,16 +50,20 @@ class WaveWatch3Extraction ():
         inputLat = float(inputLat)
         inputLon = float(inputLon)
 
+        assert -90 < inputLat < 90
+        assert -180 < inputLon < 180
+
         nc = Dataset(filez[0], 'r')
         lats, latl, latr = slice(nc.variables['y'], inputLat)
-        lons = nc.variables['x'][:]
+        lons, lonl, lonr = slice(nc.variables['x'], inputLon)
 
-        vari = nc.variables[variableName][:, latl:latr]
+        vari = nc.variables[variableName][:, latl:latr, lonl:lonr]
         (gridLat, gridLon), (gridLatIndex, gridLonIndex) = \
                 xtractor.getGridPoint(inputLat, inputLon, lats, lons, vari)
 
         # add the indexes from the sliced array
         gridLatIndex += latl
+        gridLonIndex += lonl
 
         gridValues = []
         latLonValues = []
