@@ -84,7 +84,7 @@ class WaveWatch3Extraction ():
         output.write(timelabel + '\t')
         output.write(label + '\t')
         output.write('\n')
-	for time, point in zip (timeseries, gridValues):
+	for time, point in zip (timeseries, dataVals):
         	output.write(str(int(time)) + '\t')
 		output.write(str(round(point,2)) + '\t')
                 output.write('\n')   
