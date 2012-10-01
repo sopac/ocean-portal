@@ -65,7 +65,7 @@ class WaveWatch3Extraction ():
               
         return timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon)
 
-    def writeOutput(self, fileName, latStr, lonStr, timeseries, gridValues, varStr):
+    def writeOutput(self, fileName, latStr, lonStr, timeseries, dataVals, varStr):
         if varStr == 'Dm':
             label = 'Wave Direction (degrees)'
 	    dataVals = dirflip(dataVals)
