@@ -76,7 +76,8 @@ def process(form):
         if not os.path.exists(outputFileName + ".txt"):
             marker = 1
             timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr, varStr, k1, k2)
-            extractor.writeOutput(outputFileName + ".txt", latStr, lonStr, timeseries, gridValues, varStr)
+            dataVals = gridValues
+            extractor.writeOutput(outputFileName + ".txt", latStr, lonStr, timeseries, dataVals, varStr)
         if not os.path.exists(outputFileName + ".txt"):
             responseObj["error"] = "Error occured during the extraction."
         else:
