@@ -16,6 +16,12 @@ import ocean.util as util
 from ocean.netcdf import extractor
 from angleconv import dirflip
 
+def slice(haystack, needle, width=5):
+    l = bisect.bisect_left(haystack, needle - width)
+    r = bisect.bisect_right(haystack, needle + width)
+
+    return (haystack[l:r], l, r)
+
 class WaveWatch3Extraction ():
     """
     Extract wave watch 3 point/rectangular area data.
@@ -40,29 +46,38 @@ class WaveWatch3Extraction ():
         filez = sorted(filez, key=lambda filename: filename[-9:-3]) 
         #align the input lat/lon to grid lat/lon
         xtractor = extractor.Extractor()
+
+        inputLat = float(inputLat)
+        inputLon = float(inputLon)
+
         nc = Dataset(filez[0], 'r')
-        lats = nc.variables['y'][:]
+        lats, latl, latr = slice(nc.variables['y'], inputLat)
         lons = nc.variables['x'][:]
-        vari = nc.variables[variableName][:]
-        (gridLat, gridLon), (gridLatIndex, gridLonIndex) = xtractor.getGridPoint(inputLat, inputLon,
-                lats, lons, vari)
+
+        vari = nc.variables[variableName][:, latl:latr]
+        (gridLat, gridLon), (gridLatIndex, gridLonIndex) = \
+                xtractor.getGridPoint(inputLat, inputLon, lats, lons, vari)
+
+        # add the indexes from the sliced array
+        gridLatIndex += latl
 
         gridValues = []
         latLonValues = []
         timeseries = []
-        latsLons = str(gridLat) + ' ' + str(gridLon) 
-        nc.close() 
+        latsLons = str(gridLat) + ' ' + str(gridLon)
+        nc.close()
+
+        # extract the data from the grid point for every file
         for file in filez:
-            nc = Dataset(file, 'r') 		 
-            #print values  
+            nc = Dataset(file, 'r')
             var = nc.variables[variableName]
-            point = var[:,gridLatIndex,gridLonIndex]
+            point = var[:, gridLatIndex, gridLonIndex]
             tvar = nc.variables['time1']
-            time = tvar[:]    
-            timeseries = np.append(timeseries,time)
-            gridValues = np.append(gridValues,point)
-            nc.close()    
-              
+            time = tvar[:]
+            timeseries = np.append(timeseries, time)
+            gridValues = np.append(gridValues, point)
+            nc.close()
+
         return timeseries, latsLons, latLonValues, gridValues, (gridLat, gridLon)
 
     def writeOutput(self, fileName, latStr, lonStr, timeseries, gridValues, varStr):
