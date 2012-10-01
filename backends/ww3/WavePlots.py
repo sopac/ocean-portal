@@ -124,7 +124,7 @@ def RosePlot(opath, wdir, units, lat, lon, ilat, ilon, xstr, title, var, binwd):
     plt.figtext(0.76, 0.1, 'West: %s %s' % (perc[6], units), fontsize=10)
     plt.figtext(0.76, 0.075, 'North West: %s %s' % (perc[7], units), fontsize=10)
     #Bureau of Meteorology Copyright
-    plt.figtext(0.58, 0.03, u'WAVEWATCH III$^{\u00AE}$', fontsize=10)
+    plt.figtext(0.58, 0.03, u'WAVEWATCH III$^{\u24C7}$', fontsize=10)
     plt.figtext(0.02, 0.02, getCopyright(), fontsize=8)
     #define image name
     imgname = opath + '.png'
