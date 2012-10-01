@@ -40,7 +40,7 @@ def main():
     else:
         response['error'] = "No dataset specified"
 
-    print 'Content-Type: application/json'
+    print 'Content-Type: application/json; charset=utf-8'
     print 'X-Portal-Version: %s' % util.__version__
     print
 
