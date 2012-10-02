@@ -193,6 +193,10 @@ class ErsstPlotter ():
         output_filename = self.serverCfg["outputDir"] + outputFilename + '.png'
         units = self.config.getUnit(variable)
         cmap_name = self.config.getColorMap(variable)
+        plot.plotBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
+        plot.plotBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
+        plot.plotScale(sst, variable, self.config, outputFilename)
+
         if variable == 'dec':
             # Temporary patch until decile calculation code is fixed
             sst = np.where((sst < 1.5), 1, sst)
@@ -210,10 +214,6 @@ class ErsstPlotter ():
                                cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt,
                                cb_labels=cb_labels, cb_label_pos=cb_label_pos,
                                cmp_name=cmap_name, extend=extend)
-        plot.plotBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
-        plot.plotBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
-        plot.plotScale(sst, variable, self.config, outputFilename)
-
         dataset.close()
         
         return 0
