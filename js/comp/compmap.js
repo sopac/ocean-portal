@@ -99,7 +99,7 @@ function createMap () {
     ocean.mapObj = map;
 
     var bathymetryLayer = new OpenLayers.Layer.MapServer("Bathymetry",
-        'cgi/getMap', {
+        'cgi/map.py', {
             map: 'bathymetry',
             layers: ['bathymetry', 'land', 'maritime', 'capitals', 'countries']
         }, {
@@ -108,7 +108,7 @@ function createMap () {
         });
 
     var outputLayer = new OpenLayers.Layer.MapServer("Output",
-        'cgi/getMap', {
+        'cgi/map.py', {
         map: 'raster',
         layers: ['raster_left', 'raster_right', 'land', 'capitals', 'countries']
     }, {

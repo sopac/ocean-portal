@@ -25,7 +25,7 @@ rpm_deps = [
 ]
 
 src = [
-    'getMap',
+    'map.py',
     'portal.py',
 ]
 
