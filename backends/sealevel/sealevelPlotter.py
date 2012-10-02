@@ -22,6 +22,7 @@ import ocean.util as util
 from ..util import regionConfig
 from ..netcdf import plotter
 from ..netcdf import extractor
+from ocean.util.pngcrush import pngcrush
 
 class SeaLevelPlotter ():
     """ 
@@ -164,6 +165,9 @@ class SeaLevelPlotter ():
 
         plt.close()
         file.close()
+
+        pngcrush(outputFilename + ".png")
+
         return 0
 
     def plotTimeseries(self, outputFilename, saveData=True, **args):
@@ -238,4 +242,7 @@ class SeaLevelPlotter ():
 
         plt.close()
         dataset.close()
+
+        pngcrush(outputFilename + ".png")
+
         return 0
