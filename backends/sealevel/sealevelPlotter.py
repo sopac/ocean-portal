@@ -89,7 +89,8 @@ class SeaLevelPlotter ():
         #          regionConfig.regions[area][1]["urcrnrlon"],\
         #          res=resolution, centerLabel=cntLabel, **args)
         output_filename = self.serverCfg["outputDir"] + outputFilename + '.png'
-        title = self.config.getTitle(variable) + args['formattedDate']
+        regionLongName = regionConfig.regions[area][2]
+        title = regionLongName + '\n' + self.config.getTitle(variable) + args['formattedDate']
         units = self.config.getUnit(variable)
         cmap_name = self.config.getColorMap(variable)
         plot.plot_surface_data(lats, lons, height,

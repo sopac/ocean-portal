@@ -52,7 +52,6 @@ class ErsstPlotter ():
         centerLabel = False
 
         regionLongName = regionConfig.regions[area][2]
-        regionLongName + '\n'
         
         if variable == 'mean' or variable == 'anom':
             if period=='monthly':
