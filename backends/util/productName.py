@@ -19,19 +19,19 @@ products = {"reynolds": {"daily":     "REY00001",
                          "monthlyAve":"REY00102",
                          "monthlyDec":"REY00201"
                         },
-            "ersst": {"monthly":       "ERA00001", 
-		      "3monthly":      "ERA00002",
-		      "6monthly":      "ERA00003",
-		      "12monthly":     "ERA00004",
-		      "monthlyAve":    "ERA00101",
-		      "3monthlyAve":   "ERA00102",
-		      "6monthlyAve":   "ERA00103",
-		      "12monthlyAve":  "ERA00104",
-		      "monthlyDec":    "ERA00201",# Decile ID
+            "ersst": {"monthly":       "ERA00001",
+                      "3monthly":      "ERA00002",
+                      "6monthly":      "ERA00003",
+                      "12monthly":     "ERA00004",
+                      "monthlyAve":    "ERA00101",
+                      "3monthlyAve":   "ERA00102",
+                      "6monthlyAve":   "ERA00103",
+                      "12monthlyAve":  "ERA00104",
+                      "monthlyDec":    "ERA00201",# Decile ID
                       "3monthlyDec":   "ERA00202",
                       "6monthlyDec":   "ERA00203",
                       "12monthlyDec":  "ERA00204",
-		      "monthlyTre":    "ERA00301",# Trend ID
+                      "monthlyTre":    "ERA00301",# Trend ID
                       "3monthlyTre":   "ERA00302",
                       "6monthlyTre":   "ERA00303",
                       "12monthlyTre":  "ERA00304"

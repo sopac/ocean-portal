@@ -35,15 +35,15 @@ def wavecaller(opath, var, gridLat, gridLon, inputLat, inputLon, pointValues, mt
 
     elif var == 'Hs':
         title = mthStr + ' ' + 'mean daily significant wave height (1979-2009)'
-    	units = 'm'
-    	xstr = 'significant wave height'
-    	binwd = 0.1
-    	HistPlot(opath, extdata, units, gridLat, gridLon, inputLat, inputLon, xstr, title, var, binwd)
+        units = 'm'
+        xstr = 'significant wave height'
+        binwd = 0.1
+        HistPlot(opath, extdata, units, gridLat, gridLon, inputLat, inputLon, xstr, title, var, binwd)
 
     elif var == 'Tm':
-    	title = mthStr + ' ' + 'mean daily wave period (1979-2009)'
-    	units = 's'
-    	xstr = 'mean wave period'
-    	binwd = 0.1
-    	HistPlot(opath, extdata, units, gridLat, gridLon, inputLat, inputLon, xstr, title, var, binwd)
+        title = mthStr + ' ' + 'mean daily wave period (1979-2009)'
+        units = 's'
+        xstr = 'mean wave period'
+        binwd = 0.1
+        HistPlot(opath, extdata, units, gridLat, gridLon, inputLat, inputLon, xstr, title, var, binwd)
 

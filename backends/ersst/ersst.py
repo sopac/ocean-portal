@@ -45,11 +45,11 @@ def process(form):
         areaStr = form["area"].value
         periodStr = form["period"].value
 
-	args = {"variable": mapStr,
-	        "date": dateStr,
-	        "area": areaStr,
-	        "period": periodStr}
-    
+        args = {"variable": mapStr,
+                "date": dateStr,
+                "area": areaStr,
+                "period": periodStr}
+
         if "average" in form and form["average"].value == "true":
             dateStr = dateStr[4:6] #extract month value
             if form["trend"].value == "true":
@@ -61,7 +61,7 @@ def process(form):
                                           + ersstProduct["monthlyAve"]\
                                           + '_%s_ave_%s.txt"' % (dateStr, areaStr)
                     responseObj["mean"] = str(areaMean.monthlyMean[dateStr][areaStr])
-	        elif periodStr == '3monthly':
+                elif periodStr == '3monthly':
                     responseObj["aveImg"] = CACHE_URL \
                                           + ersstProduct["3monthlyAve"]\
                                           + "_%s_ave_%s_trend.png" % (dateStr, areaStr)
@@ -69,7 +69,7 @@ def process(form):
                                           + ersstProduct["3monthlyAve"]\
                                           + '_%s_ave_%s.txt"' % (dateStr, areaStr)
 #                    responseObj["mean"] = str(areaMean.3monthlyMean[dateStr][areaStr])
-	        elif periodStr == '6monthly':
+                elif periodStr == '6monthly':
                     responseObj["aveImg"] = CACHE_URL \
                                           + ersstProduct["6monthlyAve"]\
                                           + "_%s_ave_%s_trend.png" % (dateStr, areaStr)
@@ -77,7 +77,7 @@ def process(form):
                                           + ersstProduct["6monthlyAve"]\
                                           + '_%s_ave_%s.txt"' % (dateStr, areaStr)
 #                    responseObj["mean"] = str(areaMean.6monthlyMean[dateStr][areaStr])
-	        elif periodStr == '12monthly':
+                elif periodStr == '12monthly':
                     responseObj["aveImg"] = CACHE_URL \
                                           + ersstProduct["12monthlyAve"]\
                                           + "_%s_ave_%s_trend.png" % (dateStr, areaStr)
@@ -161,15 +161,17 @@ def process(form):
             args["baseYear"] =  baseStr
             #TODO simplify this by making the product name a dictionary so as to get rid of the 
             #if statements
-	    if periodStr == 'monthly':
+            if periodStr == 'monthly':
                 fileName = decGraph % (ersstProduct["monthlyDec"], baseStr, areaStr, dateStr[:6])
-	    if periodStr == '3monthly':
-		fileName = decGraph % (ersstProduct["3monthlyDec"], baseStr, areaStr, dateStr[:6])
-	    if periodStr == '6monthly':
-		fileName = decGraph % (ersstProduct["6monthlyDec"], baseStr, areaStr, dateStr[:6])
-	    if periodStr == '12monthly':
-		fileName = decGraph % (ersstProduct["12monthlyDec"], baseStr, areaStr, dateStr[:6])
+            if periodStr == '3monthly':
+                fileName = decGraph % (ersstProduct["3monthlyDec"], baseStr, areaStr, dateStr[:6])
+            if periodStr == '6monthly':
+                fileName = decGraph % (ersstProduct["6monthlyDec"], baseStr, areaStr, dateStr[:6])
+            if periodStr == '12monthly':
+                fileName = decGraph % (ersstProduct["12monthlyDec"], baseStr, areaStr, dateStr[:6])
+
             outputFileName = os.path.join(serverCfg['outputDir'], fileName)
+
             if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
                 try:
                     plotter.plot(fileName, **args)
@@ -178,7 +180,7 @@ def process(form):
                         raise
                     else:
                         pass
-	    if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
+            if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
                 responseObj["error"] = "Requested image is not available at this time."
             else:
                 responseObj.update(util.build_response_object(
@@ -191,13 +193,13 @@ def process(form):
                                               fileName),
                                  COMMON_FILES.values())
 
-	elif mapStr == "trend":
+        elif mapStr == "trend":
             if "baseYear" in form:
                 baseStr = form["baseYear"].value
             else:
                 baseStr = defaultBaseYear
             args["baseYear"] =  baseStr
-	    if periodStr == 'monthly':
+            if periodStr == 'monthly':
                 fileName = trendGraph % (ersstProduct["monthlyTre"], baseStr, areaStr, dateStr[4:6])
             if periodStr == '3monthly':
                 fileName = trendGraph % (ersstProduct["3monthlyTre"], baseStr, areaStr, dateStr[4:6])
@@ -238,7 +240,7 @@ def process(form):
             elif periodStr == '6monthly':
                 fileName = sstGraph % (ersstProduct["6monthly"], mapStr, areaStr, dateStr[:6])
             elif periodStr == '12monthly':
-	 	fileName = sstGraph % (ersstProduct["12monthly"], mapStr, areaStr, dateStr[:6])
+                 fileName = sstGraph % (ersstProduct["12monthly"], mapStr, areaStr, dateStr[:6])
             outputFileName = os.path.join(serverCfg['outputDir'], fileName)
 
             if not util.check_files_exist(outputFileName, COMMON_FILES.values()):

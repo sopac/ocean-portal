@@ -87,7 +87,7 @@ class WaveWatch3Extraction ():
     def writeOutput(self, fileName, latStr, lonStr, timeseries, dataVals, varStr):
         if varStr == 'Dm':
             label = 'Wave Direction (degrees)'
-	    dataVals = dirflip(dataVals)
+            dataVals = dirflip(dataVals)
         if varStr == 'Hs':
             label = 'Significant Wave Height (m)'
         if varStr == 'Tm':
@@ -103,8 +103,8 @@ class WaveWatch3Extraction ():
         output.write(timelabel + '\t')
         output.write(label + '\t')
         output.write('\n')
-	for time, point in zip (timeseries, dataVals):
-        	output.write(str(int(time)) + '\t')
-		output.write(str(round(point,2)) + '\t')
+        for time, point in zip (timeseries, dataVals):
+                output.write(str(int(time)) + '\t')
+                output.write(str(round(point,2)) + '\t')
                 output.write('\n')   
         output.close()

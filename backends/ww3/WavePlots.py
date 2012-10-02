@@ -79,7 +79,7 @@ def RosePlot(opath, wdir, units, lat, lon, ilat, ilon, xstr, title, var, binwd):
     normalizer = 1/float(len(wdir))
     #normalize histogram to calculate probabilities and percentages
     for i in range(0,N):
-	prob[i] = float(whist[0][i])*normalizer
+        prob[i] = float(whist[0][i])*normalizer
         perc[i] = round(100*prob[i],2)
 
     units = '%'

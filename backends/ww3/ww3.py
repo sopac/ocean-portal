@@ -58,7 +58,7 @@ def process(form):
                 "urlat": urlatStr,
                 "urlon": urlonStr,
                 "date": dateStr,
-		"period": periodStr}
+                "period": periodStr}
 
         month = dateStr[4:6]
         k1, k2, mthStr = mc.monthconfig(month)
@@ -94,12 +94,12 @@ def process(form):
             try:
                 wc.wavecaller(outputFileName, varStr, gridLat, gridLon, lllatStr,lllonStr, gridValues, mthStr)
             except le.LandError:
-	        responseObj["error"] = "Invalid data point.  Please try another location."
-	    except:
+                responseObj["error"] = "Invalid data point.  Please try another location."
+            except:
                 if serverCfg['debug']:
                     raise
                 else:
-		    responseObj["error"] = "Error occured during the extraction.  Image could not be generated."	
+                    responseObj["error"] = "Error occured during the extraction.  Image could not be generated."        
                     pass
                  
         if os.path.exists(outputFileName + ".png"):

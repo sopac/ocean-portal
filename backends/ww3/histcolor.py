@@ -44,7 +44,7 @@ def stddev_colors(wheight,wavg,stddev,Nmax):
     print wavgnorm
 
     cdict = {'red':((0.0,  0.0, 0.0),
-		            (sd3low, 0.0, 1.0),
+                    (sd3low, 0.0, 1.0),
                     (sd2low, 1.0, 0.0),
                     (sd1low, 0.0, 0.0),
                     (sd1upp, 0.0, 0.0),
@@ -53,21 +53,21 @@ def stddev_colors(wheight,wavg,stddev,Nmax):
                     (1.0, 0.0, 0.0)),
 
          'green':  ((0.0,  0.0, 0.0),
-		            (sd3low, 0.0, 0.0),
+                    (sd3low, 0.0, 0.0),
                     (sd2low, 0.0, 1.0),
                     (sd1low, 1.0, 0.0),
                     (sd1upp, 0.0, 1.0),
                     (sd2upp, 1.0, 0.0),
-	 	            (sd3upp, 0.0, 0.0),
+                    (sd3upp, 0.0, 0.0),
                     (1.0, 0.0, 0.0)),
 
          'blue':   ((0.0,  0.0, 0.0),
-		            (sd3low, 0.0, 0.0),
+                    (sd3low, 0.0, 0.0),
                     (sd2low, 0.0, 0.0),
                     (sd1low, 0.0, 1.0),
                     (sd1upp, 1.0, 0.0),
                     (sd2upp, 0.0, 0.0),
-		            (sd3upp, 0.0, 0.0),
+                    (sd3upp, 0.0, 0.0),
                     (1.0, 0.0, 0.0))}
 
     my_cmap = m.matplotlib.colors.LinearSegmentedColormap('my_colormap', cdict, 1024)
@@ -172,7 +172,7 @@ def decile_colors(wheight,Nmax):
                     (1.0, 0.0, 0.0)),
 
          'blue':   ((0.0,  0.0, 0.0),
-		            (d1n, 0.0, 0.0),
+                    (d1n, 0.0, 0.0),
                     (d2n, 0.0, 0.0),
                     (d3n, 0.0, 0.0),
                     (d4n, 0.0, 0.0),
@@ -264,7 +264,7 @@ def quartoutlier_colors(wheight,wavg,Nmax,binwd):
     o2n = o2/Nmax-(adjuster)
     #determine the colors over different regions of histogram specified by quartiles
     cdict = {'red':((0.0,  0.0, 1.0),
-		            #(o1n, 0.0, 1.0),
+                    #(o1n, 0.0, 1.0),
                     (q1n, 1.0, 0.0),
                     (q2n, 0.0, 0.0),
                     (q3n, 0.0, 0.0),
@@ -272,7 +272,7 @@ def quartoutlier_colors(wheight,wavg,Nmax,binwd):
                     (1.0, 0.0, 0.0)),
 
          'green':  ((0.0,  0.0, 0.0),
-		            #(o1n, 0.0, 1.0),
+                    #(o1n, 0.0, 1.0),
                     (q1n, 0.0, 0.5),
                     (q2n, 0.5, 0.5),
                     (q3n, 0.5, 0.0),
@@ -280,7 +280,7 @@ def quartoutlier_colors(wheight,wavg,Nmax,binwd):
                     (1.0, 0.0, 0.0)),
 
          'blue':   ((0.0,  0.0, 0.0),
-		            #(o1n, 0.0, 1.0),
+                    #(o1n, 0.0, 1.0),
                     (q1n, 0.0, 0.0),
                     (q2n, 0.0, 0.0),
                     (q3n, 0.0, 1.0),
@@ -322,7 +322,7 @@ def tercile_colors(wheight,wavg,Nmax,binwd):
     o2n = o2/Nmax-(adjuster)
     #determine the colors over different regions of histogram specified by quartiles
     cdict = {'red':((0.0,  0.0, 1.0),
-		            #(o1n, 0.0, 1.0),
+                    #(o1n, 0.0, 1.0),
                     (q1n, 1.0, 0.0),
                     (q2n, 0.0, 0.0),
                     (q3n, 0.0, 0.0),
@@ -330,7 +330,7 @@ def tercile_colors(wheight,wavg,Nmax,binwd):
                     (1.0, 0.0, 0.0)),
 
          'green':  ((0.0,  0.0, 0.0),
-		            #(o1n, 0.0, 1.0),
+                    #(o1n, 0.0, 1.0),
                     (q1n, 0.0, 0.5),
                     (q2n, 0.5, 0.5),
                     (q3n, 0.5, 0.0),
@@ -338,7 +338,7 @@ def tercile_colors(wheight,wavg,Nmax,binwd):
                     (1.0, 0.0, 0.0)),
 
          'blue':   ((0.0,  0.0, 0.0),
-		            #(o1n, 0.0, 1.0),
+                    #(o1n, 0.0, 1.0),
                     (q1n, 0.0, 0.0),
                     (q2n, 0.0, 0.0),
                     (q3n, 0.0, 1.0),
@@ -380,7 +380,7 @@ def tercoutlier_colors(wheight,wavg,Nmax,binwd):
     o2n = o2/Nmax-(adjuster)
     #determine the colors over different regions of histogram specified by quartiles
     cdict = {'red':((0.0,  0.0, 1.0),
-		            #(o1n, 0.0, 1.0),
+                    #(o1n, 0.0, 1.0),
                     (q1n, 1.0, 0.0),
                     (q2n, 0.0, 0.0),
                     (q3n, 0.0, 0.0),
@@ -388,7 +388,7 @@ def tercoutlier_colors(wheight,wavg,Nmax,binwd):
                     (1.0, 0.0, 0.0)),
 
          'green':  ((0.0,  0.0, 0.0),
-		            #(o1n, 0.0, 1.0),
+                    #(o1n, 0.0, 1.0),
                     (q1n, 0.0, 0.5),
                     (q2n, 0.5, 0.5),
                     (q3n, 0.5, 0.0),
@@ -396,7 +396,7 @@ def tercoutlier_colors(wheight,wavg,Nmax,binwd):
                     (1.0, 0.0, 0.0)),
 
          'blue':   ((0.0,  0.0, 0.0),
-		            #(o1n, 0.0, 1.0),
+                    #(o1n, 0.0, 1.0),
                     (q1n, 0.0, 0.0),
                     (q2n, 0.0, 0.0),
                     (q3n, 0.0, 1.0),

@@ -53,8 +53,8 @@ def smooth(data, size):
                 count = np.ma.count_masked(window)
                 if count < size**2:
                     gridpoint = data[i, j]
-		    countgrid = np.ma.count_masked(gridpoint)
-		    if countgrid ==1:
+            countgrid = np.ma.count_masked(gridpoint)
+            if countgrid ==1:
                         dataNew[i,j] = ma.average(window, weights=weights)
-    	return dataNew
+        return dataNew
  

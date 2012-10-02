@@ -56,17 +56,17 @@ class Plotter:
     def contour(self, data, lats, lons, variable, config, outputFile,\
                 title, lllat, lllon, urlat, urlon, res = 'h', proj=_DEFAULT_PROJ,\
                 contourLines = False, centerLabel = False):
-	"""
-	Plot the input data with contours using the specified project and save the plot to the output file.
-	"""
-	#*******************************************
+        """
+        Plot the input data with contours using the specified project and save the plot to the output file.
+        """
+        #*******************************************
         #* Generate image for the thumbnail and download
         #*******************************************
-	m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
+        m = Basemap(projection=proj, llcrnrlat=lllat, llcrnrlon=lllon,\
                     urcrnrlat=urlat, urcrnrlon=urlon, resolution=res)
         x, y = m(*np.meshgrid(lons, lats))
-	if contourLines:
-	    contourPlt = m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4)
+        if contourLines:
+            contourPlt = m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4)
 #            plt.clabel(contourPlt, inline=True, fmt='%3.1f', fontsize=6)
 
         delon = lons[1]-lons[0]; delat = lats[1]-lats[0]
@@ -81,7 +81,7 @@ class Plotter:
         m.pcolormesh(x, y, data, shading='flat', cmap=config.getColorMap(variable))
 
 #        m.contourf(x, y, data, levels=config.getContourLevels(variable), shading='flat', cmap=config.getColorMap(variable))
-	m.drawcoastlines(linewidth=0.1, zorder=6)
+        m.drawcoastlines(linewidth=0.1, zorder=6)
         m.fillcontinents(color='#F1EBB7', zorder=7)
 
         parallels, p_dec_places = get_tick_values(lllat, urlat)
@@ -109,8 +109,8 @@ class Plotter:
         ll,bb,ww,hh = cbar.ax.get_position().bounds
         cbar.ax.set_position([ll, b+0.25*h, ww, h*0.5])
 
-	colorbarLabels = config.getColorbarLabels(variable)
-	if len(colorbarLabels) != 0:
+        colorbarLabels = config.getColorbarLabels(variable)
+        if len(colorbarLabels) != 0:
             cbar.ax.set_yticklabels(colorbarLabels)
 
         for tick in cbar.ax.get_yticklabels():
@@ -164,8 +164,8 @@ class Plotter:
         x, y = m(*np.meshgrid(lons, lats))
 
         #Plot the data
-	if contourLines:
-	    m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4)
+        if contourLines:
+            m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4)
         m.contourf(x, y, data, levels=config.getContourLevels(variable), shading='flat', cmap=config.getColorMap(variable))
         plt.clim(*config.getColorBounds(variable))
 
@@ -192,8 +192,8 @@ class Plotter:
         x, y = m(*np.meshgrid(lons, lats))
 
         #Plot the data
-	if contourLines:
-	    m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4)
+        if contourLines:
+            m.contour(x, y, data, levels=config.getContourLevels(variable), colors='k', linewidths=0.4)
         m.contourf(x, y, data, levels=config.getContourLevels(variable), shading='flat', cmap=config.getColorMap(variable))
         plt.clim(*config.getColorBounds(variable))
 
