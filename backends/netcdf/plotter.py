@@ -29,6 +29,7 @@ import numpy as np
 
 import ocean.util as util
 import ocean.util.regionConfig as rc
+from ocean.util.pngcrush import pngcrush
 
 COMMON_FILES = {
     'img': '.png',
@@ -126,6 +127,8 @@ class Plotter:
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=1., bbox_extra_artists=[copyrightBox])
         plt.close()
 
+        pngcrush(self.serverConfig["outputDir"] + outputFile + '.png')
+
     def plotScale(self, data, variable, config, outputFile):
         # plot another colour bar
         fig = plt.figure(figsize=(0.75,2))
@@ -149,6 +152,8 @@ class Plotter:
                 dpi=120,
                 transparent=True)
         plt.close()
+
+        pngcrush(self.serverConfig['outputDir'] + outputFile + '_scale.png')
 
     def contourBasemapWest(self, data, lats, lons, variable, config, outputFile,\
                            lllat=-90, lllon=180, urlat=90, urlon=360, proj=_DEFAULT_PROJ,\
@@ -177,6 +182,10 @@ class Plotter:
         #Save the figure with no white padding around the map.
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '_west.png', dpi=150, bbox_inches='tight', pad_inches=0)
         plt.close()
+
+        # no point crushing the maps because they are fed to mapserver which
+        # will do its own crushing in map.py
+
         shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_west.pgw')
 
     def contourBasemapEast(self, data, lats, lons, variable, config, outputFile,\
@@ -205,6 +214,10 @@ class Plotter:
         #Save the figure with no white padding around the map.
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '_east.png', dpi=150, bbox_inches='tight', pad_inches=0)
         plt.close()
+
+        # no point crushing the maps because they are fed to mapserver which
+        # will do its own crushing in map.py
+
         shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_east.pgw')
 
     def plot(self, data, lats, lons, variable, config, outputFile, lllat, lllon, urlat, urlon, res = 'h', proj=_DEFAULT_PROJ, centerLabel = False, **args):
@@ -267,6 +280,8 @@ class Plotter:
 
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.3, bbox_extra_artists=[copyrightBox])
         plt.close()
+
+        pngcrush(self.serverConfig["outputDir"] + outputFile + '.png')
 
     def plot_surface_data(self, lats, lons, data, lat_min, lat_max, lon_min, lon_max,
                           output_filename='noname.png', title='', units='',
@@ -363,6 +378,8 @@ class Plotter:
         plt.savefig(output_filename, dpi=150, bbox_inches='tight', pad_inches=0.6)
         plt.close()
 
+        pngcrush(output_filename)
+
     def plotBasemapWest(self, data, lats, lons, variable, config, outputFile,\
                         lllat=-90, lllon=180, urlat=90, urlon=360,
                         proj=_DEFAULT_PROJ, worldfile='west.pgw'):
@@ -387,6 +404,10 @@ class Plotter:
         #Save the figure with no white padding around the map.
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '_west.png', dpi=150, bbox_inches='tight', pad_inches=0)
         plt.close()
+
+        # no point crushing the maps because they are fed to mapserver which
+        # will do its own crushing in map.py
+
         shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_west.pgw')
 
     def plotBasemapEast(self, data, lats, lons, variable, config, outputFile,\
@@ -413,6 +434,10 @@ class Plotter:
         #Save the figure with no white padding around the map.
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '_east.png', dpi=150, bbox_inches='tight', pad_inches=0)
         plt.close()
+
+        # no point crushing the maps because they are fed to mapserver which
+        # will do its own crushing in map.py
+
         shutil.copyfile(worldfile, self.serverConfig["outputDir"] + outputFile + '_east.pgw')
 
     def plotlatx(self, data, dep, lons, variable, config, outputFile, **args):
@@ -452,6 +477,8 @@ class Plotter:
         plt.clabel(contourPlt, inline=True, fmt='%3.1f', fontsize=6)
         plt.savefig(self.serverConfig["outputDir"] + outputFile + '.png', dpi=150, bbox_inches='tight', pad_inches=0.8, bbox_extra_artists=[copyrightBox])
         plt.close()
+
+        pngcrush(self.serverConfig["outputDir"] + outputFile + '.png')
 
 def get_tick_values(x_min, x_max, min_ticks=4):
     """

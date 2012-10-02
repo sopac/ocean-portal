@@ -24,7 +24,9 @@ import landerror as le
 from radbearing import meanbearing
 import angleconv as conv
 from formatter import NESWformat
+
 from ocean.netcdf.plotter import getCopyright
+from ocean.util.pngcrush import pngcrush
 
 def RosePlot(opath, wdir, units, lat, lon, ilat, ilon, xstr, title, var, binwd):
 
@@ -130,6 +132,9 @@ def RosePlot(opath, wdir, units, lat, lon, ilat, ilon, xstr, title, var, binwd):
     imgname = opath + '.png'
      #write image file
     plt.savefig(imgname)
+    plt.close()
+
+    pngcrush(imgname)
 
     return
 
@@ -255,5 +260,8 @@ def HistPlot(opath, wheight, units, lat, lon, ilat, ilon, xstr, title, var, binw
     imgname = opath + '.png'
      #write image file
     plt.savefig(imgname)
+    plt.close()
+
+    pngcrush(imgname)
 
     return

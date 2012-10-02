@@ -18,6 +18,7 @@ import hashlib
 import shutil
 
 import ocean.util as util
+from ocean.util.pngcrush import pngcrush
 
 config = util.get_server_config()
 
@@ -62,7 +63,6 @@ def main():
     etag = '"%s"' % hash
 
     filename = os.path.join(config['outputDir'], 'maptiles', '%s.png' % hash)
-    tmp_filename = '%s.tmp' % filename
 
     # determine whether or not we need to call into mapserver
     try:
@@ -96,15 +96,11 @@ def main():
 
             tmpfile.readline()
 
-            with open(tmp_filename, 'wb') as cachefile:
+            with open(filename, 'wb') as cachefile:
                 # copy it to the output file
                 shutil.copyfileobj(tmpfile, cachefile)
 
-        # pngcrush the cached tile
-        with open(os.devnull, 'wb') as devnull:
-            subprocess.check_call([ 'pngcrush', tmp_filename, filename ],
-                                  stdout=devnull, stderr=devnull)
-        os.remove(tmp_filename)
+        pngcrush(filename)
 
     else:
         try:
