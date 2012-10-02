@@ -27,6 +27,7 @@ Bugs Fixed:
  - Fix date handling bugs in 31 day months (Danni)
  - handling the months August and September correctly (Danni)
  - general bug fixes (Danni, Nick, Jason)
+ - Fix direction of wave roses (Jason)
 
 Ocean Map Portal 0.1.0
 ======================
