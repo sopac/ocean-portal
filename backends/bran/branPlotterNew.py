@@ -9,6 +9,7 @@
 
 import netCDF4
 import math
+import bisect
 import numpy as np
 import pdb
 from mpl_toolkits.basemap import Basemap
@@ -200,17 +201,16 @@ def draw_vector_plot(m, x, y, u, v, draw_every=1, arrow_scale=10, quiverkey_valu
                  labelpos='N', labelsep=0.01, fontproperties={'size':'xx-small', 'weight':'1000'})
 
 def get_subset_idxs(x, x_min, x_max):
-    valid_idxs = [i for i,x_i in enumerate(x) if (x_i >= x_min) and (x_i <= x_max)]
-    if len(valid_idxs) > 0:
-        start_idx = valid_idxs[0]
-        end_idx = valid_idxs[-1]
-    elif x_min == x_max:
+
+    if x_min == x_max:
         closest_idx = np.abs(np.array(x) - x_min).argmin()
-        start_idx = closest_idx
-        end_idx = closest_idx
-    else:
-        start_idx = None
-        end_idx = None
+        return closest_idx, closest_idx
+
+    # assuming that x is sorted, find indexes to the left of x_min and the
+    # right of x_max
+    start_idx = bisect.bisect_left(x, x_min)
+    end_idx = bisect.bisect_right(x, x_max)
+
     return start_idx, end_idx
 
 def get_grid_edges(x):
