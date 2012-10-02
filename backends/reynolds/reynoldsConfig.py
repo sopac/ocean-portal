@@ -6,8 +6,6 @@
 #
 # Authors: Sheng Guo <s.guo@bom.gov.au>
 
-import matplotlib.pyplot as plt
-
 
 class ReynoldsConfig ():
     """ Reynolds configuration
@@ -18,23 +16,23 @@ class ReynoldsConfig ():
     subDirs = None
 
     def __init__(self):
-        self.variableConfig = {"mean": ("Average Reynolds Sea Surface Temperature: ",
-                                        {"colorbounds": [-2, 34],
-                                         "colormap": plt.cm.jet,
+        self.variableConfig = {"mean": ("Average Sea Surface Temperature: ",
+                                        {"colorbounds": [0, 32],
+                                         "colormap": 'jet',
                                          "unit": ur'\u00b0' + 'C',
                                          "format": '%d'
                                        },
                                        "sst"),
-                               "anom": ("Average Reynolds Sea Surface Temperature Anomaly: ",
+                               "anom": ("Average Sea Surface Temperature Anomaly: ",
                                         {"colorbounds": [-2, 2],
-                                         "colormap": plt.cm.RdBu_r,
+                                         "colormap": 'RdBu_r',
                                          "unit": ur'\u00b0' + 'C',
                                          "format": '%5.1f'
                                        },
                                        "anom"),
-                               "dec": ("Average Reynolds Sea Surface Temperature Deciles: ",
+                               "dec": ("Average Sea Surface Temperature Deciles: ",
                                        {"colorbounds": [0, 11],
-                                        "colormap": plt.cm.RdBu_r,
+                                        "colormap": 'RdBu_r',
                                         "unit": '',
                                         "format": '%d',
                                         "labels": ['Lowest on \nrecord', 'Very much \nbelow \naverage \n[1]', 'Below \naverage \n[2-3]',

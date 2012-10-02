@@ -77,36 +77,79 @@ class ReynoldsPlotter ():
                 filename = self.serverCfg["dataDir"]["reynolds"] + period + "/avhrr-only-v2." + date[:4] + "ave"
             else:
                 return -1
-        
+
+        cb_labels = None
+        cb_label_pos = None
+
+        if variable == 'mean':
+            extend = 'both'
+            cb_tick_fmt="%.0f"
+            if regionConfig.regions.has_key(area):
+                if regionConfig.regions[area][0] == 'pi':
+                    cb_ticks = np.arange(20.0,32.1,1.0)
+                else:
+                    cb_ticks = np.arange(0.0,32.1,2.0)
+            else:
+                cb_ticks = np.arange(0.0,32.1,2.0)
+
+        if variable == 'anom':
+            extend = 'both'
+            cb_tick_fmt="%.1f"
+            cb_ticks = np.arange(-2.0,2.01,0.5)
+
+        if variable == 'dec':
+            extend = 'neither'
+            cb_tick_fmt="%.1f"
+            cb_ticks = np.arange(0.5,5.51,1)
+            #cb_labels=['Lowest on \nrecord','Very much \nbelow average \n[1]','Below average \n[2-3]','Average \n[4-7]','Above average \n[8-9]','Very much \nabove average \n[10]','Highest on \nrecord']
+            cb_labels=['Very much \nbelow average \n[1]','Below average \n[2-3]','Average \n[4-7]','Above average \n[8-9]','Very much \nabove average \n[10]']
+            cb_label_pos=[1.0,2.0,3.0,4.0,5.0]
+
         args['formattedDate'] = formattedDate
         filename = filename + ".nc" 
         dataset = Dataset(filename, 'r')
         sst = dataset.variables[self.config.getVariableType(variable)][0][0]
         lats = dataset.variables['lat'][:]
         lons = dataset.variables['lon'][:]
-        
-        delon = lons[1]-lons[0]; delat = lats[1]-lats[0]
-        lons = (lons - 0.5*delon).tolist()
-        lons.append(lons[-1]+delon)
-        lons = np.array(lons,np.float64) #TODO check necessariness 
-        lats = (lats - 0.5*delat).tolist()
-        lats.append(lats[-1]+delat)
-        lats = np.array(lats,np.float64)
-         
+
         resolution='h'
         if not area=='pac':
            resolution='f'
 
+        output_filename = self.serverCfg["outputDir"] + outputFilename + '.png'
+
+        regionLongName = regionConfig.regions[area][2]
+        title = regionLongName + '\n'
+
+        if hasattr(self.config, 'getPeriodPrefix') and 'period' in args:
+            title += self.config.getPeriodPrefix(args['period'])
+            title += self.config.getTitle(variable) + args['formattedDate']
+
+        cmap_name = self.config.getColorMap(variable)
+        units = self.config.getUnit(variable)
+
         plot = plotter.Plotter()
-        plot.plot(sst, lats, lons, variable, self.config, outputFilename,\
-                  regionConfig.regions[area][1]["llcrnrlat"],\
-                  regionConfig.regions[area][1]["llcrnrlon"],\
-                  regionConfig.regions[area][1]["urcrnrlat"],\
-                  regionConfig.regions[area][1]["urcrnrlon"],\
-                  res=resolution, centerLabel = cntLabel, **args)
         plot.plotBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
         plot.plotBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
         plot.plotScale(sst, variable, self.config, outputFilename)
+
+        if variable == 'dec':
+            # Temporary patch until decile calculation code is fixed
+            sst = np.where((sst < 1.5), 1, sst)
+            sst = np.where((sst >= 1.5) & (sst < 3.5), 2, sst)
+            sst = np.where((sst >= 3.5) & (sst < 7.5), 3, sst)
+            sst = np.where((sst >= 7.5) & (sst < 9.5), 4, sst)
+            sst = np.where((sst >= 9.5), 5, sst)
+        plot.plot_surface_data(lats, lons, sst,
+                               regionConfig.regions[area][1]["llcrnrlat"],
+                               regionConfig.regions[area][1]["urcrnrlat"],
+                               regionConfig.regions[area][1]["llcrnrlon"],
+                               regionConfig.regions[area][1]["urcrnrlon"],
+                               output_filename, title=title, units=units,
+                               cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt,
+                               cb_labels=cb_labels, cb_label_pos=cb_label_pos,
+                               cmp_name=cmap_name, extend=extend,
+                               contourLines=False, product_label_str='Reynolds SST')
 
         dataset.close()
 

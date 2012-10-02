@@ -66,16 +66,16 @@ def process(form):
             if ("lat" in form) and ("lon" in form) and (varName == 'temp' or varName == 'salt'):
                 # Plot subsurface data
                 if varName == 'temp':
-                    unitStr = 'Degrees Celsius'
-                    varLongName = 'Surface and Subsurface Temperature Profile\n'
+                    unitStr = ur'\u00b0' + 'C'
+                    varLongName = 'Surface and Subsurface Temperature Profile'
                     cb_ticks = np.arange(16.0, 30.1, 1.0)
                 elif varName == 'salt':
                     unitStr = 'PSU'
-                    varLongName = 'Surface and Subsurface Salinity Profile\n'
+                    varLongName = 'Surface and Subsurface Salinity Profile'
                     cb_ticks = np.arange(33, 37.1, 0.5)
 
                 title_date_str = datetime.date(year, month, 1).strftime('%B %Y')
-                titleStr = title_date_str + ': \n' + varLongName
+                titleStr = varLongName + ': \n' + title_date_str + '\n'
                 
                 input_data_file = os.path.join(server_config['dataDir']['bran'], 'monthly', varName, varName + '_' + yearStr + '_' + monthStr + '.nc4')
                 lats1, lons1, zlevels1, zonal_data = branPlotterNew.load_BRAN_data(input_data_file, varName, lat_cnt, lat_cnt, lon_cnt - 5.0, lon_cnt + 5.0, depth_min=0.0, depth_max=300.0)
@@ -84,7 +84,7 @@ def process(form):
                 # Load surface data
                 input_data_file = os.path.join(server_config['dataDir']['bran'], 'monthly', varName, varName + '_' + yearStr + '_' + monthStr + '.nc4')
                 lats, lons, zlevels, data = branPlotterNew.load_BRAN_data(input_data_file, varName, -999.0, 999.0, -999.0, 999.0)
-                  
+
                 branPlotterNew.plot_BRAN_depth_slice(zlevels1, lats2, lons1, zonal_data, meridional_data, lats, lons, data,
                                                      lat_cnt, lon_cnt, output_filename=plot_filename_fullpath + '.png',
                                                      units=unitStr, title=titleStr, cb_ticks=cb_ticks, product_label_str='Bluelink Reanalysis 2.1')
@@ -93,6 +93,8 @@ def process(form):
                 # Plot surface data
                 if varName in ['temp', 'salt', 'eta', 'uvtemp', 'uveta']:
                     # Display error if chosen region is too large for displaying currents
+                    draw_every = None
+                    arrow_scale = None
                     if varName in ['uvtemp', 'uveta']:
                         lat_min = regionConfig.regions[regionStr][1]['llcrnrlat']
                         lat_max = regionConfig.regions[regionStr][1]['urcrnrlat']
@@ -104,7 +106,8 @@ def process(form):
                             return responseObj
                     draw_monthly_mean_surface_plot(varName, yearStr, monthStr, regionStr, bgImage_filename, 
                                                    plot_filename_fullpath=plot_filename_fullpath, 
-                                                   draw_background_images=False, plot_data=True)
+                                                   draw_background_images=False, plot_data=True,
+                                                   draw_every=draw_every, arrow_scale=arrow_scale)
 
         if not (util.check_files_exist(bgImage_filename_fullpath, [COMMON_FILES[k] for k in ['mapeast', 'mapeastw', 'mapwest', 'mapwestw', 'scale']]) and \
             os.path.exists(plot_filename_fullpath + COMMON_FILES['img'])):
@@ -129,11 +132,13 @@ def process(form):
 
 
 
-def draw_monthly_mean_surface_plot(varName, yearStr, monthStr, regionStr, bgImage_filename, plot_filename_fullpath=None, draw_background_images=False, plot_data=True):
+def draw_monthly_mean_surface_plot(varName, yearStr, monthStr, regionStr, bgImage_filename,
+                                   plot_filename_fullpath=None, draw_background_images=False,
+                                   plot_data=True, draw_every=1, arrow_scale=10):
     
     if varName == 'temp':
         dataVar = 'temp'
-        unitStr = 'Degrees Celsius'
+        unitStr = ur'\u00b0' + 'C'
         if regionConfig.regions.has_key(regionStr):
             if regionConfig.regions[regionStr][0] == 'pi':
                 cb_ticks = np.arange(20.0,32.1,1.0)
@@ -141,12 +146,12 @@ def draw_monthly_mean_surface_plot(varName, yearStr, monthStr, regionStr, bgImag
                 cb_ticks = np.arange(0.0,32.1,2.0)
         else:
                 cb_ticks = np.arange(0.0,32.1,2.0)
-        varLongName = 'Surface Temperature'
+        varLongName = 'Sea Surface Temperature'
         cb_tick_fmt="%.0f"
         currents = False
     elif varName == 'uvtemp':
         dataVar = 'temp'
-        unitStr = 'Degrees Celsius'
+        unitStr = ur'\u00b0' + 'C'
         if regionConfig.regions.has_key(regionStr):
             if regionConfig.regions[regionStr][0] == 'pi':
                 cb_ticks = np.arange(20.0,32.1,1.0)
@@ -154,7 +159,7 @@ def draw_monthly_mean_surface_plot(varName, yearStr, monthStr, regionStr, bgImag
                 cb_ticks = np.arange(0.0,32.1,2.0)
         else:
             cb_ticks = np.arange(0.0,32.1,2.0)
-        varLongName = 'Surface Temperature and Currents'
+        varLongName = 'Sea Surface Temperature and Currents'
         cb_tick_fmt="%.0f"
         currents = True
     elif varName == 'salt':
@@ -201,7 +206,7 @@ def draw_monthly_mean_surface_plot(varName, yearStr, monthStr, regionStr, bgImag
         # Construct title
         title_date_str = datetime.date(int(yearStr), int(monthStr), 1).strftime('%B %Y')
         regionLongName = regionConfig.regions[regionStr][2]
-        title = regionLongName + '\n' + title_date_str + ': ' + varLongName
+        title = regionLongName + '\n' + varLongName + ': ' + title_date_str
         
         # Load current data if required
         if currents == True:
@@ -209,15 +214,16 @@ def draw_monthly_mean_surface_plot(varName, yearStr, monthStr, regionStr, bgImag
             lats2, lons2, zlevels, u = branPlotterNew.load_BRAN_data(input_data_file, 'u', lat_min - 1.0, lat_max + 1.0, lon_min - 1.0, lon_max + 1.0)
             input_data_file = os.path.join(server_config['dataDir']['bran'], 'monthly', 'v', 'v' + '_' + yearStr + '_' + monthStr + '.nc4')
             lats2, lons2, zlevels, v = branPlotterNew.load_BRAN_data(input_data_file, 'v', lat_min - 1.0, lat_max + 1.0, lon_min - 1.0, lon_max + 1.0)
-            contourLines=False
+            contourLines = False
         else:
             lats2 = None; lons2 = None
             u = None; v = None
-            contourLines = False #True
+            contourLines = False#True
         
         # Plot surface data
-        branPlotterNew.plot_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
-                                         output_filename=plot_filename_fullpath + '.png', title=title, units=unitStr,
-                                         cb_ticks=cb_ticks, cb_tick_fmt=cb_tick_fmt, cmp_name='jet', proj='cyl',
-                                         contourLines=contourLines, product_label_str='Bluelink Reanalysis 2.1',
-                                         vlat=lats2, vlon=lons2, u=u, v=v)
+        plot = plotter.Plotter()
+        plot.plot_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
+                               output_filename=plot_filename_fullpath + '.png', title=title, units=unitStr,
+                               cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt, cmp_name='jet', proj='cyl',
+                               contourLines=contourLines, product_label_str='Bluelink Reanalysis 2.1',
+                               vlat=lats2, vlon=lons2, u=u, v=v, draw_every=draw_every, arrow_scale=arrow_scale)
