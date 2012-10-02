@@ -51,25 +51,31 @@ class ErsstPlotter ():
  
         centerLabel = False
 
+        regionLongName = regionConfig.regions[area][2]
+        regionLongName + '\n'
+        
         if variable == 'mean' or variable == 'anom':
             if period=='monthly':
                 filename = self.serverCfg["dataDir"]["ersst"] + period + "/" + "ersst." + date[:6]
-                title = self.config.getPeriodPrefix(period)\
-                      + self.config.getTitle(variable)\
+                title = regionLongName + '\n' \
+                      + self.config.getPeriodPrefix(period) \
+                      + self.config.getTitle(variable) \
                       + util.format_old_date(inputDate)
             elif period=='3monthly' or period == '6monthly': 
                 if period=='3monthly':
                     filename = self.serverCfg["dataDir"]["ersst"] + "seasonalclim/ersst_v3b_" + date[:6] + "_3mthavg"
                 elif period=='6monthly':
                     filename = self.serverCfg["dataDir"]["ersst"] + "seasonalclim/ersst_v3b_" + date[:6] + "_6mthavg"
-                title = self.config.getPeriodPrefix(period)\
+                title = regionLongName + '\n' \
+                      + self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + util.format_old_date(dateRange.getMonths(date, period[:1])[0]) \
                       + " to "\
                       + util.format_old_date(inputDate)
             elif period == '12monthly': 
                 filename = self.serverCfg["dataDir"]["ersst"] + "seasonalclim/ersst_v3b_" + date[:6] + "_12mthavg"
-                title = self.config.getPeriodPrefix(period)\
+                title = regionLongName + '\n' \
+                      + self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + util.format_old_date(dateRange.getMonths(date, period[:2])[0])\
                       + " to "\
@@ -79,19 +85,22 @@ class ErsstPlotter ():
             baseYear = args["baseYear"]
             if period=='monthly':
                 filename = self.serverCfg["dataDir"]["ersst"] + "decile/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
-                title = self.config.getPeriodPrefix(period)\
+                title = regionLongName + '\n' \
+                      + self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + util.format_old_date(inputDate)
             elif period=='3monthly' or period == '6monthly': 
                 filename = self.serverCfg["dataDir"]["ersst"] + "decile/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
-                title = self.config.getPeriodPrefix(period)\
+                title = regionLongName + '\n' \
+                      + self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + util.format_old_date(dateRange.getMonths(date, period[:1])[0]) \
                       + " to "\
                       + util.format_old_date(inputDate)
             elif period == '12monthly': 
                 filename = self.serverCfg["dataDir"]["ersst"] + "decile/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
-                title = self.config.getPeriodPrefix(period)\
+                title = regionLongName + '\n' \
+                      + self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + util.format_old_date(dateRange.getMonths(date, period[:2])[0]) \
                       + " to "\
@@ -103,7 +112,8 @@ class ErsstPlotter ():
                 filename = self.serverCfg["dataDir"]["ersst"] + "trend/" + period\
                          + "/" + baseYear + "/"  + "ersst." + period\
                          + "_[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9]lin" + date[4:6]
-                title = self.config.getPeriodPrefix(period)\
+                title = regionLongName + '\n' \
+                      + self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + inputDate.strftime('%B')\
                       + " (" + baseYear + " - " + inputDate.strftime('%Y') + ")"
@@ -111,7 +121,8 @@ class ErsstPlotter ():
                 filename = self.serverCfg["dataDir"]["ersst"] + "trend/" + period\
                          + "/" + baseYear + "/"  + "ersst." + period\
                          + "_[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9]lin" + date[4:6]
-                title = self.config.getPeriodPrefix(period)\
+                title = regionLongName + '\n' \
+                      + self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + dateRange.getMonths(date, period[:1])[0].strftime('%B')\
                       + " to "\
@@ -121,7 +132,8 @@ class ErsstPlotter ():
                 filename = self.serverCfg["dataDir"]["ersst"] + "trend/" + period\
                          + "/" + baseYear + "/"  + "ersst." + period\
                          + "_[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9]lin" + date[4:6]
-                title = self.config.getPeriodPrefix(period)\
+                title = regionLongName + '\n' \
+                      + self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + dateRange.getMonths(date, period[:2])[0].strftime('%B')\
                       + " to "\
@@ -130,6 +142,34 @@ class ErsstPlotter ():
         else:
             return -1
 
+        cb_labels = None
+        cb_label_pos = None
+        extend = 'both'
+
+        if variable == 'mean':
+            extend = 'both'
+            cb_tick_fmt="%.0f"
+            if regionConfig.regions.has_key(area):
+                if regionConfig.regions[area][0] == 'pi':
+                    cb_ticks = np.arange(20.0,32.1,1.0)
+                else:
+                    cb_ticks = np.arange(0.0,32.1,2.0)
+            else:
+                cb_ticks = np.arange(0.0,32.1,2.0)
+
+        if variable == 'anom':
+            extend = 'both'
+            cb_tick_fmt="%.1f"
+            cb_ticks = np.arange(-2.0,2.01,0.5)
+
+        if variable == 'dec':
+            extend = 'neither'
+            cb_tick_fmt="%.1f"
+            cb_ticks = np.arange(0.5,5.51,1)
+            #cb_labels=['Lowest on \nrecord','Very much \nbelow average \n[1]','Below average \n[2-3]','Average \n[4-7]','Above average \n[8-9]','Very much \nabove average \n[10]','Highest on \nrecord']
+            cb_labels=['Very much \nbelow average \n[1]','Below average \n[2-3]','Average \n[4-7]','Above average \n[8-9]','Very much \nabove average \n[10]']
+            cb_label_pos=[1.0,2.0,3.0,4.0,5.0]            
+            
         filename = filename + ".nc" 
         filename = glob.glob(filename)[0]
         dataset = Dataset(filename, 'r')
@@ -150,15 +190,28 @@ class ErsstPlotter ():
            resolution='f'
 
         plot = plotter.Plotter()
-        plot.contour(sst, lats, lons, variable, self.config, outputFilename, title,\
-                  regionConfig.regions[area][1]["llcrnrlat"],\
-                  regionConfig.regions[area][1]["llcrnrlon"],\
-                  regionConfig.regions[area][1]["urcrnrlat"],\
-                  regionConfig.regions[area][1]["urcrnrlon"],\
-                  res=resolution, proj="cyl",\
-                  contourLines=contourLines, centerLabel=centerLabel)
-        plot.contourBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
-        plot.contourBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
+        output_filename = self.serverCfg["outputDir"] + outputFilename + '.png'
+        units = self.config.getUnit(variable)
+        cmap_name = self.config.getColorMap(variable)
+        if variable == 'dec':
+            # Temporary patch until decile calculation code is fixed
+            sst = np.where((sst < 1.5), 1, sst)
+            sst = np.where((sst >= 1.5) & (sst < 3.5), 2, sst)
+            sst = np.where((sst >= 3.5) & (sst < 7.5), 3, sst)
+            sst = np.where((sst >= 7.5) & (sst < 9.5), 4, sst)
+            sst = np.where((sst >= 9.5), 5, sst)        
+        plot.plot_surface_data(lats, lons, sst,
+                               regionConfig.regions[area][1]["llcrnrlat"],
+                               regionConfig.regions[area][1]["urcrnrlat"],
+                               regionConfig.regions[area][1]["llcrnrlon"],
+                               regionConfig.regions[area][1]["urcrnrlon"],
+                               output_filename, title=title, units=units,
+                               product_label_str='Extended Reconstructed SST',
+                               cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt,
+                               cb_labels=cb_labels, cb_label_pos=cb_label_pos,
+                               cmp_name=cmap_name, extend=extend)
+        plot.plotBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
+        plot.plotBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
         plot.plotScale(sst, variable, self.config, outputFilename)
 
         dataset.close()

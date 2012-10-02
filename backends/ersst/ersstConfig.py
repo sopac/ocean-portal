@@ -7,7 +7,6 @@
 # Authors: Sheng Guo <s.guo@bom.gov.au>
 #          Matthew Howie
 
-import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -20,36 +19,36 @@ class ErsstConfig ():
     periodPrefix = None
 
     def __init__(self):
-        self.variableConfig = {"mean": ("ER Sea Surface Temperature: ",
+        self.variableConfig = {"mean": ("Sea Surface Temperature: ",
                                         {"colorbounds": [-2, 34],
-                                         "colormap": plt.cm.jet,
+                                         "colormap": 'jet',
                                          "contourlevels": np.arange(-2,36,2),
                                          "unit": ur'\u00b0' + 'C',
                                          "format": '%d'
                                        },
                                        "sst"),
-                               "anom": ("ER Sea Surface Temperature Anomaly: ",
+                               "anom": ("Sea Surface Temperature Anomaly: ",
                                         {"colorbounds": [-3, 3],
-                                         "colormap": plt.cm.RdBu_r,
+                                         "colormap": 'RdBu_r',
                                          "contourlevels": np.arange(-3, 3.5,0.5),
                                          "unit": ur'\u00b0' + 'C',
                                          "format": '%5.1f'
                                        },
                                        "anom"),
-                               "dec": ("ER Sea Surface Temperature Decile: ",
+                               "dec": ("Sea Surface Temperature Decile: ",
                                         {"colorbounds": [0,11],
-                                         "colormap": plt.cm.RdBu_r,
+                                         "colormap": 'RdBu_r',
                                          "contourlevels": [-1,0,1,3,7,9,10,11],
                                          "colorbarlabels": ['Lowest on \nrecord','Very much \nbelow \naverage \n[1]',
                                          'Below \naverage \n[2-3]','Average \n[4-7]','Above \naverage \n[8-9]',
                                          'Very much \nabove \naverage \n[10]','Highest on \nrecord'],
-                                         "unit": ur'\u00b0' + 'C',
+                                         "unit": '',
                                          "format": '%5.1f'
                                        },
                                        "decile"),
-                               "trend": ("ER Sea Surface Temperature Trend: ",
+                               "trend": ("Sea Surface Temperature Trend: ",
                                         {"colorbounds": [-0.28,0.28],
-                                         "colormap": plt.cm.RdBu_r,
+                                         "colormap": 'RdBu_r',
                                          "contourlevels": np.arange(-0.28,0.32,0.04),
                                          "unit": ur'\u00b0' + 'C/Decade',
                                          "format": '%5.2f'
