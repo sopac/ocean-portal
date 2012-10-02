@@ -64,12 +64,12 @@ class SeaLevelPlotter ():
         lons = dataset.variables['lon'][:]
 
         delon = lons[1]-lons[0]; delat = lats[1]-lats[0]
-        lons = (lons - 0.5*delon).tolist()
-        lons.append(lons[-1]+delon)
-        lons = np.array(lons,np.float64)
-        lats = (lats - 0.5*delat).tolist()
-        lats.append(lats[-1]+delat)
-        lats = np.array(lats,np.float64)
+        lons2 = (lons - 0.5*delon).tolist()
+        lons2.append(lons2[-1]+delon)
+        lons2 = np.array(lons2,np.float64)
+        lats2 = (lats - 0.5*delat).tolist()
+        lats2.append(lats2[-1]+delat)
+        lats2 = np.array(lats2,np.float64)
 
         date = args['date']
         date = datetime.date(int(date[:4]),
@@ -82,16 +82,28 @@ class SeaLevelPlotter ():
            resolution='f'
 
         plot = plotter.Plotter()
-        plot.plot(height, lats, lons, variable, self.config, outputFilename,\
-                  regionConfig.regions[area][1]["llcrnrlat"],\
-                  regionConfig.regions[area][1]["llcrnrlon"],\
-                  regionConfig.regions[area][1]["urcrnrlat"],\
-                  regionConfig.regions[area][1]["urcrnrlon"],\
-                  res=resolution, centerLabel=cntLabel, **args)
-        plot.plotBasemapEast(height, lats, lons, variable, self.config,
+        #plot.plot(height, lats, lons, variable, self.config, outputFilename,\
+        #          regionConfig.regions[area][1]["llcrnrlat"],\
+        #          regionConfig.regions[area][1]["llcrnrlon"],\
+        #          regionConfig.regions[area][1]["urcrnrlat"],\
+        #          regionConfig.regions[area][1]["urcrnrlon"],\
+        #          res=resolution, centerLabel=cntLabel, **args)
+        output_filename = self.serverCfg["outputDir"] + outputFilename + '.png'
+        title = self.config.getTitle(variable) + args['formattedDate']
+        units = self.config.getUnit(variable)
+        cmap_name = self.config.getColorMap(variable)
+        plot.plot_surface_data(lats, lons, height,
+                               regionConfig.regions[area][1]["llcrnrlat"],
+                               regionConfig.regions[area][1]["urcrnrlat"],
+                               regionConfig.regions[area][1]["llcrnrlon"],
+                               regionConfig.regions[area][1]["urcrnrlon"],
+                               output_filename, title=title, units=units,
+                               cmp_name=cmap_name, cm_edge_values=np.arange(-300,300.01,60.0),
+                               cb_tick_fmt="%.0f")
+        plot.plotBasemapEast(height, lats2, lons2, variable, self.config,
                              outputFilename, lllat=-65, lllon=60, urlat=15,
                              worldfile='subeast.pgw')
-        plot.plotBasemapWest(height, lats, lons, variable, self.config,
+        plot.plotBasemapWest(height, lats2, lons2, variable, self.config,
                              outputFilename, lllat=-65, urlat=15, urlon=210, 
                              worldfile='subwest.pgw')
         plot.plotScale(height, variable, self.config, outputFilename)

@@ -16,14 +16,14 @@ class SealevelConfig ():
     def __init__(self):
         self.variableConfig = {"alt": ("Sea level Altimetry: ",
                                       {"colorbounds": [-300, 300],
-                                       "colormap": plt.cm.RdYlBu_r,
+                                       "colormap": 'RdBu_r',
                                        "unit": 'mm',
                                        "format": '%d'
                                       },
                                        "height"),
                                "rec": ("Sea level Reconstruction: ",
                                       {"colorbounds": [-300, 300],
-                                       "colormap": plt.cm.RdYlBu_r,
+                                       "colormap": 'RdBu_r',
                                        "unit": 'mm',
                                        "format": '%d'
                                       },
