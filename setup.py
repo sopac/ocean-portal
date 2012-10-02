@@ -32,6 +32,7 @@ src = [
 scripts = [
     'replicate-portal-data',
     'cleanup-raster-cache',
+    'update-data',
 ]
 
 backends = [

@@ -1,0 +1,43 @@
+#!/usr/bin/env sh
+
+DATASET=$1
+
+case $DATASET in
+    ersst)
+        SERVER=ftp.ncdc.noaa.gov
+        SERVER_PATH=/pub/data/cmb/ersst/v3b/netcdf/
+        DATA_SUBDIR=monthly
+        ;;
+
+    reynolds)
+        SERVER=eclipse.ncdc.noaa.gov
+        SERVER_PATH=/pub/oisst/NetCDF/
+        DATA_SUBDIR=daily-new
+        ;;
+
+    *)
+        echo "Unknown dataset $DATASET" >&2
+        exit 1
+        ;;
+esac
+
+DATA_DIR=`python << EOF
+import ocean.util
+
+config = ocean.util.get_server_config()
+print config['dataDir']["$DATASET"]
+EOF`
+
+if [ "x$DATA_DIR" = "x" ]; then
+    echo "DATA_DIR empty, very bad! Is PYTHONPATH set?" >&2
+    exit 1
+fi
+
+cd $DATA_DIR/$DATA_SUBDIR || exit 1
+
+lftp $SERVER << EOF
+cd $SERVER_PATH || exit 1
+mirror -ve
+EOF
+
+# FIXME: how do I run deciles etc
