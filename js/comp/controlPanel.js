@@ -11,7 +11,6 @@ ocean.controls = ['selectionDiv', 'toggleDiv', 'sliderDiv',
                   'tidalGaugeDiv', 'clearlatlonButton' ];
 ocean.compare = { limit: 24 };
 ocean.processing = false;
-ocean.MIN_YEAR = 1949;
 ocean.dateFormat = 'yyyymmdd';
 ocean.date = new Date();
 
@@ -1074,9 +1073,7 @@ Ext.onReady(function() {
         }
     });
 
-    var currentYear = new Date().getFullYear();
-    var minYear = ocean.MIN_YEAR;
-    var yearRange = range(minYear, currentYear);
+    var yearRange = range(1800, new Date().getFullYear());
     ocean.yearCombo = Ext.create('Ext.form.field.ComboBox', {
         id: 'yearCombo',
         fieldLabel: 'Year',
