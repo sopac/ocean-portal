@@ -51,15 +51,15 @@ def load_BRAN_data(input_data_file, var_name, lat_min, lat_max, lon_min, lon_max
     lat_idx1, lat_idx2 = get_subset_idxs(lats, lat_min, lat_max)
     lon_idx1, lon_idx2 = get_subset_idxs(lons, lon_min, lon_max)
     zlevel_idx1, zlevel_idx2 = get_subset_idxs(depth, abs(depth_min), abs(depth_max))
-    lons = lons[lon_idx1:lon_idx2 + 1]
-    lats = lats[lat_idx1:lat_idx2 + 1]
-    zlevels = depth[zlevel_idx1:zlevel_idx2 + 1]
+    lons = lons[lon_idx1:lon_idx2]
+    lats = lats[lat_idx1:lat_idx2]
+    zlevels = depth[zlevel_idx1:zlevel_idx2]
     
     # Load data
     if len(dimensions) == 4:
-        data = nc.variables[var_name][0, zlevel_idx1:zlevel_idx2+1, lat_idx1:lat_idx2+1, lon_idx1:lon_idx2+1]
+        data = nc.variables[var_name][0, zlevel_idx1:zlevel_idx2, lat_idx1:lat_idx2, lon_idx1:lon_idx2]
     else:
-        data = nc.variables[var_name][0, lat_idx1:lat_idx2+1, lon_idx1:lon_idx2+1]
+        data = nc.variables[var_name][0, lat_idx1:lat_idx2, lon_idx1:lon_idx2]
     
     # Close file
     nc.close()
@@ -204,7 +204,7 @@ def get_subset_idxs(x, x_min, x_max):
 
     if x_min == x_max:
         closest_idx = np.abs(np.array(x) - x_min).argmin()
-        return closest_idx, closest_idx
+        return closest_idx, closest_idx + 1
 
     # assuming that x is sorted, find indexes to the left of x_min and the
     # right of x_max
