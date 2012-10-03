@@ -54,6 +54,8 @@ $(document).ready(function() {
         var varid = $('#variable option:selected').val();
         console.log('variable:', varid);
 
+        ocean.variable = varid;
+
         if (varid == '--') {
             hideControls();
             return;
@@ -84,6 +86,8 @@ $(document).ready(function() {
         showControl('period');
         showControl('dataset');
 
+        /* FIXME: consider exposing these in CSS ? */
+        /* plot specific controls */
         switch (plottype) {
             case 'xsections':
             case 'histogram':
@@ -162,6 +166,33 @@ $(document).ready(function() {
         });
 
         selectFirstIfRequired('dataset');
+    });
+
+    /* Dataset */
+    $('#dataset').change(function () {
+        var dataset = $('#dataset option:selected').val();
+
+        console.log(dataset);
+
+        if (!dataset in ocean.dsConf ||
+            ocean.dataset == ocean.dsConf[dataset]) {
+            return;
+        };
+
+        console.log("changing dataset");
+
+        if (ocean.dataset && ocean.dataset.onDeselect) {
+            ocean.dataset.onDeselect();
+        }
+
+        ocean.dataset = ocean.dsConf[dataset];
+        // $('#dshelp').attr('href', record.get('help'));
+
+        selectMapLayer("Bathymetry");
+
+        if (ocean.dataset.onSelect) {
+            ocean.dataset.onSelect();
+        }
     });
 
     /* show the tidal gauge name in the title text */
@@ -640,28 +671,6 @@ function createCheckBoxes(store, records, result, operation, eOpt) {
     }
 
     return data;
-}
-
-function selectDataset(event, args) {
-    var selection = event.getValue();
-    var record = ocean.datasets.getById(selection);
-    ocean.dsConf[selection].setData(record);
-
-    if (ocean.dataset != null) {
-        ocean.dataset.onDeselect();
-    }
-
-    ocean.dataset = ocean.dsConf[selection];
-    $('#dstitle').html(record.get('title'));
-    $('#dshelp').html('About File');
-    $('#dshelp').attr('href', record.get('help'));
-    varCombo = Ext.getCmp('variableCombo');
-    varCombo.setDisabled(false);
-    varCombo.bindStore(record.variables());
-    varCombo.clearValue();
-
-    selectMapLayer("Bathymetry");
-    ocean.dataset.onSelect();
 }
 
 function configCalendar() {
