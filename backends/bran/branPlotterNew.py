@@ -175,31 +175,6 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
     
     return
 
-def draw_vector_plot(m, x, y, u, v, draw_every=1, arrow_scale=10, quiverkey_value=0.5, units='ms^{-1}', 
-                     quiverkey_xpos=0.25, quiverkey_ypos=0.28):
-    # Draw vector plot
-    #
-    # Input arguments:
-    # ----------------
-    #   x, y            -> x, y (or lon, lat) values
-    #   u, v            -> vector components (i.e. Vx, Vy)
-    #   draw_every      -> draw every nth arrow
-    #   arrow_scale     -> scale arrow size
-    #   quiverkey_value -> Quiver key value
-    #   units           -> Units for quiver key label
-    #   quiverkey_xpos  -> x position of quiver key
-    #   quiverkey_ypos  -> y position of quiver key
-    x = x[::draw_every]
-    y = y[::draw_every]
-    u = u[::draw_every,::draw_every]
-    v = v[::draw_every,::draw_every]
-    x, y = m(*np.meshgrid(x, y))
-    q = m.quiver(x, y, u, v, pivot='mid', scale=arrow_scale,
-                  minshaft=1, minlength=0.85, headlength=2.5, headaxislength=2.5)
-    quiverkey_label = '$' + str(quiverkey_value) + units + '$'
-    py.quiverkey(q, 1.08, -0.07, quiverkey_value, quiverkey_label, coordinates='axes',
-                 labelpos='N', labelsep=0.01, fontproperties={'size':'xx-small', 'weight':'1000'})
-
 def get_subset_idxs(x, x_min, x_max):
 
     if x_min == x_max:
