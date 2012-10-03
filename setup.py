@@ -95,6 +95,7 @@ web_files = [
     'css/comp/controlPanel.css',
     'js/comp/controlPanel.js',
     'js/comp/compmap.js',
+    'js/comp/dsConf.js',
 #   'js/sst.js',
 ]
 
