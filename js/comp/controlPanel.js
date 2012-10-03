@@ -196,22 +196,13 @@ $(document).ready(function() {
 
     $.getJSON('config/comp/datasets.json')
         .success(function(data) {
-            var dialog = $('#about-datasets');
-
             ocean.datasets = {};
             ocean.variables = {};
 
             $.each(data, function(i, dataset) {
-                /* Add to the datasets dialog */
-                $('<h1>', { text: dataset.name }).appendTo(dialog);
-
-                var ul = $('<ul>').appendTo(dialog);
-
                 ocean.datasets[dataset.id] = dataset;
 
                 $.each(dataset.variables, function(k, variable) {
-                    $('<li>', { text: variable.name }).appendTo(ul);
-
                     if (!ocean.variables[variable.id]) {
                         ocean.variables[variable.id] = {
                             name: variable.name,
@@ -413,11 +404,11 @@ function prependOutput()
     createOutput.apply(null, arguments).prependTo($('#outputDiv .outputgroup:first'));
 }
 
-function filterOpts(select, keys) {
-    var select = $('#' + select);
+function filterOpts(comboid, keys) {
+    var select = $('#' + comboid);
 
     if (!keys) {
-        console.warn("filterOpts was provided no keys for " + select);
+        console.warn("filterOpts was provided no keys for " + comboid);
         select.find('optgroup, option').show();
         return;
     }

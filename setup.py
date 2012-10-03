@@ -101,7 +101,6 @@ web_files = [
 
 data = [
     'config/comp/datasets.json',
-    'config/comp/period.json',
     'config/comp/portals.json',
     'config/comp/tidalGauges.txt',
     'config/aus/countryList.json',
