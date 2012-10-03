@@ -15,7 +15,8 @@ ocean.controls = [
     'tidalgauge',
     'latitude',
     'longitude',
-    'dataset' /* always last */
+    'dataset',
+    'dshelp'
 ];
 
 ocean.compare = { limit: 24 };
@@ -52,7 +53,6 @@ $(document).ready(function() {
     /* Variable */
     $('#variable').change(function () {
         var varid = $('#variable option:selected').val();
-        console.log('variable:', varid);
 
         ocean.variable = varid;
 
@@ -63,7 +63,6 @@ $(document).ready(function() {
 
         /* filter the options list */
         var plots = ocean.variables[varid].plots;
-        console.log("plots", plots);
 
         filterOpts('plottype', plots);
         selectFirstIfRequired('plottype');
@@ -75,11 +74,9 @@ $(document).ready(function() {
         var varid = $('#variable option:selected').val();
         var plottype = $('#plottype option:selected').val();
 
-        console.log('plottype:', plottype);
 
         /* filter the period list */
         var periods = ocean.variables[varid].plots[plottype];
-        console.log(periods);
 
         filterOpts('period', periods);
         selectFirstIfRequired('period');
@@ -110,8 +107,6 @@ $(document).ready(function() {
         var varid = $('#variable option:selected').val();
         var plottype = $('#plottype option:selected').val();
         var period = $('#period option:selected').val();
-
-        console.log('period:', period);
 
         /* FIXME: consider exposing these in CSS ? */
         /* period specific date controls */
@@ -148,12 +143,8 @@ $(document).ready(function() {
         var plottype = $('#plottype option:selected').val();
         var period = $('#period option:selected').val();
 
-        console.log('Update datasets');
-
         /* FIXME: rank these */
         var datasets = ocean.variables[varid].plots[plottype][period];
-
-        console.log(datasets);
 
         /* clear previous choices */
         $('#dataset option').remove();
@@ -165,28 +156,30 @@ $(document).ready(function() {
             }).appendTo('#dataset');
         });
 
-        selectFirstIfRequired('dataset');
+        /* select first */
+        $('#dataset option:first').attr('selected', true);
+        $('#dataset').change();
     });
 
     /* Dataset */
     $('#dataset').change(function () {
         var dataset = $('#dataset option:selected').val();
 
-        console.log(dataset);
-
         if (!dataset in ocean.dsConf ||
             ocean.dataset == ocean.dsConf[dataset]) {
             return;
         };
-
-        console.log("changing dataset");
 
         if (ocean.dataset && ocean.dataset.onDeselect) {
             ocean.dataset.onDeselect();
         }
 
         ocean.dataset = ocean.dsConf[dataset];
-        // $('#dshelp').attr('href', record.get('help'));
+
+        /* update about file */
+        showControl('dshelp');
+        $('#dshelp').attr('href', ocean.datasets[dataset].help);
+        $('#dshelp span').html(ocean.datasets[dataset].name);
 
         selectMapLayer("Bathymetry");
 
