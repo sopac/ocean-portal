@@ -27,7 +27,6 @@ ocean.date = new Date();
 $(document).ready(function() {
 
     /* initialise jQueryUI elements */
-    // $('#controlPanel :enabled').attr('disabled', 'disabled');
     $('.dialog').dialog({
         autoOpen: false,
         resizable: false
@@ -71,6 +70,10 @@ $(document).ready(function() {
     $('#variable').change(function () {
         var varid = $('#variable option:selected').val();
 
+        if (!(varid in ocean.variables)) {
+            return;
+        }
+
         ocean.variable = varid;
 
         if (varid == '--') {
@@ -82,22 +85,26 @@ $(document).ready(function() {
         var plots = ocean.variables[varid].plots;
 
         filterOpts('plottype', plots);
-        selectFirstIfRequired('plottype');
         showControl('plottype');
+        selectFirstIfRequired('plottype');
     });
 
     /* Plot Type */
     $('#plottype').change(function () {
-        var varid = $('#variable option:selected').val();
         var plottype = $('#plottype option:selected').val();
 
+        if (!(plottype in ocean.variables[ocean.variable].plots)) {
+            return;
+        }
+
+        ocean.plottype = plottype;
 
         /* filter the period list */
-        var periods = ocean.variables[varid].plots[plottype];
+        var periods = ocean.variables[ocean.variable].plots[plottype];
 
         filterOpts('period', periods);
-        selectFirstIfRequired('period');
         showControl('period');
+        selectFirstIfRequired('period');
         showControl('dataset');
 
         /* FIXME: consider exposing these in CSS ? */
@@ -121,9 +128,13 @@ $(document).ready(function() {
 
     /* Period */
     $('#period').change(function () {
-        var varid = $('#variable option:selected').val();
-        var plottype = $('#plottype option:selected').val();
         var period = $('#period option:selected').val();
+
+        if (!period) {
+            return;
+        }
+
+        ocean.period = period;
 
         /* FIXME: consider exposing these in CSS ? */
         /* period specific date controls */
@@ -136,7 +147,7 @@ $(document).ready(function() {
                 break;
 
             default:
-                hideControl('datep');
+                hideControl('date');
                 showControl('month');
                 showControl('year');
                 break;
@@ -157,12 +168,16 @@ $(document).ready(function() {
 
     /* Date range is changed */
     $('#date, #month, #year').change(function () {
-        var varid = $('#variable option:selected').val();
-        var plottype = $('#plottype option:selected').val();
-        var period = $('#period option:selected').val();
+
+        if (!(ocean.variable in ocean.variables) ||
+            !(ocean.plottype in ocean.variables[ocean.variable].plots) ||
+            !(ocean.period in ocean.variables[ocean.variable].plots[ocean.plottype])) {
+            return;
+        }
 
         /* FIXME: rank these */
-        var datasets = ocean.variables[varid].plots[plottype][period];
+        var datasets = ocean.variables[ocean.variable]
+            .plots[ocean.plottype][ocean.period];
 
         /* clear previous choices */
         $('#dataset option').remove();
@@ -181,23 +196,28 @@ $(document).ready(function() {
 
     /* Dataset */
     $('#dataset').change(function () {
-        var dataset = $('#dataset option:selected').val();
+        var datasetid = $('#dataset option:selected').val();
 
-        if (!dataset in ocean.dsConf ||
-            ocean.dataset == ocean.dsConf[dataset]) {
+        if (!datasetid) {
             return;
-        };
+        }
+
+        var backendid = getBackendId(datasetid);
+
+        if (!backendid in ocean.dsConf) {
+            return;
+        }
 
         if (ocean.dataset && ocean.dataset.onDeselect) {
             ocean.dataset.onDeselect();
         }
 
-        ocean.dataset = ocean.dsConf[dataset];
+        ocean.dataset = ocean.dsConf[backendid];
 
         /* update about file */
         showControl('dshelp');
-        $('#dshelp').attr('href', ocean.datasets[dataset].help);
-        $('#dshelp span').html(ocean.datasets[dataset].name);
+        $('#dshelp').attr('href', ocean.datasets[datasetid].help);
+        $('#dshelp span').html(ocean.datasets[datasetid].name);
 
         selectMapLayer("Bathymetry");
 
@@ -297,6 +317,16 @@ Date.prototype.getMonthString = function() {
     var calMonth = String(this.getMonth() + 1);
     return (calMonth < 10) ?  ('0' + calMonth) : calMonth;
 };
+
+function getBackendId(datasetid) {
+    var dataset = ocean.datasets[datasetid];
+
+    if ('bid' in dataset) {
+        return dataset.bid;
+    } else {
+        return dataset.id;
+    }
+}
 
 function prependOutputSet()
 {

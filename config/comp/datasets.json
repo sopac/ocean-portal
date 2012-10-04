@@ -2,19 +2,23 @@
     "id":"reynolds",
     "name":"Reynolds",
     "title": "Sea Surface Temperature - Reynolds",
+    "rank": 100,
     "help": "/cosppac/comp/ocean-portal/about_reynolds.pdf",
     "variables": [{
         "id":"meansst",
+        "bid": "sst",
         "name":"Mean SST",
         "periods": ["daily", "monthly", "yearly"],
         "plottypes": ["map", "trendmap"]
     },{
         "id":"sstanom",
+        "bid": "anom",
         "name":"SST Anomaly",
         "periods": ["daily", "monthly", "yearly"],
         "plottypes": ["map", "trendmap"]
     },{
         "id":"sstdec",
+        "bid": "dec",
         "name":"SST Deciles",
         "periods": ["monthly"],
         "plottypes": ["map", "trendmap"]
@@ -32,16 +36,19 @@
     "help": "/cosppac/comp/ocean-portal/about_errst.pdf",
     "variables": [{
         "id":"meansst",
+        "bid": "sst",
         "name":"Mean SST",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map", "trendmap"]
     },{
         "id":"sstanom",
+        "bid": "anom",
         "name":"SST Anomaly",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map", "trendmap"]
     },{
         "id":"sstdec",
+        "bid": "dec",
         "name":"SST Deciles",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map", "trendmap"]
@@ -86,6 +93,7 @@
     "help": "/cosppac/comp/ocean-portal/about_bran.pdf",
     "variables": [{
         "id":"meansst",
+        "bid": "temp",
         "name":"Temperature",
         "periods": ["monthly"],
         "plottypes": ["map", "xsections"]
@@ -96,6 +104,7 @@
         "plottypes": ["map", "xsections"]
     }, {
         "id":"rec",
+        "bid": "eta",
         "name":"Reconstruction",
         "periods": ["monthly"],
         "plottypes": ["map"]
@@ -117,9 +126,11 @@
         "maxDate": "20061230"
     }
 }, {
-    "id":"church",
-    "name":"Church &amp; White",
-    "title": "Church &amp; White",
+    "id": "church",
+    "bid": "sealevel",
+    "name":"Church & White",
+    "title": "Church & White",
+    "rank": 100,
     "help": "/cosppac/comp/ocean-portal/about_sealevel.pdf",
     "variables": [{
         "id":"alt",
@@ -146,6 +157,7 @@
     }]
 }, {
     "id": "ntc",
+    "bid": "sealevel",
     "name": "NTC",
     "title": "National Tidal Centre",
     "help": "/cosppac/comp/ocean-portal/about_sealevel.pdf",
