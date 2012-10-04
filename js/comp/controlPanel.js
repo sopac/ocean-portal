@@ -175,9 +175,21 @@ $(document).ready(function() {
             return;
         }
 
-        /* FIXME: rank these */
-        var datasets = ocean.variables[ocean.variable]
-            .plots[ocean.plottype][ocean.period];
+        /* filter datasets based on the chosen range */
+        datasets = $.grep(
+            ocean.variables[ocean.variable].plots[ocean.plottype][ocean.period],
+            function(elem) {
+                /* FIXME: filter by date range */
+                return true;
+        });
+
+        /* sort by rank */
+        datasets.sort(function (a, b) {
+            var ar = 'rank' in ocean.datasets[a] ? ocean.datasets[a].rank : 0;
+            var br = 'rank' in ocean.datasets[b] ? ocean.datasets[b].rank : 0;
+
+            return br - ar;
+        });
 
         /* clear previous choices */
         $('#dataset option').remove();
