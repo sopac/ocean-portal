@@ -1,0 +1,26 @@
+{
+  "sst": {
+    "name": "Sea Surface Temperature",
+    "vars": [ "meansst", "sstanom", "sstdec" ]
+  },
+
+  "salt": {
+    "name": "Salinity",
+    "vars": [ "salt" ]
+  },
+
+  "waves": {
+    "name": "Waves",
+    "vars": [ "Hs", "Tm", "Dm" ]
+  },
+
+  "sealevel": {
+    "name": "Sealevel",
+    "vars": [ "alt", "rec", "gauge", "eta" ]
+  },
+
+  "currents": {
+    "name": "Currents",
+    "vars": [ "uvtemp", "uveta" ]
+  }
+}

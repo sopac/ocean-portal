@@ -194,8 +194,26 @@ $(document).ready(function() {
         this.title = this.value;
     });
 
-    $.getJSON('config/comp/datasets.json')
-        .success(function(data) {
+    var groupings = {};
+
+    /* load JSON configuration */
+    $.when(
+        /* Load and parse vargroups.json */
+        $.getJSON('config/comp/vargroups.json').success(function(data) {
+            $.each(data, function(k, v) {
+                $('<optgroup>', {
+                    id: k,
+                    label: v.name
+                }).appendTo('#variable');
+
+                $.each(v.vars, function(i, var_) {
+                    groupings[var_] = k;
+                });
+            });
+        }),
+
+        /* Load and parse datasets.json */
+        $.getJSON('config/comp/datasets.json').success(function(data) {
             ocean.datasets = {};
             ocean.variables = {};
 
@@ -226,47 +244,34 @@ $(document).ready(function() {
                 });
 
             });
+        })
+    )
+    /* Successfully fetched all JSON */
+    .done(function() {
+        $.each(ocean.variables, function (k, v) {
+            var parent_;
 
-            /* FIXME: hardcoded groupings */
-            var groupings = {
-                meansst: 'sst',
-                sstanom: 'sst',
-                sstdec: 'sst',
-                Hs: 'waves',
-                Tm: 'waves',
-                Dm: 'waves',
-                alt: 'sealevel',
-                rec: 'sealevel',
-                gauge: 'sealevel',
-                eta: 'sealevel',
-                uvtemp: 'currents',
-                uveta: 'currents',
-                salt: 'salinity'
+            if (k in groupings) {
+                parent_ = $('#variable optgroup#' + groupings[k]);
+
+                if (parent_.length == 0) {
+                    parent_ = $('#variable');
+                }
+            } else {
+                parent_ = $('#variable');
             }
 
-            $.each(ocean.variables, function (k, v) {
-                var parent_;
-
-                if (k in groupings) {
-                    parent_ = $('#variable optgroup#' + groupings[k]);
-
-                    if (parent_.length == 0) {
-                        parent_ = varcombo;
-                    }
-                } else {
-                    parent_ = ('#variable');
-                }
-
-                $('<option>', {
-                    text: v.name,
-                    value: k
-                }).appendTo(parent_);
-            });
-        })
-        .error(function() {
-            // FIXME
-            console.log("ERROR");
+            $('<option>', {
+                text: v.name,
+                value: k
+            }).appendTo(parent_);
         });
+    })
+
+    /* Failed to load some JSON */
+    .fail(function() {
+        fatal_error("Failed to load portal configuration.");
+    });
 
 });
 
