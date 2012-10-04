@@ -9,7 +9,7 @@ var ocean = ocean || {};
 ocean.controls = [
     'plottype',
     'period',
-    'datepicker',
+    'date',
     'month',
     'year',
     'tidalgauge',
@@ -21,7 +21,6 @@ ocean.controls = [
 
 ocean.compare = { limit: 24 };
 ocean.processing = false;
-ocean.dateFormat = 'yyyymmdd';
 ocean.date = new Date();
 
 /* set up JQuery UI elements */
@@ -44,6 +43,24 @@ $(document).ready(function() {
                                             'closeOnEscape': false,
                                             'height': 55,
                                             'resizable': false });
+
+    $(".datepicker").datepick({
+        // minDate: dateRange.minDate,
+        // maxDate: dateRange.maxDate,
+        // yearRange: dateRange.minYear + ":" + dateRange.maxYear,
+        dateFormat: 'yyyy/mm/dd',
+        firstDay: 1,
+        renderer: $.extend({},
+                  $.datepick.weekOfYearRenderer,
+                      {picker: $.datepick.defaultRenderer.picker.
+                      replace(/\{link:clear\}/, '').
+                      replace(/\{link:close\}/, '')
+                   }),
+        showOtherMonths: true,
+        showOnFocus: false
+    }).mousedown(function() {
+        $(this).datepick('show');
+    });
 
     /* UI handlers */
     $('#submit').click(function () {
@@ -112,13 +129,14 @@ $(document).ready(function() {
         /* period specific date controls */
         switch (period) {
             case 'daily':
-                showControl('datepicker');
+            case 'weekly':
+                showControl('date');
                 hideControl('month');
                 hideControl('year');
                 break;
 
             default:
-                hideControl('datepicker');
+                hideControl('datep');
                 showControl('month');
                 showControl('year');
                 break;
@@ -138,7 +156,7 @@ $(document).ready(function() {
     });
 
     /* Date range is changed */
-    $('#datepicker, #month, #year').change(function () {
+    $('#date, #month, #year').change(function () {
         var varid = $('#variable option:selected').val();
         var plottype = $('#plottype option:selected').val();
         var period = $('#period option:selected').val();
@@ -568,35 +586,6 @@ function enlargeImg(img, show) {
             enlargeDiv.hide();
         });
     }
-}
-
-//Lazy creation of datepick and month and year combobox.
-function createCalendars() {
-    var dateRange = ocean.dataset.data.get('dateRange');
-    var minDate = ocean.dataset.data.get('dateRange').minDate;
-
-    ocean.calendar = $("#datepicker").datepick({
-        minDate: dateRange.minDate,
-        maxDate: dateRange.maxDate,
-        yearRange: dateRange.minYear + ":" + dateRange.maxYear,
-        dateFormat: ocean.dateFormat,
-        firstDay: 1,
-        showTrigger: '#calImg',
-        renderer: $.extend({},
-                  $.datepick.weekOfYearRenderer,
-                      {picker: $.datepick.defaultRenderer.picker.
-                      replace(/\{link:clear\}/, '').
-                      replace(/\{link:close\}/, '')
-                   }),
-        showOtherMonths: true,
-        onSelect: function (dateObj) {
-            ocean.date = dateObj.length? dateObj[0] : null
-        },
-        showOnFocus: false
-    });
-    $( "#datepicker" ).mousedown(function() {
-        $(this).datepick('show');
-    });
 }
 
 function _controlVarParent(control) {
