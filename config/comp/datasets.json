@@ -24,8 +24,6 @@
         "plottypes": ["map", "trendmap"]
     }],
     "dateRange" : {
-        "minYear": "1982",
-        "maxYear": "2011",
         "minDate": "19820101",
         "maxDate": "20111231"
     }
@@ -54,8 +52,6 @@
         "plottypes": ["map", "trendmap"]
     }],
     "dateRange" : {
-        "minYear": "1889",
-        "maxYear": "2012",
         "minDate": "18890101",
         "maxDate": "20120831"
     }
@@ -81,8 +77,6 @@
         "plottypes": ["waverose"]
     }],
     "dateRange" : {
-        "minYear": "1979",
-        "maxYear": "2009",
         "minDate": "19790101",
         "maxDate": "20091201"
     }
@@ -120,8 +114,6 @@
         "plottypes": ["map"]
     }],
     "dateRange" : {
-        "minYear": "1993",
-        "maxYear": "2006",
         "minDate": "19930101",
         "maxDate": "20061230"
     }
@@ -138,8 +130,6 @@
         "periods": ["monthly"],
         "plottypes": ["map", "ts"],
         "dateRange" : {
-            "minYear": "1993",
-            "maxYear": "2011",
             "minDate": "19930101",
             "maxDate": "20110201"
         }
@@ -149,8 +139,6 @@
         "periods": ["monthly"],
         "plottypes": ["map", "ts"],
         "dateRange" : {
-            "minYear": "1950",
-            "maxYear": "2009",
             "minDate": "19500101",
             "maxDate": "20091201"
         }

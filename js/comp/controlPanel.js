@@ -44,8 +44,7 @@ $(document).ready(function() {
                                             'resizable': false });
 
     $(".datepicker").datepicker({
-        /* dateFormat here is different to parseDate below */
-        dateFormat: 'd MM yy',
+        dateFormat: 'd MM yy'
     }).mousedown(function() {
         $(this).datepicker('show');
     });
@@ -102,9 +101,15 @@ $(document).ready(function() {
             case 'xsections':
             case 'histogram':
             case 'waverose':
+            case 'ts':
                 showControl('latitude');
                 showControl('longitude');
                 addPointLayer();
+
+                hideControl('period');
+                hideControl('date');
+                hideControl('month');
+                hideControl('year');
                 break;
 
             default:
@@ -119,7 +124,7 @@ $(document).ready(function() {
     $('#period').change(function () {
         var period = $('#period option:selected').val();
 
-        if (!period) {
+        if (!(period in ocean.variables[ocean.variable].plots[ocean.plottype])) {
             return;
         }
 
@@ -135,10 +140,43 @@ $(document).ready(function() {
                 hideControl('year');
                 break;
 
-            default:
+            case 'yearly':
+                hideControl('date');
+                hideControl('month');
+                showControl('year');
+                break;
+
+            case 'monthly':
+            case '3monthly':
+            case '6monthly':
+            case '12monthly':
                 hideControl('date');
                 showControl('month');
                 showControl('year');
+                break;
+
+            default:
+                console.error("ERROR: should not be reached");
+                break;
+        }
+
+        /* datepicker specific options */
+        switch (period) {
+            case 'daily':
+                $('#date').datepicker('option', {
+                    showWeek: false
+                });
+                break;
+
+            case 'weekly':
+                /* FIXME: update format to show the week number */
+                $('#date').datepicker('option', {
+                    showWeek: true
+                });
+                break;
+
+            default:
+                /* pass */
                 break;
         }
 
@@ -149,9 +187,125 @@ $(document).ready(function() {
                 hideControl('year');
                 break;
 
+            case 'ts':
+                hideControl('date');
+                hideControl('month');
+                hideControl('year');
+                break;
+
             default:
                 /* pass */
                 break;
+        }
+
+        /* FIXME: is this strictly correct? it would collapse for datasets
+         * with holes in them. That's fine for the year combo, but not the
+         * datepicker */
+        var range = getCombinedDateRange();
+        console.log(range.min, range.max);
+
+        /* populate year */
+        var year = $('#year');
+
+        if (year.is(':visible')) {
+            /* FIXME: removing these unsets the current selection */
+            year.find('option').remove();
+
+            for (y = range.min.getFullYear();
+                 y <= range.max.getFullYear();
+                 y++) {
+                $('<option>', {
+                    value: y,
+                    text: y
+                }).appendTo(year);
+            }
+
+            /* select most recent */
+            year.find('option:last').attr('selected', true);
+            year.change();
+        }
+
+        /* we populate month based on the selected year (see below) */
+
+        /* set range on datepicker */
+        $('#date').datepicker('option', {
+            minDate: range.min,
+            maxDate: range.max,
+            yearRange: range.min.getFullYear() + ':' + range.max.getFullYear()
+        });
+    });
+
+    /* Year */
+    $('#year').change(function () {
+        /* populate month */
+        var month = $('#month');
+
+        if (month.is(':visible')) {
+            var range = getCombinedDateRange();
+
+            /* FIXME: removing these unsets the current selection */
+            month.find('option').remove();
+
+            /* calculate the possible month range */
+            var selectedyear = $('#year option:selected').val();
+            var minMonth = 0;
+            var maxMonth = 11;
+            var fmt;
+
+            if (selectedyear == range.min.getFullYear()) {
+                minMonth = range.min.getMonth();
+            } else if (selectedyear == range.max.getFullYear()) {
+                maxMonth = range.max.getMonth();
+            }
+
+            switch (ocean.period) {
+                case 'monthly':
+                    fmt = function (m) {
+                        return $.datepicker.formatDate('MM',
+                            new Date(selectedyear, m));
+                    }
+                    break;
+
+                case '3monthly':
+                    fmt = function (m) {
+                        return $.datepicker.formatDate('M y',
+                                new Date(selectedyear, m - 3)) + ' &ndash; ' +
+                            $.datepicker.formatDate('M y',
+                                new Date(selectedyear, m));
+                    }
+                    break;
+
+                case '6monthly':
+                    fmt = function (m) {
+                        return $.datepicker.formatDate('M y',
+                                new Date(selectedyear, m - 6)) + ' &ndash; ' +
+                            $.datepicker.formatDate('M y',
+                                new Date(selectedyear, m));
+                    }
+                    break;
+
+                case '12monthly':
+                    fmt = function (m) {
+                        return $.datepicker.formatDate('M y',
+                                new Date(selectedyear, m - 12)) + ' &ndash; ' +
+                            $.datepicker.formatDate('M y',
+                                new Date(selectedyear, m));
+                    }
+                    break;
+
+                default:
+                    console.error("ERROR: should not be reached");
+                    break;
+            }
+
+            for (m = minMonth; m <= maxMonth; m++) {
+                $('<option>', {
+                    value: m,
+                    html: fmt(m)
+                }).appendTo(month);
+            }
+
+            month.change();
         }
     });
 
@@ -163,6 +317,29 @@ $(document).ready(function() {
             !(ocean.period in ocean.variables[ocean.variable].plots[ocean.plottype])) {
             return;
         }
+
+        /* determine the chosen date */
+        switch (ocean.period) {
+            case 'daily':
+            case 'weekly':
+                ocean.date = $('#date').getDate();
+                break;
+
+            case 'monthly':
+            case '3monthly':
+            case '6monthly':
+            case '12monthly':
+                break;
+
+            case 'yearly':
+                break;
+
+            default:
+                console.error("ERROR: should not be reached");
+                break;
+        }
+
+        console.log("date", ocean.date);
 
         /* filter datasets based on the chosen range */
         datasets = $.grep(
@@ -263,7 +440,8 @@ $(document).ready(function() {
                     if (!ocean.variables[variable.id]) {
                         ocean.variables[variable.id] = {
                             name: variable.name,
-                            plots: {}
+                            plots: {},
+                            variable: variable
                         };
                     }
 
@@ -321,15 +499,23 @@ Date.prototype.getMonthString = function() {
 
 /**
  * getBackendId:
+ * @datasetid: a dataset frontend id
+ * @varid: optional variable frontend id
  *
  * Get the backend id for a given frontend id.
  *
  * Returns: the backend id for the given frontend id
  */
-function getBackendId(datasetid) {
+function getBackendId(datasetid, varid) {
     var dataset = ocean.datasets[datasetid];
 
-    /* FIXME: handle variables too */
+    if (varid) {
+        var variable = ocean.variables[varid].variable;
+
+        if ('bid' in variable) {
+            return variable.bid;
+        }
+    }
 
     if ('bid' in dataset) {
         return dataset.bid;
@@ -343,10 +529,56 @@ function getBackendId(datasetid) {
  *
  * Get the date range for a variable.
  *
- * Returns: (minDate, maxDate)
+ * Returns: { minDate, maxDate }
  */
 function getDateRange(datasetid, varid)
 {
+    var variable = ocean.variables[varid].variable;
+    var dataset = ocean.datasets[datasetid];
+
+    /* first look to see if there's a variable dateRange */
+    if ('dateRange' in variable) {
+        return variable.dateRange;
+    }
+    /* else use the dataset dateRange */
+    else if ('dateRange' in dataset) {
+        return dataset.dateRange;
+    } else {
+        return null;
+    }
+}
+
+/**
+ * getCombinedDateRange:
+ *
+ * Gets the combined date ranges for all of the selected datasets.
+ *
+ * Returns: minDate: maxDate
+ */
+function getCombinedDateRange() {
+    var datasets = ocean.variables[ocean.variable].plots[ocean.plottype][ocean.period];
+    var minDate = Number.MAX_VALUE;
+    var maxDate = Number.MIN_VALUE;
+
+    $.each(datasets, function(i, datasetid) {
+        var dateRange = getDateRange(datasetid, ocean.variable);
+
+        if (!dateRange)
+            return; /* continue */
+
+        console.log(dateRange);
+
+        minDate = Math.min(minDate, dateRange.minDate);
+        maxDate = Math.max(maxDate, dateRange.maxDate);
+    });
+
+    /* 'yy' is correct, believe it or not, see
+     * http://docs.jquery.com/UI/Datepicker/parseDate
+     * This is different to dateFormat above. */
+    minDate = $.datepicker.parseDate('yymmdd', minDate);
+    maxDate = $.datepicker.parseDate('yymmdd', maxDate);
+
+    return { min: minDate, max: maxDate };
 }
 
 /**
