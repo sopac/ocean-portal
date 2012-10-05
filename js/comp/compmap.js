@@ -197,8 +197,10 @@ function updateMap (data) {
 
 Ext.require(['*']);
 Ext.onReady(function() {
-
-    var countrylisturl = [ 'config', ocean.config, 'countryList.json' ].join('/');
+    var countryCombo, countryStore;
+    var countrylisturl = [ 'config',
+                           ocean.config,
+                           'countryList.json' ].join('/');
 
     Ext.define('Country', {
         extend: 'Ext.data.Model',
@@ -213,19 +215,19 @@ Ext.onReady(function() {
         }
     });
 
-    window.countryStore = new Ext.data.Store({
+    countryStore = new Ext.data.Store({
         autoLoad: true,
         model: 'Country',
         listeners: {
             load: function () {
-                window.countryCombo.select(ocean.config);
+                countryCombo.select(ocean.config);
             }
         }
     });
 
-    function selectCountry(event, args) {
+    function _selectCountry(event, args) {
         var selection = event.getValue();
-        var record = window.countryStore.getById(selection);
+        var record = countryStore.getById(selection);
 
         if (!record)
             return;
@@ -237,12 +239,12 @@ Ext.onReady(function() {
         ocean.area = selection;
     }
 
-    window.countryCombo = Ext.create('Ext.form.field.ComboBox', {
+    countryCombo = Ext.create('Ext.form.field.ComboBox', {
         fieldLabel: 'Select a country/region',
         labelAlign: 'top',
         displayField: 'name',
         valueField: 'abbr',
-        store: window.countryStore,
+        store: countryStore,
         queryMode: 'local',
         padding: 5,
         height: '60%',
@@ -320,7 +322,6 @@ Ext.onReady(function() {
                     window.open('/cosppac/comp/ocean-portal/ocean-portal-help.shtml', '_blank');
                 }
             }]
-        }
-       ]
+        }]
     });
-  });
+});
