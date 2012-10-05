@@ -202,7 +202,6 @@ $(document).ready(function() {
          * with holes in them. That's fine for the year combo, but not the
          * datepicker */
         var range = getCombinedDateRange();
-        console.log(range.min, range.max);
 
         /* populate year */
         var year = $('#year');
@@ -227,12 +226,19 @@ $(document).ready(function() {
 
         /* we populate month based on the selected year (see below) */
 
-        /* set range on datepicker */
-        $('#date').datepicker('option', {
-            minDate: range.min,
-            maxDate: range.max,
-            yearRange: range.min.getFullYear() + ':' + range.max.getFullYear()
-        });
+        var date_ = $('#date');
+
+        if (date_.is(':visible')) {
+            /* set range on datepicker */
+            date_.datepicker('option', {
+                minDate: range.min,
+                maxDate: range.max,
+                yearRange: range.min.getFullYear() + ':' + range.max.getFullYear()
+            });
+
+            /* FIXME: use a clamped ocean.date */
+            date_.datepicker('setDate', range.max).change();
+        }
     });
 
     /* Year */
@@ -319,19 +325,25 @@ $(document).ready(function() {
         }
 
         /* determine the chosen date */
+        var date_;
+
         switch (ocean.period) {
             case 'daily':
             case 'weekly':
-                ocean.date = $('#date').getDate();
+                date_ = $('#date').datepicker('getDate');
                 break;
 
             case 'monthly':
             case '3monthly':
             case '6monthly':
             case '12monthly':
+                date_ = new Date($('#year option:selected').val(),
+                                 $('#month option:selected').val(),
+                                 1);
                 break;
 
             case 'yearly':
+                date_ = new Date($('#year option:selected').val(), 1, 1);
                 break;
 
             default:
@@ -339,7 +351,14 @@ $(document).ready(function() {
                 break;
         }
 
-        console.log("date", ocean.date);
+        if (!date_ ||
+            isNaN(date_.getTime()) ||
+            date_.getTime() == ocean.date.getTime()) {
+            return;
+        }
+
+        ocean.date = date_;
+        console.log("date", ocean.date, date_.getTime());
 
         /* filter datasets based on the chosen range */
         datasets = $.grep(
@@ -565,8 +584,6 @@ function getCombinedDateRange() {
 
         if (!dateRange)
             return; /* continue */
-
-        console.log(dateRange);
 
         minDate = Math.min(minDate, dateRange.minDate);
         maxDate = Math.max(maxDate, dateRange.maxDate);
