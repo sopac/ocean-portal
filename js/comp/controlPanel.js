@@ -330,8 +330,17 @@ Date.prototype.getMonthString = function() {
     return (calMonth < 10) ?  ('0' + calMonth) : calMonth;
 };
 
+/**
+ * getBackendId:
+ *
+ * Get the backend id for a given frontend id.
+ *
+ * Returns: the backend id for the given frontend id
+ */
 function getBackendId(datasetid) {
     var dataset = ocean.datasets[datasetid];
+
+    /* FIXME: handle variables too */
 
     if ('bid' in dataset) {
         return dataset.bid;
@@ -340,6 +349,22 @@ function getBackendId(datasetid) {
     }
 }
 
+/**
+ * getDateRange:
+ *
+ * Get the date range for a variable.
+ *
+ * Returns: (minDate, maxDate)
+ */
+function getDateRange(datasetid, varid)
+{
+}
+
+/**
+ * prependOutputSet:
+ *
+ * Prepends an output group to the output panel.
+ */
 function prependOutputSet()
 {
     while ($('#outputDiv div.outputgroup').length >= ocean.compare.limit) {
@@ -384,7 +409,7 @@ function prependOutputSet()
     $('#outputDiv').animate({ scrollTop: 0 }, 75);
 }
 
-function createOutput(image, dataURL, name, extras, data)
+function _createOutput(image, dataURL, name, extras, data)
 {
     var div = $('<div>', {
         'class': 'thumbnail'
@@ -459,16 +484,48 @@ function createOutput(image, dataURL, name, extras, data)
     return div;
 }
 
+/**
+ * appendOutput:
+ * @imageURL: URL for the image
+ * @dataURL: optional URL for the data to download
+ * @name: optional title for the output
+ * @extras: optional extra HTML
+ * @data: optional ref to the data object, so this output can be selected as
+ *        the map base layer
+ *
+ * Appends a new output to the topmost output group.
+ *
+ * See Also: prependOutput()
+ */
 function appendOutput()
 {
-    createOutput.apply(null, arguments).appendTo($('#outputDiv .outputgroup:first'));
+    _createOutput.apply(null, arguments).appendTo($('#outputDiv .outputgroup:first'));
 }
 
+/**
+ * prependOutput:
+ * @imageURL: URL for the image
+ * @dataURL: optional URL for the data to download
+ * @name: optional title for the output
+ * @extras: optional extra HTML
+ * @data: optional ref to the data object, so this output can be selected as
+ *        the map base layer
+ *
+ * Prepends a new output to the topmost output group.
+ *
+ * See Also: appendOutput()
+ */
 function prependOutput()
 {
-    createOutput.apply(null, arguments).prependTo($('#outputDiv .outputgroup:first'));
+    _createOutput.apply(null, arguments).prependTo($('#outputDiv .outputgroup:first'));
 }
 
+/**
+ * filterOpts:
+ *
+ * Filter @comboid so that it only contains options with the ids given in
+ * @keys.
+ */
 function filterOpts(comboid, keys) {
     var select = $('#' + comboid);
 
@@ -491,6 +548,12 @@ function filterOpts(comboid, keys) {
     });
 }
 
+/**
+ * selectFirstIfRequired:
+ *
+ * Select the first <option> of a <select> if there is no visible option
+ * selected at the moment.
+ */
 function selectFirstIfRequired(comboid) {
     var combo = $('#' + comboid);
 
@@ -500,6 +563,11 @@ function selectFirstIfRequired(comboid) {
     }
 }
 
+/**
+ * addPointLayer:
+ *
+ * Adds a point selection layer to the map.
+ */
 function addPointLayer () {
     var layer = new OpenLayers.Layer.Vector("point-layer",
         {
@@ -566,6 +634,11 @@ function addPointLayer () {
     $('#latitude').change();
 }
 
+/**
+ * removePointLayer:
+ *
+ * Removes a point selection layer from the map.
+ */
 function removePointLayer () {
     var layers = map.getLayersByName("point-layer");
 
@@ -595,6 +668,11 @@ function removePointLayer () {
     this.panelControls = null;
 }
 
+/**
+ * enlargeImg:
+ *
+ * Shows or hides an enlarged version of the image within the map.
+ */
 function enlargeImg(img, show) {
     var enlargeDiv = $('#enlargeDiv');
 
@@ -637,7 +715,7 @@ function _controlVarParent(control) {
 function _showhideControlGroups() {
 }
 
-/*
+/**
  * showControl:
  *
  * Shows a div.controlvar based on the id of the field within it.
@@ -651,6 +729,11 @@ function showControl(control) {
     $('#' + control).change();
 }
 
+/**
+ * hideControl:
+ *
+ * Hides a div.controlvar based on the id of the field within it.
+ */
 function hideControl(control) {
     var parent = _controlVarParent(control)
     var group = parent.parent('.controlgroup');
@@ -663,12 +746,22 @@ function hideControl(control) {
     }
 }
 
+/**
+ * hideControls:
+ *
+ * Hides all controls.
+ */
 function hideControls() {
     $.each(ocean.controls, function (i, control) {
         hideControl(control);
     });
 }
 
+/**
+ * updatePage:
+ *
+ * Make a request to the backend based on the currently selected controls.
+ */
 function updatePage() {
     if (!ocean.processing) {
 

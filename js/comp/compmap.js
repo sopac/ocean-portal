@@ -8,6 +8,11 @@
 var ocean = ocean || {};
 var map;
 
+/**
+ * fatal_error:
+ *
+ * Show a fatal error (one that terminates the portal) with @msg.
+ */
 function fatal_error(msg)
 {
     $('#error-dialog-content').html(msg);
@@ -56,6 +61,11 @@ $(document).ready(function() {
         });
 });
 
+/**
+ * createMap:
+ *
+ * Create the map component. Should only be called once.
+ */
 function createMap () {
     map = new OpenLayers.Map("map", {
         resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
@@ -81,7 +91,7 @@ function createMap () {
         eventListeners: {
             addlayer: _updateDisabled,
             removelayer: _updateDisabled,
-            changelayer: mapBaseLayerChanged
+            changelayer: _mapBaseLayerChanged
         }
     });
 
@@ -119,7 +129,7 @@ function createMap () {
     map.addLayers([bathymetryLayer, outputLayer]);
     map.setBaseLayer(bathymetryLayer);
 
-    function mapBaseLayerChanged(evt) {
+    function _mapBaseLayerChanged(evt) {
         var layerName;
         var legendDiv = $('#legendDiv');
         var enableOL = false;
@@ -143,7 +153,7 @@ function createMap () {
         _updateDisabled();
     }
 
-    mapBaseLayerChanged(null);
+    _mapBaseLayerChanged(null);
 }
 
 function _updateDisabled ()
@@ -157,6 +167,11 @@ function _updateDisabled ()
     }, 5);
 }
 
+/**
+ * selectMapLayer:
+ *
+ * Select the map layer specified by @name.
+ */
 function selectMapLayer(name)
 {
     var layer = map.getLayersByName(name)[0];
@@ -165,6 +180,11 @@ function selectMapLayer(name)
     _updateDisabled();
 }
 
+/**
+ * updateMap:
+ *
+ * Updates the output layer of the map with @data.
+ */
 function updateMap (data) {
     var layer = map.getLayersByName("Output")[0];
 
@@ -228,8 +248,8 @@ Ext.onReady(function() {
         height: '60%',
         width: 180,
         listeners: {
-            select: selectCountry,
-            change: selectCountry
+            select: _selectCountry,
+            change: _selectCountry
         }
     });
 
