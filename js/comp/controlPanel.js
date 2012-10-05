@@ -98,18 +98,20 @@ $(document).ready(function() {
         /* FIXME: consider exposing these in CSS ? */
         /* plot specific controls */
         switch (plottype) {
-            case 'xsections':
-            case 'histogram':
-            case 'waverose':
             case 'ts':
-                showControl('latitude');
-                showControl('longitude');
-                addPointLayer();
-
                 hideControl('period');
                 hideControl('date');
                 hideControl('month');
                 hideControl('year');
+                /* no break */
+
+            case 'xsections':
+            case 'histogram':
+            case 'waverose':
+                showControl('latitude');
+                showControl('longitude');
+                addPointLayer();
+
                 break;
 
             default:
