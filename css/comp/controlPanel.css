@@ -68,6 +68,11 @@
   cursor: pointer;
 }
 
+.ui-datepicker {
+  /* this is important because else the style overrides it */
+  z-index: 1000 !important;
+}
+
 input[disabled] + label {
   color: #cccccc;
 }

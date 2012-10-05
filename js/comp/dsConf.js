@@ -9,13 +9,15 @@
 
 var ocean = ocean || {};
 
+dateformat = 'yymmdd';
+
 ocean.dsConf = {
     reynolds: {
         params: function() {
             return {
                 dataset: 'reynolds',
                 map: this.variable.get('id'),
-                date: $.datepick.formatDate(ocean.dateFormat, ocean.date),
+                date: $.datepicker.formatDate(dateformat, ocean.date),
                 period: ocean.period,
                 area: ocean.area,
                 average: ocean.dsConf['reynolds'].aveCheck.average,
@@ -51,7 +53,7 @@ ocean.dsConf = {
             return {
                 dataset: 'ersst',
                 map: this.variable.get('id'),
-                date: $.datepick.formatDate(ocean.dateFormat, ocean.date),
+                date: $.datepicker.formatDate(dateformat, ocean.date),
                 period: ocean.period,
                 baseYear: 1900,
                 area: ocean.area,
@@ -91,7 +93,7 @@ ocean.dsConf = {
             var params = {
               dataset: 'bran',
               map: this.variable.get('id'),
-              date: $.datepick.formatDate(ocean.dateFormat, ocean.date),
+              date: $.datepicker.formatDate(dateformat, ocean.date),
               period: ocean.period,
               area: ocean.area,
               timestamp: $.now()
@@ -130,7 +132,7 @@ ocean.dsConf = {
                 urlat: $('#latitude').val(),
                 urlon: $('#longitude').val(),
                 variable: this.variable.get('id'),
-                date: $.datepick.formatDate(ocean.dateFormat, ocean.date),
+                date: $.datepicker.formatDate(dateformat, ocean.date),
                 period: ocean.period,
                 timestamp: $.now()
             };
@@ -151,7 +153,7 @@ ocean.dsConf = {
                 dataset: 'sealevel',
                 variable: this.variable.get('id'),
                 period: ocean.period,
-                date: $.datepick.formatDate(ocean.dateFormat, ocean.date),
+                date: $.datepicker.formatDate(dateformat, ocean.date),
                 area: ocean.area,
                 lat: $('#latitude').val(),
                 lon: $('#longitude').val(),

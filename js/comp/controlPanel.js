@@ -43,22 +43,11 @@ $(document).ready(function() {
                                             'height': 55,
                                             'resizable': false });
 
-    $(".datepicker").datepick({
-        // minDate: dateRange.minDate,
-        // maxDate: dateRange.maxDate,
-        // yearRange: dateRange.minYear + ":" + dateRange.maxYear,
-        dateFormat: 'yyyy/mm/dd',
-        firstDay: 1,
-        renderer: $.extend({},
-                  $.datepick.weekOfYearRenderer,
-                      {picker: $.datepick.defaultRenderer.picker.
-                      replace(/\{link:clear\}/, '').
-                      replace(/\{link:close\}/, '')
-                   }),
-        showOtherMonths: true,
-        showOnFocus: false
+    $(".datepicker").datepicker({
+        /* dateFormat here is different to parseDate below */
+        dateFormat: 'd MM yy',
     }).mousedown(function() {
-        $(this).datepick('show');
+        $(this).datepicker('show');
     });
 
     /* UI handlers */
