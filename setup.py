@@ -93,6 +93,7 @@ script_substitutions = {
 web_files = [
 #   'css/sst.css',
     'css/comp/controlPanel.css',
+    'css/comp/compmap.css',
     'js/comp/controlPanel.js',
     'js/comp/compmap.js',
     'js/comp/dsConf.js',
