@@ -6,7 +6,7 @@
     },
     "aus": {
         "name": "Australian",
-        "extents": [ 92, -60, 166, 0 ],
+        "extents": [ 92, -60, 172, 0 ],
         "tidalGaugeRegions": [ "aubaseline", "au" ]
     }
 }
