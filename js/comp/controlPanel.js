@@ -354,8 +354,7 @@ $(document).ready(function() {
         }
 
         if (!date_ ||
-            isNaN(date_.getTime()) ||
-            date_.getTime() == ocean.date.getTime()) {
+            isNaN(date_.getTime())) {
             return;
         }
 
@@ -377,6 +376,8 @@ $(document).ready(function() {
 
             return br - ar;
         });
+
+        /* FIXME: check if the datasets have changed */
 
         /* clear previous choices */
         $('#dataset option').remove();
