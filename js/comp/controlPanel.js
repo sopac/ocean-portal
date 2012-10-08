@@ -514,11 +514,6 @@ $(document).ready(function() {
 
 });
 
-Date.prototype.getMonthString = function() {
-    var calMonth = String(this.getMonth() + 1);
-    return (calMonth < 10) ?  ('0' + calMonth) : calMonth;
-};
-
 /**
  * getBackendId:
  * @datasetid: a dataset frontend id
@@ -751,9 +746,6 @@ function removePointLayer () {
 
 function _controlVarParent(control) {
     return $('#' + control).parent('.controlvar');
-}
-
-function _showhideControlGroups() {
 }
 
 /**
