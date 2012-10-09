@@ -73,7 +73,7 @@ $(document).ready(function() {
         var plots = ocean.variables[varid].plots;
 
         filterOpts('plottype', plots);
-        showControl('plottype');
+        showControls('plottype');
         selectFirstIfRequired('plottype');
     });
 
@@ -91,32 +91,27 @@ $(document).ready(function() {
         var periods = ocean.variables[ocean.variable].plots[plottype];
 
         filterOpts('period', periods);
-        showControl('period');
+        showControls('period');
         selectFirstIfRequired('period');
-        showControl('dataset');
+        showControls('dataset');
 
         /* FIXME: consider exposing these in CSS ? */
         /* plot specific controls */
         switch (plottype) {
             case 'ts':
-                hideControl('period');
-                hideControl('date');
-                hideControl('month');
-                hideControl('year');
+                hideControls('period', 'date', 'month', 'year');
                 /* no break */
 
             case 'xsections':
             case 'histogram':
             case 'waverose':
-                showControl('latitude');
-                showControl('longitude');
+                showControls('latitude', 'longitude');
                 addPointLayer();
 
                 break;
 
             default:
-                hideControl('latitude');
-                hideControl('longitude');
+                hideControls('latitude', 'longitude');
                 removePointLayer();
                 break;
         }
@@ -125,6 +120,8 @@ $(document).ready(function() {
     /* Period */
     $('#period').change(function () {
         var period = $('#period option:selected').val();
+        var show = [];
+        var hide = []
 
         if (!(period in ocean.variables[ocean.variable].plots[ocean.plottype])) {
             return;
@@ -137,24 +134,24 @@ $(document).ready(function() {
         switch (period) {
             case 'daily':
             case 'weekly':
-                showControl('date');
-                hideControl('month');
-                hideControl('year');
+                show.push('date');
+                hide.push('month');
+                hide.push('year');
                 break;
 
             case 'yearly':
-                hideControl('date');
-                hideControl('month');
-                showControl('year');
+                hide.push('date');
+                hide.push('month');
+                show.push('year');
                 break;
 
             case 'monthly':
             case '3monthly':
             case '6monthly':
             case '12monthly':
-                hideControl('date');
-                showControl('month');
-                showControl('year');
+                hide.push('date');
+                show.push('month');
+                show.push('year');
                 break;
 
             default:
@@ -186,19 +183,21 @@ $(document).ready(function() {
         switch (plottype) {
             case 'histogram':
             case 'waverose':
-                hideControl('year');
+                hide.push('year');
                 break;
 
             case 'ts':
-                hideControl('date');
-                hideControl('month');
-                hideControl('year');
+                hide.push('date');
+                hide.push('month');
+                hide.push('year');
                 break;
 
             default:
                 /* pass */
                 break;
         }
+
+        hideControls.apply(null, hide);
 
         /* FIXME: is this strictly correct? it would collapse for datasets
          * with holes in them. That's fine for the year combo, but not the
@@ -241,6 +240,8 @@ $(document).ready(function() {
             /* FIXME: use a clamped ocean.date */
             date_.datepicker('setDate', range.max).change();
         }
+
+        showControls.apply(null, show);
     });
 
     /* Year */
@@ -415,7 +416,7 @@ $(document).ready(function() {
         ocean.dataset = ocean.dsConf[backendid];
 
         /* update about file */
-        showControl('dshelp');
+        showControls('dshelp');
         $('#dshelp').attr('href', ocean.datasets[datasetid].help);
         $('#dshelp span').html(ocean.datasets[datasetid].name);
 
@@ -749,44 +750,53 @@ function _controlVarParent(control) {
 }
 
 /**
- * showControl:
+ * showControls:
  *
  * Shows a div.controlvar based on the id of the field within it.
- */
-function showControl(control) {
-    var parent = _controlVarParent(control);
-
-    parent.show();
-    parent.parent('.controlgroup').show();
-
-    $('#' + control).change();
-}
-
-/**
- * hideControl:
  *
- * Hides a div.controlvar based on the id of the field within it.
+ * See Also: hideControls()
  */
-function hideControl(control) {
-    var parent = _controlVarParent(control)
-    var group = parent.parent('.controlgroup');
+function showControls() {
+    var controls = arguments;
 
-    parent.hide();
-
-    /* hide control group if required */
-    if (group.children('.controlvar:visible').length == 0) {
-        group.hide();
+    if (controls.length == 0) {
+        controls = ocean.controls;
     }
+
+    $.each(controls, function (i, control) {
+        var parent = _controlVarParent(control);
+
+        parent.show();
+        parent.parent('.controlgroup').show();
+
+        $('#' + control).change();
+    });
 }
 
 /**
  * hideControls:
  *
- * Hides all controls.
+ * Hides a div.controlvar based on the id of the field within it.
+ *
+ * See Also: showControls()
  */
 function hideControls() {
-    $.each(ocean.controls, function (i, control) {
-        hideControl(control);
+    var controls = arguments;
+
+    if (controls.length == 0) {
+        controls = ocean.controls;
+    }
+
+    $.each(controls, function (i, control) {
+        var parent = _controlVarParent(control)
+        var group = parent.parent('.controlgroup');
+
+        parent.hide();
+
+        /* hide control group if required */
+        if (group.children('.controlvar:visible').length == 0) {
+            group.hide();
+        }
     });
 }
 
