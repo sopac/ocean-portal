@@ -303,8 +303,6 @@ $(document).ready(function() {
                 break;
         }
 
-        /* FIXME: clamp by available date */
-
         for (m = minMonth; m <= maxMonth; m++) {
             $('<option>', {
                 value: m,
@@ -312,7 +310,16 @@ $(document).ready(function() {
             }).appendTo(month);
         }
 
-        month.find('option[value=' + ocean.date.getMonth() + ']').attr('selected', true);
+        var selectedmonth = ocean.date.getMonth();
+
+        if (selectedmonth < minMonth) {
+            month.find('option:first').attr('selected', true);
+        } else if (selectedmonth > maxMonth) {
+            month.find('option:last').attr('selected', true);
+        } else {
+            month.find('option[value=' + selectedmonth + ']')
+                .attr('selected', true);
+        }
 
         month.change();
     });
