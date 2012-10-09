@@ -204,11 +204,10 @@ $(document).ready(function() {
          * datepicker */
         var range = getCombinedDateRange();
 
-        /* populate year */
-        var year = $('#year');
+        if ($.inArray('year', show) != -1) {
+            /* populate year */
+            var year = $('#year');
 
-        if (year.is(':visible')) {
-            /* FIXME: removing these unsets the current selection */
             year.find('option').remove();
 
             for (y = range.min.getFullYear();
@@ -221,15 +220,15 @@ $(document).ready(function() {
             }
 
             /* select most recent */
-            year.find('option:last').attr('selected', true);
+            year.find('option[value=' + ocean.date.getFullYear() + ']').attr('selected', true);
             year.change();
         }
 
         /* we populate month based on the selected year (see below) */
 
-        var date_ = $('#date');
+        if ($.inArray('date', show) != -1) {
+            var date_ = $('#date');
 
-        if (date_.is(':visible')) {
             /* set range on datepicker */
             date_.datepicker('option', {
                 minDate: range.min,
@@ -237,8 +236,8 @@ $(document).ready(function() {
                 yearRange: range.min.getFullYear() + ':' + range.max.getFullYear()
             });
 
-            /* FIXME: use a clamped ocean.date */
-            date_.datepicker('setDate', range.max).change();
+            /* automatically clamps the date to the available range */
+            date_.datepicker('setDate', ocean.date).change();
         }
 
         showControls.apply(null, show);
@@ -248,74 +247,74 @@ $(document).ready(function() {
     $('#year').change(function () {
         /* populate month */
         var month = $('#month');
+        var range = getCombinedDateRange();
 
-        if (month.is(':visible')) {
-            var range = getCombinedDateRange();
+        month.find('option').remove();
 
-            /* FIXME: removing these unsets the current selection */
-            month.find('option').remove();
+        /* calculate the possible month range */
+        var selectedyear = $('#year option:selected').val();
+        var minMonth = 0;
+        var maxMonth = 11;
+        var fmt;
 
-            /* calculate the possible month range */
-            var selectedyear = $('#year option:selected').val();
-            var minMonth = 0;
-            var maxMonth = 11;
-            var fmt;
-
-            if (selectedyear == range.min.getFullYear()) {
-                minMonth = range.min.getMonth();
-            } else if (selectedyear == range.max.getFullYear()) {
-                maxMonth = range.max.getMonth();
-            }
-
-            switch (ocean.period) {
-                case 'monthly':
-                    fmt = function (m) {
-                        return $.datepicker.formatDate('MM',
-                            new Date(selectedyear, m));
-                    }
-                    break;
-
-                case '3monthly':
-                    fmt = function (m) {
-                        return $.datepicker.formatDate('M y',
-                                new Date(selectedyear, m - 3)) + ' &ndash; ' +
-                            $.datepicker.formatDate('M y',
-                                new Date(selectedyear, m));
-                    }
-                    break;
-
-                case '6monthly':
-                    fmt = function (m) {
-                        return $.datepicker.formatDate('M y',
-                                new Date(selectedyear, m - 6)) + ' &ndash; ' +
-                            $.datepicker.formatDate('M y',
-                                new Date(selectedyear, m));
-                    }
-                    break;
-
-                case '12monthly':
-                    fmt = function (m) {
-                        return $.datepicker.formatDate('M y',
-                                new Date(selectedyear, m - 12)) + ' &ndash; ' +
-                            $.datepicker.formatDate('M y',
-                                new Date(selectedyear, m));
-                    }
-                    break;
-
-                default:
-                    console.error("ERROR: should not be reached");
-                    break;
-            }
-
-            for (m = minMonth; m <= maxMonth; m++) {
-                $('<option>', {
-                    value: m,
-                    html: fmt(m)
-                }).appendTo(month);
-            }
-
-            month.change();
+        if (selectedyear == range.min.getFullYear()) {
+            minMonth = range.min.getMonth();
+        } else if (selectedyear == range.max.getFullYear()) {
+            maxMonth = range.max.getMonth();
         }
+
+        switch (ocean.period) {
+            case 'monthly':
+                fmt = function (m) {
+                    return $.datepicker.formatDate('MM',
+                        new Date(selectedyear, m));
+                }
+                break;
+
+            case '3monthly':
+                fmt = function (m) {
+                    return $.datepicker.formatDate('M y',
+                            new Date(selectedyear, m - 3)) + ' &ndash; ' +
+                        $.datepicker.formatDate('M y',
+                            new Date(selectedyear, m));
+                }
+                break;
+
+            case '6monthly':
+                fmt = function (m) {
+                    return $.datepicker.formatDate('M y',
+                            new Date(selectedyear, m - 6)) + ' &ndash; ' +
+                        $.datepicker.formatDate('M y',
+                            new Date(selectedyear, m));
+                }
+                break;
+
+            case '12monthly':
+                fmt = function (m) {
+                    return $.datepicker.formatDate('M y',
+                            new Date(selectedyear, m - 12)) + ' &ndash; ' +
+                        $.datepicker.formatDate('M y',
+                            new Date(selectedyear, m));
+                }
+                break;
+
+            default:
+                console.error("ERROR: should not be reached");
+                break;
+        }
+
+        /* FIXME: clamp by available date */
+
+        for (m = minMonth; m <= maxMonth; m++) {
+            $('<option>', {
+                value: m,
+                html: fmt(m)
+            }).appendTo(month);
+        }
+
+        month.find('option[value=' + ocean.date.getMonth() + ']').attr('selected', true);
+
+        month.change();
     });
 
     /* Date range is changed */
@@ -340,13 +339,10 @@ $(document).ready(function() {
             case '3monthly':
             case '6monthly':
             case '12monthly':
+            case 'yearly':
                 date_ = new Date($('#year option:selected').val(),
                                  $('#month option:selected').val(),
                                  1);
-                break;
-
-            case 'yearly':
-                date_ = new Date($('#year option:selected').val(), 1, 1);
                 break;
 
             default:
@@ -360,7 +356,6 @@ $(document).ready(function() {
         }
 
         ocean.date = date_;
-        console.log("date", ocean.date, date_.getTime());
 
         /* filter datasets based on the chosen range */
         datasets = $.grep(
