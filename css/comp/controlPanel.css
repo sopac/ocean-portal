@@ -42,7 +42,12 @@
   padding: 1px;
 }
 
+form {
+  width: 100%;
+}
+
 .controlgroup {
+  width: 100%;
   margin-top: 5px;
   margin-bottom: 5px;
 }
@@ -51,18 +56,35 @@
   margin-left: 65px;
 }
 
+.controlgroup .hint {
+  font-size: smaller;
+  padding: 3px;
+}
+
 .controlvar {
+  width: 100%;
   padding: 1px;
 }
 
 .controlvar .label,
 .controlvar label {
   display: inline-block;
-  width: 60px;
+  text-align: right;
+  white-space: nowrap;
+  width: 51px;
+  padding-right: 3px;
+  color: #222222;
 }
 
 .controlvar .field {
-  width: 130px;
+  width: 138px;
+}
+
+.controlvar select,
+.controlvar input {
+  border: 1px solid rgb(161, 161, 161);
+  font-size: 12px;
+  height: 14pt;
 }
 
 .datepicker {
