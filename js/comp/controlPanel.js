@@ -58,7 +58,7 @@ $(document).ready(function() {
 
     /* Variable */
     $('#variable').change(function () {
-        var varid = $('#variable option:selected').val();
+        var varid = getValue('variable');
 
         if (!(varid in ocean.variables)) {
             return;
@@ -81,7 +81,7 @@ $(document).ready(function() {
 
     /* Plot Type */
     $('#plottype').change(function () {
-        var plottype = $('#plottype option:selected').val();
+        var plottype = getValue('plottype');
 
         if (!(plottype in ocean.variables[ocean.variable].plots)) {
             return;
@@ -121,7 +121,7 @@ $(document).ready(function() {
 
     /* Period */
     $('#period').change(function () {
-        var period = $('#period option:selected').val();
+        var period = getValue('period');
         var show = [];
         var hide = []
 
@@ -221,9 +221,7 @@ $(document).ready(function() {
                 }).appendTo(year);
             }
 
-            /* select most recent */
-            year.find('option[value=' + ocean.date.getFullYear() + ']').attr('selected', true);
-            year.change();
+            setValue('year', ocean.date.getFullYear());
         }
 
         /* we populate month based on the selected year (see below) */
@@ -254,7 +252,7 @@ $(document).ready(function() {
         month.find('option').remove();
 
         /* calculate the possible month range */
-        var selectedyear = $('#year option:selected').val();
+        var selectedyear = getValue('year');
         var minMonth = 0;
         var maxMonth = 11;
         var fmt;
@@ -319,8 +317,7 @@ $(document).ready(function() {
         } else if (selectedmonth > maxMonth) {
             month.find('option:last').attr('selected', true);
         } else {
-            month.find('option[value=' + selectedmonth + ']')
-                .attr('selected', true);
+            setValue('month', selectedmonth);
         }
 
         month.change();
@@ -349,9 +346,7 @@ $(document).ready(function() {
             case '6monthly':
             case '12monthly':
             case 'yearly':
-                date_ = new Date($('#year option:selected').val(),
-                                 $('#month option:selected').val(),
-                                 1);
+                date_ = new Date(getValue('year'), getValue('month'), 1);
                 break;
 
             default:
@@ -405,7 +400,7 @@ $(document).ready(function() {
 
     /* Dataset */
     $('#dataset').change(function () {
-        var datasetid = $('#dataset option:selected').val();
+        var datasetid = getValue('dataset');
 
         if (!datasetid) {
             return;
