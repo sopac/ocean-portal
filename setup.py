@@ -91,17 +91,18 @@ script_substitutions = {
 }
 
 web_files = [
-    'css/common.css',
 #   'css/sst.css',
     'css/comp/controlPanel.css',
+    'css/comp/compmap.css',
     'js/comp/controlPanel.js',
     'js/comp/compmap.js',
+    'js/comp/dsConf.js',
 #   'js/sst.js',
 ]
 
 data = [
     'config/comp/datasets.json',
-    'config/comp/period.json',
+    'config/comp/vargroups.json',
     'config/comp/portals.json',
     'config/comp/tidalGauges.txt',
     'config/aus/countryList.json',

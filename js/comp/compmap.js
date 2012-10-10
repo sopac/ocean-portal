@@ -8,6 +8,11 @@
 var ocean = ocean || {};
 var map;
 
+/**
+ * fatal_error:
+ *
+ * Show a fatal error (one that terminates the portal) with @msg.
+ */
 function fatal_error(msg)
 {
     $('#error-dialog-content').html(msg);
@@ -56,6 +61,11 @@ $(document).ready(function() {
         });
 });
 
+/**
+ * createMap:
+ *
+ * Create the map component. Should only be called once.
+ */
 function createMap () {
     map = new OpenLayers.Map("map", {
         resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
@@ -81,7 +91,7 @@ function createMap () {
         eventListeners: {
             addlayer: _updateDisabled,
             removelayer: _updateDisabled,
-            changelayer: mapBaseLayerChanged
+            changelayer: _mapBaseLayerChanged
         }
     });
 
@@ -89,10 +99,10 @@ function createMap () {
     var keyboardControls = new OpenLayers.Control.KeyboardDefaults();
     map.addControl(keyboardControls);
 
-    $('input').focusin(function () {
+    $(':input').focusin(function () {
         keyboardControls.deactivate();
     });
-    $('input').focusout(function () {
+    $(':input').focusout(function () {
         keyboardControls.activate();
     });
 
@@ -119,7 +129,7 @@ function createMap () {
     map.addLayers([bathymetryLayer, outputLayer]);
     map.setBaseLayer(bathymetryLayer);
 
-    function mapBaseLayerChanged(evt) {
+    function _mapBaseLayerChanged(evt) {
         var layerName;
         var legendDiv = $('#legendDiv');
         var enableOL = false;
@@ -143,7 +153,7 @@ function createMap () {
         _updateDisabled();
     }
 
-    mapBaseLayerChanged(null);
+    _mapBaseLayerChanged(null);
 }
 
 function _updateDisabled ()
@@ -157,6 +167,11 @@ function _updateDisabled ()
     }, 5);
 }
 
+/**
+ * selectMapLayer:
+ *
+ * Select the map layer specified by @name.
+ */
 function selectMapLayer(name)
 {
     var layer = map.getLayersByName(name)[0];
@@ -165,6 +180,11 @@ function selectMapLayer(name)
     _updateDisabled();
 }
 
+/**
+ * updateMap:
+ *
+ * Updates the output layer of the map with @data.
+ */
 function updateMap (data) {
     var layer = map.getLayersByName("Output")[0];
 
@@ -175,10 +195,212 @@ function updateMap (data) {
     layer.redraw(true);
 }
 
+/**
+ * prependOutputSet:
+ *
+ * Prepends an output group to the output panel.
+ */
+function prependOutputSet()
+{
+    while ($('#outputDiv div.outputgroup').length >= ocean.compare.limit) {
+        $('#outputDiv div.outputgroup:last').remove();
+    }
+
+    var div = $('<div>', {
+        'class': 'outputgroup'
+    }).prependTo($('#outputDiv'));
+
+    /* remove button */
+    $('<span>', {
+        'class': 'close-button ui-icon ui-icon-close',
+        title: "Remove",
+        click: function () {
+            /* if this is the selected layer, switch back to Bathymetry */
+            if (div.find(':checked').length > 0) {
+                /* remove this now, so that selectMapLayer() disables
+                 * appropriately */
+                div.find(':checked').remove();
+                /* select a new layer in case it isn't disabled */
+                $('.outputgroup input[type=radio]:first')
+                    .attr('checked', 'checked')
+                    .change();
+                selectMapLayer("Bathymetry");
+            }
+
+            div.fadeTo('fast', 0);
+            div.slideUp('fast', function () {
+                div.remove();
+            });
+        }
+    }).appendTo(div);
+
+    $('<p>', {
+        'class': 'date',
+        text: new Date().toLocaleTimeString()
+    }).appendTo(div);
+
+
+    /* scroll to the top of the output div */
+    $('#outputDiv').animate({ scrollTop: 0 }, 75);
+}
+
+function _createOutput(image, dataURL, name, extras, data)
+{
+    var div = $('<div>', {
+        'class': 'thumbnail'
+    });
+
+    if (name) {
+        $('<h2>', {
+            text: name
+        }).appendTo(div);
+    }
+
+    if (data) {
+        $('<input>', {
+            type: 'radio',
+            name: 'outputLayer',
+            title: "Set as map layer",
+            checked: true
+        })
+        .appendTo(div)
+        .change(function () {
+            updateMap(data);
+        });
+    }
+
+    var a = $('<a>', {
+        'class': 'raster',
+        href: image,
+        title: "Click to open in a new window",
+        target: '_blank'
+    }).appendTo(div);
+
+    var img = $('<img>', {
+        src: image + '?' + $.param({ time: $.now() })
+    }).appendTo(a);
+
+    div.hide();
+    img.load(function () {
+        /* this kludge is required for IE7, where it turns out you can't do
+         * slideDown on a block contained in a relative positioned parent
+         * unless that block has a defined height */
+        if ($.browser.msie && $.browser.version == '7.0')
+            div.css('height', div.height());
+
+        div.slideDown();
+    });
+
+    img.hover(
+        function (e) {
+            enlargeImg(this, true);
+        },
+        function (e) {
+            enlargeImg(this, false);
+        });
+
+    $('<div>', {
+        'class': 'overlay ui-icon ui-icon-newwin'
+    }).appendTo(div);
+
+    if (dataURL)
+        $('<a>', {
+            'class': 'download-data',
+            href: dataURL,
+            target: '_blank',
+            html: '<span class="ui-icon ui-icon-arrowreturnthick-1-s"></span>Download Data'
+        }).appendTo(div);
+
+    if (extras)
+        $('<span>', {
+            html: extras
+        }).appendTo(div);
+
+    return div;
+}
+
+/**
+ * appendOutput:
+ * @imageURL: URL for the image
+ * @dataURL: optional URL for the data to download
+ * @name: optional title for the output
+ * @extras: optional extra HTML
+ * @data: optional ref to the data object, so this output can be selected as
+ *        the map base layer
+ *
+ * Appends a new output to the topmost output group.
+ *
+ * See Also: prependOutput()
+ */
+function appendOutput()
+{
+    _createOutput.apply(null, arguments).appendTo($('#outputDiv .outputgroup:first'));
+}
+
+/**
+ * prependOutput:
+ * @imageURL: URL for the image
+ * @dataURL: optional URL for the data to download
+ * @name: optional title for the output
+ * @extras: optional extra HTML
+ * @data: optional ref to the data object, so this output can be selected as
+ *        the map base layer
+ *
+ * Prepends a new output to the topmost output group.
+ *
+ * See Also: appendOutput()
+ */
+function prependOutput()
+{
+    _createOutput.apply(null, arguments).prependTo($('#outputDiv .outputgroup:first'));
+}
+
+/**
+ * enlargeImg:
+ *
+ * Shows or hides an enlarged version of the image within the map.
+ */
+function enlargeImg(img, show) {
+    var enlargeDiv = $('#enlargeDiv');
+
+    if (show) {
+        enlargeDiv.stop(true, true);
+        $('#enlargeDiv img').remove();
+        var eimg = $('<img>', {
+            src: img.src,
+            'class' : 'imagepreview'
+        }).appendTo(enlargeDiv);
+
+        /* fix broken positioning in IE7 */
+        if ($.browser.msie && $.browser.version == '7.0') {
+            var eimgraw = eimg.get(0);
+
+            var offset = eimg.offset();
+            eimg.offset({
+                top: offset.top + enlargeDiv.height() / 2 - eimgraw.height / 2,
+                left: offset.left + enlargeDiv.width() / 2 - eimgraw.width / 2
+            });
+        }
+
+        enlargeDiv.fadeIn(100);
+        enlargeDiv.show();
+    }
+    else {
+        enlargeDiv.stop(true, true);
+        enlargeDiv.delay(100);
+        enlargeDiv.fadeOut(150, function () {
+            enlargeDiv.html('');
+            enlargeDiv.hide();
+        });
+    }
+}
+
 Ext.require(['*']);
 Ext.onReady(function() {
-
-    var countrylisturl = [ 'config', ocean.config, 'countryList.json' ].join('/');
+    var countryCombo, countryStore;
+    var countrylisturl = [ 'config',
+                           ocean.config,
+                           'countryList.json' ].join('/');
 
     Ext.define('Country', {
         extend: 'Ext.data.Model',
@@ -193,19 +415,19 @@ Ext.onReady(function() {
         }
     });
 
-    window.countryStore = new Ext.data.Store({
+    countryStore = new Ext.data.Store({
         autoLoad: true,
         model: 'Country',
         listeners: {
             load: function () {
-                window.countryCombo.select(ocean.config);
+                countryCombo.select(ocean.config);
             }
         }
     });
 
-    function selectCountry(event, args) {
+    function _selectCountry(event, args) {
         var selection = event.getValue();
-        var record = window.countryStore.getById(selection);
+        var record = countryStore.getById(selection);
 
         if (!record)
             return;
@@ -217,19 +439,19 @@ Ext.onReady(function() {
         ocean.area = selection;
     }
 
-    window.countryCombo = Ext.create('Ext.form.field.ComboBox', {
+    countryCombo = Ext.create('Ext.form.field.ComboBox', {
         fieldLabel: 'Select a country/region',
         labelAlign: 'top',
         displayField: 'name',
         valueField: 'abbr',
-        store: window.countryStore,
+        store: countryStore,
         queryMode: 'local',
         padding: 5,
         height: '60%',
         width: 180,
         listeners: {
-            select: selectCountry,
-            change: selectCountry
+            select: _selectCountry,
+            change: _selectCountry
         }
     });
 
@@ -255,7 +477,7 @@ Ext.onReady(function() {
                 xtype: 'panel',
                 region: 'center',
                 autoScroll: true,
-                contentEl: 'wrapper'
+                contentEl: 'controlPanel'
             }, {
                 xtype: 'panel',
                 region: 'south',
@@ -300,7 +522,6 @@ Ext.onReady(function() {
                     window.open('/cosppac/comp/ocean-portal/ocean-portal-help.shtml', '_blank');
                 }
             }]
-        }
-       ]
+        }]
     });
-  });
+});

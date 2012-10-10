@@ -2,39 +2,28 @@
     "id":"reynolds",
     "name":"Reynolds",
     "title": "Sea Surface Temperature - Reynolds",
+    "rank": 100,
     "help": "/cosppac/comp/ocean-portal/about_reynolds.pdf",
     "variables": [{
-        "id":"mean",
+        "id":"meansst",
+        "bid": "mean",
         "name":"Mean SST",
         "periods": ["daily", "monthly", "yearly"],
-        "areas" : ["aus", "eca", "wca", "cor", "nws", "ntr", "swr", "sth", "tas", "glob", "ind", "pac", "sh"]
+        "plottypes": ["map", "trendmap"]
     },{
-        "id":"anom",
+        "id":"sstanom",
+        "bid": "anom",
         "name":"SST Anomaly",
         "periods": ["daily", "monthly", "yearly"],
-        "areas" : ["aus", "eca", "wca", "cor", "nws", "ntr", "swr", "sth", "tas", "glob", "ind", "pac", "sh"],
-        "average" : {
-            "checkboxes" : [{
-                "boxLabel" : "Average",
-                "name" : "average"
-            }, {
-                "boxLabel" : "Trend",
-                "name" : "trend"
-            }, {
-                "boxLabel" : "Running Average",
-                "name" : "runningAve"
-            }],
-            "periods" : ["monthly", "yearly"]
-        }
+        "plottypes": ["map", "trendmap"]
     },{
-        "id":"dec",
+        "id":"sstdec",
+        "bid": "dec",
         "name":"SST Deciles",
         "periods": ["monthly"],
-        "areas" : ["aus", "eca", "wca", "cor", "nws", "ntr", "swr", "sth", "tas", "glob", "ind", "pac", "sh"]
+        "plottypes": ["map", "trendmap"]
     }],
     "dateRange" : {
-        "minYear": "1982",
-        "maxYear": "2011",
         "minDate": "19820101",
         "maxDate": "20111231"
     }
@@ -44,37 +33,25 @@
     "title": "Sea Surface Temperature - ERSST",
     "help": "/cosppac/comp/ocean-portal/about_errst.pdf",
     "variables": [{
-        "id":"mean",
+        "id":"meansst",
+        "bid": "mean",
         "name":"Mean SST",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
-        "areas" : ["pi", "cook", "fsm", "fiji", "kiribati", "marshall", "nauru", "niue", "palau", "png", "samoa", "solomon", "tonga", "tuvalu", "vanuatu"]
+        "plottypes": ["map", "trendmap"]
     },{
-        "id":"anom",
+        "id":"sstanom",
+        "bid": "anom",
         "name":"SST Anomaly",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
-        "areas" : ["pi", "cook", "fsm", "fiji", "kiribati", "marshall", "nauru", "niue", "palau", "png", "samoa", "solomon", "tonga", "tuvalu", "vanuatu"],
-        "average" : {
-            "checkboxes" : [{
-                "boxLabel" : "Average",
-                "name" : "average"
-            }, {
-                "boxLabel" : "Trend",
-                "name" : "trend"
-            }, {
-                "boxLabel" : "Running Average",
-                "name" : "runningAve"
-            }],
-            "periods" : ["monthly", "yearly"]
-        }
+        "plottypes": ["map", "trendmap"]
     },{
-        "id":"dec",
+        "id":"sstdec",
+        "bid": "dec",
         "name":"SST Deciles",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
-        "areas" : ["pi", "cook", "fsm", "fiji", "kiribati", "marshall", "nauru", "niue", "palau", "png", "samoa", "solomon", "tonga", "tuvalu", "vanuatu"]
+        "plottypes": ["map", "trendmap"]
     }],
     "dateRange" : {
-        "minYear": "1889",
-        "maxYear": "2012",
         "minDate": "18890101",
         "maxDate": "20120831"
     }
@@ -86,19 +63,20 @@
     "variables": [{
         "id": "Hs",
         "name": "Significant Wave Height",
-        "periods": ["monthly"]
+        "periods": ["monthly"],
+        "plottypes": ["histogram"]
     }, {
         "id": "Tm",
         "name": "Mean Wave Period",
-        "periods": ["monthly"]
+        "periods": ["monthly"],
+        "plottypes": ["histogram"]
     }, {
         "id": "Dm",
         "name": "Mean Wave Direction",
-        "periods": ["monthly"]
+        "periods": ["monthly"],
+        "plottypes": ["waverose"]
     }],
     "dateRange" : {
-        "minYear": "1979",
-        "maxYear": "2009",
         "minDate": "19790101",
         "maxDate": "20091201"
     }
@@ -108,44 +86,50 @@
     "title": "BRAN 2.1",
     "help": "/cosppac/comp/ocean-portal/about_bran.pdf",
     "variables": [{
-        "id":"temp",
+        "id":"meansst",
+        "bid": "temp",
         "name":"Temperature",
-        "periods": ["monthly"]
+        "periods": ["monthly"],
+        "plottypes": ["map", "xsections"]
     }, {
         "id":"salt",
         "name":"Salinity",
-        "periods": ["monthly"]
+        "periods": ["monthly"],
+        "plottypes": ["map", "xsections"]
     }, {
-        "id":"eta",
-        "name":"Sea Level Height",
-        "periods": ["monthly"]
+        "id":"rec",
+        "bid": "eta",
+        "name":"Reconstruction",
+        "periods": ["monthly"],
+        "plottypes": ["map"]
     }, {
         "id":"uvtemp",
         "name":"Temp & Currents",
-        "periods": ["monthly"]
+        "periods": ["monthly"],
+        "plottypes": ["map"]
     }, {
         "id":"uveta",
         "name":"Sea Level & Currents",
-        "periods": ["monthly"]
+        "periods": ["monthly"],
+        "plottypes": ["map"]
     }],
     "dateRange" : {
-        "minYear": "1993",
-        "maxYear": "2006",
         "minDate": "19930101",
         "maxDate": "20061230"
     }
 }, {
-    "id":"sealevel",
-    "name":"Sea Level",
-    "title": "Sea Level",
+    "id": "church",
+    "bid": "sealevel",
+    "name":"Church & White",
+    "title": "Church & White",
+    "rank": 100,
     "help": "/cosppac/comp/ocean-portal/about_sealevel.pdf",
     "variables": [{
         "id":"alt",
         "name":"Altimetry",
         "periods": ["monthly"],
+        "plottypes": ["map", "ts"],
         "dateRange" : {
-            "minYear": "1993",
-            "maxYear": "2011",
             "minDate": "19930101",
             "maxDate": "20110201"
         }
@@ -153,14 +137,22 @@
         "id":"rec",
         "name":"Reconstruction",
         "periods": ["monthly"],
+        "plottypes": ["map", "ts"],
         "dateRange" : {
-            "minYear": "1950",
-            "maxYear": "2009",
             "minDate": "19500101",
             "maxDate": "20091201"
         }
     }]
-}]    
-
-    
-
+}, {
+    "id": "ntc",
+    "bid": "sealevel",
+    "name": "NTC",
+    "title": "National Tidal Centre",
+    "help": "/cosppac/comp/ocean-portal/about_sealevel.pdf",
+    "variables": [{
+        "id":"gauge",
+        "name":"Tidal Gauge",
+        "periods": ["monthly"],
+        "plottypes": ["ts"]
+    }]
+}]
