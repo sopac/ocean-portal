@@ -183,6 +183,8 @@ ocean.dsConf = {
                 return;
             }
 
+            showControls('tidalgauge');
+
             /* generate a list of filters for the configured tidal
              * gauge regions */
             var filter;
@@ -309,6 +311,8 @@ ocean.dsConf = {
         },
         onDeselect: function() {
             var control;
+
+            hideControls('tidalgauge');
 
             layers = map.getLayersByName("Tidal gauges");
             for (layer in layers) {

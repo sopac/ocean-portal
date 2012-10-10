@@ -95,21 +95,20 @@ $(document).ready(function() {
         filterOpts('period', periods);
         showControls('period');
         selectFirstIfRequired('period');
-        showControls('dataset');
 
         /* FIXME: consider exposing these in CSS ? */
         /* plot specific controls */
         switch (plottype) {
-            case 'ts':
-                hideControls('period', 'date', 'month', 'year');
-                /* no break */
-
             case 'xsections':
             case 'histogram':
             case 'waverose':
+            case 'ts':
+                if (ocean.variable == 'gauge') {
+                    break;
+                }
+
                 showControls('latitude', 'longitude');
                 addPointLayer();
-
                 break;
 
             default:
@@ -122,7 +121,7 @@ $(document).ready(function() {
     /* Period */
     $('#period').change(function () {
         var period = getValue('period');
-        var show = [];
+        var show = [ 'dataset' ];
         var hide = []
 
         if (!(period in ocean.variables[ocean.variable].plots[ocean.plottype])) {
@@ -139,6 +138,10 @@ $(document).ready(function() {
                 show.push('date');
                 hide.push('month');
                 hide.push('year');
+
+                $('#date').datepicker('option', {
+                    showWeek: (period == 'weekly')
+                });
                 break;
 
             case 'yearly':
@@ -152,8 +155,24 @@ $(document).ready(function() {
             case '6monthly':
             case '12monthly':
                 hide.push('date');
-                show.push('month');
-                show.push('year');
+
+                switch (ocean.plottype) {
+                    case 'ts':
+                        hide.push('month');
+                        hide.push('year');
+                        break;
+
+                    case 'histogram':
+                    case 'waverose':
+                        show.push('month');
+                        hide.push('year');
+                        break;
+
+                    default:
+                        show.push('month');
+                        show.push('year');
+                        break;
+                }
                 break;
 
             default:
@@ -161,43 +180,8 @@ $(document).ready(function() {
                 break;
         }
 
-        /* datepicker specific options */
-        switch (period) {
-            case 'daily':
-                $('#date').datepicker('option', {
-                    showWeek: false
-                });
-                break;
-
-            case 'weekly':
-                /* FIXME: update format to show the week number */
-                $('#date').datepicker('option', {
-                    showWeek: true
-                });
-                break;
-
-            default:
-                /* pass */
-                break;
-        }
-
-        /* plot specific date controls */
-        switch (plottype) {
-            case 'histogram':
-            case 'waverose':
-                hide.push('year');
-                break;
-
-            case 'ts':
-                hide.push('date');
-                hide.push('month');
-                hide.push('year');
-                break;
-
-            default:
-                /* pass */
-                break;
-        }
+        console.log('hide', hide);
+        console.log('show', show);
 
         hideControls.apply(null, hide);
 
@@ -222,11 +206,11 @@ $(document).ready(function() {
             }
 
             setValue('year', ocean.date.getFullYear());
-        }
-
-        /* we populate month based on the selected year (see below) */
-
-        if ($.inArray('date', show) != -1) {
+        } else if ($.inArray('month', show) != -1) {
+            /* if year is shown, we populate month based on the selected year
+             * (see below) */
+            updateMonths();
+        } else if ($.inArray('date', show) != -1) {
             var date_ = $('#date');
 
             /* set range on datepicker */
@@ -238,6 +222,9 @@ $(document).ready(function() {
 
             /* automatically clamps the date to the available range */
             date_.datepicker('setDate', ocean.date).change();
+        } else {
+            /* datasets are not date dependent */
+            updateDatasets();
         }
 
         showControls.apply(null, show);
@@ -246,16 +233,12 @@ $(document).ready(function() {
     /* Year */
     $('#year').change(function () {
         /* populate month */
-        var month = $('#month');
         var range = getCombinedDateRange();
-
-        month.find('option').remove();
 
         /* calculate the possible month range */
         var selectedyear = getValue('year');
-        var minMonth = 0;
-        var maxMonth = 11;
-        var fmt;
+        var minMonth = null;
+        var maxMonth = null;
 
         if (selectedyear == range.min.getFullYear()) {
             minMonth = range.min.getMonth();
@@ -263,64 +246,7 @@ $(document).ready(function() {
             maxMonth = range.max.getMonth();
         }
 
-        switch (ocean.period) {
-            case 'monthly':
-                fmt = function (m) {
-                    return $.datepicker.formatDate('MM',
-                        new Date(selectedyear, m));
-                }
-                break;
-
-            case '3monthly':
-                fmt = function (m) {
-                    return $.datepicker.formatDate('M y',
-                            new Date(selectedyear, m - 3)) + ' &ndash; ' +
-                        $.datepicker.formatDate('M y',
-                            new Date(selectedyear, m));
-                }
-                break;
-
-            case '6monthly':
-                fmt = function (m) {
-                    return $.datepicker.formatDate('M y',
-                            new Date(selectedyear, m - 6)) + ' &ndash; ' +
-                        $.datepicker.formatDate('M y',
-                            new Date(selectedyear, m));
-                }
-                break;
-
-            case '12monthly':
-                fmt = function (m) {
-                    return $.datepicker.formatDate('M y',
-                            new Date(selectedyear, m - 12)) + ' &ndash; ' +
-                        $.datepicker.formatDate('M y',
-                            new Date(selectedyear, m));
-                }
-                break;
-
-            default:
-                console.error("ERROR: should not be reached");
-                break;
-        }
-
-        for (m = minMonth; m <= maxMonth; m++) {
-            $('<option>', {
-                value: m,
-                html: fmt(m)
-            }).appendTo(month);
-        }
-
-        var selectedmonth = ocean.date.getMonth();
-
-        if (selectedmonth < minMonth) {
-            month.find('option:first').attr('selected', true);
-        } else if (selectedmonth > maxMonth) {
-            month.find('option:last').attr('selected', true);
-        } else {
-            setValue('month', selectedmonth);
-        }
-
-        month.change();
+        updateMonths(minMonth, maxMonth);
     });
 
     /* Date range is changed */
@@ -346,7 +272,10 @@ $(document).ready(function() {
             case '6monthly':
             case '12monthly':
             case 'yearly':
-                date_ = new Date(getValue('year'), getValue('month'), 1);
+                var year = getValue('year') || 0;
+                var month = getValue('month') || 0;
+
+                date_ = new Date(year, month, 1);
                 break;
 
             default:
@@ -361,56 +290,39 @@ $(document).ready(function() {
 
         ocean.date = date_;
 
-        /* filter datasets based on the chosen range */
-        datasets = $.grep(
-            ocean.variables[ocean.variable].plots[ocean.plottype][ocean.period],
-            function(dataset) {
+        var filter;
+
+        if ($('#date').is(':visible') || $('#year').is(':visible')) {
+            filter = function(dataset) {
                 var range = getDateRange(dataset, ocean.variable);
 
                 if (!range)
                     return true; /* no date range defined */
 
                 return (ocean.date >= range.min) && (ocean.date <= range.max);
-        });
+            }
+        }
 
-        /* sort by rank */
-        datasets.sort(function (a, b) {
-            var ar = 'rank' in ocean.datasets[a] ? ocean.datasets[a].rank : 0;
-            var br = 'rank' in ocean.datasets[b] ? ocean.datasets[b].rank : 0;
-
-            return br - ar;
-        });
-
-        /* FIXME: check if the datasets have changed */
-
-        var dataset = getValue('dataset');
-        $('#dataset option').remove();
-
-        $.each(datasets, function (i, dataset) {
-            $('<option>', {
-                value: dataset,
-                text: ocean.datasets[dataset].name
-            }).appendTo('#dataset');
-        });
-
-        /* select first */
-        setValue('dataset', dataset);
-        selectFirstIfRequired('dataset');
+        updateDatasets(filter);
     });
 
     /* Dataset */
     $('#dataset').change(function () {
         var datasetid = getValue('dataset');
 
-        if (!datasetid) {
+        if (!datasetid || datasetid == ocean.datasetid) {
             return;
         }
+
+        ocean.datasetid = datasetid;
 
         var backendid = getBackendId(datasetid);
 
-        if (!backendid in ocean.dsConf) {
+        if (!(backendid in ocean.dsConf)) {
             return;
         }
+
+        console.log('badger');
 
         if (ocean.dataset && ocean.dataset.onDeselect) {
             ocean.dataset.onDeselect();
@@ -598,6 +510,126 @@ function getCombinedDateRange() {
     });
 
     return { min: new Date(minDate), max: new Date(maxDate) };
+}
+
+/**
+ * updateMonths:
+ *
+ * Update the months displayed in the months combo.
+ */
+function updateMonths(minMonth, maxMonth) {
+    var selectedyear = getValue('year') || 0;
+    var fmt;
+
+    if (minMonth == null) {
+        minMonth = 0;
+    }
+
+    if (maxMonth == null) {
+        maxMonth = 11;
+    }
+
+    console.log('period', ocean.period, selectedyear);
+
+    switch (ocean.period) {
+        case 'monthly':
+            fmt = function (m) {
+                return $.datepicker.formatDate('MM',
+                    new Date(selectedyear, m));
+            }
+            break;
+
+        case '3monthly':
+            fmt = function (m) {
+                return $.datepicker.formatDate('M y',
+                        new Date(selectedyear, m - 3)) + ' &ndash; ' +
+                    $.datepicker.formatDate('M y',
+                        new Date(selectedyear, m));
+            }
+            break;
+
+        case '6monthly':
+            fmt = function (m) {
+                return $.datepicker.formatDate('M y',
+                        new Date(selectedyear, m - 6)) + ' &ndash; ' +
+                    $.datepicker.formatDate('M y',
+                        new Date(selectedyear, m));
+            }
+            break;
+
+        case '12monthly':
+            fmt = function (m) {
+                return $.datepicker.formatDate('M y',
+                        new Date(selectedyear, m - 12)) + ' &ndash; ' +
+                    $.datepicker.formatDate('M y',
+                        new Date(selectedyear, m));
+            }
+            break;
+
+        default:
+            console.error("ERROR: should not be reached");
+            break;
+    }
+
+    var month = $('#month');
+
+    month.find('option').remove();
+
+    for (m = minMonth; m <= maxMonth; m++) {
+        $('<option>', {
+            value: m,
+            html: fmt(m)
+        }).appendTo(month);
+    }
+
+    var selectedmonth = ocean.date.getMonth();
+
+    if (selectedmonth < minMonth) {
+        selectFirstIfRequired('month');
+    } else if (selectedmonth > maxMonth) {
+        month.find('option:last').attr('selected', true);
+        month.change();
+    } else {
+        setValue('month', selectedmonth);
+    }
+}
+/**
+ * updateDatasets:
+ *
+ * Updates the datasets displayed in the datasets combo.
+ */
+function updateDatasets(filter) {
+    var datasets = ocean.variables[ocean.variable].plots[ocean.plottype][ocean.period];
+
+    if (filter) {
+        datasets = $.grep(datasets, filter);
+    }
+
+    /* sort by rank */
+    datasets.sort(function (a, b) {
+        var ar = 'rank' in ocean.datasets[a] ? ocean.datasets[a].rank : 0;
+        var br = 'rank' in ocean.datasets[b] ? ocean.datasets[b].rank : 0;
+
+        return br - ar;
+    });
+
+    console.log('update datasets', datasets);
+
+    /* FIXME: check if the datasets have changed */
+
+    var dataset = getValue('dataset');
+    $('#dataset option').remove();
+
+    $.each(datasets, function (i, dataset) {
+        $('<option>', {
+            value: dataset,
+            text: ocean.datasets[dataset].name
+        }).appendTo('#dataset');
+    });
+
+    /* select first */
+    setValue('dataset', dataset);
+    selectFirstIfRequired('dataset');
 }
 
 /**
