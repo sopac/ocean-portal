@@ -557,17 +557,23 @@ function getDateRange(datasetid, varid)
 {
     var variable = ocean.variables[varid].variable;
     var dataset = ocean.datasets[datasetid];
+    var range;
 
     /* first look to see if there's a variable dateRange */
     if ('dateRange' in variable) {
-        return variable.dateRange;
+        range = variable.dateRange;
     }
     /* else use the dataset dateRange */
     else if ('dateRange' in dataset) {
-        return dataset.dateRange;
+        range = dataset.dateRange;
     } else {
         return null;
     }
+
+    /* 'yy' is correct, believe it or not, see
+     * http://docs.jquery.com/UI/Datepicker/parseDate */
+    return { min: $.datepicker.parseDate('yymmdd', range.minDate),
+             max: $.datepicker.parseDate('yymmdd', range.maxDate) };
 }
 
 /**
@@ -583,22 +589,18 @@ function getCombinedDateRange() {
     var maxDate = Number.MIN_VALUE;
 
     $.each(datasets, function(i, datasetid) {
-        var dateRange = getDateRange(datasetid, ocean.variable);
+        var range = getDateRange(datasetid, ocean.variable);
 
-        if (!dateRange)
+        if (!range)
             return; /* continue */
 
-        minDate = Math.min(minDate, dateRange.minDate);
-        maxDate = Math.max(maxDate, dateRange.maxDate);
+        minDate = Math.min(minDate, range.min);
+        maxDate = Math.max(maxDate, range.max);
     });
 
-    /* 'yy' is correct, believe it or not, see
-     * http://docs.jquery.com/UI/Datepicker/parseDate
-     * This is different to dateFormat above. */
-    minDate = $.datepicker.parseDate('yymmdd', minDate);
-    maxDate = $.datepicker.parseDate('yymmdd', maxDate);
+    console.log('badger', minDate, maxDate);
 
-    return { min: minDate, max: maxDate };
+    return { min: new Date(minDate), max: new Date(maxDate) };
 }
 
 /**
