@@ -173,6 +173,8 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
     plt.savefig(output_filename, dpi=150, bbox_inches='tight', pad_inches=1.)
     plt.close()
     
+    pngcrush(output_filename)
+
     return
 
 def get_subset_idxs(x, x_min, x_max):

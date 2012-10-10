@@ -288,7 +288,7 @@ class Plotter:
                           cm_edge_values=None, cb_tick_fmt="%.0f",
                           cb_labels=None, cb_label_pos=None,
                           cmp_name='jet', extend='both',
-                          contourLines=False, proj=_DEFAULT_PROJ, product_label_str=None,
+                          plotStyle = 'contourf', contourLines=True, proj=_DEFAULT_PROJ, product_label_str=None,
                           vlat=None, vlon=None, u=None, v=None, draw_every=1, arrow_scale=10):
 
         m = Basemap(projection=proj, llcrnrlat=lat_min, llcrnrlon=lon_min, \
@@ -300,19 +300,27 @@ class Plotter:
         n_colours = cm_edge_values.size - 1
         d_cmap = discrete_cmap(cmp_name, n_colours, extend=extend)
 
+        # Plot data
+        x, y = None, None
+        if plotStyle == 'contourf':
+            x, y = m(*np.meshgrid(lons, lats))
+            img = py.contourf(x, y, data, levels=cm_edge_values,
+                              shading='flat', cmap=d_cmap, extend='both')
+        elif plotStyle == 'pcolormesh':
+            # Convert centre lat/lons to corner values required for pcolormesh
+            lons2 = get_grid_edges(lons)
+            lats2 = get_grid_edges(lats)
+            x2, y2 = m(*np.meshgrid(lons2, lats2))
+            img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap)
+
         # Draw contours
         if contourLines:
-            x, y = m(*np.meshgrid(lons, lats))
-            ctr = py.contour(x, y, data, levels=cm_edge_values, colors='k', linewidths=0.4)
-            plt.clabel(ctr, inline=True, fmt=cb_tick_fmt, fontsize=8)
+            if x is None:
+                x, y = m(*np.meshgrid(lons, lats))
+            cnt = py.contour(x, y, data, levels=cm_edge_values,
+                             colors = 'k', linewidths = 0.4, hold='on')
+            plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8)
 
-        # Convert centre lat/lons to corner values required for pcolormesh
-        lons2 = get_grid_edges(lons)
-        lats2 = get_grid_edges(lats)
-
-        # Plot data
-        x2, y2 = m(*np.meshgrid(lons2, lats2))
-        img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap)
         img.set_clim(cm_edge_values.min(), cm_edge_values.max())
 
         # Plot vector data if provided
@@ -379,6 +387,90 @@ class Plotter:
         plt.close()
 
         pngcrush(output_filename)
+
+    def plot_basemaps_and_colorbar(self, lats, lons, data,
+                                   output_filename='noname.png', units='',
+                                   cm_edge_values=None, cb_tick_fmt="%.0f",
+                                   cb_labels=None, cb_label_pos=None,
+                                   cmp_name='jet', extend='both',
+                                   proj=_DEFAULT_PROJ):
+
+        fileName, fileExtension = os.path.splitext(output_filename)
+        colorbar_filename = fileName + '_scale.png'
+        outputfile_east = fileName + '_east.png'
+        outputfile_west = fileName + '_west.png'
+        worldfile_east = util.get_resource('east.pgw')
+        worldfile_west = util.get_resource('west.pgw')
+        shutil.copyfile(worldfile_east, fileName + '_east.pgw')
+        shutil.copyfile(worldfile_west, fileName + '_west.pgw')
+
+        regions = [{'lat_min':-90, 'lat_max':90, 'lon_min':0, 'lon_max':180.5, 'output_filename':outputfile_east},
+                   {'lat_min':-90, 'lat_max':90, 'lon_min':180, 'lon_max':360, 'output_filename':outputfile_west}]
+
+        for region in regions:
+            m = Basemap(projection=proj, llcrnrlat=region['lat_min'], llcrnrlon=region['lon_min'], \
+                        urcrnrlat=region['lat_max'], urcrnrlon=region['lon_max'], resolution=None)
+
+            # Create colormap
+            if cm_edge_values is None:
+                cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
+            n_colours = cm_edge_values.size - 1
+            d_cmap = discrete_cmap(cmp_name, n_colours, extend=extend)
+
+            # Convert centre lat/lons to corner values required for pcolormesh
+            lons2 = get_grid_edges(lons)
+            lats2 = get_grid_edges(lats)
+
+            # Plot data
+            x2, y2 = m(*np.meshgrid(lons2, lats2))
+            img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap)
+            img.set_clim(cm_edge_values.min(), cm_edge_values.max())
+
+            if cb_label_pos is None:
+                tick_pos = cm_edge_values
+            else:
+                tick_pos = cb_label_pos
+
+            m.drawmapboundary(linewidth=0.0)
+
+            # Save figure
+            plt.savefig(region['output_filename'], dpi=150, bbox_inches='tight', pad_inches=0.0)
+            plt.close()
+
+        # Draw colorbar
+        fig = plt.figure(figsize=(0.75,2))
+        ax1 = fig.add_axes([0.05, 0.01, 0.25, 0.98])
+
+        norm = mpl.colors.Normalize(*[cm_edge_values[0], cm_edge_values[-1]])
+        cb = mpl.colorbar.ColorbarBase(
+                ax1,
+                cmap=d_cmap,
+                norm=norm,
+                orientation='vertical',
+                drawedges='True',
+                extend=extend,
+                ticks=tick_pos)
+        if cb_labels is None:
+            cb.set_ticklabels([cb_tick_fmt % k for k in cm_edge_values])
+        else:
+            cb.set_ticklabels(cb_labels)
+        cb.set_label(units,
+                rotation='horizontal',
+                fontsize=6)
+
+        if cb_labels is None:
+            cb.set_ticklabels([cb_tick_fmt % k for k in cm_edge_values])
+        else:
+            cb.set_ticklabels(cb_labels)
+
+        for tick in cb.ax.get_yticklabels():
+            tick.set_fontsize(6)
+
+        plt.savefig(colorbar_filename,
+                dpi=120,
+                transparent=True)
+        plt.close()
+        pngcrush(colorbar_filename)
 
     def plotBasemapWest(self, data, lats, lons, variable, config, outputFile,\
                         lllat=-90, lllon=180, urlat=90, urlon=360,
