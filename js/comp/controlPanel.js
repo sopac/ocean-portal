@@ -388,7 +388,7 @@ $(document).ready(function() {
 
         /* FIXME: check if the datasets have changed */
 
-        /* clear previous choices */
+        var dataset = getValue('dataset');
         $('#dataset option').remove();
 
         $.each(datasets, function (i, dataset) {
@@ -399,8 +399,8 @@ $(document).ready(function() {
         });
 
         /* select first */
-        $('#dataset option:first').attr('selected', true);
-        $('#dataset').change();
+        setValue('dataset', dataset);
+        selectFirstIfRequired('dataset');
     });
 
     /* Dataset */
@@ -602,8 +602,6 @@ function getCombinedDateRange() {
         maxDate = Math.max(maxDate, range.max);
     });
 
-    console.log('badger', minDate, maxDate);
-
     return { min: new Date(minDate), max: new Date(maxDate) };
 }
 
@@ -633,6 +631,25 @@ function filterOpts(comboid, keys) {
             opt.hide();
         }
     });
+}
+
+/**
+ * getValue:
+ *
+ * Returns: the selected value for a combo box
+ */
+function getValue(comboid) {
+    return $('#' + comboid + ' option:selected').val();
+}
+
+/**
+ * setValue:
+ *
+ * Sets the value for @comboid to @value.
+ */
+function setValue(comboid, value) {
+    $('#' + comboid + ' option[value=' + value + ']').attr('selected', true);
+    $('#' + comboid).change();
 }
 
 /**
