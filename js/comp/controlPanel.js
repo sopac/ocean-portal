@@ -44,7 +44,9 @@ $(document).ready(function() {
                                             'resizable': false });
 
     $(".datepicker").datepicker({
-        dateFormat: 'd MM yy'
+        dateFormat: 'd MM yy',
+        changeMonth: true,
+        changeYear: true
     }).mousedown(function() {
         $(this).datepicker('show');
     });
