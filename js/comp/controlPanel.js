@@ -104,6 +104,9 @@ $(document).ready(function() {
             case 'waverose':
             case 'ts':
                 if (ocean.variable == 'gauge') {
+                    /* really the default case */
+                    hideControls('latitude', 'longitude');
+                    removePointLayer();
                     break;
                 }
 
