@@ -6,7 +6,7 @@
     "help": "/cosppac/comp/ocean-portal/about_reynolds.pdf",
     "variables": [{
         "id":"meansst",
-        "bid": "sst",
+        "bid": "mean",
         "name":"Mean SST",
         "periods": ["daily", "monthly", "yearly"],
         "plottypes": ["map", "trendmap"]
@@ -34,7 +34,7 @@
     "help": "/cosppac/comp/ocean-portal/about_errst.pdf",
     "variables": [{
         "id":"meansst",
-        "bid": "sst",
+        "bid": "mean",
         "name":"Mean SST",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map", "trendmap"]

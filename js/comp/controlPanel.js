@@ -53,7 +53,9 @@ $(document).ready(function() {
 
     /* UI handlers */
     $('#submit').click(function () {
-        console.log("CLICKED");
+        updatePage();
+
+        return false; /* don't propagate event */
     });
 
     /* Variable */
@@ -859,7 +861,7 @@ function updatePage() {
         if (!ocean.dataset)
             return;
 
-        if (!ocean.dataset.variable)
+        if (!ocean.variable)
             return;
 
         function show_error(params, text)

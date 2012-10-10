@@ -9,29 +9,36 @@
 
 var ocean = ocean || {};
 
-dateformat = 'yymmdd';
+function override(paramsfunc) {
+    return function () {
+        /* default parameters */
+        out = {
+            dataset: getBackendId(ocean.datasetid),
+            map: getBackendId(ocean.datasetid, ocean.variable),
+            date: $.datepicker.formatDate('yymmdd', ocean.date),
+            period: ocean.period,
+            area: ocean.area,
+            timestamp: $.now()
+        };
+
+        $.extend(out, paramsfunc(ocean.dataset));
+        return out;
+    }
+}
 
 ocean.dsConf = {
     reynolds: {
-        params: function() {
-            return {
-                dataset: 'reynolds',
-                map: this.variable.get('id'),
-                date: $.datepicker.formatDate(dateformat, ocean.date),
-                period: ocean.period,
-                area: ocean.area,
-                average: ocean.dsConf['reynolds'].aveCheck.average,
-                trend: ocean.dsConf['reynolds'].aveCheck.trend,
-                runningAve: ocean.dsConf['reynolds'].aveCheck.runningAve,
-                runningInterval: ocean.dsConf['reynolds'].runningInterval,
-                timestamp: $.now()
-            };
-        },
+        params: override(function (dataset) { return {
+            average: dataset.aveCheck.average,
+            trend: dataset.aveCheck.trend,
+            runningAve: dataset.aveCheck.runningAve,
+            runningInterval: dataset.runningInterval
+        }}),
         aveCheck: {},
         mainCheck: 'average',
         runningInterval: 2,
         callback: function(data) {
-            if (this.variable.get("id") == "anom" &&
+            if (ocean.variable == 'sstanom' &&
                 this.aveCheck.average && data.aveImg != null)
             {
                 appendOutput(data.aveImg, data.aveData,
@@ -49,28 +56,20 @@ ocean.dsConf = {
         onDeselect: null,
     },
     ersst: {
-        params: function() {
-            return {
-                dataset: 'ersst',
-                map: this.variable.get('id'),
-                date: $.datepicker.formatDate(dateformat, ocean.date),
-                period: ocean.period,
-                baseYear: 1900,
-                area: ocean.area,
-                average: ocean.dsConf['ersst'].aveCheck.average,
-                trend: ocean.dsConf['ersst'].aveCheck.trend,
-                runningAve: ocean.dsConf['ersst'].aveCheck.runningAve,
-                runningInterval: ocean.dsConf['ersst'].runningInterval,
-                timestamp: $.now()
-            };
-        },
+        params: override(function (dataset) { return {
+            baseYear: 1900,
+            average: dataset.aveCheck.average,
+            trend: dataset.aveCheck.trend,
+            runningAve: dataset.aveCheck.runningAve,
+            runningInterval: dataset.runningInterval
+        }}),
         aveCheck: {},
         mainCheck: 'average',
         runningInterval: 2,
         callback: function(data) {
             prependOutputSet();
 
-            if (this.variable.get("id") == "anom" &&
+            if (ocean.variable == 'sstanom' &&
                 this.aveCheck.average && data.aveImg != null)
             {
                 appendOutput(data.aveImg, data.aveData,
@@ -90,14 +89,7 @@ ocean.dsConf = {
     },
     bran: {
         params: function() {
-            var params = {
-              dataset: 'bran',
-              map: this.variable.get('id'),
-              date: $.datepicker.formatDate(dateformat, ocean.date),
-              period: ocean.period,
-              area: ocean.area,
-              timestamp: $.now()
-            };
+            var params = override()();
 
             switch (params.map) {
               case 'temp':
@@ -124,19 +116,12 @@ ocean.dsConf = {
         onDeselect: null,
     },
     ww3: {
-        params: function() {
-            return {
-                dataset: 'ww3',
-                lllat: $('#latitude').val(),
-                lllon: $('#longitude').val(),
-                urlat: $('#latitude').val(),
-                urlon: $('#longitude').val(),
-                variable: this.variable.get('id'),
-                date: $.datepicker.formatDate(dateformat, ocean.date),
-                period: ocean.period,
-                timestamp: $.now()
-            };
-        },
+        params: override(function (dataset) { return {
+            lllat: $('#latitude').val(),
+            lllon: $('#longitude').val(),
+            urlat: $('#latitude').val(),
+            urlon: $('#longitude').val(),
+        }}),
         callback: function(data) {
             prependOutputSet();
 
@@ -148,19 +133,11 @@ ocean.dsConf = {
         onDeselect: null,
     },
     sealevel: {
-        params: function() {
-            return {
-                dataset: 'sealevel',
-                variable: this.variable.get('id'),
-                period: ocean.period,
-                date: $.datepicker.formatDate(dateformat, ocean.date),
-                area: ocean.area,
-                lat: $('#latitude').val(),
-                lon: $('#longitude').val(),
-                tidalGaugeId: $('#tgId').val(),
-                timestamp: $.now()
-            };
-        },
+        params: override(function (dataset) { return {
+            lat: $('#latitude').val(),
+            lon: $('#longitude').val(),
+            tidalGaugeId: $('#tgId').val(),
+        }}),
         callback: function(data) {
             prependOutputSet();
 
