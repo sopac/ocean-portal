@@ -183,9 +183,6 @@ $(document).ready(function() {
                 break;
         }
 
-        console.log('hide', hide);
-        console.log('show', show);
-
         hideControls.apply(null, hide);
 
         /* FIXME: is this strictly correct? it would collapse for datasets
@@ -324,8 +321,6 @@ $(document).ready(function() {
         if (!(backendid in ocean.dsConf)) {
             return;
         }
-
-        console.log('badger');
 
         if (ocean.dataset && ocean.dataset.onDeselect) {
             ocean.dataset.onDeselect();
@@ -532,8 +527,6 @@ function updateMonths(minMonth, maxMonth) {
         maxMonth = 11;
     }
 
-    console.log('period', ocean.period, selectedyear);
-
     switch (ocean.period) {
         case 'monthly':
             fmt = function (m) {
@@ -615,8 +608,6 @@ function updateDatasets(filter) {
 
         return br - ar;
     });
-
-    console.log('update datasets', datasets);
 
     /* FIXME: check if the datasets have changed */
 
