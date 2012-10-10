@@ -369,9 +369,13 @@ $(document).ready(function() {
         /* filter datasets based on the chosen range */
         datasets = $.grep(
             ocean.variables[ocean.variable].plots[ocean.plottype][ocean.period],
-            function(elem) {
-                /* FIXME: filter by date range */
-                return true;
+            function(dataset) {
+                var range = getDateRange(dataset, ocean.variable);
+
+                if (!range)
+                    return true; /* no date range defined */
+
+                return (ocean.date >= range.min) && (ocean.date <= range.max);
         });
 
         /* sort by rank */
