@@ -55,7 +55,8 @@
   padding: 1px;
 }
 
-.controlvar .label {
+.controlvar .label,
+.controlvar label {
   display: inline-block;
   width: 60px;
 }
