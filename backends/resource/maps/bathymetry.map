@@ -29,20 +29,9 @@ MAP
     END # States polygon layer ends here
 
     LAYER
-        NAME	bathymetry
-        TYPE	POLYGON
-        STATUS	ON
-        CONNECTIONTYPE UNION
-        CONNECTION "bathymetry_0,bathymetry_200,bathymetry_1000,bathymetry_2000,bathymetry_3000,bathymetry_4000,bathymetry_5000,bathymetry_6000,bathymetry_7000,bathymetry_8000,bathymetry_9000,bathymetry_10000"
-        STYLEITEM "AUTO"
-
-        CLASS
-        END
-    END
-
-    LAYER
         NAME         bathymetry_0
         DATA         bathymetry_0
+        GROUP        bathymetry
         STATUS       ON
         TYPE         POLYGON
 
@@ -61,6 +50,7 @@ MAP
     LAYER
         NAME         bathymetry_200
         DATA         bathymetry_200
+        GROUP        bathymetry
         STATUS       ON
         TYPE         POLYGON
 
@@ -79,6 +69,7 @@ MAP
     LAYER
         NAME         bathymetry_1000
         DATA         bathymetry_1000
+        GROUP        bathymetry
         STATUS       ON
         TYPE         POLYGON
 
@@ -97,6 +88,7 @@ MAP
     LAYER
         NAME         bathymetry_2000
         DATA         bathymetry_2000
+        GROUP        bathymetry
         STATUS       ON
         TYPE         POLYGON
 
@@ -115,6 +107,7 @@ MAP
     LAYER
         NAME         bathymetry_3000
         DATA         bathymetry_3000
+        GROUP        bathymetry
         STATUS       ON
         TYPE         POLYGON
 
@@ -133,6 +126,7 @@ MAP
     LAYER
         NAME         bathymetry_4000
         DATA         bathymetry_4000
+        GROUP        bathymetry
         STATUS       ON
         TYPE         POLYGON
 
@@ -151,6 +145,7 @@ MAP
     LAYER
         NAME         bathymetry_5000
         DATA         bathymetry_5000
+        GROUP        bathymetry
         STATUS       ON
         TYPE         POLYGON
 
@@ -169,6 +164,7 @@ MAP
     LAYER
         NAME         bathymetry_6000
         DATA         bathymetry_6000
+        GROUP        bathymetry
         STATUS       ON
         TYPE         POLYGON
 
@@ -187,6 +183,7 @@ MAP
     LAYER
         NAME         bathymetry_7000
         DATA         bathymetry_7000
+        GROUP        bathymetry
         STATUS       ON
         TYPE         POLYGON
 
@@ -205,6 +202,7 @@ MAP
     LAYER
         NAME         bathymetry_8000
         DATA         bathymetry_8000
+        GROUP        bathymetry
         STATUS       ON
         TYPE         POLYGON
 
@@ -223,6 +221,7 @@ MAP
     LAYER
         NAME         bathymetry_9000
         DATA         bathymetry_9000
+        GROUP        bathymetry
         STATUS       ON
         TYPE         POLYGON
 
@@ -241,6 +240,7 @@ MAP
     LAYER
         NAME         bathymetry_10000
         DATA         bathymetry_10000
+        GROUP        bathymetry
         STATUS       ON
         TYPE         POLYGON
 
