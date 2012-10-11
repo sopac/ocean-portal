@@ -84,6 +84,7 @@
     "id":"bran",
     "name":"BRAN",
     "title": "BRAN 2.1",
+    "rank": 50,
     "help": "/cosppac/comp/ocean-portal/about_bran.pdf",
     "variables": [{
         "id":"meansst",

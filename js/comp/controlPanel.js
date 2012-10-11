@@ -211,7 +211,16 @@ $(document).ready(function() {
                 }).appendTo(year);
             }
 
-            setValue('year', ocean.date.getFullYear());
+            var y = ocean.date.getFullYear();
+
+            if (y < range.min.getFullYear()) {
+                selectFirstIfRequired('year');
+            } else if (y > range.max.getFullYear()) {
+                year.find('option:last').attr('selected', true);
+                year.change();
+            } else {
+                setValue('year', y);
+            }
         } else if ($.inArray('month', show) != -1) {
             /* if year is shown, we populate month based on the selected year
              * (see below) */
