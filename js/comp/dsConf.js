@@ -14,7 +14,9 @@ function override(paramsfunc) {
         /* default parameters */
         out = {
             dataset: getBackendId(ocean.datasetid),
+            /* FIXME: only have one of map or variable */
             map: getBackendId(ocean.datasetid, ocean.variable),
+            variable: getBackendId(ocean.datasetid, ocean.variable),
             date: $.datepicker.formatDate('yymmdd', ocean.date),
             period: ocean.period,
             area: ocean.area,
@@ -117,7 +119,6 @@ ocean.dsConf = {
     },
     ww3: {
         params: override(function (dataset) { return {
-            variable: getBackendId(ocean.datasetid, ocean.variable),
             lllat: $('#latitude').val(),
             lllon: $('#longitude').val(),
             urlat: $('#latitude').val(),

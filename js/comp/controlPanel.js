@@ -79,6 +79,8 @@ $(document).ready(function() {
         filterOpts('plottype', plots);
         showControls('plottype');
         selectFirstIfRequired('plottype');
+
+        selectMapLayer("Bathymetry");
     });
 
     /* Plot Type */
@@ -121,6 +123,8 @@ $(document).ready(function() {
                 removePointLayer();
                 break;
         }
+
+        selectMapLayer("Bathymetry");
     });
 
     /* Period */
@@ -335,8 +339,6 @@ $(document).ready(function() {
         $('#dshelp').attr('href', ocean.datasets[datasetid].help);
         $('#dshelp span').html(ocean.datasets[datasetid].name);
 
-        selectMapLayer("Bathymetry");
-
         if (ocean.dataset.onSelect) {
             ocean.dataset.onSelect();
         }
@@ -443,19 +445,21 @@ function getBackendId(datasetid, varid) {
     var dataset = ocean.datasets[datasetid];
 
     if (varid) {
-        var variable = ocean.variables[varid].variable;
+        var variable = $.grep(dataset.variables, function (var_) {
+            return (var_.id == varid);
+        });
 
-        if ('bid' in variable) {
-            return variable.bid;
+        if (variable.length == 1 && 'bid' in variable[0]) {
+            return variable[0].bid;
         } else {
-            return variable.id;
+            return ocean.variables[varid].variable.id;
         }
-    }
-
-    if ('bid' in dataset) {
-        return dataset.bid;
     } else {
-        return dataset.id;
+        if ('bid' in dataset) {
+            return dataset.bid;
+        } else {
+            return dataset.id;
+        }
     }
 }
 
