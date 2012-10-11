@@ -13,6 +13,7 @@ MAP
     LAYER # MODIS raster layer begins here
         NAME         raster_left
         DATA         "%eastFileName%"
+	GROUP        "raster"
         STATUS       ON
         DEBUG        5
         TYPE         RASTER
@@ -24,6 +25,7 @@ MAP
     LAYER # MODIS raster layer begins here
         NAME         raster_right
         DATA         "%westFileName%"
+        GROUP        "raster"
         STATUS       ON
         DEBUG        5
         TYPE         RASTER

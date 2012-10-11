@@ -166,7 +166,7 @@ function createMap () {
     var outputLayer = new OpenLayers.Layer.MapServer("Output",
         'cgi/map.py', {
         map: 'raster',
-        layers: ['raster_left', 'raster_right', 'land', 'capitals', 'countries']
+        layers: ['raster', 'land', 'capitals', 'countries']
     }, {
         transitionEffect: 'resize',
         wrapDateLine: true
