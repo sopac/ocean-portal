@@ -117,6 +117,7 @@ ocean.dsConf = {
     },
     ww3: {
         params: override(function (dataset) { return {
+            variable: getBackendId(ocean.datasetid, ocean.variable),
             lllat: $('#latitude').val(),
             lllon: $('#longitude').val(),
             urlat: $('#latitude').val(),
