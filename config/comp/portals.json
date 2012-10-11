@@ -1,12 +1,10 @@
 {
     "pac": {
         "name": "Pacific",
-        "extents": [ -232 , -52, -100, 21 ],
         "tidalGaugeRegions": [ "pac" ]
     },
     "aus": {
         "name": "Australian",
-        "extents": [ 92, -60, 172, 0 ],
         "tidalGaugeRegions": [ "aubaseline", "au" ]
     }
 }

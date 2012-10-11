@@ -13,6 +13,7 @@ MAP
     LAYER # MODIS raster layer begins here
         NAME         raster_left
         DATA         "%eastFileName%"
+        GROUP        "raster"
         STATUS       ON
         DEBUG        5
         TYPE         RASTER
@@ -24,6 +25,7 @@ MAP
     LAYER # MODIS raster layer begins here
         NAME         raster_right
         DATA         "%westFileName%"
+        GROUP        "raster"
         STATUS       ON
         DEBUG        5
         TYPE         RASTER
@@ -33,8 +35,9 @@ MAP
     END # MODIS raster layer ends here
 
     LAYER # States polygon layer begins here
-        NAME         land
+        NAME         southern_pac
         DATA         southern_pac
+        GROUP        land
         STATUS       ON
         TYPE         POLYGON
 
@@ -48,6 +51,27 @@ MAP
                 ANTIALIAS TRUE
             END
          END
+    END # States polygon layer ends here
+
+    LAYER # States polygon layer begins here
+        NAME         world
+        DATA         land
+        GROUP        land
+        STATUS       ON
+        TYPE         POLYGON
+        FILTERITEM   "southern_p"
+        FILTER       "0"
+
+        CLASS
+            NAME 'land'
+
+            STYLE
+                COLOR      241 235 183
+                OUTLINECOLOR  241 235 183 # FIXME: outline coasts
+                WIDTH 1
+                ANTIALIAS TRUE
+            END
+        END
     END # States polygon layer ends here
 
     SYMBOL

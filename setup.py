@@ -27,6 +27,7 @@ rpm_deps = [
 src = [
     'map.py',
     'portal.py',
+    'regions.py',
 ]
 
 scripts = [
@@ -74,6 +75,7 @@ map_layers = [
     'ocean',
     'pacific_islands_capitals',
     'southern_pac',
+    'land',
     'COSPPac_EEZs',
 ]
 
@@ -105,8 +107,6 @@ data = [
     'config/comp/vargroups.json',
     'config/comp/portals.json',
     'config/comp/tidalGauges.txt',
-    'config/aus/countryList.json',
-    'config/pac/countryList.json',
     'images/search.gif',
     'images/calendar-blue.gif',
     'images/blank.png',

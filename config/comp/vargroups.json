@@ -1,6 +1,6 @@
 {
   "sst": {
-    "name": "Sea Surface Temperature",
+    "name": "Ocean Temperature",
     "vars": [ "meansst", "sstanom", "sstdec" ]
   },
 

@@ -4,7 +4,8 @@
  * All Rights Reserved
  */
 
-#controlPanel {
+#controlPanel,
+#regionPanel {
     padding: 5px;
 }
 
@@ -52,10 +53,6 @@ form {
   margin-bottom: 5px;
 }
 
-.controlgroup .right {
-  margin-left: 65px;
-}
-
 .controlgroup .hint {
   font-size: smaller;
   padding: 3px;
@@ -64,6 +61,7 @@ form {
 .controlvar {
   width: 100%;
   padding: 1px;
+  padding-left: 0;
 }
 
 .controlvar .label,
@@ -80,9 +78,14 @@ form {
   width: 138px;
 }
 
+.controlvar .widefield {
+  width: 192px; /* .label + .field */
+  margin-top: 3px;
+}
+
 .controlvar select,
 .controlvar input {
-  border: 1px solid rgb(161, 161, 161);
+  /* border: 1px solid rgb(161, 161, 161); */
   font-size: 12px;
   height: 14pt;
 }

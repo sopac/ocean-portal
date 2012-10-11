@@ -40,6 +40,21 @@ $(document).ready(function() {
 
     createMap();
 
+    $('#region').change(function () {
+        var selected = $('#region option:selected');
+
+        if (selected.length == 0) {
+            return;
+        }
+
+        var bounds = selected.data('bounds');
+
+        map.setCenter(bounds.getCenterLonLat(),
+                      map.getZoomForExtent(bounds));
+
+        ocean.area = selected.val();
+    });
+
     /* request the portals config */
     $.getJSON('config/comp/portals.json')
         .success(function(data, status_, xhr) {
@@ -52,9 +67,36 @@ $(document).ready(function() {
 
             document.title = ocean.configProps.name + " Ocean Maps Portal";
 
-            map.setOptions({
-                restrictedExtent: new OpenLayers.Bounds(ocean.configProps.extents)
+        })
+        .error(function (xhr, status_, error) {
+            fatal_error("Error loading portals config " + "&mdash; " + error);
+        });
+
+    $.getJSON('cgi/regions.py', { portal: ocean.config })
+        .success(function(data, status_, xhr) {
+            var bounds = new OpenLayers.Bounds();
+
+            /* iterate the region bounds to calculate the restricted extent */
+            $.each(data, function (i, region) {
+                var b = new OpenLayers.Bounds(region.extent);
+
+                bounds.extend(b);
+
+                $('<option>', {
+                    value: region.abbr,
+                    text: region.name
+                }).data('bounds', b)
+                  .appendTo('#region');
             });
+
+            /* compensate for the date line wrapping */
+            if (bounds.right > 180) {
+                bounds.left -= 360;
+                bounds.right -= 360;
+            }
+
+            map.setOptions({ restrictedExtent: bounds });
+            setValue('region', ocean.config);
         })
         .error(function (xhr, status_, error) {
             fatal_error("Error loading portals config " + "&mdash; " + error);
@@ -68,8 +110,8 @@ $(document).ready(function() {
  */
 function createMap () {
     map = new OpenLayers.Map("map", {
-        resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
-        maxResolution: 0.087890625,
+        minResolution: 0.001373291,
+        numZoomLevels: 8,
         maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
         controls: [
             new OpenLayers.Control.PanZoomBar(),
@@ -120,7 +162,7 @@ function createMap () {
     var outputLayer = new OpenLayers.Layer.MapServer("Output",
         'cgi/map.py', {
         map: 'raster',
-        layers: ['raster_left', 'raster_right', 'land', 'capitals', 'countries']
+        layers: ['raster', 'land', 'capitals', 'countries']
     }, {
         transitionEffect: 'resize',
         wrapDateLine: true
@@ -397,64 +439,6 @@ function enlargeImg(img, show) {
 
 Ext.require(['*']);
 Ext.onReady(function() {
-    var countryCombo, countryStore;
-    var countrylisturl = [ 'config',
-                           ocean.config,
-                           'countryList.json' ].join('/');
-
-    Ext.define('Country', {
-        extend: 'Ext.data.Model',
-        fields: ['name', 'abbr', 'zoom', 'lat', 'long', 'extend'],
-        idProperty: 'abbr',
-        proxy: {
-            type: 'ajax',
-            url: countrylisturl,
-            reader: {
-                type: 'json'
-            }
-        }
-    });
-
-    countryStore = new Ext.data.Store({
-        autoLoad: true,
-        model: 'Country',
-        listeners: {
-            load: function () {
-                countryCombo.select(ocean.config);
-            }
-        }
-    });
-
-    function _selectCountry(event, args) {
-        var selection = event.getValue();
-        var record = countryStore.getById(selection);
-
-        if (!record)
-            return;
-
-        map.setCenter(new OpenLayers.LonLat(record.get('long'),
-                                            record.get('lat')),
-                      record.get('zoom'));
-
-        ocean.area = selection;
-    }
-
-    countryCombo = Ext.create('Ext.form.field.ComboBox', {
-        fieldLabel: 'Select a country/region',
-        labelAlign: 'top',
-        displayField: 'name',
-        valueField: 'abbr',
-        store: countryStore,
-        queryMode: 'local',
-        padding: 5,
-        height: '60%',
-        width: 180,
-        listeners: {
-            select: _selectCountry,
-            change: _selectCountry
-        }
-    });
-
     Ext.create('Ext.Viewport', {
         layout: {
             type: 'border',
@@ -463,7 +447,6 @@ Ext.onReady(function() {
         items: [{
             xtype: 'panel',
             region: 'west',
-            id: 'westDiv',
             collapsible: true,
             title: 'Parameters',
             width: 225,
@@ -472,7 +455,7 @@ Ext.onReady(function() {
             items: [{
                 xtype: 'panel',
                 region: 'north',
-                items: [countryCombo]
+                contentEl: 'regionPanel'
             }, {
                 xtype: 'panel',
                 region: 'center',
