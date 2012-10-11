@@ -140,6 +140,10 @@ class ReynoldsPlotter ():
             sst = np.where((sst >= 3.5) & (sst < 7.5), 3, sst)
             sst = np.where((sst >= 7.5) & (sst < 9.5), 4, sst)
             sst = np.where((sst >= 9.5), 5, sst)
+            contourLines = False
+        else:
+            contourLines = True
+
         plot.plot_surface_data(lats, lons, sst,
                                regionConfig.regions[area][1]["llcrnrlat"],
                                regionConfig.regions[area][1]["urcrnrlat"],
@@ -149,7 +153,7 @@ class ReynoldsPlotter ():
                                cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt,
                                cb_labels=cb_labels, cb_label_pos=cb_label_pos,
                                cmp_name=cmap_name, extend=extend,
-                               contourLines=False, product_label_str='Reynolds SST')
+                               contourLines=contourLines, product_label_str='Reynolds SST')
 
         plot.plot_basemaps_and_colorbar(lats, lons, sst, output_filename,
                                         units=units, cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt,
