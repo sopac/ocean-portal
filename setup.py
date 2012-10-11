@@ -75,6 +75,7 @@ map_layers = [
     'ocean',
     'pacific_islands_capitals',
     'southern_pac',
+    'land',
     'COSPPac_EEZs',
 ]
 
