@@ -7,19 +7,19 @@
     "variables": [{
         "id":"meansst",
         "bid": "mean",
-        "name":"Mean SST",
+        "name":"Mean Temperature",
         "periods": ["daily", "monthly", "yearly"],
         "plottypes": ["map", "trendmap"]
     },{
         "id":"sstanom",
         "bid": "anom",
-        "name":"SST Anomaly",
+        "name":"Anomalies",
         "periods": ["daily", "monthly", "yearly"],
         "plottypes": ["map", "trendmap"]
     },{
         "id":"sstdec",
         "bid": "dec",
-        "name":"SST Deciles",
+        "name":"Deciles",
         "periods": ["monthly"],
         "plottypes": ["map", "trendmap"]
     }],
@@ -35,19 +35,19 @@
     "variables": [{
         "id":"meansst",
         "bid": "mean",
-        "name":"Mean SST",
+        "name":"Mean Temperature",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map", "trendmap"]
     },{
         "id":"sstanom",
         "bid": "anom",
-        "name":"SST Anomaly",
+        "name":"Anomalies",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map", "trendmap"]
     },{
         "id":"sstdec",
         "bid": "dec",
-        "name":"SST Deciles",
+        "name":"Deciles",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map", "trendmap"]
     }],
@@ -88,7 +88,7 @@
     "variables": [{
         "id":"meansst",
         "bid": "temp",
-        "name":"Temperature",
+        "name":"Mean Temperature",
         "periods": ["monthly"],
         "plottypes": ["map", "xsections"]
     }, {

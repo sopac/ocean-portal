@@ -49,8 +49,6 @@ $(document).ready(function() {
 
         var bounds = selected.data('bounds');
 
-        console.log(bounds);
-
         map.setCenter(bounds.getCenterLonLat(),
                       map.getZoomForExtent(bounds));
 
@@ -96,8 +94,6 @@ $(document).ready(function() {
                 bounds.left -= 360;
                 bounds.right -= 360;
             }
-
-            console.log(bounds);
 
             map.setOptions({ restrictedExtent: bounds });
             setValue('region', ocean.config);
