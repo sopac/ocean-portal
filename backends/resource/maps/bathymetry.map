@@ -1,5 +1,5 @@
 MAP
-    IMAGETYPE      PNG
+    IMAGETYPE      PNG24
     SIZE           600 600
     SHAPEPATH      "layers"
     IMAGECOLOR     135 216 250
@@ -16,7 +16,7 @@ MAP
         STATUS       ON
         TYPE         POLYGON
 
-	CLASS
+        CLASS
             NAME 'ocean'
 
             STYLE
@@ -25,7 +25,7 @@ MAP
                 WIDTH 2
                 ANTIALIAS TRUE
             END
-	END
+        END
     END # States polygon layer ends here
 
     LAYER
@@ -35,7 +35,7 @@ MAP
         STATUS       ON
         TYPE         POLYGON
 
-	CLASS
+        CLASS
             NAME 'bathymetry_0'
 
             STYLE
@@ -44,7 +44,7 @@ MAP
                 WIDTH 2
                 ANTIALIAS TRUE
             END
-	END
+        END
     END
 
     LAYER
@@ -54,7 +54,7 @@ MAP
         STATUS       ON
         TYPE         POLYGON
 
-	CLASS
+        CLASS
             NAME 'bathymetry_200'
 
             STYLE
@@ -63,7 +63,7 @@ MAP
                 WIDTH 2
                 ANTIALIAS TRUE
             END
-	END
+        END
     END
 
     LAYER
@@ -73,7 +73,7 @@ MAP
         STATUS       ON
         TYPE         POLYGON
 
-	CLASS
+        CLASS
             NAME 'bathymetry_1000'
 
             STYLE
@@ -82,7 +82,7 @@ MAP
                 WIDTH 2
                 ANTIALIAS TRUE
             END
-	END
+        END
     END
 
     LAYER
@@ -92,7 +92,7 @@ MAP
         STATUS       ON
         TYPE         POLYGON
 
-	CLASS
+        CLASS
             NAME 'bathymetry_2000'
 
             STYLE
@@ -101,7 +101,7 @@ MAP
                 WIDTH 2
                 ANTIALIAS TRUE
             END
-	END
+        END
     END
 
     LAYER
@@ -111,7 +111,7 @@ MAP
         STATUS       ON
         TYPE         POLYGON
 
-	CLASS
+        CLASS
             NAME 'bathymetry_3000'
 
             STYLE
@@ -120,7 +120,7 @@ MAP
                 WIDTH 2
                 ANTIALIAS TRUE
             END
-	END
+        END
     END
 
     LAYER
@@ -130,7 +130,7 @@ MAP
         STATUS       ON
         TYPE         POLYGON
 
-	CLASS
+        CLASS
             NAME 'bathymetry_4000'
 
             STYLE
@@ -139,7 +139,7 @@ MAP
                 WIDTH 2
                 ANTIALIAS TRUE
             END
-	END
+        END
     END
 
     LAYER
@@ -149,7 +149,7 @@ MAP
         STATUS       ON
         TYPE         POLYGON
 
-	CLASS
+        CLASS
             NAME 'bathymetry_5000'
 
             STYLE
@@ -158,7 +158,7 @@ MAP
                 WIDTH 2
                 ANTIALIAS TRUE
             END
-	END
+        END
     END
 
     LAYER
@@ -168,7 +168,7 @@ MAP
         STATUS       ON
         TYPE         POLYGON
 
-	CLASS
+        CLASS
             NAME 'bathymetry_6000'
 
             STYLE
@@ -177,7 +177,7 @@ MAP
                 WIDTH 2
                 ANTIALIAS TRUE
             END
-	END
+        END
     END
 
     LAYER
@@ -187,7 +187,7 @@ MAP
         STATUS       ON
         TYPE         POLYGON
 
-	CLASS
+        CLASS
             NAME 'bathymetry_7000'
 
             STYLE
@@ -196,7 +196,7 @@ MAP
                 WIDTH 2
                 ANTIALIAS TRUE
             END
-	END
+        END
     END
 
     LAYER
@@ -206,7 +206,7 @@ MAP
         STATUS       ON
         TYPE         POLYGON
 
-	CLASS
+        CLASS
             NAME 'bathymetry_8000'
 
             STYLE
@@ -215,7 +215,7 @@ MAP
                 WIDTH 2
                 ANTIALIAS TRUE
             END
-	END
+        END
     END
 
     LAYER
@@ -225,7 +225,7 @@ MAP
         STATUS       ON
         TYPE         POLYGON
 
-	CLASS
+        CLASS
             NAME 'bathymetry_9000'
 
             STYLE
@@ -234,7 +234,7 @@ MAP
                 WIDTH 2
                 ANTIALIAS TRUE
             END
-	END
+        END
     END
 
     LAYER
@@ -244,7 +244,7 @@ MAP
         STATUS       ON
         TYPE         POLYGON
 
-	CLASS
+        CLASS
             NAME 'bathymetry_10000'
 
             STYLE
@@ -253,7 +253,7 @@ MAP
                 WIDTH 2
                 ANTIALIAS TRUE
             END
-	END
+        END
     END
 
     LAYER # States polygon layer begins here
@@ -262,7 +262,7 @@ MAP
         STATUS       ON
         TYPE         POLYGON
 
-	CLASS
+        CLASS
             NAME 'land'
 
             STYLE
@@ -271,7 +271,7 @@ MAP
                 WIDTH 1
                 ANTIALIAS TRUE
             END
-	END
+        END
     END # States polygon layer ends here
 
     LAYER
