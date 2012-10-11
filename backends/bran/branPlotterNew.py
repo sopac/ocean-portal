@@ -23,6 +23,7 @@ import datetime
 from ocean.netcdf.plotter import getCopyright
 from ocean.netcdf.plotter import get_tick_values
 from ocean.netcdf.plotter import discrete_cmap
+from ocean.util.pngcrush import pngcrush
 
 def load_BRAN_data(input_data_file, var_name, lat_min, lat_max, lon_min, lon_max, depth_min=0, depth_max=0):
 
