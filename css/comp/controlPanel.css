@@ -69,13 +69,13 @@ form {
   display: inline-block;
   text-align: right;
   white-space: nowrap;
-  width: 51px;
+  width: 58px;
   padding-right: 3px;
   color: #222222;
 }
 
 .controlvar .field {
-  width: 138px;
+  width: 131px;
 }
 
 .controlvar .widefield {
