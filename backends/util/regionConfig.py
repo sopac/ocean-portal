@@ -222,16 +222,6 @@ regions = {
            },
            "West Australian Coast",
            {}),
-    'sh': ('aus',
-           {'llcrnrlat': -90,
-            'llcrnrlon': 0,
-            'urcrnrlat': 0,
-            'urcrnrlon': 360
-           },
-           "Southern Hemisphere",
-           {'boundinglat': -10,
-            'lon0': 0
-           }),
     'qld': ('aus',
            {'llcrnrlat': -29.0,
             'llcrnrlon': 136,

@@ -45,7 +45,7 @@ def __main__():
             'extent': [extents['llcrnrlon'],  # left
                        extents['llcrnrlat'],  # bottom
                        extents['urcrnrlon'],  # right
-                       extents['urcrnrlon']], # top
+                       extents['urcrnrlat']], # top
         })
 
     print 'Content-Type: application/json; charset=utf-8'

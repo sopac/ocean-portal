@@ -52,9 +52,29 @@ $(document).ready(function() {
 
             document.title = ocean.configProps.name + " Ocean Maps Portal";
 
-            map.setOptions({
-                restrictedExtent: new OpenLayers.Bounds(ocean.configProps.extents)
+        })
+        .error(function (xhr, status_, error) {
+            fatal_error("Error loading portals config " + "&mdash; " + error);
+        });
+
+    $.getJSON('cgi/regions.py', { portal: ocean.config })
+        .success(function(data, status_, xhr) {
+            var bounds = new OpenLayers.Bounds();
+
+            /* iterate the region bounds to calculate the restricted extent */
+            $.each(data, function (i, region) {
+                bounds.extend(new OpenLayers.Bounds(region.extent));
             });
+
+            /* compensate for the date line wrapping */
+            if (bounds.right > 180) {
+                bounds.left -= 360;
+                bounds.right -= 360;
+            }
+
+            console.log(bounds);
+
+            map.setOptions({ restrictedExtent: bounds });
         })
         .error(function (xhr, status_, error) {
             fatal_error("Error loading portals config " + "&mdash; " + error);
@@ -68,8 +88,8 @@ $(document).ready(function() {
  */
 function createMap () {
     map = new OpenLayers.Map("map", {
-        resolutions: [0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.00137329101],
-        maxResolution: 0.087890625,
+        minResolution: 0.001373291,
+        numZoomLevels: 8,
         maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
         controls: [
             new OpenLayers.Control.PanZoomBar(),
@@ -402,7 +422,7 @@ Ext.onReady(function() {
 
     Ext.define('Country', {
         extend: 'Ext.data.Model',
-        fields: ['name', 'abbr', 'zoom', 'lat', 'long', 'extend'],
+        fields: ['name', 'abbr', 'extent'],
         idProperty: 'abbr',
         proxy: {
             type: 'ajax',
@@ -430,9 +450,12 @@ Ext.onReady(function() {
         if (!record)
             return;
 
-        map.setCenter(new OpenLayers.LonLat(record.get('long'),
-                                            record.get('lat')),
-                      record.get('zoom'));
+        var bounds = new OpenLayers.Bounds(record.get('extent'));
+
+        console.log(bounds);
+
+        map.setCenter(bounds.getCenterLonLat(),
+                      map.getZoomForExtent(bounds));
 
         ocean.area = selection;
     }
@@ -448,7 +471,6 @@ Ext.onReady(function() {
         height: '60%',
         width: 180,
         listeners: {
-            select: _selectCountry,
             change: _selectCountry
         }
     });
