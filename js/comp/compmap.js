@@ -398,9 +398,7 @@ function enlargeImg(img, show) {
 Ext.require(['*']);
 Ext.onReady(function() {
     var countryCombo, countryStore;
-    var countrylisturl = [ 'config',
-                           ocean.config,
-                           'countryList.json' ].join('/');
+    var countrylisturl = 'cgi/regions.py?portal=' + ocean.config;
 
     Ext.define('Country', {
         extend: 'Ext.data.Model',
