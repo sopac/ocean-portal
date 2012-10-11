@@ -164,10 +164,10 @@ class ErsstPlotter ():
         if variable == 'dec':
             extend = 'neither'
             cb_tick_fmt="%.1f"
-            cb_ticks = np.arange(0.5,5.51,1)
-            #cb_labels=['Lowest on \nrecord','Very much \nbelow average \n[1]','Below average \n[2-3]','Average \n[4-7]','Above average \n[8-9]','Very much \nabove average \n[10]','Highest on \nrecord']
-            cb_labels=['Very much \nbelow average \n[1]','Below average \n[2-3]','Average \n[4-7]','Above average \n[8-9]','Very much \nabove average \n[10]']
-            cb_label_pos=[1.0,2.0,3.0,4.0,5.0]            
+            cb_ticks = np.arange(0.5,7.51,1)
+            cb_labels=['Lowest on \nrecord','Very much \nbelow average \n[1]','Below average \n[2-3]','Average \n[4-7]','Above average \n[8-9]','Very much \nabove average \n[10]','Highest on \nrecord']
+            #cb_labels=['Very much \nbelow average \n[1]','Below average \n[2-3]','Average \n[4-7]','Above average \n[8-9]','Very much \nabove average \n[10]']
+            cb_label_pos=[1.0,2.0,3.0,4.0,5.0,6.0,7.0]
             
         filename = filename + ".nc" 
         filename = glob.glob(filename)[0]
@@ -192,17 +192,20 @@ class ErsstPlotter ():
         output_filename = self.serverCfg["outputDir"] + outputFilename + '.png'
         units = self.config.getUnit(variable)
         cmap_name = self.config.getColorMap(variable)
-        plot.plotBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
-        plot.plotBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
-        plot.plotScale(sst, variable, self.config, outputFilename)
 
         if variable == 'dec':
             # Temporary patch until decile calculation code is fixed
-            sst = np.where((sst < 1.5), 1, sst)
+            sst = np.where((sst < 0.5), 0, sst)
+            sst = np.where((sst >= 0.5) & (sst < 1.5), 1, sst)
             sst = np.where((sst >= 1.5) & (sst < 3.5), 2, sst)
             sst = np.where((sst >= 3.5) & (sst < 7.5), 3, sst)
             sst = np.where((sst >= 7.5) & (sst < 9.5), 4, sst)
-            sst = np.where((sst >= 9.5), 5, sst)        
+            sst = np.where((sst >= 9.5) & (sst < 10.5), 5, sst)
+            sst = np.where((sst >= 10.5), 6, sst)
+            contourLines = False
+        else:
+            contourLines = True
+
         plot.plot_surface_data(lats, lons, sst,
                                regionConfig.regions[area][1]["llcrnrlat"],
                                regionConfig.regions[area][1]["urcrnrlat"],
@@ -212,7 +215,12 @@ class ErsstPlotter ():
                                product_label_str='Extended Reconstructed SST',
                                cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt,
                                cb_labels=cb_labels, cb_label_pos=cb_label_pos,
-                               cmp_name=cmap_name, extend=extend)
+                               cmp_name=cmap_name, extend=extend, contourLines=contourLines)
+
+        plot.plot_basemaps_and_colorbar(lats, lons, sst, output_filename,
+                                        units=units, cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt,
+                                        cb_labels=cb_labels, cb_label_pos=cb_label_pos,
+                                        cmp_name=cmap_name, extend=extend)
         dataset.close()
         
         return 0
