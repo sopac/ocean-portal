@@ -21,7 +21,10 @@ function override(paramsfunc) {
             timestamp: $.now()
         };
 
-        $.extend(out, paramsfunc(ocean.dataset));
+        if (paramsfunc) {
+            $.extend(out, paramsfunc(ocean.dataset));
+        }
+
         return out;
     }
 }
@@ -88,22 +91,19 @@ ocean.dsConf = {
         onDeselect: null,
     },
     bran: {
-        params: function() {
-            var params = override()();
-
-            switch (params.map) {
-              case 'temp':
-              case 'salt':
-                  params.lat = $('#latitude').val();
-                  params.lon = $('#longitude').val();
+        params: override(function (dataset) {
+            switch (ocean.plottype) {
+              case 'xsections':
+                  return { lat: $('#latitude').val(),
+                           lon: $('#longitude').val() }
                   break;
 
               default:
-                  break;
+                  return {};
             }
 
             return params;
-        },
+        }),
         callback: function(data) {
             prependOutputSet();
 

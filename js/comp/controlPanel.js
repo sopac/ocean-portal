@@ -447,6 +447,8 @@ function getBackendId(datasetid, varid) {
 
         if ('bid' in variable) {
             return variable.bid;
+        } else {
+            return variable.id;
         }
     }
 
