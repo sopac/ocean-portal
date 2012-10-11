@@ -129,9 +129,9 @@ class ReynoldsPlotter ():
         units = self.config.getUnit(variable)
 
         plot = plotter.Plotter()
-        plot.plotBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
-        plot.plotBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
-        plot.plotScale(sst, variable, self.config, outputFilename)
+        #plot.plotBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
+        #plot.plotBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
+        #plot.plotScale(sst, variable, self.config, outputFilename)
 
         if variable == 'dec':
             # Temporary patch until decile calculation code is fixed
@@ -150,6 +150,11 @@ class ReynoldsPlotter ():
                                cb_labels=cb_labels, cb_label_pos=cb_label_pos,
                                cmp_name=cmap_name, extend=extend,
                                contourLines=False, product_label_str='Reynolds SST')
+
+        plot.plot_basemaps_and_colorbar(lats, lons, sst, output_filename,
+                                        units=units, cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt,
+                                        cb_labels=cb_labels, cb_label_pos=cb_label_pos,
+                                        cmp_name=cmap_name, extend=extend)
 
         dataset.close()
 

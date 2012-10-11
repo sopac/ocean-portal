@@ -305,7 +305,7 @@ class Plotter:
         if plotStyle == 'contourf':
             x, y = m(*np.meshgrid(lons, lats))
             img = py.contourf(x, y, data, levels=cm_edge_values,
-                              shading='flat', cmap=d_cmap, extend='both')
+                              shading='flat', cmap=d_cmap, extend=extend')
         elif plotStyle == 'pcolormesh':
             # Convert centre lat/lons to corner values required for pcolormesh
             lons2 = get_grid_edges(lons)
