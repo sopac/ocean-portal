@@ -443,19 +443,21 @@ function getBackendId(datasetid, varid) {
     var dataset = ocean.datasets[datasetid];
 
     if (varid) {
-        var variable = ocean.variables[varid].variable;
+        var variable = $.grep(dataset.variables, function (var_) {
+            return (var_.id == varid);
+        });
 
-        if ('bid' in variable) {
-            return variable.bid;
+        if (variable.length == 1 && 'bid' in variable[0]) {
+            return variable[0].bid;
         } else {
-            return variable.id;
+            return ocean.variables[varid].variable.id;
         }
-    }
-
-    if ('bid' in dataset) {
-        return dataset.bid;
     } else {
-        return dataset.id;
+        if ('bid' in dataset) {
+            return dataset.bid;
+        } else {
+            return dataset.id;
+        }
     }
 }
 
