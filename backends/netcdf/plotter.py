@@ -42,6 +42,12 @@ COMMON_FILES = {
     'scale': '_scale.png',
 }
 
+def guess_resolution(latmin, latmax, lonmin, lonmax):
+    if min(abs(lonmax - lonmin), latmax - latmin) < 15:
+        return 'h' # high
+    else:
+        return 'c' # crude
+
 def getCopyright():
     return ur'\u00A9' + "Commonwealth of Australia "\
            + datetime.date.today().strftime('%Y')\
@@ -327,7 +333,9 @@ class Plotter:
             m = Basemap(projection=proj,
                         llcrnrlat=lat_min, llcrnrlon=lon_min,
                         urcrnrlat=lat_max, urcrnrlon=lon_max,
-                        resolution='h')
+                        # FIXME: should resolution be part of the regionConfig?
+                        resolution=guess_resolution(lat_min, lat_max,
+                                                    lon_min, lon_max))
 
             # Create colormap
             if cm_edge_values is None:
