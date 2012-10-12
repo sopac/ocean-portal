@@ -6,6 +6,7 @@
 #
 # Authors: Sheng Guo <s.guo@bom.gov.au>
 #          Nicholas Summons <n.summons@bom.gov.au>
+#          Danielle Madeley <d.madeley@bom.gov.au>
 """
 Plotter is the base class for plotting.
 """
@@ -16,6 +17,7 @@ import math
 import shutil
 import datetime
 import sys
+import multiprocessing
 
 from matplotlib import mpl
 from mpl_toolkits.basemap import Basemap
@@ -55,6 +57,22 @@ class Plotter:
         """The simple constructor of Plotter"""
         self.serverConfig = util.get_server_config()
         self.regionConfig = rc.regions
+        self._processes = []
+
+    def wait(self):
+        """Wait for the completion of all plotting threads"""
+
+        for p in self._processes:
+            p.join()
+            # FIXME: return any Exceptions back to the main process
+
+    def queue_plot(self, func, *args, **kwargs):
+        """Queue a plot to be drawn"""
+
+        p = multiprocessing.Process(target=func, name=func.__name__,
+                                    args=args, kwargs=kwargs)
+        self._processes.append(p)
+        p.start()
 
     def contour(self, data, lats, lons, variable, config, outputFile,\
                 title, lllat, lllon, urlat, urlon, res = 'h', proj=_DEFAULT_PROJ,\
@@ -283,118 +301,145 @@ class Plotter:
 
         pngcrush(self.serverConfig["outputDir"] + outputFile + '.png')
 
-    def plot_surface_data(self, lats, lons, data, lat_min, lat_max, lon_min, lon_max,
-                          output_filename='noname.png', title='', units='',
-                          cm_edge_values=None, cb_tick_fmt="%.0f",
-                          cb_labels=None, cb_label_pos=None,
-                          cmp_name='jet', extend='both',
-                          plotStyle = 'contourf', contourLines=True, proj=_DEFAULT_PROJ, product_label_str=None,
-                          vlat=None, vlon=None, u=None, v=None, draw_every=1, arrow_scale=10):
+    def plot_surface_data(self, *args, **kwargs):
 
-        m = Basemap(projection=proj, llcrnrlat=lat_min, llcrnrlon=lon_min, \
-                    urcrnrlat=lat_max, urcrnrlon=lon_max, resolution='h')
+        def _plot_surface_data(lats, lons, data,
+                               lat_min, lat_max, lon_min, lon_max,
+                               output_filename='noname.png', title='', units='',
+                               cm_edge_values=None, cb_tick_fmt="%.0f",
+                               cb_labels=None, cb_label_pos=None,
+                               cmp_name='jet', extend='both',
+                               plotStyle='contourf', contourLines=True,
+                               proj=self._DEFAULT_PROJ, product_label_str=None,
+                               vlat=None, vlon=None, u=None, v=None,
+                               draw_every=1, arrow_scale=10):
 
-        # Create colormap
-        if cm_edge_values is None:
-            cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
-        n_colours = cm_edge_values.size - 1
-        d_cmap = discrete_cmap(cmp_name, n_colours, extend=extend)
+            m = Basemap(projection=proj,
+                        llcrnrlat=lat_min, llcrnrlon=lon_min,
+                        urcrnrlat=lat_max, urcrnrlon=lon_max,
+                        resolution='h')
 
-        # Plot data
-        x, y = None, None
-        if plotStyle == 'contourf':
-            x, y = m(*np.meshgrid(lons, lats))
-            img = py.contourf(x, y, data, levels=cm_edge_values,
-                              shading='flat', cmap=d_cmap, extend=extend)
-        elif plotStyle == 'pcolormesh':
-            # Convert centre lat/lons to corner values required for pcolormesh
-            lons2 = get_grid_edges(lons)
-            lats2 = get_grid_edges(lats)
-            x2, y2 = m(*np.meshgrid(lons2, lats2))
-            img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap)
+            # Create colormap
+            if cm_edge_values is None:
+                cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
+            n_colours = cm_edge_values.size - 1
+            d_cmap = discrete_cmap(cmp_name, n_colours, extend=extend)
 
-        # Draw contours
-        if contourLines:
-            if x is None:
+            # Plot data
+            x, y = None, None
+            if plotStyle == 'contourf':
                 x, y = m(*np.meshgrid(lons, lats))
-            cnt = py.contour(x, y, data, levels=cm_edge_values,
-                             colors = 'k', linewidths = 0.4, hold='on')
-            plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8)
+                img = py.contourf(x, y, data, levels=cm_edge_values,
+                                  shading='flat', cmap=d_cmap, extend=extend)
+            elif plotStyle == 'pcolormesh':
+                # Convert centre lat/lons to corner values required for
+                # pcolormesh
+                lons2 = get_grid_edges(lons)
+                lats2 = get_grid_edges(lats)
+                x2, y2 = m(*np.meshgrid(lons2, lats2))
+                img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap)
 
-        img.set_clim(cm_edge_values.min(), cm_edge_values.max())
+            # Draw contours
+            if contourLines:
+                if x is None:
+                    x, y = m(*np.meshgrid(lons, lats))
+                cnt = py.contour(x, y, data, levels=cm_edge_values,
+                                 colors = 'k', linewidths = 0.4, hold='on')
+                plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8)
 
-        # Plot vector data if provided
-        if (u is not None) and (v is not None) and (vlat is not None) and (vlon is not None):
-            # Draw vectors
-            if draw_every is not None:
-                draw_vector_plot(m, vlon, vlat, u, v, draw_every=draw_every, arrow_scale=arrow_scale)
+            img.set_clim(cm_edge_values.min(), cm_edge_values.max())
 
-        # Draw land, coastlines, parallels, meridians and add title
-        m.drawcoastlines(linewidth=0.1, zorder=6)
-        m.fillcontinents(color='#cccccc', zorder=7)
-        parallels, p_dec_places = get_tick_values(lat_min, lat_max)
-        meridians, m_dec_places = get_tick_values(lon_min, lon_max)
-        m.drawparallels(parallels, labels=[True, False, False, False], fmt='%.' + str(p_dec_places) + 'f',
-                        fontsize=6, dashes=[3, 3], color='gray')
-        m.drawmeridians(meridians, labels=[False, False, False, True], fmt='%.' + str(m_dec_places) + 'f',
-                        fontsize=6, dashes=[3, 3], color='gray')
-        plt.title(title, fontsize=9)
+            # Plot vector data if provided
+            if (u is not None) and (v is not None) and \
+               (vlat is not None) and (vlon is not None):
+                # Draw vectors
+                if draw_every is not None:
+                    draw_vector_plot(m, vlon, vlat, u, v,
+                                     draw_every=draw_every,
+                                     arrow_scale=arrow_scale)
 
-        # Draw colorbar
-        ax = plt.gca()
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size=0.2, pad=0.3)
-        if cb_label_pos is None:
-            tick_pos = cm_edge_values
-        else:
-            tick_pos = cb_label_pos
-        cb = py.colorbar(img, cax=cax, spacing='proportional', drawedges='True', orientation='vertical',
-                         extend=extend, ticks=tick_pos)
-        if cb_labels is None:
-            cb.set_ticklabels([cb_tick_fmt % k for k in cm_edge_values])
-        else:
-            cb.set_ticklabels(cb_labels)
-        for tick in cb.ax.get_yticklabels():
-            tick.set_fontsize(7)
-        cb.set_label(units, fontsize=8)
+            # Draw land, coastlines, parallels, meridians and add title
+            m.drawcoastlines(linewidth=0.1, zorder=6)
+            m.fillcontinents(color='#cccccc', zorder=7)
+            parallels, p_dec_places = get_tick_values(lat_min, lat_max)
+            meridians, m_dec_places = get_tick_values(lon_min, lon_max)
+            m.drawparallels(parallels, labels=[True, False, False, False],
+                            fmt='%.' + str(p_dec_places) + 'f',
+                            fontsize=6, dashes=[3, 3], color='gray')
+            m.drawmeridians(meridians, labels=[False, False, False, True],
+                            fmt='%.' + str(m_dec_places) + 'f',
+                            fontsize=6, dashes=[3, 3], color='gray')
+            plt.title(title, fontsize=9)
 
-        # Patch for graphics bug that affects label positions for long/narrow plots
-        lat_extent = np.float(lat_max) - np.float(lat_min)
-        lon_extent = np.float(lon_max) - np.float(lon_min)
-        aspect_ratio = abs(lon_extent / lat_extent)
-        if aspect_ratio > 1.7:
-            copyright_label_yadj = -0.25
-        else:
-            copyright_label_yadj = -0.15
-        if aspect_ratio < 0.7:
-            copyright_label_xadj = -0.2
-            product_label_xadj = 1.4
-        else:
-            copyright_label_xadj = -0.1
-            product_label_xadj = 1.04
+            # Draw colorbar
+            ax = plt.gca()
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size=0.2, pad=0.3)
+            if cb_label_pos is None:
+                tick_pos = cm_edge_values
+            else:
+                tick_pos = cb_label_pos
+            cb = py.colorbar(img, cax=cax,
+                             spacing='proportional',
+                             drawedges='True',
+                             orientation='vertical',
+                             extend=extend,
+                             ticks=tick_pos)
+            if cb_labels is None:
+                cb.set_ticklabels([cb_tick_fmt % k for k in cm_edge_values])
+            else:
+                cb.set_ticklabels(cb_labels)
+            for tick in cb.ax.get_yticklabels():
+                tick.set_fontsize(7)
+            cb.set_label(units, fontsize=8)
 
-        # Draw copyright and product labels
-        box = TextArea(getCopyright(), textprops=dict(color='k', fontsize=6))
-        copyrightBox = AnchoredOffsetbox(loc=3, child=box, bbox_to_anchor=(copyright_label_xadj, copyright_label_yadj), frameon=False, bbox_transform=ax.transAxes)
-        ax.add_artist(copyrightBox)
-        if product_label_str is not None:
-            box = TextArea(product_label_str, textprops=dict(color='k', fontsize=6))
-            copyrightBox = AnchoredOffsetbox(loc=4, child=box, bbox_to_anchor=(product_label_xadj, copyright_label_yadj), frameon=False, bbox_transform=ax.transAxes)
+            # Patch for graphics bug that affects label positions for
+            # long/narrow plots
+            lat_extent = np.float(lat_max) - np.float(lat_min)
+            lon_extent = np.float(lon_max) - np.float(lon_min)
+            aspect_ratio = abs(lon_extent / lat_extent)
+            if aspect_ratio > 1.7:
+                copyright_label_yadj = -0.25
+            else:
+                copyright_label_yadj = -0.15
+            if aspect_ratio < 0.7:
+                copyright_label_xadj = -0.2
+                product_label_xadj = 1.4
+            else:
+                copyright_label_xadj = -0.1
+                product_label_xadj = 1.04
+
+            # Draw copyright and product labels
+            box = TextArea(getCopyright(),
+                           textprops=dict(color='k', fontsize=6))
+            copyrightBox = AnchoredOffsetbox(loc=3, child=box,
+                                             bbox_to_anchor=(copyright_label_xadj, copyright_label_yadj),
+                                             frameon=False,
+                                             bbox_transform=ax.transAxes)
             ax.add_artist(copyrightBox)
 
-        # Save figure
-        plt.savefig(output_filename, dpi=150, bbox_inches='tight', pad_inches=0.6)
-        plt.close()
+            if product_label_str is not None:
+                box = TextArea(product_label_str,
+                               textprops=dict(color='k', fontsize=6))
+                copyrightBox = AnchoredOffsetbox(loc=4, child=box,
+                                                 bbox_to_anchor=(product_label_xadj, copyright_label_yadj),
+                                                 frameon=False,
+                                                 bbox_transform=ax.transAxes)
+                ax.add_artist(copyrightBox)
 
-        pngcrush(output_filename)
+            # Save figure
+            plt.savefig(output_filename, dpi=150,
+                        bbox_inches='tight',
+                        pad_inches=0.6)
+            plt.close()
 
-    def plot_basemaps_and_colorbar(self, lats, lons, data,
-                                   output_filename='noname.png', units='',
-                                   cm_edge_values=None, cb_tick_fmt="%.0f",
-                                   cb_labels=None, cb_label_pos=None,
-                                   cmp_name='jet', extend='both',
-                                   proj=_DEFAULT_PROJ):
+            pngcrush(output_filename)
 
+        self.queue_plot(_plot_surface_data, *args, **kwargs)
+
+    def plot_basemaps_and_colorbar(self, *args, **kwargs):
+
+        output_filename = kwargs.get('output_filename', 'noname.png')
         fileName, fileExtension = os.path.splitext(output_filename)
         colorbar_filename = fileName + '_scale.png'
         outputfile_east = fileName + '_east.png'
@@ -404,18 +449,45 @@ class Plotter:
         shutil.copyfile(worldfile_east, fileName + '_east.pgw')
         shutil.copyfile(worldfile_west, fileName + '_west.pgw')
 
-        regions = [{'lat_min':-90, 'lat_max':90, 'lon_min':0, 'lon_max':180.5, 'output_filename':outputfile_east},
-                   {'lat_min':-90, 'lat_max':90, 'lon_min':180, 'lon_max':360, 'output_filename':outputfile_west}]
+        regions = [{'lat_min':-90,
+                    'lat_max':90,
+                    'lon_min':0,
+                    'lon_max':180.5,
+                    'output_filename':outputfile_east},
+                   {'lat_min':-90,
+                    'lat_max':90,
+                    'lon_min':180,
+                    'lon_max':360,
+                    'output_filename':outputfile_west}
+                ]
 
-        for region in regions:
-            m = Basemap(projection=proj, llcrnrlat=region['lat_min'], llcrnrlon=region['lon_min'], \
-                        urcrnrlat=region['lat_max'], urcrnrlon=region['lon_max'], resolution=None)
+        # Create colormap
+        cm_edge_values = kwargs.get('cm_edge_values', None)
+        cmp_name = kwargs.get('cmp_name', 'jet')
+        extend = kwargs.get('extend', 'both')
+        cb_label_pos = kwargs.get('cm_label_pos', None)
 
-            # Create colormap
-            if cm_edge_values is None:
-                cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
-            n_colours = cm_edge_values.size - 1
-            d_cmap = discrete_cmap(cmp_name, n_colours, extend=extend)
+        if cm_edge_values is None:
+            cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
+
+        n_colours = cm_edge_values.size - 1
+        d_cmap = discrete_cmap(cmp_name, n_colours, extend=extend)
+
+        if cb_label_pos is None:
+            tick_pos = cm_edge_values
+        else:
+            tick_pos = cb_label_pos
+
+        def _plot_basemap(region, lats, lons, data,
+                          units='', cb_tick_fmt="%.0f", cb_labels=None,
+                          proj=self._DEFAULT_PROJ, **kwargs):
+
+            m = Basemap(projection=proj,
+                        llcrnrlat=region['lat_min'],
+                        llcrnrlon=region['lon_min'],
+                        urcrnrlat=region['lat_max'],
+                        urcrnrlon=region['lon_max'],
+                        resolution=None)
 
             # Convert centre lat/lons to corner values required for pcolormesh
             lons2 = get_grid_edges(lons)
@@ -426,51 +498,57 @@ class Plotter:
             img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap)
             img.set_clim(cm_edge_values.min(), cm_edge_values.max())
 
-            if cb_label_pos is None:
-                tick_pos = cm_edge_values
-            else:
-                tick_pos = cb_label_pos
-
             m.drawmapboundary(linewidth=0.0)
 
             # Save figure
-            plt.savefig(region['output_filename'], dpi=150, bbox_inches='tight', pad_inches=0.0)
+            plt.savefig(region['output_filename'], dpi=150,
+                        bbox_inches='tight', pad_inches=0.0)
             plt.close()
 
-        # Draw colorbar
-        fig = plt.figure(figsize=(0.75,2))
-        ax1 = fig.add_axes([0.05, 0.01, 0.25, 0.98])
+        def _plot_colorbar(lats, lons, data,
+                           units='', cb_tick_fmt="%.0f",
+                           cb_labels=None, extend='both',
+                           proj=self._DEFAULT_PROJ, **kwargs):
+            # Draw colorbar
+            fig = plt.figure(figsize=(0.75,2))
+            ax1 = fig.add_axes([0.05, 0.01, 0.25, 0.98])
 
-        norm = mpl.colors.Normalize(*[cm_edge_values[0], cm_edge_values[-1]])
-        cb = mpl.colorbar.ColorbarBase(
-                ax1,
-                cmap=d_cmap,
-                norm=norm,
-                orientation='vertical',
-                drawedges='True',
-                extend=extend,
-                ticks=tick_pos)
-        if cb_labels is None:
-            cb.set_ticklabels([cb_tick_fmt % k for k in cm_edge_values])
-        else:
-            cb.set_ticklabels(cb_labels)
-        cb.set_label(units,
-                rotation='horizontal',
-                fontsize=6)
+            norm = mpl.colors.Normalize(*[cm_edge_values[0],
+                                        cm_edge_values[-1]])
+            cb = mpl.colorbar.ColorbarBase(
+                    ax1,
+                    cmap=d_cmap,
+                    norm=norm,
+                    orientation='vertical',
+                    drawedges='True',
+                    extend=extend,
+                    ticks=tick_pos)
+            if cb_labels is None:
+                cb.set_ticklabels([cb_tick_fmt % k for k in cm_edge_values])
+            else:
+                cb.set_ticklabels(cb_labels)
+            cb.set_label(units,
+                    rotation='horizontal',
+                    fontsize=6)
 
-        if cb_labels is None:
-            cb.set_ticklabels([cb_tick_fmt % k for k in cm_edge_values])
-        else:
-            cb.set_ticklabels(cb_labels)
+            if cb_labels is None:
+                cb.set_ticklabels([cb_tick_fmt % k for k in cm_edge_values])
+            else:
+                cb.set_ticklabels(cb_labels)
 
-        for tick in cb.ax.get_yticklabels():
-            tick.set_fontsize(6)
+            for tick in cb.ax.get_yticklabels():
+                tick.set_fontsize(6)
 
-        plt.savefig(colorbar_filename,
-                dpi=120,
-                transparent=True)
-        plt.close()
-        pngcrush(colorbar_filename)
+            plt.savefig(colorbar_filename,
+                    dpi=120,
+                    transparent=True)
+            plt.close()
+            pngcrush(colorbar_filename)
+
+        for region in regions:
+            self.queue_plot(_plot_basemap, region, *args, **kwargs)
+
+        self.queue_plot(_plot_colorbar, *args, **kwargs)
 
     def plotBasemapWest(self, data, lats, lons, variable, config, outputFile,\
                         lllat=-90, lllon=180, urlat=90, urlon=360,

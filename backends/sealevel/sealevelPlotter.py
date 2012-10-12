@@ -108,6 +108,7 @@ class SeaLevelPlotter ():
                              outputFilename, lllat=-65, urlat=15, urlon=210, 
                              worldfile='subwest.pgw')
         plot.plotScale(height, variable, self.config, outputFilename)
+        plot.wait()
 
         dataset.close()
 

@@ -208,8 +208,10 @@ def plot_surface_data(varName, yearStr, monthStr, regionStr, basemap_filename_fu
     # Plot background image layers
     config = bc.BranConfig()
     plot = plotter.Plotter()
-    plot.plot_basemaps_and_colorbar(lats, lons, data, basemap_filename_fullpath,
-                                    units=unitStr, cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt,
+    plot.plot_basemaps_and_colorbar(lats, lons, data,
+                                    output_filename=basemap_filename_fullpath,
+                                    units=unitStr, cm_edge_values=cb_ticks,
+                                    cb_tick_fmt=cb_tick_fmt,
                                     cb_labels=None, cb_label_pos=None,
                                     cmp_name='jet', extend='both')
 
@@ -241,12 +243,18 @@ def plot_surface_data(varName, yearStr, monthStr, regionStr, basemap_filename_fu
             contourLines = True
 
         # Plot surface data
-        plot = plotter.Plotter()
-        plot.plot_surface_data(lats, lons, data, lat_min, lat_max, lon_min, lon_max,
-                               output_filename=plot_filename_fullpath + '.png', title=title, units=unitStr,
-                               cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt, cmp_name='jet', proj='cyl',
-                               contourLines=contourLines, product_label_str='Bluelink Reanalysis 2.1',
-                               vlat=lats2, vlon=lons2, u=u, v=v, draw_every=draw_every, arrow_scale=arrow_scale)
+        plot.plot_surface_data(lats, lons, data,
+                               lat_min, lat_max, lon_min, lon_max,
+                               output_filename=plot_filename_fullpath + '.png',
+                               title=title, units=unitStr,
+                               cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt,
+                               cmp_name='jet', proj='cyl',
+                               contourLines=contourLines,
+                               product_label_str='Bluelink Reanalysis 2.1',
+                               vlat=lats2, vlon=lons2, u=u, v=v,
+                               draw_every=draw_every, arrow_scale=arrow_scale)
+
+    plot.wait()
 
 def check_basemap_exists(filename_fullpath):
     return util.check_files_exist(filename_fullpath, [COMMON_FILES[k] for k in ['mapeast', 'mapeastw', 'mapwest', 'mapwestw', 'scale']])
