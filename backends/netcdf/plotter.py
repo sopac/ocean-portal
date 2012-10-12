@@ -69,7 +69,17 @@ class Plotter:
     def queue_plot(self, func, *args, **kwargs):
         """Queue a plot to be drawn"""
 
-        p = multiprocessing.Process(target=func, name=func.__name__,
+        def _target(*args, **kwargs):
+            if self.serverConfig.get('profile', False):
+                import cProfile
+
+                cProfile.runctx('func(*args, **kwargs)', globals(), locals(),
+                             '/tmp/portal.profile.%s.%s' % (func.__name__,
+                                                            os.getpid()))
+            else:
+                func(*args, **kwargs)
+
+        p = multiprocessing.Process(target=_target, name=func.__name__,
                                     args=args, kwargs=kwargs)
         self._processes.append(p)
         p.start()
