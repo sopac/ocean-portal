@@ -369,8 +369,9 @@ class Plotter:
                                      arrow_scale=arrow_scale)
 
             # Draw land, coastlines, parallels, meridians and add title
-            m.drawcoastlines(linewidth=0.1, zorder=6)
-            m.fillcontinents(color='#cccccc', zorder=7)
+            m.drawcoastlines(linewidth=0.5, color='#505050', zorder=8)
+            m.fillcontinents(color='#F1EBB7', zorder=7)
+
             parallels, p_dec_places = get_tick_values(lat_min, lat_max)
             meridians, m_dec_places = get_tick_values(lon_min, lon_max)
             m.drawparallels(parallels, labels=[True, False, False, False],
