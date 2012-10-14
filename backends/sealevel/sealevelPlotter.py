@@ -101,13 +101,11 @@ class SeaLevelPlotter ():
                                output_filename, title=title, units=units,
                                cmp_name=cmap_name, cm_edge_values=np.arange(-300,300.01,60.0),
                                cb_tick_fmt="%.0f")
-        plot.plotBasemapEast(height, lats2, lons2, variable, self.config,
-                             outputFilename, lllat=-65, lllon=60, urlat=15,
-                             worldfile='subeast.pgw')
-        plot.plotBasemapWest(height, lats2, lons2, variable, self.config,
-                             outputFilename, lllat=-65, urlat=15, urlon=210, 
-                             worldfile='subwest.pgw')
-        plot.plotScale(height, variable, self.config, outputFilename)
+        plot.plot_basemaps_and_colorbar(lats, lons, height,
+                                        output_filename=output_filename,
+                                        units=units, cm_edge_values=np.arange(-300,300.01,60.0),
+                                        cb_tick_fmt="%.0f",
+                                        cmp_name=cmap_name)
         plot.wait()
 
         dataset.close()
