@@ -729,12 +729,15 @@ function addPointLayer () {
             },
             onFeatureInsert: function(feature) {
                 var geometry = feature.geometry;
-                var lon = Math.round(geometry.x * 1000) / 1000;
-                var lat = Math.round(geometry.y * 1000) / 1000;
+                var lon = geometry.x;
+                var lat = geometry.y;
 
                 /* correct for wrapping issues from OpenLayers */
-                if (lon < -180)
-                    lon += 360;
+                if (lon < -180.)
+                    lon += 360.;
+
+                lon = lon.toFixed(3);
+                lat = lat.toFixed(3);
 
                 $('#latitude').val(lat);
                 $('#longitude').val(lon);
