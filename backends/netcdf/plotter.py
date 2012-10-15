@@ -257,7 +257,7 @@ class Plotter:
         cm_edge_values = kwargs.get('cm_edge_values', None)
         cmp_name = kwargs.get('cmp_name', 'jet')
         extend = kwargs.get('extend', 'both')
-        cb_label_pos = kwargs.get('cm_label_pos', None)
+        cb_label_pos = kwargs.get('cb_label_pos', None)
 
         if cm_edge_values is None:
             cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
@@ -302,8 +302,8 @@ class Plotter:
                            cb_labels=None, extend='both',
                            proj=self._DEFAULT_PROJ, **kwargs):
             # Draw colorbar
-            fig = plt.figure(figsize=(0.75,2))
-            ax1 = fig.add_axes([0.05, 0.01, 0.25, 0.98])
+            fig = plt.figure(figsize=(1.5,2))
+            ax1 = fig.add_axes([0.05, 0.01, 0.125, 0.98])
 
             norm = mpl.colors.Normalize(*[cm_edge_values[0],
                                         cm_edge_values[-1]])
@@ -322,11 +322,6 @@ class Plotter:
             cb.set_label(units,
                     rotation='horizontal',
                     fontsize=6)
-
-            if cb_labels is None:
-                cb.set_ticklabels([cb_tick_fmt % k for k in cm_edge_values])
-            else:
-                cb.set_ticklabels(cb_labels)
 
             for tick in cb.ax.get_yticklabels():
                 tick.set_fontsize(6)
