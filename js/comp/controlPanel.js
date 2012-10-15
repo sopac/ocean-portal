@@ -556,7 +556,7 @@ function updateMonths(minMonth, maxMonth) {
         case '3monthly':
             fmt = function (m) {
                 return $.datepicker.formatDate('M y',
-                        new Date(selectedyear, m - 3)) + ' &ndash; ' +
+                        new Date(selectedyear, m - 2)) + ' &ndash; ' +
                     $.datepicker.formatDate('M y',
                         new Date(selectedyear, m));
             };
@@ -565,7 +565,7 @@ function updateMonths(minMonth, maxMonth) {
         case '6monthly':
             fmt = function (m) {
                 return $.datepicker.formatDate('M y',
-                        new Date(selectedyear, m - 6)) + ' &ndash; ' +
+                        new Date(selectedyear, m - 5)) + ' &ndash; ' +
                     $.datepicker.formatDate('M y',
                         new Date(selectedyear, m));
             };
@@ -574,7 +574,7 @@ function updateMonths(minMonth, maxMonth) {
         case '12monthly':
             fmt = function (m) {
                 return $.datepicker.formatDate('M y',
-                        new Date(selectedyear, m - 12)) + ' &ndash; ' +
+                        new Date(selectedyear, m - 11)) + ' &ndash; ' +
                     $.datepicker.formatDate('M y',
                         new Date(selectedyear, m));
             };
