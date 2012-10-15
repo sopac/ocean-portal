@@ -580,9 +580,13 @@ function updateMonths(minMonth, maxMonth) {
             };
             break;
 
+        case 'yearly':
+            /* ignore */
+            return;
+
         default:
             console.error("ERROR: should not be reached");
-            break;
+            return;
     }
 
     var month = $('#month');
