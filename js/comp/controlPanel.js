@@ -62,16 +62,17 @@ $(document).ready(function() {
     $('#variable').change(function () {
         var varid = getValue('variable');
 
+        if (varid == '--') {
+            hideControls();
+            ocean.variable = null;
+            return;
+        }
+
         if (!(varid in ocean.variables)) {
             return;
         }
 
         ocean.variable = varid;
-
-        if (varid == '--') {
-            hideControls();
-            return;
-        }
 
         /* filter the options list */
         var plots = ocean.variables[varid].plots;
