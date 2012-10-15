@@ -28,7 +28,7 @@ function override(paramsfunc) {
         }
 
         return out;
-    }
+    };
 }
 
 ocean.dsConf = {
@@ -38,7 +38,7 @@ ocean.dsConf = {
             trend: dataset.aveCheck.trend,
             runningAve: dataset.aveCheck.runningAve,
             runningInterval: dataset.runningInterval
-        }}),
+        };}),
         aveCheck: {},
         mainCheck: 'average',
         runningInterval: 2,
@@ -58,7 +58,7 @@ ocean.dsConf = {
             }
         },
         onSelect: null,
-        onDeselect: null,
+        onDeselect: null
     },
     ersst: {
         params: override(function (dataset) { return {
@@ -67,7 +67,7 @@ ocean.dsConf = {
             trend: dataset.aveCheck.trend,
             runningAve: dataset.aveCheck.runningAve,
             runningInterval: dataset.runningInterval
-        }}),
+        };}),
         aveCheck: {},
         mainCheck: 'average',
         runningInterval: 2,
@@ -90,14 +90,14 @@ ocean.dsConf = {
             }
         },
         onSelect: null,
-        onDeselect: null,
+        onDeselect: null
     },
     bran: {
         params: override(function (dataset) {
             switch (ocean.plottype) {
               case 'xsections':
                   return { lat: $('#latitude').val(),
-                           lon: $('#longitude').val() }
+                           lon: $('#longitude').val() };
                   break;
 
               default:
@@ -115,15 +115,15 @@ ocean.dsConf = {
             }
         },
         onSelect: null,
-        onDeselect: null,
+        onDeselect: null
     },
     ww3: {
         params: override(function (dataset) { return {
             lllat: $('#latitude').val(),
             lllon: $('#longitude').val(),
             urlat: $('#latitude').val(),
-            urlon: $('#longitude').val(),
-        }}),
+            urlon: $('#longitude').val()
+        };}),
         callback: function(data) {
             prependOutputSet();
 
@@ -132,14 +132,14 @@ ocean.dsConf = {
             }
         },
         onSelect: null,
-        onDeselect: null,
+        onDeselect: null
     },
     sealevel: {
         params: override(function (dataset) { return {
             lat: $('#latitude').val(),
             lon: $('#longitude').val(),
-            tidalGaugeId: $('#tgId').val(),
-        }}),
+            tidalGaugeId: $('#tgId').val()
+        };}),
         callback: function(data) {
             prependOutputSet();
 
@@ -173,10 +173,6 @@ ocean.dsConf = {
                         type: OpenLayers.Filter.Comparison.EQUAL_TO,
                         property: 'region',
                         value: elem
-                    });
-
-                    return new OpenLayers.Strategy.Filter({
-                        filter: filter
                     });
                 });
 
@@ -306,7 +302,6 @@ ocean.dsConf = {
                 controls[control].deactivate();
                 controls[control].destroy();
             }
-        },
+        }
     }
 };
-

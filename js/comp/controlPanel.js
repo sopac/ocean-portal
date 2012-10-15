@@ -131,7 +131,7 @@ $(document).ready(function() {
     $('#period').change(function () {
         var period = getValue('period');
         var show = [ 'dataset' ];
-        var hide = []
+        var hide = [];
 
         if (!(period in ocean.variables[ocean.variable].plots[ocean.plottype])) {
             return;
@@ -315,7 +315,7 @@ $(document).ready(function() {
                     return true; /* no date range defined */
 
                 return (ocean.date >= range.min) && (ocean.date <= range.max);
-            }
+            };
         }
 
         updateDatasets(filter);
@@ -549,7 +549,7 @@ function updateMonths(minMonth, maxMonth) {
             fmt = function (m) {
                 return $.datepicker.formatDate('MM',
                     new Date(selectedyear, m));
-            }
+            };
             break;
 
         case '3monthly':
@@ -558,7 +558,7 @@ function updateMonths(minMonth, maxMonth) {
                         new Date(selectedyear, m - 3)) + ' &ndash; ' +
                     $.datepicker.formatDate('M y',
                         new Date(selectedyear, m));
-            }
+            };
             break;
 
         case '6monthly':
@@ -567,7 +567,7 @@ function updateMonths(minMonth, maxMonth) {
                         new Date(selectedyear, m - 6)) + ' &ndash; ' +
                     $.datepicker.formatDate('M y',
                         new Date(selectedyear, m));
-            }
+            };
             break;
 
         case '12monthly':
@@ -576,7 +576,7 @@ function updateMonths(minMonth, maxMonth) {
                         new Date(selectedyear, m - 12)) + ' &ndash; ' +
                     $.datepicker.formatDate('M y',
                         new Date(selectedyear, m));
-            }
+            };
             break;
 
         default:
@@ -853,7 +853,7 @@ function hideControls() {
     }
 
     $.each(controls, function (i, control) {
-        var parent = _controlVarParent(control)
+        var parent = _controlVarParent(control);
         var group = parent.parent('.controlgroup');
 
         parent.hide();
