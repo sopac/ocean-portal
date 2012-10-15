@@ -321,10 +321,12 @@ class Plotter:
                 cb.set_ticklabels(cb_labels)
             cb.set_label(units,
                     rotation='horizontal',
-                    fontsize=6)
+                    fontsize=6,
+                    fontweight='bold')
 
             for tick in cb.ax.get_yticklabels():
                 tick.set_fontsize(6)
+                tick.set_fontweight('bold')
 
             plt.savefig(colorbar_filename,
                     dpi=120,
