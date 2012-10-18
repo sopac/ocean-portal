@@ -38,6 +38,16 @@ $(document).ready(function() {
     else
         ocean.config = location.search.slice(1);
 
+    /* set up theme */
+    $('.panel h1').addClass('ui-widget-header ui-state-default');
+    $('.panel').addClass('border');
+
+    /* set up toolbar */
+    $('.toolbar a').addClass('ui-state-default ui-corner-all');
+    $('.toolbar a').hover(function () {
+        $(this).toggleClass('ui-state-active');
+    });
+
     /* position centre layout */
     $('.layout-center')
         .css('left', $('.layout-west').outerWidth())

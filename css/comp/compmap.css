@@ -7,12 +7,19 @@
 body {
   font-size: 12px;
   font-family: tahoma,arial,verdana,sans-serif;
+  border: 1px solid rgb(211, 211, 211);
+  padding: 0;
+  margin: 0;
 }
 
 .panel {
   position: absolute;
-  border: 2px solid black;
+}
+
+.border {
+  border: 1px solid rgb(211, 211, 211);
   padding: 2px;
+  margin: 0;
 }
 
 .panel h1,
@@ -22,11 +29,10 @@ body {
 }
 
 .panel h1 {
-  font-size: 14px;
-  background-color: black;
-  color: white;
-  margin: -2px;
-  padding: 2px;
+  font-size: 13px;
+  margin: -3px;
+  padding: 3px;
+  font-weight: bold;
 }
 
 .panel h2 {
@@ -48,7 +54,7 @@ body {
 }
 
 .layout-south {
-  height: 90px;
+  height: 95px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -69,6 +75,7 @@ body {
 .toolbar a {
   display: inline-block;
   background-color: white;
+  margin: 0;
 }
 
 #map {
@@ -127,7 +134,7 @@ body {
     position: relative;
     left: 0;
     right: 0;
-    top: 2px;
+    top: 3px;
     margin: -2px;
     padding: 2px;
     padding-bottom: 0;
@@ -147,6 +154,8 @@ body {
 .outputgroup .date {
     text-align: center;
     color: #ababab;
+    padding: 0;
+    margin: 0;
 }
 
 .outputgroup .close-button {

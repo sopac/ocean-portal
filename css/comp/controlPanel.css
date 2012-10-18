@@ -4,13 +4,14 @@
  * All Rights Reserved
  */
 
-#controlPanel,
 #regionPanel {
-    padding: 5px;
+  margin: -3px;
+  margin-top: 2px;
 }
 
 #mapControls {
-  margin: -2px;
+  margin: -1px;
+  padding: 2px;
 }
 
 #mapControls .layersDiv {
@@ -58,6 +59,8 @@ optgroup option {
   width: 100%;
   margin-top: 5px;
   margin-bottom: 5px;
+  padding: 2px;
+  padding-bottom: 0;
 }
 
 .controlgroup .hint {

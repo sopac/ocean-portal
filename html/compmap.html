@@ -49,7 +49,7 @@
   <div class="panel layout-west">
     <h1>Parameters</h1>
 
-    <div id="regionPanel">
+    <div id="regionPanel" class="border">
       <div class="controlgroup">
         <div class="controlvar">
           <label>Select Country/Region:</label>
@@ -165,9 +165,11 @@
 
     <div id="mapControls" class="panel layout-south">
       <h1>Map Controls</h2>
-      <h2>Layer</h2>
-      <div id="mapControlsLayers"></div>
-      <div id="mapControlsToolbar" class="olControlEditingToolbar"></div>
+      <div class="controlgroup">
+        <h2>Layer</h2>
+        <div id="mapControlsLayers"></div>
+        <div id="mapControlsToolbar" class="olControlEditingToolbar"></div>
+      </div>
       <p class="version">Version: {{VERSION}}</p>
     </div>
   </div>
