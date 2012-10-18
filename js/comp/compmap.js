@@ -38,6 +38,21 @@ $(document).ready(function() {
     else
         ocean.config = location.search.slice(1);
 
+    /* position centre layout */
+    $('.layout-center')
+        .css('left', $('.layout-west').outerWidth())
+        .css('right', $('.layout-east').outerWidth());
+
+    /* layout functions for window resize */
+    $(window).resize(function () {
+        /* expand vertical */
+        $('.expand-v').each(function () {
+            var e = $(this);
+
+            e.height(e.parent().innerHeight() - e.position().top);
+        });
+    }).resize();
+
     createMap();
 
     $('#region').change(function () {
@@ -436,75 +451,3 @@ function enlargeImg(img, show) {
         });
     }
 }
-
-Ext.require(['*']);
-Ext.onReady(function() {
-    Ext.create('Ext.Viewport', {
-        layout: {
-            type: 'border',
-            padding: 2
-        },
-        items: [{
-            xtype: 'panel',
-            region: 'west',
-            collapsible: true,
-            title: 'Parameters',
-            width: 225,
-            border: false,
-            layout: 'border',
-            items: [{
-                xtype: 'panel',
-                region: 'north',
-                contentEl: 'regionPanel'
-            }, {
-                xtype: 'panel',
-                region: 'center',
-                autoScroll: true,
-                contentEl: 'controlPanel'
-            }, {
-                xtype: 'panel',
-                region: 'south',
-                height: 100,
-                title: 'Map Controls',
-                contentEl: 'mapControls'
-            }]
-        }, {
-            xtype: 'panel',
-            region: 'center',
-            border: false,
-            padding: 2,
-            height: '100%',
-            contentEl: 'map',
-            listeners: {
-                afterlayout: function() {
-                    map.updateSize();
-                }
-            }
-        }, {
-            xtype: 'panel',
-            region: 'east',
-            collapsible: true,
-            title: 'Output',
-            width: 220,
-            contentEl: 'outputDiv',
-            tools: [{
-                /* Report Feedback */
-                type: 'email',
-                cls: 'ie7-compat',
-                tooltip: "Report Feedback",
-                tooltipType: 'title',
-                handler: function () {
-                    window.open('mailto:COSPPac_SoftwareSupport@bom.gov.au', '_self');
-                }
-            }, {
-                /* Help Guide */
-                type: 'help',
-                tooltip: "Help Guide",
-                tooltipType: 'title',
-                handler: function () {
-                    window.open('/cosppac/comp/ocean-portal/ocean-portal-help.shtml', '_blank');
-                }
-            }]
-        }]
-    });
-});

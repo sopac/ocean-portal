@@ -88,7 +88,6 @@ html = [
 script_substitutions = {
     # development version, compressed version
     'jquery.js': ('jquery-1.8.1.js', 'jquery-1.8.1.min.js'),
-    'ext-all.js': ('ext-all-dev.js', 'ext-all.js'),
     'OpenLayers.js': ('OpenLayers.js', 'OpenLayers.min.js'),
 }
 

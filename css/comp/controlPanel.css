@@ -10,10 +10,7 @@
 }
 
 #mapControls {
-  padding: 3px;
-  position: relative;
-  height: 100%;
-  width: 100%;
+  margin: -2px;
 }
 
 #mapControls .layersDiv {
@@ -41,6 +38,7 @@
   left: 0;
   font-size: 8pt;
   padding: 1px;
+  margin: 0;
 }
 
 form {
