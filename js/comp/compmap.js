@@ -66,20 +66,22 @@ $(document).ready(function() {
         $(this).toggleClass('ui-state-active');
     });
 
-    /* position centre layout */
-    $('.layout-center')
-        .css('left', $('.layout-west').outerWidth())
-        .css('right', $('.layout-east').outerWidth());
+    $(window).load(function () {
+        /* layout functions for window resize */
+        $(window).resize(function () {
+            /* expand vertical */
+            $('.expand-v').each(function () {
+                var e = $(this);
 
-    /* layout functions for window resize */
-    $(window).resize(function () {
-        /* expand vertical */
-        $('.expand-v').each(function () {
-            var e = $(this);
+                e.height(e.parent().innerHeight() - e.position().top);
+            });
+        }).resize();
 
-            e.height(e.parent().innerHeight() - e.position().top);
-        });
-    }).resize();
+        /* position centre layout */
+        $('.layout-center')
+            .css('left', $('.layout-west').outerWidth())
+            .css('right', $('.layout-east').outerWidth());
+    });
 
     $('#region').change(function () {
         var selected = $('#region option:selected');
