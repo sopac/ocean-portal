@@ -26,23 +26,9 @@ ocean.date = new Date();
 /* set up JQuery UI elements */
 $(document).ready(function() {
 
-    /* initialise jQueryUI elements */
-    $('.dialog').dialog({
-        autoOpen: false,
-        resizable: false
-    });
-    $('button').button();
-
-    $('#enlargeDiv').hide();
     hideControls();
 
     /* set up the loading dialog */
-    $('#loading-dialog').dialog('option', { 'modal': true,
-                                            'dialogClass': 'notitle',
-                                            'closeOnEscape': false,
-                                            'height': 55,
-                                            'resizable': false });
-
     $(".datepicker").datepicker({
         dateFormat: 'd MM yy',
         changeMonth: true,

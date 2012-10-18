@@ -32,6 +32,28 @@ window.onerror = function (msg, url, line) {
 }
 
 $(document).ready(function() {
+    /* initialise jQueryUI elements */
+    $('.dialog').dialog({
+        autoOpen: false,
+        resizable: false
+    });
+
+    $('button').button();
+    $('#enlargeDiv').hide();
+
+    /* initialise and show the loading dialog */
+    $('#loading-dialog')
+        .dialog('option', { 'modal': true,
+                            'dialogClass': 'notitle',
+                            'closeOnEscape': false,
+                            'height': 55,
+                            'resizable': false })
+        .dialog('open');
+
+    $(window).load(function () {
+        $('#loading-dialog').dialog('close');
+    });
+
     /* work out which region file to load */
     if (location.search == '')
         ocean.config = 'pac';
