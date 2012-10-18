@@ -898,22 +898,27 @@ function updatePage() {
                 }
                 else
                 {
-                    if (data.error)
+                    if (data.error) {
                         show_error(ocean.dataset.params(), data.error);
-                    else
+                    } else {
                         ocean.dataset.callback(data);
+                    }
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                if (textStatus == 'parsererror')
+                if (textStatus == 'parsererror') {
                     show_error(ocean.dataset.params(),
                                "Unable to parse server response.");
-                else
+                } else {
                     show_error(ocean.dataset.params(), errorThrown);
+                }
             },
             complete: function(jqXHR, textStatus) {
                 ocean.processing = false;
-                $('#loading-dialog').dialog('close');
+
+                if (!ocean.mapLoading) {
+                    $('#loading-dialog').dialog('close');
+                }
             }
         });
     }

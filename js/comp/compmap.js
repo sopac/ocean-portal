@@ -50,10 +50,6 @@ $(document).ready(function() {
                             'resizable': false })
         .dialog('open');
 
-    $(window).load(function () {
-        $('#loading-dialog').dialog('close');
-    });
-
     /* work out which region file to load */
     if (location.search == '')
         ocean.config = 'pac';
@@ -85,8 +81,6 @@ $(document).ready(function() {
         });
     }).resize();
 
-    createMap();
-
     $('#region').change(function () {
         var selected = $('#region option:selected');
 
@@ -102,9 +96,9 @@ $(document).ready(function() {
         ocean.area = selected.val();
     });
 
-    /* request the portals config */
-    $.getJSON('config/comp/portals.json')
-        .success(function(data, status_, xhr) {
+    $.when(
+        /* portals config */
+        $.getJSON('config/comp/portals.json', function(data, status_, xhr) {
             ocean.configProps = data[ocean.config];
 
             if (!ocean.configProps) {
@@ -113,41 +107,53 @@ $(document).ready(function() {
             }
 
             document.title = ocean.configProps.name + " Ocean Maps Portal";
+        }),
 
-        })
-        .error(function (xhr, status_, error) {
-            fatal_error("Error loading portals config " + "&mdash; " + error);
-        });
+        /* regions config */
+        $.getJSON('cgi/regions.py', { portal: ocean.config },
+                  function(data, status_, xhr) {
 
-    $.getJSON('cgi/regions.py', { portal: ocean.config })
-        .success(function(data, status_, xhr) {
-            var bounds = new OpenLayers.Bounds();
-
-            /* iterate the region bounds to calculate the restricted extent */
+            /* append the regions and their extents */
             $.each(data, function (i, region) {
-                var b = new OpenLayers.Bounds(region.extent);
-
-                bounds.extend(b);
-
                 $('<option>', {
                     value: region.abbr,
                     text: region.name
-                }).data('bounds', b)
+                }).data('extent', region.extent)
                   .appendTo('#region');
             });
+        }),
 
-            /* compensate for the date line wrapping */
-            if (bounds.right > 180) {
-                bounds.left -= 360;
-                bounds.right -= 360;
-            }
+        /* load OpenLayers */
+        $.getScript($('#map').attr('src'), function () {
+            OpenLayers.ImgPath = "lib/OpenLayers/img/"
+            createMap();
+        }))
 
-            map.setOptions({ restrictedExtent: bounds });
-            setValue('region', ocean.config);
-        })
-        .error(function (xhr, status_, error) {
-            fatal_error("Error loading portals config " + "&mdash; " + error);
+    .done(function () {
+        var bounds = new OpenLayers.Bounds();
+
+        /* iterate the region bounds to calculate the * restricted extent */
+        $('#region option').each(function () {
+            var e = $(this);
+            var b = new OpenLayers.Bounds(e.data('extent'));
+
+            e.data('bounds', b);
+            bounds.extend(b);
         });
+
+        /* compensate for the date line wrapping */
+        if (bounds.right > 180) {
+            bounds.left -= 360;
+            bounds.right -= 360;
+        }
+
+        map.setOptions({ restrictedExtent: bounds });
+        setValue('region', ocean.config);
+    })
+    .fail(function () {
+        $('#loading-dialog').dialog('close');
+        fatal_error("Failed to load portal.");
+    });
 });
 
 /**
@@ -160,6 +166,7 @@ function createMap () {
         minResolution: 0.001373291,
         numZoomLevels: 8,
         maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
+        theme: null,
         controls: [
             new OpenLayers.Control.PanZoomBar(),
             new OpenLayers.Control.MousePosition(),
@@ -203,7 +210,12 @@ function createMap () {
             layers: ['bathymetry', 'land', 'maritime', 'capitals', 'countries']
         }, {
             transitionEffect: 'resize',
-            wrapDateLine: true
+            wrapDateLine: true,
+            eventListeners: {
+                loadend: function () {
+                    $('#loading-dialog').dialog('close');
+                }
+            }
         });
 
     var outputLayer = new OpenLayers.Layer.MapServer("Output",
@@ -212,7 +224,18 @@ function createMap () {
         layers: ['raster', 'land', 'capitals', 'countries']
     }, {
         transitionEffect: 'resize',
-        wrapDateLine: true
+        wrapDateLine: true,
+        eventListeners: {
+            loadstart: function () {
+                console.log("map loading");
+                ocean.mapLoading = true;
+            },
+            loadend: function () {
+                console.log("Map done");
+                ocean.mapLoading = false;
+                $('#loading-dialog').dialog('close');
+            }
+        }
     });
 
     map.addLayers([bathymetryLayer, outputLayer]);
@@ -281,6 +304,7 @@ function updateMap (data) {
 
     map.setBaseLayer(layer);
     layer.params['raster'] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw];
+    ocean.mapLoading = true;
     layer.redraw(true);
 }
 
