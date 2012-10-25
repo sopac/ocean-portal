@@ -36,16 +36,6 @@ scripts = [
     'update-data',
 ]
 
-backends = [
-    'bran',
-    'ersst',
-    'netcdf',
-    'reynolds',
-    'sealevel',
-    'util',
-    'ww3',
-]
-
 # run generate-manifest.py after editing these sections
 backend_resources = [
     'east.pgw',
@@ -160,11 +150,7 @@ if __name__ == '__main__':
           description=DESCRIPTION,
           long_description=LONG_DESCRIPTION,
 
-          packages=[ 'ocean' ] +
-                   [ 'ocean.%s' % b for b in backends ],
-          package_dir={
-              'ocean': 'backends',
-          },
+          packages=[ 'ocean' ],
           package_data={
               'ocean': [ os.path.join('resource', r)
                          for r in backend_resources ],
