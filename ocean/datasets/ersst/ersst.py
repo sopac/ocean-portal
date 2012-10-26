@@ -24,7 +24,7 @@ aveSstGraph = "%s_%s_%s_%save"
 trendGraph = "%s_%s_%s_%strend" 
 
 #get the server dependant path configurations
-serverCfg = util.get_server_config()
+serverCfg = config.get_server_config()
 
 #get dataset dependant production information
 ersstProduct = productName.products["ersst"]

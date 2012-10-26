@@ -21,12 +21,12 @@ import sys
 import os.path
 import subprocess
 
-from ocean import util
+from ocean import util, config
 from ocean.config import serverConfig
 
 to_server = sys.argv[1]
 
-from_data = util.get_server_config()['dataDir']
+from_data = config.get_server_config()['dataDir']
 to_data = serverConfig.servers[to_server]['dataDir']
 
 for (dataset, from_datadir), to_datadir in zip(from_data.items(), to_data.values()):

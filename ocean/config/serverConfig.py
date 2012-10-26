@@ -8,7 +8,7 @@
 """
 Store the server specific configurations
 
-Don't import config directly, use util.get_server_config()
+Don't import config directly, use ocean.config.get_server_config()
 """
 
 servers = {

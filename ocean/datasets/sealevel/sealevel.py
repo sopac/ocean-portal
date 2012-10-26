@@ -21,7 +21,7 @@ seaGraph = "%s_%s_%s_%s"
 seaChart = "%s_%s_%s"
 
 #get the server dependant path configurations
-serverCfg = util.get_server_config()
+serverCfg = config.get_server_config()
 
 #get dataset dependant production information
 seaLevelProduct = productName.products["sealevel"]
