@@ -229,11 +229,9 @@ function createMap () {
         wrapDateLine: true,
         eventListeners: {
             loadstart: function () {
-                console.log("map loading");
                 ocean.mapLoading = true;
             },
             loadend: function () {
-                console.log("Map done");
                 ocean.mapLoading = false;
                 $('#loading-dialog').dialog('close');
             }
