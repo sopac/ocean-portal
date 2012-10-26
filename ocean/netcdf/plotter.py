@@ -19,19 +19,19 @@ import datetime
 import sys
 import multiprocessing
 
+import pylab as py
+import numpy as np
+from matplotlib import pyplot as plt
 from matplotlib import mpl
-from mpl_toolkits.basemap import Basemap
 from matplotlib.offsetbox import AnchoredOffsetbox, TextArea
 from matplotlib.transforms import offset_copy
-import matplotlib.pyplot as plt
+from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-import pylab as py
 
-import numpy as np
-
-import ocean.util as util
-import ocean.util.regionConfig as rc
+from ocean import util
 from ocean.util.pngcrush import pngcrush
+from ocean.config import get_server_config
+from ocean.config import regionConfig as rc
 
 COMMON_FILES = {
     'img': '.png',
@@ -61,7 +61,7 @@ class Plotter:
 
     def __init__(self):
         """The simple constructor of Plotter"""
-        self.serverConfig = util.get_server_config()
+        self.serverConfig = get_server_config()
         self.regionConfig = rc.regions
         self._processes = []
 

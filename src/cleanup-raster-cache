@@ -6,7 +6,7 @@ KEEP_FOR_DAYS=7
 CACHE_DIR=`python << EOF
 import ocean.util
 
-config = ocean.util.get_server_config()
+config = ocean.config.get_server_config()
 print config['outputDir']
 EOF`
 

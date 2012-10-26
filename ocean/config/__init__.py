@@ -6,9 +6,10 @@
 # Authors: Danielle Madeley <d.madeley@bom.gov.au>
 
 __all__ = [
-    'areaMean',
-    'dateRange',
-    'pngcrush',
+    'productName',
+    'regionConfig',
+    'serverConfig',
+    'tidalGaugeConfig',
 ]
 
-from util import *
+from config import *

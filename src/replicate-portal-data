@@ -22,7 +22,7 @@ import os.path
 import subprocess
 
 from ocean import util
-from ocean.util import serverConfig
+from ocean.config import serverConfig
 
 to_server = sys.argv[1]
 

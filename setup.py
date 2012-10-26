@@ -30,6 +30,21 @@ src = [
     'regions.py',
 ]
 
+packages = [
+    'ocean',
+    # core
+    'ocean.config',
+    'ocean.netcdf',
+    'ocean.util',
+    # dataset
+    'ocean.datasets',
+    'ocean.datasets.bran',
+    'ocean.datasets.ersst',
+    'ocean.datasets.sealevel',
+    'ocean.datasets.reynolds',
+    'ocean.datasets.ww3',
+]
+
 scripts = [
     'replicate-portal-data',
     'cleanup-raster-cache',
@@ -150,7 +165,7 @@ if __name__ == '__main__':
           description=DESCRIPTION,
           long_description=LONG_DESCRIPTION,
 
-          packages=[ 'ocean' ],
+          packages=packages,
           package_data={
               'ocean': [ os.path.join('resource', r)
                          for r in backend_resources ],

@@ -24,7 +24,7 @@ esac
 DATA_DIR=`python << EOF
 import ocean.util
 
-config = ocean.util.get_server_config()
+config = ocean.config.get_server_config()
 print config['dataDir']["$DATASET"]
 EOF`
 

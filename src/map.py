@@ -17,10 +17,11 @@ import urllib
 import hashlib
 import shutil
 
-import ocean.util as util
+from ocean import util
+from ocean.config import get_server_config
 from ocean.util.pngcrush import pngcrush
 
-config = util.get_server_config()
+config = get_server_config()
 
 if config['debug']:
     import cgitb

@@ -12,9 +12,10 @@ import sys
 import cgi
 import json
 
-import ocean.util as util
+from ocean import util
+from ocean.config import get_server_config
 
-config = util.get_server_config()
+config = get_server_config()
 
 if config['debug']:
     import cgitb
@@ -33,10 +34,13 @@ def main():
         dataset = form['dataset'].value
 
         try:
-            module = __import__('ocean.%s.%s' % (dataset, dataset), fromlist=[''])
+            module = __import__('ocean.datasets.%s' % (dataset), fromlist=[''])
             response.update(module.process(form))
         except ImportError:
-            response['error'] = "Unknown dataset '%s'" % (dataset)
+            if config['debug']:
+                raise
+            else:
+                response['error'] = "Unknown dataset '%s'" % (dataset)
     else:
         response['error'] = "No dataset specified"
 

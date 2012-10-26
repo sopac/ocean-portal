@@ -11,10 +11,11 @@ import sys
 import cgi
 import json
 
-import ocean.util as util
-import ocean.util.regionConfig as rc
+from ocean import util
+from ocean.config import get_server_config
+from ocean.config import regionConfig as rc
 
-config = util.get_server_config()
+config = get_server_config()
 
 if config['debug']:
     import cgitb
