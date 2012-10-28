@@ -31,7 +31,7 @@ to_data = serverConfig.servers[to_server]['dataDir']
 
 for (dataset, from_datadir), to_datadir in zip(from_data.items(), to_data.values()):
     try:
-        config = __import__('ocean.%s.%sConfig' % (dataset, dataset),
+        config = __import__('ocean.datasets.%s.%sConfig' % (dataset, dataset),
                 fromlist=[''])
     except ImportError:
         print >> sys.stderr, "Could not import %sConfig, skipping" % (dataset)
