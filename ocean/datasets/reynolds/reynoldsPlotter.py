@@ -36,12 +36,13 @@ class ReynoldsPlotter ():
         """
         Plot the thumbnail image and also the east and west map images.
         """
-        variable = args['map']
-        date = args['date']
+        variable = args['variable']
         area = args['area']
         period = args['period']
         
-        dateObj = datetime.date(int(date[:4]), int(date[4:6]), int(date[6:]))
+        dateObj = args['date']
+        date = dateObj.strftime('%Y%m%d')
+
         formattedDate = ''
         cntLabel = False
         if variable == 'dec':
