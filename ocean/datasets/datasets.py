@@ -76,9 +76,10 @@ class Dataset(object):
             output[k] = v
 
         # check for required 
-        for k in self.__required_params__:
-            if k not in output:
-                raise MissingParameter("Expected parameter '%s'" % k)
+        if validate:
+            for k in self.__required_params__:
+                if k not in output:
+                    raise MissingParameter("Expected parameter '%s'" % k)
 
         return output
 
