@@ -5,3 +5,5 @@ __all__ = [
     'sealevel',
     'ww3',
 ]
+
+from datasets import *
