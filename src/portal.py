@@ -9,11 +9,11 @@
 
 import os
 import sys
-import cgi
 import json
 
 from ocean import util
 from ocean.config import get_server_config
+from ocean.datasets import Dataset, MissingParameter, ValidationError
 
 config = get_server_config()
 
@@ -25,24 +25,32 @@ if 'PORTALPATH' in os.environ:
     os.environ['PATH'] = os.environ['PORTALPATH']
 
 def main():
-    form = cgi.FieldStorage()
-
     response = {}
 
-    if 'dataset' in form:
+    try:
+        params = Dataset.parse(validate=False)
 
-        dataset = form['dataset'].value
+        module = __import__('ocean.datasets.%s' % (params['dataset']),
+                            fromlist=[''])
 
-        try:
-            module = __import__('ocean.datasets.%s' % (dataset), fromlist=[''])
-            response.update(module.process(form))
-        except ImportError:
-            if config['debug']:
-                raise
-            else:
-                response['error'] = "Unknown dataset '%s'" % (dataset)
-    else:
-        response['error'] = "No dataset specified"
+        # reparse the params with the module, this time with validation
+        params = module.Dataset.parse()
+
+        ds = module.Dataset()
+
+        response.update(ds.process(params))
+    except (MissingParameter, ValidationError) as e:
+        response['error'] = e.message
+    except ImportError:
+        if config['debug']:
+            raise
+        else:
+            response['error'] = "Unknown dataset '%s'" % (dataset)
+    except Exception as e:
+        if config['debug']:
+            raise
+        else:
+            response['error'] = "Unable to handle your request (%s)" % e.message
 
     print 'Content-Type: application/json; charset=utf-8'
     print 'X-Portal-Version: %s' % util.__version__

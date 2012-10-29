@@ -17,66 +17,82 @@ from ocean import util, config
 from ocean.config import regionConfig, productName
 from ocean.netcdf import plotter
 from ocean.netcdf.plotter import COMMON_FILES
+from ocean.datasets import Dataset
 
 import branConfig as bc
 import branPlotterNew
 
 server_config = config.get_server_config()
-branProduct = productName.products["bran"]
+branProduct = productName.products['bran']
 
-def process(form):
-    responseObj = {}
-    
-    if ("map" in form) and ("date" in form) and ("period" in form) and ("area" in form):
-        varName = form["map"].value
-        dateStr = form["date"].value
-        regionStr = form["area"].value
-        periodStr = form["period"].value
-        yearStr = dateStr[0:4]
-        year = int(yearStr)
-        monthStr = dateStr[4:6]
-        month = int(monthStr)
-        yearMonthStr = dateStr[0:6]
-        
-        # Display error if variable is invalid
-        if varName in ['temp', 'salt', 'eta', 'uvtemp', 'uveta']:
-            pass
-        else:
-            responseObj["error"] = "Invalid variable"
-            return responseObj
+class bran(Dataset):
 
-        if ("lat" in form) and ("lon" in form):
+    __form_params__ = {
+        'lat': np.float,
+        'lon': np.float,
+    }
+    __form_params__.update(Dataset.__form_params__)
+
+    __variables__ = [
+        'temp',
+        'salt',
+        'eta',
+        'uvtemp',
+        'uveta',
+    ]
+
+    __periods__ = [
+        'monthly',
+    ]
+
+    def process(self, params):
+        response = {}
+
+        varName = params['variable']
+        regionStr = params['area']
+        periodStr = params['period']
+        yearStr = '%04i' % params['date'].year
+        monthStr = '%02i' % params['date'].month
+        yearMonthStr = yearStr + monthStr
+
+        if ('lat' in params) and ('lon' in params):
             plot_subsurface = True
             # Display error if variable selected for subsurface plot is invalid
             if not (varName == 'temp' or varName == 'salt'):
-                responseObj["error"] = "To display a depth cross section, please select either Temperature or Salinity variables."
-                return responseObj
+                response['error'] = "To display a depth cross section, please select either Temperature or Salinity variables."
+                return response
         else:
             plot_subsurface = False
 
         if plot_subsurface:
-            lat_cnt = np.float(form["lat"].value)
-            lon_cnt = np.mod(np.float(form["lon"].value), 360.0)
-            if (lon_cnt >= 0) and (lon_cnt <= 360) and (lat_cnt >= -90) and (lat_cnt <= 90):
+            lat_cnt = params['lat']
+            lon_cnt = np.mod(params['lon'], 360.0)
+            if (0 <= lon_cnt <= 360) and (-90 <= lat_cnt <= 90):
                 lon_str = '%.2fE' % lat_cnt
                 if lat_cnt >= 0:
                     lat_str = '%.2fN' % lat_cnt
                 else:
                     lat_str = '%.2fS' % lat_cnt
+
                 regionStr = '_' + lat_str + lon_str
                 regionStr = regionStr.replace('.', '')
             else:
-                responseObj["error"] = "Invalid lat/lon coordinates"
-                return responseObj
+                response['error'] = "Invalid lat/lon coordinates"
+                return response
 
-            plot_filename = "%s_%s_%s_%s" % (branProduct["monthly"], varName, yearMonthStr, regionStr)
-            plot_filename_fullpath = os.path.join(server_config['outputDir'], plot_filename)
-            basemap_filename = "%s_%s_%s" % (branProduct["monthly"], varName, yearMonthStr)
-            basemap_filename_fullpath = os.path.join(server_config['outputDir'], basemap_filename)
+            plot_filename = '%s_%s_%s_%s' % (branProduct['monthly'],
+                                             varName, yearMonthStr, regionStr)
+            plot_filename_fullpath = os.path.join(server_config['outputDir'],
+                                                  plot_filename)
+            basemap_filename = '%s_%s_%s' % (branProduct['monthly'],
+                                             varName, yearMonthStr)
+            basemap_filename_fullpath = os.path.join(server_config['outputDir'],
+                                                     basemap_filename)
 
             # Generate basemap if does not exist
-            if check_basemap_exists(basemap_filename_fullpath) is False:
-                plot_surface_data(varName, yearStr, monthStr, regionStr, basemap_filename_fullpath, basemap_only=True)
+            if not check_basemap_exists(basemap_filename_fullpath):
+                plot_surface_data(varName, yearStr, monthStr, regionStr,
+                                  basemap_filename_fullpath, basemap_only=True)
 
             # Determine plot settings
             if varName == 'temp':
@@ -92,118 +108,169 @@ def process(form):
             titleStr = varLongName + ': \n' + title_date_str + '\n'
 
             # Load sub-surface data
-            input_data_file = os.path.join(server_config['dataDir']['bran'], 'monthly', varName, varName + '_' + yearStr + '_' + monthStr + '.nc4')
-            lats1, lons1, zlevels1, zonal_data = branPlotterNew.load_BRAN_data(input_data_file, varName, lat_cnt, lat_cnt, lon_cnt - 5.0, lon_cnt + 5.0, depth_min=0.0, depth_max=300.0)
-            lats2, lons2, zlevels2, meridional_data = branPlotterNew.load_BRAN_data(input_data_file, varName, lat_cnt - 5.0, lat_cnt + 5.0, lon_cnt, lon_cnt, depth_min=0.0, depth_max=300.0)
+            input_data_file = os.path.join(server_config['dataDir']['bran'],
+                                           'monthly', varName,
+                                           '%s_%s_%s.nc4' % (varName,
+                                                             yearStr,
+                                                             monthStr))
+
+            lats1, lons1, zlevels1, zonal_data = \
+                branPlotterNew.load_BRAN_data(input_data_file, varName,
+                                              lat_cnt, lat_cnt,
+                                              lon_cnt - 5.0, lon_cnt + 5.0,
+                                              depth_min=0.0, depth_max=300.0)
+            lats2, lons2, zlevels2, meridional_data = \
+                branPlotterNew.load_BRAN_data(input_data_file, varName,
+                                              lat_cnt - 5.0, lat_cnt + 5.0,
+                                              lon_cnt, lon_cnt,
+                                              depth_min=0.0, depth_max=300.0)
 
             # Load surface data
-            input_data_file = os.path.join(server_config['dataDir']['bran'], 'monthly', varName, varName + '_' + yearStr + '_' + monthStr + '.nc4')
-            lats, lons, zlevels, data = branPlotterNew.load_BRAN_data(input_data_file, varName, -999.0, 999.0, -999.0, 999.0)
+            input_data_file = os.path.join(server_config['dataDir']['bran'],
+                                           'monthly', varName,
+                                           '%s_%s_%s.nc4' % (varName,
+                                                             yearStr,
+                                                             monthStr))
+
+            lats, lons, zlevels, data = \
+                branPlotterNew.load_BRAN_data(input_data_file, varName,
+                                              -999.0, 999.0, -999.0, 999.0)
 
             # Generate subsurface plot
-            branPlotterNew.plot_BRAN_depth_slice(zlevels1, lats2, lons1, zonal_data, meridional_data, lats, lons, data,
-                                                 lat_cnt, lon_cnt, output_filename=plot_filename_fullpath + '.png',
-                                                 units=unitStr, title=titleStr, cb_ticks=cb_ticks, product_label_str='Bluelink Reanalysis 2.1')
+            branPlotterNew.plot_BRAN_depth_slice(zlevels1, lats2, lons1,
+                                                 zonal_data, meridional_data,
+                                                 lats, lons, data,
+                                                 lat_cnt, lon_cnt,
+                                                 output_filename=plot_filename_fullpath + '.png',
+                                                 units=unitStr, title=titleStr,
+                                                 cb_ticks=cb_ticks,
+                                                 product_label_str='Bluelink Reanalysis 2.1')
         else:
             # Plot surface data
-            plot_filename = "%s_%s_%s_%s" % (branProduct["monthly"], varName, yearMonthStr, regionStr)
-            plot_filename_fullpath = os.path.join(server_config['outputDir'], plot_filename)
+            plot_filename = '%s_%s_%s_%s' % (branProduct['monthly'],
+                                             varName, yearMonthStr, regionStr)
+            plot_filename_fullpath = os.path.join(server_config['outputDir'],
+                                                  plot_filename)
             basemap_filename = plot_filename
             basemap_filename_fullpath = plot_filename_fullpath
-            if check_basemap_and_plot_exists(plot_filename_fullpath) is False:
+
+            if not check_basemap_and_plot_exists(plot_filename_fullpath):
                 # If drawing currents, determine vector plot settings
                 if varName in ['uvtemp', 'uveta']:
                     lat_min = regionConfig.regions[regionStr][1]['llcrnrlat']
                     lat_max = regionConfig.regions[regionStr][1]['urcrnrlat']
                     lon_min = regionConfig.regions[regionStr][1]['llcrnrlon']
                     lon_max = regionConfig.regions[regionStr][1]['urcrnrlon']
-                    draw_every, arrow_scale = branPlotterNew.get_vector_plot_settings(lat_min, lat_max, lon_min, lon_max)
-                    # Display error if chosen region is too large for displaying currents
+
+                    draw_every, arrow_scale = \
+                        branPlotterNew.get_vector_plot_settings(lat_min,
+                                                                lat_max,
+                                                                lon_min,
+                                                                lon_max)
+
+                    # Display error if chosen region is too large for
+                    # displaying currents
                     if (draw_every is None) or (arrow_scale is None):
-                        responseObj["error"] = "The region is too large for displaying currents.  Please select a smaller region and try again."
-                        return responseObj
+                        response['error'] = "The region is too large for displaying currents.  Please select a smaller region and try again."
+                        return response
                 else:
                     draw_every, arrow_scale = None, None
 
-                plot_surface_data(varName, yearStr, monthStr, regionStr, basemap_filename_fullpath,
-                                               plot_filename_fullpath=plot_filename_fullpath,
-                                               basemap_only=False, draw_every=draw_every, arrow_scale=arrow_scale)
+                plot_surface_data(varName, yearStr, monthStr, regionStr,
+                                  basemap_filename_fullpath,
+                                  plot_filename_fullpath=plot_filename_fullpath,
+                                  basemap_only=False, draw_every=draw_every,
+                                  arrow_scale=arrow_scale)
 
-        if check_basemap_exists(basemap_filename_fullpath) and check_plot_exists(plot_filename_fullpath):
-            responseObj.update(util.build_response_object(
-                               COMMON_FILES.keys(),
-                               os.path.join(server_config['baseURL'],
-                                            server_config['rasterURL'],
-                                            basemap_filename),
-                               COMMON_FILES.values()))
-            responseObj["img"] = os.path.join(server_config['baseURL'],
-                                              server_config['rasterURL'],
-                                              plot_filename + '.png')
+        if check_basemap_exists(basemap_filename_fullpath) and \
+           check_plot_exists(plot_filename_fullpath):
+
+            response.update(util.build_response_object(
+                            COMMON_FILES.keys(),
+                            os.path.join(server_config['baseURL'],
+                                         server_config['rasterURL'],
+                                         basemap_filename),
+                            COMMON_FILES.values()))
+            response['img'] = os.path.join(server_config['baseURL'],
+                                           server_config['rasterURL'],
+                                           plot_filename + '.png')
+
             util.touch_files(os.path.join(server_config['outputDir'],
                                           plot_filename),
                              COMMON_FILES.values())
             util.touch_files(os.path.join(plot_filename_fullpath),
                              [ COMMON_FILES['img'] ])
         else:
-            responseObj["error"] = "Requested image is not available at this time."
+            response['error'] = "Requested image is not available at this time."
 
-    return responseObj
+        return response
 
+def plot_surface_data(varName, yearStr, monthStr, regionStr,
+                      basemap_filename_fullpath,
+                      plot_filename_fullpath=None, basemap_only=False,
+                      draw_every=1, arrow_scale=10):
 
-def plot_surface_data(varName, yearStr, monthStr, regionStr, basemap_filename_fullpath, plot_filename_fullpath=None,
-                      basemap_only=False, draw_every=1, arrow_scale=10):
-    
     if varName == 'temp':
         dataVar = 'temp'
         unitStr = ur'\u00b0' + 'C'
-        if regionConfig.regions.has_key(regionStr):
+
+        if regionStr in regionConfig.regions:
             if regionConfig.regions[regionStr][0] == 'pi':
-                cb_ticks = np.arange(20.0,32.1,1.0)
+                cb_ticks = np.arange(20.0, 32.1, 1.0)
             else:
-                cb_ticks = np.arange(0.0,32.1,2.0)
+                cb_ticks = np.arange(0.0, 32.1, 2.0)
         else:
-                cb_ticks = np.arange(0.0,32.1,2.0)
-        varLongName = 'Sea Surface Temperature'
-        cb_tick_fmt="%.0f"
+            cb_ticks = np.arange(0.0, 32.1, 2.0)
+
+        varLongName = "Sea Surface Temperature"
+        cb_tick_fmt = '%.0f'
         currents = False
     elif varName == 'uvtemp':
         dataVar = 'temp'
         unitStr = ur'\u00b0' + 'C'
-        if regionConfig.regions.has_key(regionStr):
+
+        if regionStr in regionConfig.regions:
             if regionConfig.regions[regionStr][0] == 'pi':
-                cb_ticks = np.arange(20.0,32.1,1.0)
+                cb_ticks = np.arange(20.0, 32.1, 1.0)
             else:
-                cb_ticks = np.arange(0.0,32.1,2.0)
+                cb_ticks = np.arange(0.0, 32.1, 2.0)
         else:
-            cb_ticks = np.arange(0.0,32.1,2.0)
-        varLongName = 'Sea Surface Temperature and Currents'
-        cb_tick_fmt="%.0f"
+            cb_ticks = np.arange(0.0, 32.1, 2.0)
+
+        varLongName = "Sea Surface Temperature and Currents"
+        cb_tick_fmt = '%.0f'
         currents = True
     elif varName == 'salt':
         dataVar = 'salt'
-        unitStr = 'PSU'
-        cb_ticks = np.arange(33,37.1,0.5)
-        varLongName = 'Sea Surface Salinity'
-        cb_tick_fmt="%.1f"
+        unitStr = "PSU"
+        cb_ticks = np.arange(33, 37.1, 0.5)
+        varLongName = "Sea Surface Salinity"
+        cb_tick_fmt = '%.1f'
         currents = False
     elif varName == 'eta':
         dataVar = 'eta'
-        unitStr = 'Metres'
-        cb_ticks = np.arange(-0.5,0.51,0.1)
-        varLongName = 'Sea Level Height'
-        cb_tick_fmt="%.2f"
+        unitStr = "Metres"
+        cb_ticks = np.arange(-0.5, 0.51, 0.1)
+        varLongName = "Sea Level Height"
+        cb_tick_fmt = '%.2f'
         currents = False
     elif varName == 'uveta':
         dataVar = 'eta'
-        unitStr = 'Metres'
-        cb_ticks = np.arange(-0.5,0.51,0.1)
-        varLongName = 'Sea Level Height and Currents'
-        cb_tick_fmt="%.2f"
+        unitStr = "Metres"
+        cb_ticks = np.arange(-0.5, 0.51, 0.1)
+        varLongName = "Sea Level Height and Currents"
+        cb_tick_fmt = '%.2f'
         currents = True
-    
+
     # Load surface data
-    input_data_file = os.path.join(server_config['dataDir']['bran'], 'monthly', dataVar, dataVar + '_' + yearStr + '_' + monthStr + '.nc4')
-    lats, lons, zlevels, data = branPlotterNew.load_BRAN_data(input_data_file, dataVar, -999.0, 999.0, -999.0, 999.0)
+    input_data_file = os.path.join(server_config['dataDir']['bran'],
+                                   'monthly', dataVar,
+                                   '%s_%s_%s.nc4' % (dataVar,
+                                                     yearStr,
+                                                     monthStr))
+    lats, lons, zlevels, data = \
+        branPlotterNew.load_BRAN_data(input_data_file, dataVar,
+                                      -999.0, 999.0, -999.0, 999.0)
 
     # Plot background image layers
     config = bc.BranConfig()
@@ -227,15 +294,33 @@ def plot_surface_data(varName, yearStr, monthStr, regionStr, basemap_filename_fu
         regionLongName = regionConfig.regions[regionStr][2]
         title = regionLongName + '\n' + varLongName + ': ' + title_date_str
 
-        input_data_file = os.path.join(server_config['dataDir']['bran'], 'monthly', dataVar, dataVar + '_' + yearStr + '_' + monthStr + '.nc4')
-        lats, lons, zlevels, data = branPlotterNew.load_BRAN_data(input_data_file, dataVar, lat_min - 1.0, lat_max + 1.0, lon_min - 1.0, lon_max + 1.0)
+        input_data_file = os.path.join(server_config['dataDir']['bran'],
+                                       'monthly', dataVar,
+                                       '%s_%s_%s.nc4' % (dataVar,
+                                                         yearStr,
+                                                         monthStr))
+        lats, lons, zlevels, data = \
+            branPlotterNew.load_BRAN_data(input_data_file, dataVar,
+                                          lat_min - 1.0, lat_max + 1.0,
+                                          lon_min - 1.0, lon_max + 1.0)
 
         # Load current data if required
         if currents == True:
-            input_data_file = os.path.join(server_config['dataDir']['bran'], 'monthly', 'u', 'u' + '_' + yearStr + '_' + monthStr + '.nc4')
-            lats2, lons2, zlevels, u = branPlotterNew.load_BRAN_data(input_data_file, 'u', lat_min - 1.0, lat_max + 1.0, lon_min - 1.0, lon_max + 1.0)
-            input_data_file = os.path.join(server_config['dataDir']['bran'], 'monthly', 'v', 'v' + '_' + yearStr + '_' + monthStr + '.nc4')
-            lats2, lons2, zlevels, v = branPlotterNew.load_BRAN_data(input_data_file, 'v', lat_min - 1.0, lat_max + 1.0, lon_min - 1.0, lon_max + 1.0)
+            input_data_file = os.path.join(server_config['dataDir']['bran'],
+                                           'monthly', 'u',
+                                           'u_%s_%s.nc4' % (yearStr, monthStr))
+            lats2, lons2, zlevels, u = \
+                branPlotterNew.load_BRAN_data(input_data_file, 'u',
+                                              lat_min - 1.0, lat_max + 1.0,
+                                              lon_min - 1.0, lon_max + 1.0)
+
+            input_data_file = os.path.join(server_config['dataDir']['bran'],
+                                           'monthly', 'v',
+                                           'v_%s_%s.nc4' % (yearStr, monthStr))
+            lats2, lons2, zlevels, v = \
+                branPlotterNew.load_BRAN_data(input_data_file, 'v',
+                                              lat_min - 1.0, lat_max + 1.0,
+                                              lon_min - 1.0, lon_max + 1.0)
             contourLines = False
         else:
             lats2 = None; lons2 = None

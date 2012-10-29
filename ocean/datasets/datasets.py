@@ -32,6 +32,9 @@ class Dataset(object):
     __required_params__ = [
         'dataset',
         'variable',
+        'date',
+        'period',
+        'area',
     ]
 
     __periods__ = [
@@ -41,7 +44,7 @@ class Dataset(object):
     ]
 
     @classmethod
-    def parse(self):
+    def parse(self, validate=True):
         form = cgi.FieldStorage()
 
         output = {}
@@ -64,7 +67,7 @@ class Dataset(object):
 
             # run validation
             # FIXME: should this be done afterwards with the entire param set?
-            if hasattr(self, 'validate_%s' % k):
+            if validate and hasattr(self, 'validate_%s' % k):
                 try:
                     getattr(self, 'validate_%s' % k)(v)
                 except AssertionError, e:
@@ -104,3 +107,6 @@ class Dataset(object):
     def validate_area(self, p):
         if p not in regionConfig.regions:
             raise ValidationError("Unknown area '%s'" % p)
+
+    def process(self, params):
+        raise NotImplemented
