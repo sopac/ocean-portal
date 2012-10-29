@@ -50,6 +50,7 @@ class reynolds(Dataset):
     ]
 
     __periods__ = [
+        'daily',
         'monthly',
         'yearly',
     ]

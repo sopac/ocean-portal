@@ -28,6 +28,11 @@ class MyDataset(Dataset):
         'monthly',
     ]
 
+    __required_params__ = [
+        'dataset',
+        'variable',
+    ]
+
     @classmethod
     def validate_odd(self, p):
         assert p % 2 == 1

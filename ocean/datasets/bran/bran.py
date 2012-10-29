@@ -104,7 +104,7 @@ class bran(Dataset):
                 varLongName = 'Surface and Subsurface Salinity Profile'
                 cb_ticks = np.arange(33, 37.1, 0.5)
 
-            title_date_str = datetime.date(year, month, 1).strftime('%B %Y')
+            title_date_str = params['date'].strftime('%B %Y')
             titleStr = varLongName + ': \n' + title_date_str + '\n'
 
             # Load sub-surface data

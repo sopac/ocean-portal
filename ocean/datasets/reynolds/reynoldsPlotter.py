@@ -1,4 +1,3 @@
-#!/usr/bin/python
 #
 # (c) 2012 Commonwealth of Australia
 #     Australian Bureau of Meteorology, COSPPac COMP
