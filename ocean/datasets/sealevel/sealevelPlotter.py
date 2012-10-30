@@ -186,7 +186,7 @@ class SeaLevelPlotter ():
         Plot altimetry/reconstruction timeseries 
         """
         tidalGaugeName = args["tidalGaugeName"]
-        variable = args["var"]
+        variable = args['variable']
         lat = args["lat"]
         lon = args["lon"]
         titlePrefix = None

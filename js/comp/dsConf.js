@@ -15,6 +15,7 @@ function override(paramsfunc) {
         out = {
             dataset: getBackendId(ocean.datasetid),
             variable: getBackendId(ocean.datasetid, ocean.variable),
+            plot: ocean.plottype,
             date: $.datepicker.formatDate('yymmdd', ocean.date),
             period: ocean.period,
             area: ocean.area,

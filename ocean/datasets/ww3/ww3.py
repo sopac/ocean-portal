@@ -50,8 +50,8 @@ class ww3(Dataset):
     }
     __form_params__.update(Dataset.__form_params__)
 
-    __required_params__ = [ p for p in Dataset.__required_params__
-                              if p not in [ 'area' ] ] + [
+    __required_params__ = Dataset.__required_params__ + [
+        'date',
         'lllat',
         'lllon',
     ]

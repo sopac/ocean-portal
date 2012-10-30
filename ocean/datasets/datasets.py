@@ -23,6 +23,7 @@ class Dataset(object):
     __form_params__ = {
         'dataset': str,
         'variable': str,
+        'plot': str,
         'date': datetime.date,
         'period': str,
         'area': str,
@@ -32,15 +33,17 @@ class Dataset(object):
     __required_params__ = [
         'dataset',
         'variable',
-        'date',
+        'plot',
         'period',
-        'area',
     ]
 
     __periods__ = [
     ]
 
     __variables__ = [
+    ]
+
+    __plots__ = [
     ]
 
     @classmethod
@@ -98,6 +101,11 @@ class Dataset(object):
     def validate_variable(self, p):
         if not p in self.__variables__:
             raise ValidationError("Unknown variable '%s'" % p)
+
+    @classmethod
+    def validate_plot(self, p):
+        if not p in self.__plots__:
+            raise ValidationError("Unknown plot type '%s'" % p)
 
     @classmethod
     def validate_period(self, p):

@@ -42,6 +42,10 @@ class reynolds(Dataset):
     }
     __form_params__.update(Dataset.__form_params__)
 
+    __required_params__ = Dataset.__required_params__ + [
+        'date',
+        'area',
+    ]
 
     __variables__ = [
         'mean',

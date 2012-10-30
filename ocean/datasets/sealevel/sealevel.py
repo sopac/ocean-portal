@@ -13,7 +13,7 @@ import sys
 from ocean import util, config
 from ocean.netcdf.plotter import COMMON_FILES
 from ocean.config import productName, tidalGaugeConfig
-from ocean.datasets import Dataset
+from ocean.datasets import Dataset, MissingParameter, ValidationError
 
 import sealevelPlotter
 
@@ -49,8 +49,10 @@ class sealevel(Dataset):
         'gauge',
     ]
 
-    __required_params__ = [ p for p in Dataset.__required_params__
-                              if p not in [ 'area', 'date' ] ]
+    __plots__ = [
+        'map',
+        'ts',
+    ]
 
     @classmethod
     def validate_tidalGaugeId(self, p):
@@ -58,6 +60,11 @@ class sealevel(Dataset):
 
     def plot_surface(self, params):
         response = {}
+
+        if 'date' not in params:
+            raise MissingParameter("Missing parameter 'date'")
+        elif 'area' not in params:
+            raise MissingParameter("Missing parameter 'area'")
 
         variableStr = params['variable']
         dateStr = params['date'].strftime('%Y%m%d')
@@ -96,12 +103,19 @@ class sealevel(Dataset):
     def plot_alt(self, params):
         response = {}
 
-        if 'lat' in params and 'lon' in params:
-            # plot timeseries
+        if params['plot'] == 'ts':
+            if 'lon' not in params or 'lat' not in params:
+                raise MissingParameter(
+                    "'lat' or 'lon' not present in parameters")
 
-            # FIXME: tidal Gauge Id
+            # FIXME: snap to grid location
+            loc = '%i_%i' % (params['lat'] * 1000, params['lon'] * 1000)
+            params['tidalGaugeName'] = '%g%s %g%s' % (
+                abs(params['lat']), 'N' if params['lat'] >= 0 else 'S',
+                abs(params['lon']), 'E' if params['lon'] >= 0 else 'W')
+
             fileName = seaChart % (seaLevelProduct['monthly'],
-                                   tidalGaugeId, 'alt')
+                                   loc, 'alt')
             outputFileName = os.path.join(serverCfg['outputDir'], fileName)
 
             if not os.path.exists(outputFileName + '.png'):
@@ -120,7 +134,7 @@ class sealevel(Dataset):
                 util.touch_files(os.path.join(serverCfg['outputDir'],
                                               fileName),
                                  [ '.png', '.txt' ])
-        else:
+        else: # map
             response.update(self.plot_surface(params))
 
         return response
@@ -128,12 +142,19 @@ class sealevel(Dataset):
     def plot_rec(self, params):
         response = {}
 
-        if 'lat' in params and 'lon' in params:
-            # plot time series
+        if params['plot'] == 'ts':
+            if 'lon' not in params or 'lat' not in params:
+                raise MissingParameter(
+                    "'lat' or 'lon' not present in parameters")
 
-            # FIXME: tidal Gauge Id
+            # FIXME: snap to grid location
+            loc = '%i_%i' % (params['lat'] * 1000, params['lon'] * 1000)
+            params['tidalGaugeName'] = '%g%s %g%s' % (
+                abs(params['lat']), 'N' if params['lat'] >= 0 else 'S',
+                abs(params['lon']), 'E' if params['lon'] >= 0 else 'W')
+
             fileName = seaChart % (seaLevelProduct['monthly'],
-                                   tidalGaugeId, 'rec')
+                                   loc, 'rec')
             outputFileName = os.path.join(serverCfg['outputDir'], fileName)
 
             if not os.path.exists(outputFileName + '.png'):
@@ -152,7 +173,7 @@ class sealevel(Dataset):
                 util.touch_files(os.path.join(serverCfg['outputDir'],
                                               fileName),
                                  [ '.png', '.txt' ])
-        else:
+        else: # map
             response.update(self.plot_surface(params))
 
         return response
@@ -162,6 +183,8 @@ class sealevel(Dataset):
 
         if 'tidalGaugeId' not in params:
             raise ValidationError("Variable 'gauge' requires a 'tidalGaugeId'")
+        elif params['plot'] != 'ts':
+            raise ValidationError("Plot must be 'ts'")
 
         tid = params['tidalGaugeId']
 

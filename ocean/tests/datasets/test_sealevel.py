@@ -19,6 +19,7 @@ def test_validate_tid():
     qs = urllib.urlencode({
         'dataset': 'sealevel',
         'variable': 'gauge',
+        'plot': 'ts',
         'tidalGaugeId': 'IDO70062',
         'period': 'monthly',
     })
@@ -33,6 +34,7 @@ def test_validate_tid_bad():
     qs = urllib.urlencode({
         'dataset': 'sealevel',
         'variable': 'gauge',
+        'plot': 'ts',
         'tidalGaugeId': 'NOTATID', # bad value
         'period': 'monthly',
     })
@@ -42,11 +44,12 @@ def test_validate_tid_bad():
     with pytest.raises(ValidationError):
         Dataset.parse()
 
-def test_gauge():
+def test_gauge_ts():
     util.clear_cache('SEA')
 
     params = {
         'variable': 'gauge',
+        'plot': 'ts',
         'period': 'monthly',
         'tidalGaugeId': 'IDO70062',
     }
@@ -65,6 +68,7 @@ def test_surface_alt():
 
     params = {
         'variable': 'alt',
+        'plot': 'map',
         'period': 'monthly',
         'date': datetime.date(2000, 2, 1),
         'area': 'pac',
@@ -81,11 +85,34 @@ def test_surface_alt():
 
     assert 'alt' in r['img']
 
+def test_alt_ts():
+    util.clear_cache('SEA')
+
+    params = {
+        'variable': 'alt',
+        'plot': 'ts',
+        'period': 'monthly',
+        'lat': -30.,
+        'lon': 160.,
+    }
+
+    ds = Dataset()
+    r = ds.process(params)
+
+    print r
+
+    assert 'error' not in r
+    assert 'img' not in r
+    assert 'altimg' in r
+
+    assert 'alt' in r['altimg']
+
 def test_surface_rec():
     util.clear_cache('SEA')
 
     params = {
         'variable': 'rec',
+        'plot': 'map',
         'period': 'monthly',
         'date': datetime.date(1950, 2, 1),
         'area': 'pac',
@@ -101,3 +128,25 @@ def test_surface_rec():
     assert 'recimg' not in r
 
     assert 'rec' in r['img']
+
+def test_rec_ts():
+    util.clear_cache('SEA')
+
+    params = {
+        'variable': 'rec',
+        'plot': 'ts',
+        'period': 'monthly',
+        'lat': -30.,
+        'lon': 160.,
+    }
+
+    ds = Dataset()
+    r = ds.process(params)
+
+    print r
+
+    assert 'error' not in r
+    assert 'img' not in r
+    assert 'recimg' in r
+
+    assert 'rec' in r['recimg']

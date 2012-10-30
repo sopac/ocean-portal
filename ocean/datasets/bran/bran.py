@@ -45,6 +45,11 @@ class bran(Dataset):
         'monthly',
     ]
 
+    __required_params__ = Dataset.__required_params__ + [
+        'date',
+        'area',
+    ]
+
     def process(self, params):
         response = {}
 
