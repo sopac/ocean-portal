@@ -158,6 +158,9 @@ class SST(Dataset):
             elif periodStr == '6monthly':
                 fileName = self.aveSstGraph % (self.product['6monthly'],
                                                mapStr, areaStr, dateStr[:6])
+            elif periodStr == '12monthly':
+                fileName = self.aveSstGraph % (self.product['12monthly'],
+                                               mapStr, areaStr, dateStr[:6])
             elif periodStr == 'weekly':
                 fileName = self.aveSstGraph % (self.product['weekly'],
                                                mapStr, areaStr, dateStr)

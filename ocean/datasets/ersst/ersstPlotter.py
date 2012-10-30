@@ -7,6 +7,7 @@
 # Authors: Sheng Guo <s.guo@bom.gov.au>
 #          Matthew Howie
 
+import os.path
 import datetime
 import glob
 
@@ -74,25 +75,29 @@ class ErsstPlotter ():
                       + util.format_old_date(dateRange.getMonths(date, period[:2])[0])\
                       + " to "\
                       + util.format_old_date(inputDate)
-        elif variable=='dec':
+
+        elif variable == 'dec':
             centerLabel = True
-            baseYear = args["baseYear"]
+            baseYear = str(args['baseYear'])
+            filename = os.path.join(self.serverCfg['dataDir']['ersst'],
+                                    'decile', baseYear, period,
+                                    'ersst.' + date[:6] + 'dec')
+
             if period=='monthly':
-                filename = self.serverCfg["dataDir"]["ersst"] + "decile/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
                 title = regionLongName + '\n' \
                       + self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + util.format_old_date(inputDate)
-            elif period=='3monthly' or period == '6monthly': 
-                filename = self.serverCfg["dataDir"]["ersst"] + "decile/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
+
+            elif period == '3monthly' or period == '6monthly': 
                 title = regionLongName + '\n' \
                       + self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + util.format_old_date(dateRange.getMonths(date, period[:1])[0]) \
                       + " to "\
                       + util.format_old_date(inputDate)
-            elif period == '12monthly': 
-                filename = self.serverCfg["dataDir"]["ersst"] + "decile/" + baseYear + "/" + period + "/" + "ersst." + date[:6] + "dec"
+
+            elif period == '12monthly':
                 title = regionLongName + '\n' \
                       + self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
@@ -100,8 +105,8 @@ class ErsstPlotter ():
                       + " to "\
                       + util.format_old_date(inputDate)
 
-        elif variable=='trend':
-            baseYear = args["baseYear"]
+        elif variable == 'trend':
+            baseYear = str(args["baseYear"])
             if period=='monthly':
                 filename = self.serverCfg["dataDir"]["ersst"] + "trend/" + period\
                          + "/" + baseYear + "/"  + "ersst." + period\
