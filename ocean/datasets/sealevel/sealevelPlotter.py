@@ -45,8 +45,9 @@ class SeaLevelPlotter ():
         Plot the thumbnail image and also the east and west map images.
         """
         cntLabel = False
-        variable = args["var"]
-        area = args["area"]
+        variable = args['variable']
+        area = args['area']
+
         if variable == 'alt':
             filename = self.serverCfg["dataDir"]["sealevel"] + "grids/" + "CSIRO_SatAlt_199301_201112"
             self.referenceDate = self.altRefDate
@@ -72,9 +73,6 @@ class SeaLevelPlotter ():
         lats2 = np.array(lats2,np.float64)
 
         date = args['date']
-        date = datetime.date(int(date[:4]),
-                             int(date[4:6]),
-                             int(date[6:]))
         args['formattedDate'] = date.strftime('%B %Y')
 
         resolution='h'
@@ -116,7 +114,8 @@ class SeaLevelPlotter ():
         """
         Get the the index of the given date in the data file
         """
-        timeElapsed = datetime.date(int(date[:4]), int(date[4:6]), 15) - self.referenceDate
+
+        timeElapsed = datetime.date(date.year, date.month, 15) - self.referenceDate
         index = timeList.index(timeElapsed.days)
         return index
 
