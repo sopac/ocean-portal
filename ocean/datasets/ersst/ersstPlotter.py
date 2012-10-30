@@ -39,15 +39,10 @@ class ErsstPlotter ():
         Plot the thumbnail image and also the east and west map images.
         """
         variable = args["variable"]
-        date = args["date"] 
+        inputDate = args["date"] 
+        date = inputDate.strftime('%Y%m%d')
         area = args["area"]
         period = args["period"]
- 
-        year = int(date[0:4])
-        month = int(date[4:6])
-        day = int(date[6:8])
-
-        inputDate = datetime.date(year, month, day)
  
         centerLabel = False
 
