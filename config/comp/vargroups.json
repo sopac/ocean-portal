@@ -15,7 +15,7 @@
   },
 
   "sealevel": {
-    "name": "Sealevel",
+    "name": "Sea Level",
     "vars": [ "alt", "rec", "gauge", "eta" ]
   },
 
