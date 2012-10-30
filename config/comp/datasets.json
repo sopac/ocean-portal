@@ -9,19 +9,19 @@
         "bid": "mean",
         "name":"Mean Temperature",
         "periods": ["daily", "monthly", "yearly"],
-        "plottypes": ["map", "trendmap"]
+        "plottypes": ["map"]
     },{
         "id":"sstanom",
         "bid": "anom",
         "name":"Anomalies",
         "periods": ["daily", "monthly", "yearly"],
-        "plottypes": ["map", "trendmap"]
+        "plottypes": ["map"]
     },{
         "id":"sstdec",
         "bid": "dec",
         "name":"Deciles",
         "periods": ["monthly"],
-        "plottypes": ["map", "trendmap"]
+        "plottypes": ["map"]
     }],
     "dateRange" : {
         "minDate": "19820101",
@@ -37,19 +37,19 @@
         "bid": "mean",
         "name":"Mean Temperature",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
-        "plottypes": ["map", "trendmap"]
+        "plottypes": ["map"]
     },{
         "id":"sstanom",
         "bid": "anom",
         "name":"Anomalies",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
-        "plottypes": ["map", "trendmap"]
+        "plottypes": ["map"]
     },{
         "id":"sstdec",
         "bid": "dec",
         "name":"Deciles",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
-        "plottypes": ["map", "trendmap"]
+        "plottypes": ["map"]
     }],
     "dateRange" : {
         "minDate": "18890101",
