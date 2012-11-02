@@ -66,6 +66,11 @@ class ww3(Dataset):
         'Dm',
     ]
 
+    __plots__ = [
+        'ts',
+        'waverose',
+    ]
+
     def process(self, params):
         response = {}
 
