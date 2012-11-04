@@ -8,6 +8,8 @@
 import os
 from glob import glob
 
+import pytest
+
 from ocean.config import get_server_config
 
 config = get_server_config()
@@ -21,3 +23,5 @@ def clear_cache(product, filetype='*'):
             os.unlink(d)
         except IOError:
             raise
+
+requires_display = pytest.mark.skipif("'DISPLAY' not in os.environ")
