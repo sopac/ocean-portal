@@ -5,15 +5,16 @@
 #
 # Authors: Danielle Madeley <d.madeley@bom.gov.au>
 
-from selenium import webdriver
 from selenium.webdriver.support.ui import Select, WebDriverWait as Wait
 from selenium.common.exceptions import TimeoutException
 
 class FrontendError(Exception):
     pass
 
-class MapPortalDriver(webdriver.Firefox):
+def MapPortalDriver(base, **kwargs):
+    return type('MapPortalDriver', (_BaseMapPortalDriver, base), kwargs)
 
+class _BaseMapPortalDriver(object):
     def select_param(self, id, text):
         select = Select(self.find_element_by_id(id))
         select.select_by_visible_text(text)

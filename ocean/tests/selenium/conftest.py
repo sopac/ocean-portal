@@ -15,21 +15,33 @@ Tests should be defined as:
 import os
 
 import pytest
+from selenium import webdriver
 
 from uiutil import MapPortalDriver
+
+browsers = {
+    'firefox': webdriver.Firefox,
+    # 'chrome': webdriver.Chrome,
+}
 
 def pytest_addoption(parser):
     # add a --url option which overrides the value of the 'url' parameter
     # passed to tests
     parser.addoption('--url', action='store',
                      default='http://localhost/portal/compmap.html')
+    parser.addoption('--browsers', action='store',
+                     default=browsers.keys())
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='session',
+                params=browsers.keys())
 def b(request):
     if 'DISPLAY' not in os.environ:
         pytest.skip('Test requires display server (export DISPLAY)')
 
-    b = MapPortalDriver()
+    if request.param not in request.config.option.browsers:
+        pytest.skip('Unrequested test, run with --browser %s' % request.param)
+
+    b = MapPortalDriver(browsers[request.param])()
     b.set_window_size(1200, 800)
 
     request.addfinalizer(lambda *args: b.quit())
