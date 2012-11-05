@@ -268,3 +268,45 @@ def test_cross_sections(url, variable, dataset, product):
     util.clear_cache(product)
     b.submit()
     b.wait(output(product))
+
+@util.requires_display
+def test_currents_bad(url):
+    """
+    This test will fail because the region is too big.
+    """
+
+    b.get(url)
+
+    b.select_param('region', 'Pacific Ocean')
+    b.select_param('variable', 'Temp & Currents')
+    b.ensure_selected('plottype', 'Surface Map')
+    b.ensure_selected('period', 'Monthly')
+    b.select_param('month', 'March')
+    b.select_param('year', '2005')
+    b.ensure_selected('dataset', 'BRAN')
+
+    util.clear_cache('BRN')
+    b.submit()
+
+    with pytest.raises(FrontendError):
+        b.wait(output('BRN'))
+
+@util.requires_display
+@pytest.mark.parametrize(('variable'), [
+    ('Temp & Currents',),
+    ('Sea Level & Currents',),
+])
+def test_currents(url, variable):
+    b.get(url)
+
+    b.select_param('region', 'Fiji')
+    b.select_param('variable', variable)
+    b.ensure_selected('plottype', 'Surface Map')
+    b.ensure_selected('period', 'Monthly')
+    b.select_param('month', 'March')
+    b.select_param('year', '2005')
+    b.ensure_selected('dataset', 'BRAN')
+
+    util.clear_cache('BRN')
+    b.submit()
+    b.wait(output('BRN'))
