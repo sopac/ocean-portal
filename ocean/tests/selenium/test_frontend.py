@@ -188,3 +188,30 @@ def test_removing_outputs(url):
     elem = b.find_element_by_xpath('//input[@value="Output"]')
     assert elem.get_attribute('checked') is None
     assert elem.get_attribute('disabled')
+
+@util.requires_display
+@pytest.mark.parametrize(('variable'), [
+    ('Significant Wave Height',),
+    ('Mean Wave Period',),
+])
+def test_histogram(url, variable):
+    b.get(url)
+
+    b.select_param('variable', variable)
+    b.ensure_selected('plottype', 'Histogram')
+    b.select_param('period', 'Monthly')
+    b.select_param('month', 'January')
+
+    assert len(b.find_elements_by_jquery('#year:visible')) == 0
+
+    b.ensure_selected('dataset', 'WaveWatch III')
+
+    elem = b.find_element_by_id('latitude')
+    elem.send_keys("-45")
+
+    elem = b.find_element_by_id('longitude')
+    elem.send_keys("145")
+
+    util.clear_cache('WAV')
+    b.submit()
+    b.wait(output('WAV'))

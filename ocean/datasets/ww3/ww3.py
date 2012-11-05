@@ -67,7 +67,7 @@ class ww3(Dataset):
     ]
 
     __plots__ = [
-        'ts',
+        'histogram',
         'waverose',
     ]
 
