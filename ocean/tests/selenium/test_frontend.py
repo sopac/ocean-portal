@@ -29,8 +29,8 @@ def teardown_module(module):
 # --- Tests ---
 
 @util.requires_display
-def test_load():
-    b.get('http://localhost/portal/compmap.html')
+def test_load(url):
+    b.get(url)
 
     # check Bathymetry is selected and enabled
     elem = b.find_element_by_xpath('//input[@value="Bathymetry"]')
@@ -43,8 +43,8 @@ def test_load():
     assert elem.get_attribute('disabled')
 
 @util.requires_display
-def test_mean_sst_monthly():
-    b.get('http://localhost/portal/compmap.html')
+def test_mean_sst_monthly(url):
+    b.get(url)
 
     util.clear_cache('ERA')
 
@@ -69,8 +69,8 @@ def test_mean_sst_monthly():
     assert elem.get_attribute('disabled') is None
 
 @util.requires_display
-def test_wave_watch():
-    b.get('http://localhost/portal/compmap.html')
+def test_wave_watch(url):
+    b.get(url)
 
     util.clear_cache('WAV')
 
@@ -102,14 +102,14 @@ def test_wave_watch():
     assert elem.get_attribute('disabled')
 
 @util.requires_display
-def test_removing_outputs():
+def test_removing_outputs(url):
     """
     This test adds a surface output, and then a graph output.
 
     It then removes the surface output.
     """
 
-    b.get('http://localhost/portal/compmap.html')
+    b.get(url)
 
     # create a surface plot
     b.select_param('variable', 'Mean Temperature')
