@@ -34,7 +34,7 @@ class MapPortalDriver(webdriver.Firefox):
     def wait(self, event, timeout=10):
         try:
             Wait(self, timeout).until(event)
-        except TimeoutException as e:
+        except (TimeoutException, FrontendError) as e:
             # do we have an error dialog
             dialog = self.find_element_by_id('error-dialog')
             if dialog.is_displayed():
@@ -53,16 +53,22 @@ class MapPortalDriver(webdriver.Firefox):
 
 def output(src):
     def __call__(browser):
+        dialog = browser.find_element_by_id('error-dialog')
+        if dialog.is_displayed():
+            raise FrontendError()
+
         outputDiv = browser.find_element_by_id('outputDiv')
         output = outputDiv.find_element_by_tag_name('img')
-        dialog = browser.find_element_by_id('error-dialog')
-        return src in output.get_attribute('src') or \
-               dialog.is_displayed()
+        return src in output.get_attribute('src')
 
     return __call__
 
 def jquery(jq):
     def __call__(browser):
+        dialog = browser.find_element_by_id('error-dialog')
+        if dialog.is_displayed():
+            raise FrontendError()
+
         elems = browser.find_elements_by_jquery(jq)
         return elems > 0
 
