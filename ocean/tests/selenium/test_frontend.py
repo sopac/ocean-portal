@@ -1,5 +1,14 @@
+#
+# (c) 2012 Commonwealth of Australia
+#     Australian Bureau of Meteorology, COSPPac COMP
+#     All Rights Reserved
+#
+# Authors: Danielle Madeley <d.madeley@bom.gov.au>
+
+import time
 
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 
 from ocean.tests import util
 
@@ -72,15 +81,104 @@ def test_wave_watch():
     b.ensure_selected('dataset', 'WaveWatch III')
 
     elem = b.find_element_by_id('latitude')
-    elem.send_keys("45")
+    elem.send_keys("-45")
     elem.send_keys(Keys.TAB)
 
     elem = b.switch_to_active_element()
-    elem.send_keys("-145")
+    elem.send_keys("145")
 
     b.submit()
 
     b.wait(output('WAV'))
+
+    # check Bathymetry is selected and enabled
+    elem = b.find_element_by_xpath('//input[@value="Bathymetry"]')
+    assert elem.get_attribute('checked')
+    assert elem.get_attribute('disabled') is None
+
+    # check Output is unselected and disabled
+    elem = b.find_element_by_xpath('//input[@value="Output"]')
+    assert elem.get_attribute('checked') is None
+    assert elem.get_attribute('disabled')
+
+@util.requires_display
+def test_removing_outputs():
+    """
+    This test adds a surface output, and then a graph output.
+
+    It then removes the surface output.
+    """
+
+    b.get('http://localhost/portal/compmap.html')
+
+    # create a surface plot
+    b.select_param('variable', 'Mean Temperature')
+    b.ensure_selected('plottype', 'Surface Map', noptions=2)
+    b.select_param('period', 'Monthly')
+    b.select_param('month', 'January')
+    b.select_param('year', '2012')
+    b.ensure_selected('dataset', 'ERSST')
+    b.submit()
+
+    b.wait(output('ERA'))
+
+    # check Bathymetry is enabled but not selected
+    elem = b.find_element_by_xpath('//input[@value="Bathymetry"]')
+    assert elem.get_attribute('checked') is None
+    assert elem.get_attribute('disabled') is None
+
+    # check Output is enabled and selected
+    elem = b.find_element_by_xpath('//input[@value="Output"]')
+    assert elem.get_attribute('checked')
+    assert elem.get_attribute('disabled') is None
+
+    # create a non-surface plot
+    b.select_param('variable', 'Mean Wave Direction')
+    b.ensure_selected('plottype', 'Waverose')
+    b.ensure_selected('period', 'Monthly')
+    b.select_param('month', 'October') # September and October had a bug
+    b.ensure_selected('dataset', 'WaveWatch III')
+
+    elem = b.find_element_by_id('latitude')
+    elem.send_keys("-45")
+    elem.send_keys(Keys.TAB)
+
+    elem = b.switch_to_active_element()
+    elem.send_keys("145")
+
+    b.submit()
+
+    b.wait(output('WAV'))
+
+    # check Bathymetry is selected and enabled
+    elem = b.find_element_by_xpath('//input[@value="Bathymetry"]')
+    assert elem.get_attribute('checked')
+    assert elem.get_attribute('disabled') is None
+
+    # check Output is unselected but enabled
+    elem = b.find_element_by_xpath('//input[@value="Output"]')
+    assert elem.get_attribute('checked') is None
+    assert elem.get_attribute('disabled') is None
+
+    time.sleep(0.5)
+
+    # check the # of outputs
+    elems = b.find_elements_by_jquery('.outputgroup')
+    assert len(elems) == 2
+
+    # delete the 2nd output
+    elem = b.find_element_by_jquery('.outputgroup ~ .outputgroup')
+    print elem, elem.location
+    action = ActionChains(b)
+    action.move_to_element(elem)
+    action.click(on_element=elem.find_element_by_css_selector('.close-button'))
+    action.perform()
+
+    time.sleep(0.5) # wait for animations
+
+    # check the # of outputs
+    elems = b.find_elements_by_jquery('.outputgroup')
+    assert len(elems) == 1
 
     # check Bathymetry is selected and enabled
     elem = b.find_element_by_xpath('//input[@value="Bathymetry"]')
