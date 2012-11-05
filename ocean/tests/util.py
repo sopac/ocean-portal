@@ -23,5 +23,3 @@ def clear_cache(product, filetype='*'):
             os.unlink(d)
         except IOError:
             raise
-
-requires_display = pytest.mark.skipif("'DISPLAY' not in os.environ")
