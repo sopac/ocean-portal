@@ -5,8 +5,7 @@
 #
 # Authors: Danielle Madeley <d.madeley@bom.gov.au>
 
-import time
-
+import pytest
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
@@ -160,7 +159,7 @@ def test_removing_outputs(url):
     assert elem.get_attribute('checked') is None
     assert elem.get_attribute('disabled') is None
 
-    time.sleep(0.5)
+    b.wait(animation_finished)
 
     # check the # of outputs
     elems = b.find_elements_by_jquery('.outputgroup')
@@ -174,7 +173,7 @@ def test_removing_outputs(url):
     action.click(on_element=elem.find_element_by_css_selector('.close-button'))
     action.perform()
 
-    time.sleep(0.5) # wait for animations
+    b.wait(animation_finished)
 
     # check the # of outputs
     elems = b.find_elements_by_jquery('.outputgroup')

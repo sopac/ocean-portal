@@ -67,3 +67,6 @@ def jquery(jq):
         return elems > 0
 
     return __call__
+
+def animation_finished(browser):
+    return browser.execute_script('''return $(':animated').length''') == 0
