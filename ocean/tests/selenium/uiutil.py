@@ -1,3 +1,9 @@
+#
+# (c) 2012 Commonwealth of Australia
+#     Australian Bureau of Meteorology, COSPPac COMP
+#     All Rights Reserved
+#
+# Authors: Danielle Madeley <d.madeley@bom.gov.au>
 
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select, WebDriverWait as Wait
@@ -37,6 +43,14 @@ class MapPortalDriver(webdriver.Firefox):
             else:
                 raise e
 
+    def find_elements_by_jquery(self, jq):
+        return self.execute_script('''return $('%s').get();''' % jq)
+
+    def find_element_by_jquery(self, jq):
+        elems = self.find_elements_by_jquery(jq)
+        assert len(elems) == 1
+        return elems[0]
+
 def output(src):
     def __call__(browser):
         outputDiv = browser.find_element_by_id('outputDiv')
@@ -44,5 +58,12 @@ def output(src):
         dialog = browser.find_element_by_id('error-dialog')
         return src in output.get_attribute('src') or \
                dialog.is_displayed()
+
+    return __call__
+
+def jquery(jq):
+    def __call__(browser):
+        elems = browser.find_elements_by_jquery(jq)
+        return elems > 0
 
     return __call__
