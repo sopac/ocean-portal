@@ -68,7 +68,7 @@ def test_mean_sst_monthly(url):
     assert elem.get_attribute('disabled') is None
 
 @util.requires_display
-def test_wave_watch(url):
+def test_wave_watch_rose(url):
     b.get(url)
 
     util.clear_cache('WAV')
@@ -215,3 +215,31 @@ def test_histogram(url, variable):
     util.clear_cache('WAV')
     b.submit()
     b.wait(output('WAV'))
+
+@util.requires_display
+@pytest.mark.parametrize(('variable', 'dataset', 'product'), [
+    ('Mean Temperature', 'Reynolds', 'REY'),
+    ('Anomalies', 'Reynolds', 'REY'),
+    ('Deciles', 'Reynolds', 'REY'),
+    ('Mean Temperature', 'ERSST', 'ERA'),
+    ('Anomalies', 'ERSST', 'ERA'),
+    ('Deciles', 'ERSST', 'ERA'),
+    ('Mean Temperature', 'BRAN', 'BRN'),
+    ('Salinity', 'BRAN', 'BRN'),
+    ('Reconstruction', 'BRAN', 'BRN'),
+    ('Reconstruction', 'Church & White', 'SEA'),
+    ('Altimetry', 'Church & White', 'SEA'),
+])
+def test_surface_maps(url, variable, dataset, product):
+    b.get(url)
+
+    b.select_param('variable', variable)
+    b.select_param('plottype', 'Surface Map')
+    b.select_param('period', 'Monthly')
+    b.select_param('year', '2000')
+    b.select_param('month', 'November')
+    b.select_param('dataset', dataset)
+
+    util.clear_cache(product)
+    b.submit()
+    b.wait(output(product))

@@ -50,6 +50,10 @@ class bran(Dataset):
         'area',
     ]
 
+    __plots__ = [
+        'map'
+    ]
+
     def process(self, params):
         response = {}
 
