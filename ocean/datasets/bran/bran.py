@@ -51,7 +51,8 @@ class bran(Dataset):
     ]
 
     __plots__ = [
-        'map'
+        'map',
+        'xsections',
     ]
 
     def process(self, params):

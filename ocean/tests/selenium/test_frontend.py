@@ -243,3 +243,28 @@ def test_surface_maps(url, variable, dataset, product):
     util.clear_cache(product)
     b.submit()
     b.wait(output(product))
+
+@util.requires_display
+@pytest.mark.parametrize(('variable', 'dataset', 'product'), [
+    ('Mean Temperature', 'BRAN', 'BRN'),
+    ('Salinity', 'BRAN', 'BRN'),
+])
+def test_cross_sections(url, variable, dataset, product):
+    b.get(url)
+
+    b.select_param('variable', variable)
+    b.select_param('plottype', 'Sub-surface Cross-section')
+    b.select_param('period', 'Monthly')
+    b.select_param('year', '2000')
+    b.select_param('month', 'November')
+    b.select_param('dataset', dataset)
+
+    elem = b.find_element_by_id('latitude')
+    elem.send_keys("-45")
+
+    elem = b.find_element_by_id('longitude')
+    elem.send_keys("145")
+
+    util.clear_cache(product)
+    b.submit()
+    b.wait(output(product))
