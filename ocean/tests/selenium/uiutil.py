@@ -6,7 +6,8 @@
 # Authors: Danielle Madeley <d.madeley@bom.gov.au>
 
 from selenium.webdriver.support.ui import Select, WebDriverWait as Wait
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, \
+                                       InvalidSelectorException
 
 class FrontendError(Exception):
     pass
@@ -49,8 +50,11 @@ class _BaseMapPortalDriver(object):
 
     def find_element_by_jquery(self, jq):
         elems = self.find_elements_by_jquery(jq)
-        assert len(elems) == 1
-        return elems[0]
+        if len(elems) == 1:
+            return elems[0]
+        else:
+            raise InvalidSelectorException(
+                "jQuery selector returned %i elements, expected 1" % len(elems))
 
 def output(src):
     def __call__(browser):
