@@ -33,6 +33,8 @@ def wcag(b, url):
     return b
 
 @pytest.mark.wcagF17
+@pytest.mark.wcagF62
+@pytest.mark.wcagF77
 def test_unique_ids(wcag):
     """
     All ids in the document should be unique.
@@ -129,3 +131,44 @@ def test_controls_have_label_or_title(wcag):
             failed = True
 
     assert not failed
+
+@pytest.mark.wcagF89
+def test_linked_images_have_alt_text(wcag):
+
+    failed = False
+    elems = wcag.find_elements_by_xpath('//a[img]')
+
+    assert len(elems) > 0 # sanity check
+
+    for elem in elems:
+        text = elem.text.strip()
+        img = elem.find_element_by_tag_name('img')
+
+        try:
+            assert len(text) > 0 or \
+                   len(elem.get_attribute('title')) > 0 or \
+                   len(img.get_attribute('alt')) > 0, \
+                   "a/img must have text, @title or @alt"
+        except AssertionError as e:
+            print "%s: %s" % (elem, e)
+            failed = True
+
+    assert not failed
+
+@pytest.mark.wcagF38
+@pytest.mark.wcagF65
+def test_img_have_alt_attributes(wcag):
+
+    elements = ['img', 'area', 'input[type="image"]']
+    query = ':not([alt])'
+
+    elems = map(lambda c: wcag.find_elements_by_jquery(c),
+                map(lambda e: e + query, elements))
+    elems = list(itertools.chain.from_iterable(elems))
+
+    for elem in elems:
+        print "%s: Must have @alt attribute" % (elem)
+        failed = True
+
+    assert not failed
+    assert 0

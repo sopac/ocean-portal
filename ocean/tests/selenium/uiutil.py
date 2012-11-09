@@ -18,12 +18,14 @@ class MapPortalElement(WebElement):
         """Return a pretty name for an element"""
 
         id = self.get_attribute('id')
+        class_ = self.get_attribute('class')
 
         if len(id) > 0:
             return '#' + id
+        elif len(class_) > 0:
+            return '.'.join([self.tag_name] + class_.split(' '))
         else:
-            return '.'.join([self.tag_name] + \
-                            self.get_attribute('class').split(' '))
+            return self.tag_name
 
 
 def MapPortalDriver(base, **kwargs):
