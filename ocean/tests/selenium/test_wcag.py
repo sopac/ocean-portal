@@ -14,11 +14,13 @@ from ocean.tests import util
 from uiutil import *
 
 @pytest.fixture(scope='module')
-def wcag(b, url):
+def wcag(driver, url):
     """
     Set up a single session for these tests.
     """
 
+    b = driver
+    b.set_window_size(1200, 800)
     b.get(url)
 
     b.select_param('variable', 'Anomalies')

@@ -100,10 +100,8 @@ def test_changing_regions(b, url, region1, region2):
                          for region2 in PAC_REGIONS
                          if region1 != region2 ])
 def test_changing_regions_small_map(b, url, region1, region2):
-    b.get(url)
-
-    size = b.get_window_size()
     b.set_window_size(1080, 600)
+    b.get(url)
 
     select_region(b, region1)
     assert region_on_screen(b, region1)
@@ -113,5 +111,3 @@ def test_changing_regions_small_map(b, url, region1, region2):
 
     select_region(b, region1)
     assert region_on_screen(b, region1)
-
-    b.set_window_size(*size)

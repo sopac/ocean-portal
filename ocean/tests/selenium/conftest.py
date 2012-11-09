@@ -34,7 +34,7 @@ def pytest_addoption(parser):
 
 @pytest.fixture(scope='session',
                 params=browsers.keys())
-def b(request):
+def driver(request):
     if 'DISPLAY' not in os.environ:
         pytest.skip('Test requires display server (export DISPLAY)')
 
@@ -42,9 +42,15 @@ def b(request):
         pytest.skip('Unrequested test, run with --browser %s' % request.param)
 
     b = MapPortalDriver(browsers[request.param])()
-    b.set_window_size(1200, 800)
 
     request.addfinalizer(lambda *args: b.quit())
+
+    return b
+
+@pytest.fixture
+def b(driver):
+    b = driver
+    b.set_window_size(1200, 800)
 
     return b
 
