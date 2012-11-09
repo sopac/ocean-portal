@@ -52,7 +52,7 @@
     <div id="regionPanel" class="border">
       <div class="controlgroup">
         <div class="controlvar">
-          <label>Select Country/Region:</label>
+          <label for="region">Select Country/Region:</label>
           <select id="region" class="widefield"></select>
         </div>
       </div>
@@ -63,14 +63,14 @@
 
         <div class="controlgroup">
           <div class="controlvar">
-            <label>Variable</label>
+            <label for="variable">Variable</label>
             <select id="variable" class="field">
               <option value="--">Select variable</option>
             </select>
           </div>
 
           <div class="controlvar">
-            <label>Plot Type</label>
+            <label for="plottype">Plot Type</label>
             <select id="plottype" class="field">
               <optgroup label="Maps">
                 <option value="map">Surface Map</option>
@@ -89,7 +89,7 @@
 
         <div class="controlgroup">
           <div class="controlvar">
-            <label>Period</label>
+            <label for="period">Period</label>
             <select id="period" class="field">
               <option value="daily">Daily</option>
               <option value="weekly">Weekly</option>
@@ -104,19 +104,19 @@
 
         <div class="controlgroup">
           <div class="controlvar">
-              <label>Date</label>
+              <label for="date">Date</label>
               <input type="text" id="date" class="field datepicker"
                      title="Click to open calendar"
                      readonly="readonly"/>
           </div>
 
           <div class="controlvar">
-              <label>Month</label>
+              <label for="month">Month</label>
               <select id="month" class="field"></select>
           </div>
 
           <div class="controlvar">
-              <label>Year</label>
+              <label for="year">Year</label>
               <select id="year" class="field"></select>
           </div>
         </div>
@@ -124,7 +124,7 @@
         <div class="controlgroup">
           <span class="hint">Click a tidal gauge on the map to select.</span>
           <div class="controlvar">
-            <label>Gauge</label>
+            <label for="tidalgauge">Gauge</label>
             <input type="text" id="tidalgauge" class="field" readonly="readonly"/>
           </div>
           <input type="hidden" id="tgId"/>
@@ -133,18 +133,18 @@
         <div class="controlgroup">
           <span class="hint">Click on the map to select a location.</span>
           <div class="controlvar">
-            <label>Latitude</label>
+            <label for="latitude">Latitude</label>
             <input type="text" id="latitude" class="field"/>
           </div>
           <div class="controlvar">
-            <label>Longitude</label>
+            <label for="longitude">Longitude</label>
             <input type="text" id="longitude" class="field"/>
           </div>
         </div>
 
         <div class="controlgroup">
           <div class="controlvar">
-            <label>Dataset</label>
+            <label for="dataset">Dataset</label>
             <select id="dataset" class="field"></select>
           </div>
           <div class="controlvar">
@@ -163,7 +163,7 @@
     </div>
 
     <div id="mapControls" class="panel layout-south">
-      <h1>Map Controls</h2>
+      <h1>Map Controls</h1>
       <div class="controlgroup">
         <h2>Layer</h2>
         <div id="mapControlsLayers"></div>

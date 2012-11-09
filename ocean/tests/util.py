@@ -23,3 +23,13 @@ def clear_cache(product, filetype='*'):
             os.unlink(d)
         except IOError:
             raise
+
+def unique(iterable):
+    vals = set()
+
+    for i in iterable:
+        assert i not in vals
+
+        vals.update(i)
+
+    return True

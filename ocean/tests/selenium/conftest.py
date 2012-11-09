@@ -48,6 +48,6 @@ def b(request):
 
     return b
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def url(request):
     return request.config.option.url

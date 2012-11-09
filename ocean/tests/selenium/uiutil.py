@@ -6,16 +6,33 @@
 # Authors: Danielle Madeley <d.madeley@bom.gov.au>
 
 from selenium.webdriver.support.ui import Select, WebDriverWait as Wait
+from selenium.webdriver.remote.webdriver import WebElement
 from selenium.common.exceptions import TimeoutException, \
                                        InvalidSelectorException
 
 class FrontendError(Exception):
     pass
 
+class MapPortalElement(WebElement):
+    def __repr__(self):
+        """Return a pretty name for an element"""
+
+        id = self.get_attribute('id')
+
+        if len(id) > 0:
+            return '#' + id
+        else:
+            return '.'.join([self.tag_name] + \
+                            self.get_attribute('class').split(' '))
+
+
 def MapPortalDriver(base, **kwargs):
     return type('MapPortalDriver', (_BaseMapPortalDriver, base), kwargs)
 
 class _BaseMapPortalDriver(object):
+    def create_web_element(self, element_id):
+        return MapPortalElement(self, element_id)
+
     def select_param(self, id, text):
         select = Select(self.find_element_by_id(id))
         select.select_by_visible_text(text)
