@@ -30,5 +30,7 @@ for r in backend_resources:
     print >> manifest, 'include %s' % os.path.join('ocean', 'resource', r)
 for h in html:
     print >> manifest, 'include %s' % os.path.join('html', h)
+for s in src:
+    print >> manifest, 'include %s' % os.path.join('src', s)
 
 manifest.close()
