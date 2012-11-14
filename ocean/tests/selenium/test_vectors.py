@@ -9,6 +9,7 @@ import time
 
 import pytest
 from selenium.common.exceptions import InvalidSelectorException
+from selenium.webdriver.common.action_chains import ActionChains
 
 from ocean.tests import util
 
@@ -72,3 +73,41 @@ def test_gauge_offscreen(b, url):
 
     select_region(b, 'samoa')
     assert len(b.find_elements_by_jquery('svg circle')) > 0
+
+@pytest.mark.bug183
+@pytest.mark.bug195
+def test_gauge_bug195(b, url):
+    b.get(url)
+
+    b.select_param('variable', 'Tidal Gauge')
+    b.wait(jquery('svg circle'))
+    select_region(b, 'fiji')
+
+    assert len(b.find_elements_by_jquery('svg circle')) == 2
+
+    map = b.find_element_by_id('map')
+
+    LEFT_PAN = 50
+    RIGHT_PAN = 375
+
+    # pan left
+    act = ActionChains(b)
+    act.move_to_element(map)
+    act.click_and_hold()
+    act.move_by_offset(-LEFT_PAN, 0)
+    act.release()
+    act.perform()
+
+    time.sleep(1)
+    assert len(b.find_elements_by_jquery('svg circle')) == 2
+
+    # pan right
+    act = ActionChains(b)
+    act.move_to_element(map)
+    act.click_and_hold()
+    act.move_by_offset(LEFT_PAN + RIGHT_PAN, 0)
+    act.release()
+    act.perform()
+
+    time.sleep(1)
+    assert len(b.find_elements_by_jquery('svg circle')) == 2
