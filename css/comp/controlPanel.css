@@ -95,8 +95,12 @@ optgroup option {
 
 .controlvar select,
 .controlvar input {
-  /* border: 1px solid rgb(161, 161, 161); */
   font-size: 12px;
+}
+
+.controlvar .field:focus,
+.controlvar .widefield:focus {
+  box-shadow: 0 0 2px 1px orange;
 }
 
 .datepicker {
