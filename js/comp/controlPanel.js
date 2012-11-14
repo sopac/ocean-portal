@@ -712,15 +712,18 @@ function addPointLayer () {
             },
             preFeatureInsert: function(feature) {
                 this.removeAllFeatures();
+
+                /* correct for wrapping issues from OpenLayers */
+                if (feature.geometry.x < -180.) {
+                    feature.geometry.x += 360.;
+                } else if (feature.geometry.x > 180.) {
+                    feature.geometry.x -= 360.;
+                }
             },
             onFeatureInsert: function(feature) {
                 var geometry = feature.geometry;
                 var lon = geometry.x;
                 var lat = geometry.y;
-
-                /* correct for wrapping issues from OpenLayers */
-                if (lon < -180.)
-                    lon += 360.;
 
                 lon = lon.toFixed(3);
                 lat = lat.toFixed(3);
