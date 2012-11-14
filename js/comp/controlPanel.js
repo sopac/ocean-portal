@@ -690,8 +690,14 @@ function setValue(comboid, value) {
 function selectFirstIfRequired(comboid) {
     var combo = $('#' + comboid);
 
-    if (combo.find('option:selected:visible').length == 0) {
-        combo.find('option:visible:first').attr('selected', true);
+    /* the :visible selector does not work in WebKit */
+    function _visible() {
+        var e = $(this);
+        return e.is(':visible') || e.css('display') != 'none';
+    }
+
+    if (combo.find('option:selected').filter(_visible).length == 0) {
+        combo.find('option').filter(_visible).eq(0).attr('selected', true);
         combo.change();
     }
 }
