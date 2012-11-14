@@ -13,7 +13,6 @@ import sys
 import copy
 
 from ocean import util, config
-from ocean.util import areaMean
 from ocean.config import productName
 from ocean.netcdf import extractor as xt
 from ocean.datasets import Dataset
