@@ -5,17 +5,23 @@
 #
 # Authors: Danielle Madeley <d.madeley@bom.gov.au>
 
+import time
+
 import pytest
 from selenium.common.exceptions import InvalidSelectorException
 
 from ocean.tests import util
 
 from uiutil import *
+from test_map import select_region
 
 def test_display_gauges(b, url):
     b.get(url)
 
     b.select_param('variable', 'Tidal Gauge')
+    time.sleep(4) # wait for the map to stabilise
+    b.wait(jquery('svg circle'))
+
     markers = b.find_elements_by_jquery('svg circle')
 
     print markers
@@ -32,6 +38,9 @@ def test_click_gauge(b, url):
     b.get(url)
 
     b.select_param('variable', 'Tidal Gauge')
+    time.sleep(4) # wait for the map to stabilise
+    b.wait(jquery('svg circle'))
+
     marker = b.find_element_by_jquery('svg circle:first')
 
     assert marker.get_attribute('stroke') == 'white'
@@ -51,28 +60,15 @@ def test_click_gauge(b, url):
     b.submit()
     b.wait(output('SEA'))
 
-def test_gauge_offscreen1(b, url):
+def test_gauge_offscreen(b, url):
     b.get(url)
 
-    b.select_param('region', 'Samoa')
     b.select_param('variable', 'Tidal Gauge')
+    select_region(b, 'niue')
 
     with pytest.raises(InvalidSelectorException):
         # with all the circles offscreen there's nothing to select
-        b.find_element_by_jquery('svg circle:first')
+        b.find_element_by_jquery('svg circle')
 
-    b.select_param('region', 'Marshall Islands')
-    b.find_element_by_jquery('svg circle:first')
-
-def test_gauge_offscreen2(b, url):
-    b.get(url)
-
-    b.select_param('region', 'Samoa')
-    b.select_param('variable', 'Tidal Gauge')
-
-    with pytest.raises(InvalidSelectorException):
-        # with all the circles offscreen there's nothing to select
-        b.find_element_by_jquery('svg circle:first')
-
-    b.select_param('region', 'Fiji')
-    b.find_element_by_jquery('svg circle:first')
+    select_region(b, 'samoa')
+    assert len(b.find_elements_by_jquery('svg circle')) > 0
