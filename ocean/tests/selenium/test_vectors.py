@@ -10,6 +10,7 @@ import time
 import pytest
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 
 from ocean.tests import util
 
@@ -74,6 +75,18 @@ def test_gauge_offscreen(b, url):
     select_region(b, 'samoa')
     assert len(b.find_elements_by_jquery('svg circle')) > 0
 
+def pan_map(b, offsetx, offsety):
+    map = b.find_element_by_id('map')
+
+    act = ActionChains(b)
+    act.move_to_element(map)
+    act.click_and_hold()
+    act.move_by_offset(offsetx, offsety)
+    act.release()
+    act.perform()
+
+    time.sleep(1)
+
 @pytest.mark.bug183
 @pytest.mark.bug195
 def test_gauge_bug195(b, url):
@@ -85,29 +98,107 @@ def test_gauge_bug195(b, url):
 
     assert len(b.find_elements_by_jquery('svg circle')) == 2
 
-    map = b.find_element_by_id('map')
-
     LEFT_PAN = 50
     RIGHT_PAN = 375
 
-    # pan left
-    act = ActionChains(b)
-    act.move_to_element(map)
-    act.click_and_hold()
-    act.move_by_offset(-LEFT_PAN, 0)
-    act.release()
-    act.perform()
+    pan_map(b, -LEFT_PAN, 0)
 
-    time.sleep(1)
     assert len(b.find_elements_by_jquery('svg circle')) == 2
 
-    # pan right
-    act = ActionChains(b)
-    act.move_to_element(map)
-    act.click_and_hold()
-    act.move_by_offset(LEFT_PAN + RIGHT_PAN, 0)
-    act.release()
-    act.perform()
+    pan_map(b, LEFT_PAN + RIGHT_PAN, 0)
+
+    assert len(b.find_elements_by_jquery('svg circle')) == 2
+
+@pytest.mark.bug183
+@pytest.mark.parametrize(('lat', 'lon'), [
+    (-18, 177),
+    (-16, -178),
+])
+def test_display_markers_big_movements(b, url, lat, lon):
+    b.get(url)
+
+    b.select_param('variable', 'Salinity')
+    b.select_param('plottype', 'Sub-surface Cross-section')
+
+    b.find_element_by_id('latitude').send_keys(str(lat) + Keys.TAB)
+    b.find_element_by_id('longitude').send_keys(str(lon) + Keys.TAB)
 
     time.sleep(1)
-    assert len(b.find_elements_by_jquery('svg circle')) == 2
+
+    # svg > polygon is important, else you match both the point and the
+    # definition
+    assert len(b.find_elements_by_jquery('svg > polygon')) == 1
+
+    select_region(b, 'fiji')
+    assert len(b.find_elements_by_jquery('svg > polygon')) == 1
+
+    LEFT_PAN = 200
+
+    pan_map(b, -LEFT_PAN, 0)
+    assert len(b.find_elements_by_jquery('svg > polygon')) == 0
+
+    pan_map(b, LEFT_PAN, 0)
+    assert len(b.find_elements_by_jquery('svg > polygon')) == 1
+
+    pan_map(b, LEFT_PAN, 0)
+    assert len(b.find_elements_by_jquery('svg > polygon')) == 0
+
+    pan_map(b, -LEFT_PAN, 0)
+    assert len(b.find_elements_by_jquery('svg > polygon')) == 1
+
+@pytest.mark.bug183
+@pytest.mark.parametrize(('lat', 'lon'), [
+    (-18, 177),
+    (-16, -178),
+])
+def test_display_markers_small_movements(b, url, lat, lon):
+    b.get(url)
+
+    select_region(b, 'fiji')
+    b.select_param('variable', 'Salinity')
+    b.select_param('plottype', 'Sub-surface Cross-section')
+
+    b.find_element_by_id('latitude').send_keys(str(lat) + Keys.TAB)
+    b.find_element_by_id('longitude').send_keys(str(lon) + Keys.TAB)
+
+    time.sleep(1)
+
+    # svg > polygon is important, else you match both the point and the
+    # definition
+    assert len(b.find_elements_by_jquery('svg > polygon')) == 1
+
+    LEFT_PAN = 20
+
+    pan_map(b, -LEFT_PAN, 0)
+    assert len(b.find_elements_by_jquery('svg > polygon')) == 1
+
+    pan_map(b, LEFT_PAN, 0)
+    assert len(b.find_elements_by_jquery('svg > polygon')) == 1
+
+    pan_map(b, LEFT_PAN, 0)
+    assert len(b.find_elements_by_jquery('svg > polygon')) == 1
+
+    pan_map(b, -LEFT_PAN, 0)
+    assert len(b.find_elements_by_jquery('svg > polygon')) == 1
+
+@pytest.mark.parametrize(('lon'), [
+    (177),
+    (184),
+    (-178),
+    (-215),
+])
+def test_lon_clamping(b, url, lon):
+    b.get(url)
+
+    b.select_param('variable', 'Salinity')
+    b.select_param('plottype', 'Sub-surface Cross-section')
+
+    # this needs to be valid to attempt parsing
+    b.find_element_by_id('latitude').send_keys('0')
+
+    longitude = b.find_element_by_id('longitude')
+    longitude.send_keys(str(lon) + Keys.TAB)
+
+    lonout = float(longitude.get_attribute('value'))
+    assert -180 < lonout < 180
+    assert lonout == (lon + 180) % 360 - 180
