@@ -173,4 +173,3 @@ def test_img_have_alt_attributes(wcag):
         failed = True
 
     assert not failed
-    assert 0
