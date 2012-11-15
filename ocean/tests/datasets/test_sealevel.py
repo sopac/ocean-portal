@@ -63,7 +63,7 @@ def test_gauge_ts(report):
     assert 'tidimg' in r
     assert len(r) == 2
 
-    report.report(params, r['tidimg'])
+    report(params, r['tidimg'])
 
 def test_surface_alt(report):
     util.clear_cache('SEA')
@@ -87,7 +87,7 @@ def test_surface_alt(report):
 
     assert 'alt' in r['img']
 
-    report.report(params, r['img'])
+    report(params, r['img'])
 
 def test_alt_ts(report):
     util.clear_cache('SEA')
@@ -111,7 +111,7 @@ def test_alt_ts(report):
 
     assert 'alt' in r['altimg']
 
-    report.report(params, r['altimg'])
+    report(params, r['altimg'])
 
 def test_surface_rec(report):
     util.clear_cache('SEA')
@@ -135,7 +135,7 @@ def test_surface_rec(report):
 
     assert 'rec' in r['img']
 
-    report.report(params, r['img'])
+    report(params, r['img'])
 
 def test_rec_ts(report):
     util.clear_cache('SEA')
@@ -159,4 +159,4 @@ def test_rec_ts(report):
 
     assert 'rec' in r['recimg']
 
-    report.report(params, r['recimg'])
+    report(params, r['recimg'])

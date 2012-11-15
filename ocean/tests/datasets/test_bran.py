@@ -35,7 +35,7 @@ def test_surface(report, variable, period):
     assert not 'error' in r
     assert 'img' in r
 
-    report.report(params, r['img'])
+    report(params, r['img'])
 
 @pytest.mark.parametrize(('var'), [
     'temp',
@@ -61,4 +61,4 @@ def test_salt_xsection(report, var, period):
     assert not 'error' in r
     assert 'img' in r
 
-    report.report(params, r['img'])
+    report(params, r['img'])

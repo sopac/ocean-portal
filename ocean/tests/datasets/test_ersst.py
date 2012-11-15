@@ -33,4 +33,4 @@ def test_ersst(report, variable, period):
     assert not 'error' in r
     assert 'img' in r
 
-    report.report(params, r['img'])
+    report(params, r['img'])

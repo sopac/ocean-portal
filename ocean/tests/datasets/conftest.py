@@ -57,7 +57,7 @@ class Report(object):
 
         os.makedirs(self._testdir)
 
-    def report(self, params, img):
+    def report(self, nodeid, params, img):
         img = os.path.basename(img)
         file = os.path.join(config['outputDir'], img)
 
@@ -66,7 +66,11 @@ class Report(object):
 
         shutil.copy(file, self._testdir)
 
-        self._reports.append({ 'params': params, 'img': img })
+        self._reports.append({
+            'nodeid': nodeid,
+            'params': params,
+            'img': img
+        })
 
     def output(self):
         with open(os.path.join(self._testdir, 'report.json'), 'w') as f:
@@ -79,4 +83,4 @@ def report(request):
 
     request.addfinalizer(lambda *args: r.output())
 
-    return r
+    return lambda *args, **kwargs: r.report(request.node.nodeid, *args, **kwargs)
