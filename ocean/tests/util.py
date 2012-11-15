@@ -30,8 +30,8 @@ def unique(iterable):
     vals = set()
 
     for i in iterable:
-        assert i not in vals
+        if i in vals: return False
 
-        vals.update(i)
+        vals.add(i)
 
     return True
