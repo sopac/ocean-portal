@@ -14,6 +14,8 @@ The function arguments @b and @url are provided by fixtures defined in
 conftest.py
 """
 
+import time
+
 import pytest
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
@@ -24,6 +26,8 @@ from uiutil import *
 
 def test_load(b, url):
     b.get(url)
+
+    time.sleep(1)
 
     # check Bathymetry is selected and enabled
     elem = b.find_element_by_xpath('//input[@value="Bathymetry"]')
