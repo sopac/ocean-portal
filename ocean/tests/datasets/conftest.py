@@ -57,30 +57,56 @@ class Report(object):
 
         os.makedirs(self._testdir)
 
-    def report(self, nodeid, params, img):
-        img = os.path.basename(img)
-        file = os.path.join(config['outputDir'], img)
-
-        assert os.path.exists(file)
-        assert not os.path.exists(os.path.join(self._testdir, img))
-
-        shutil.copy(file, self._testdir)
-
-        self._reports.append({
+    def report(self, nodeid, params=None, img=None, status='passed'):
+        d = {
             'nodeid': nodeid,
-            'params': params,
-            'img': img
-        })
+            'status': status,
+        }
+
+        if params is not None:
+            d['params'] = params
+
+        if img is not None:
+            img = os.path.basename(img)
+            file = os.path.join(config['outputDir'], img)
+
+            assert os.path.exists(file)
+            assert not os.path.exists(os.path.join(self._testdir, img))
+
+            shutil.copy(file, self._testdir)
+            d['img'] = img
+
+        self._reports.append(d)
 
     def output(self):
         with open(os.path.join(self._testdir, 'report.json'), 'w') as f:
             json.dump(self._reports, f, cls=JSONEncoder, indent=2)
 
 @pytest.fixture(scope='session')
-def report(request):
+def reportcls(request):
 
     r = Report()
 
     request.addfinalizer(lambda *args: r.output())
 
-    return lambda *args, **kwargs: r.report(request.node.nodeid, *args, **kwargs)
+    return r
+
+@pytest.fixture
+def report(request, reportcls):
+
+    return lambda *args, **kwargs: reportcls.report(request.node.nodeid,
+                                                    *args, **kwargs)
+
+@pytest.mark.tryfirst
+def pytest_runtest_makereport(item, call, __multicall__):
+    rep = __multicall__.execute()
+
+    try:
+        report = item.funcargs['report']
+
+        if rep.when == 'call' and rep.failed:
+            report(status='failed')
+    except KeyError:
+        pass
+
+    return rep
