@@ -25,6 +25,8 @@ def clear_cache(product, filetype='*'):
             raise
 
 def unique(iterable):
+    __tracebackhide__ = True
+
     vals = set()
 
     for i in iterable:

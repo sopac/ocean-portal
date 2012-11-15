@@ -27,6 +27,18 @@ class MapPortalElement(WebElement):
         else:
             return self.tag_name
 
+    def find_elements_by_jquery(self, jq):
+        return self.parent.execute_script(
+            '''return $(arguments[0]).find('%s').get();''' % jq, self)
+
+    def find_element_by_jquery(self, jq):
+        elems = self.find_elements_by_jquery(jq)
+        if len(elems) == 1:
+            return elems[0]
+        else:
+            raise InvalidSelectorException(
+                "jQuery selector returned %i elements, expected 1" % len(elems))
+
 
 def MapPortalDriver(base, **kwargs):
     return type('MapPortalDriver', (_BaseMapPortalDriver, base), kwargs)
