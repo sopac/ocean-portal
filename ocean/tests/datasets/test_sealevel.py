@@ -44,7 +44,7 @@ def test_validate_tid_bad():
     with pytest.raises(ValidationError):
         Dataset.parse()
 
-def test_gauge_ts():
+def test_gauge_ts(report):
     util.clear_cache('SEA')
 
     params = {
@@ -63,7 +63,9 @@ def test_gauge_ts():
     assert 'tidimg' in r
     assert len(r) == 2
 
-def test_surface_alt():
+    report.report(params, r['tidimg'])
+
+def test_surface_alt(report):
     util.clear_cache('SEA')
 
     params = {
@@ -85,7 +87,9 @@ def test_surface_alt():
 
     assert 'alt' in r['img']
 
-def test_alt_ts():
+    report.report(params, r['img'])
+
+def test_alt_ts(report):
     util.clear_cache('SEA')
 
     params = {
@@ -107,7 +111,9 @@ def test_alt_ts():
 
     assert 'alt' in r['altimg']
 
-def test_surface_rec():
+    report.report(params, r['altimg'])
+
+def test_surface_rec(report):
     util.clear_cache('SEA')
 
     params = {
@@ -129,7 +135,9 @@ def test_surface_rec():
 
     assert 'rec' in r['img']
 
-def test_rec_ts():
+    report.report(params, r['img'])
+
+def test_rec_ts(report):
     util.clear_cache('SEA')
 
     params = {
@@ -150,3 +158,5 @@ def test_rec_ts():
     assert 'recimg' in r
 
     assert 'rec' in r['recimg']
+
+    report.report(params, r['recimg'])

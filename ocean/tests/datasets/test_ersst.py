@@ -14,7 +14,7 @@ from ocean.tests import util
 Test plots for all variables and periods
 """
 
-def test_ersst(variable, period):
+def test_ersst(report, variable, period):
     util.clear_cache('ERA')
 
     params = {
@@ -31,4 +31,6 @@ def test_ersst(variable, period):
     print r
 
     assert not 'error' in r
-    assert 'img' in r # FIXME: how do we include this in a test report
+    assert 'img' in r
+
+    report.report(params, r['img'])

@@ -7,6 +7,8 @@
 
 import datetime
 
+import pytest
+
 from ocean.datasets.bran import Dataset
 from ocean.tests import util
 
@@ -15,7 +17,7 @@ Tests that take the parameter @period will be run for all periods configured
 in the Dataset class.
 """
 
-def test_surface(variable, period):
+def test_surface(report, variable, period):
     util.clear_cache('BRN')
 
     params = {
@@ -31,16 +33,22 @@ def test_surface(variable, period):
     print r
 
     assert not 'error' in r
-    assert 'img' in r # FIXME: how do we include this in a test report
+    assert 'img' in r
 
-def test_salt_xsection(period):
+    report.report(params, r['img'])
+
+@pytest.mark.parametrize(('var'), [
+    'temp',
+    'salt',
+])
+def test_salt_xsection(report, var, period):
     util.clear_cache('BRN')
 
     params = {
         'area': 'pac',
         'date': datetime.date(2000, 1, 1),
         'period': period,
-        'variable': 'salt',
+        'variable': var,
         'lat': -30.,
         'lon': 160.,
     }
@@ -51,4 +59,6 @@ def test_salt_xsection(period):
     print r
 
     assert not 'error' in r
-    assert 'img' in r # FIXME: how do we include this in a test report
+    assert 'img' in r
+
+    report.report(params, r['img'])

@@ -15,7 +15,7 @@ Tests that take the parameter @period will be run for all periods configured
 in the Dataset class.
 """
 
-def test_plot(variable, period):
+def test_plot(report, variable, period):
     util.clear_cache('WAV')
 
     params = {
@@ -34,4 +34,6 @@ def test_plot(variable, period):
     print r
 
     assert not 'error' in r
-    assert 'img' in r # FIXME: how do we include this in a test report
+    assert 'img' in r
+
+    report.report(params, r['img'])

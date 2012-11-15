@@ -15,14 +15,14 @@ Tests that take the parameter @period will be run for all periods configured
 in the Dataset class.
 """
 
-def test_mean(period):
+def test_reynolds(report, variable, period):
     util.clear_cache('REY')
 
     params = {
         'area': 'pac',
         'date': datetime.date(2000, 1, 1),
         'period': period,
-        'variable': 'mean',
+        'variable': variable,
     }
 
     ds = Dataset()
@@ -31,40 +31,6 @@ def test_mean(period):
     print r
 
     assert not 'error' in r
-    assert 'img' in r # FIXME: how do we include this in a test report
+    assert 'img' in r
 
-def test_anom(period):
-    util.clear_cache('REY')
-
-    params = {
-        'area': 'pac',
-        'date': datetime.date(2000, 1, 1),
-        'period': period,
-        'variable': 'anom',
-    }
-
-    ds = Dataset()
-    r = ds.process(params)
-
-    print r
-
-    assert not 'error' in r
-    assert 'img' in r # FIXME: how do we include this in a test report
-
-def test_deciles():
-    util.clear_cache('REY')
-
-    params = {
-        'area': 'pac',
-        'date': datetime.date(2000, 1, 1),
-        'period': 'monthly', # FIXME: make test generic
-        'variable': 'dec',
-    }
-
-    ds = Dataset()
-    r = ds.process(params)
-
-    print r
-
-    assert not 'error' in r
-    assert 'img' in r # FIXME: how do we include this in a test report
+    report.report(params, r['img'])
