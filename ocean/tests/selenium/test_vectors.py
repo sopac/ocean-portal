@@ -62,6 +62,24 @@ def test_click_gauge(b, url):
     b.submit()
     b.wait(output('SEA'))
 
+@pytest.mark.bug200
+def test_hover_gauge(b, url):
+    b.get(url)
+
+    b.select_param('variable', 'Tidal Gauge')
+    time.sleep(4) # wait for the map to stabilise
+    b.wait(jquery('svg circle'))
+
+    marker = b.find_element_by_jquery('svg circle:first')
+
+    chain = ActionChains(b)
+    chain.move_to_element(marker)
+    chain.perform()
+
+    elems = b.find_elements_by_jquery('svg text')
+    assert len(elems) == 1
+    assert elems[0].text == "Fiji - Suva"
+
 def test_gauge_offscreen(b, url):
     b.get(url)
 
