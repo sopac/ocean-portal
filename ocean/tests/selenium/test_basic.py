@@ -183,3 +183,22 @@ def test_removing_outputs(b, url):
     elem = b.find_element_by_xpath('//input[@value="Output"]')
     assert elem.get_attribute('checked') is None
     assert elem.get_attribute('disabled')
+
+@pytest.mark.bug201
+@pytest.mark.parametrize(('variable', 'min', 'max'), [
+    ('Reconstruction', '1950', '2009'),
+    ('Altimetry', '1993', '2011'),
+])
+def test_church_white_range(b, url, variable, min, max):
+    """
+    Make sure we have the full range of the data set.
+    """
+
+    b.get(url)
+
+    b.select_param('variable', variable)
+    b.select_param('plottype', 'Surface Map')
+
+    options = b.find_elements_by_jquery('#year option')
+    assert options[0].get_attribute('value') == min
+    assert options[-1].get_attribute('value') == max
