@@ -468,16 +468,17 @@ function getBackendId(datasetid, varid) {
  */
 function getDateRange(datasetid, varid)
 {
-    var variable = ocean.variables[varid].variable;
     var dataset = ocean.datasets[datasetid];
+    var variable = $.grep(dataset.variables, function (var_) {
+        return (var_.id == varid);
+    });
     var range;
 
-    /* first look to see if there's a variable dateRange */
-    if ('dateRange' in variable) {
-        range = variable.dateRange;
-    }
+
+    if (variable.length == 1 && 'dateRange' in variable[0]) {
+        range = variable[0].dateRange;
     /* else use the dataset dateRange */
-    else if ('dateRange' in dataset) {
+    } else if ('dateRange' in dataset) {
         range = dataset.dateRange;
     } else {
         return null;

@@ -188,8 +188,9 @@ def test_removing_outputs(b, url):
 @pytest.mark.parametrize(('variable', 'min', 'max'), [
     ('Reconstruction', '1950', '2009'),
     ('Altimetry', '1993', '2011'),
+    ('Anomalies', '1889', '2012'),
 ])
-def test_church_white_range(b, url, variable, min, max):
+def test_date_range(b, url, variable, min, max):
     """
     Make sure we have the full range of the data set.
     """
@@ -198,6 +199,7 @@ def test_church_white_range(b, url, variable, min, max):
 
     b.select_param('variable', variable)
     b.select_param('plottype', 'Surface Map')
+    b.select_param('period', 'Monthly')
 
     options = b.find_elements_by_jquery('#year option')
     assert options[0].get_attribute('value') == min
