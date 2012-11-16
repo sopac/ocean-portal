@@ -22,9 +22,9 @@ case $DATASET in
 esac
 
 DATA_DIR=`python << EOF
-import ocean.util
+from ocean.config import get_server_config
 
-config = ocean.config.get_server_config()
+config = get_server_config()
 print config['dataDir']["$DATASET"]
 EOF`
 
