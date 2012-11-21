@@ -39,7 +39,7 @@ class ReynoldsConfig ():
                                                    'Average \n[4-7]', 'Above \naverage \n[8-9]', 'Very much \nabove \naverage \n[10]',
                                                    'Highest on \nrecord']
                                        },
-                                       "decile")
+                                       "sst_dec_cats")
                               }
 
         self.periodPrefix = {'daily': "Daily ",

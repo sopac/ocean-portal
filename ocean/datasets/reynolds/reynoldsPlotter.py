@@ -46,12 +46,12 @@ class ReynoldsPlotter ():
         cntLabel = False
         if variable == 'dec':
             formattedDate = dateObj.strftime('%B %Y')
-            filename = self.serverCfg["dataDir"]["reynolds"] + "decile/" + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6]  + "dec"
+            filename = self.serverCfg["dataDir"]["reynolds"] + "decile/1950/" + period + "/" + "reynolds_sst_avhrr-only-v2_" + date[:6]  + "_dec"
             cntLabel = True
         else:
             if period=='daily':
                 formattedDate = dateObj.strftime('%d %B %Y')
-                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date
+                filename = self.serverCfg["dataDir"]["reynolds"] + 'daily-new-uncompressed' + "/" + "avhrr-only-v2." + date
             elif period=='predaily':
                 formattedDate = dateObj.strftime('%d %B %Y')
                 filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date + "_preliminary"
@@ -62,17 +62,25 @@ class ReynoldsPlotter ():
                 filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + "avhrr-only-v2." + weekdays[0].strftime('%Y%m%d') + "ave"
             elif period=='monthly':
                 formattedDate = dateObj.strftime('%B %Y')
-                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/" + date[:4] + "/" + "avhrr-only-v2." + date[:6] + "ave"
+                filename = self.serverCfg["dataDir"]["reynolds"] + "/averages/monthly/reynolds_sst_avhrr-only-v2_" + date[:6]
             elif period=='3monthly':
                 months = dateRange.getMonths(date, 3)
                 formattedDate = months[0].strftime('%B %Y') + ' to ' + months[-1].strftime('%B %Y') 
-                spatialMean.generate3Monthly(months)
-                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/avhrr-only-v2." + date[:6] + "ave"
+                filename = self.serverCfg["dataDir"]["reynolds"] + \
+                           "/averages/3monthly/reynolds_sst_avhrr-only-v2_3mthavg_" + \
+                           months[0].strftime('%Y%m') + '_' + months[-1].strftime('%Y%m')
             elif period=='6monthly':
                 months = dateRange.getMonths(date, 6)
                 formattedDate = months[0].strftime('%B %Y') + ' to ' + months[-1].strftime('%B %Y') 
-                spatialMean.generate6Monthly(months)
-                filename = self.serverCfg["dataDir"]["reynolds"] + period + "/avhrr-only-v2." + date[:6] + "ave"
+                filename = self.serverCfg["dataDir"]["reynolds"] + \
+                           "/averages/6monthly/reynolds_sst_avhrr-only-v2_6mthavg_" + \
+                           months[0].strftime('%Y%m') + '_' + months[-1].strftime('%Y%m')
+            elif period=='12monthly':
+                months = dateRange.getMonths(date, 12)
+                formattedDate = months[0].strftime('%B %Y') + ' to ' + months[-1].strftime('%B %Y')
+                filename = self.serverCfg["dataDir"]["reynolds"] + \
+                           "/averages/12monthly/reynolds_sst_avhrr-only-v2_12mthavg_" + \
+                           months[0].strftime('%Y%m') + '_' + months[-1].strftime('%Y%m')
             elif period=='yearly':
                 formattedDate = date[:4]
                 filename = self.serverCfg["dataDir"]["reynolds"] + period + "/avhrr-only-v2." + date[:4] + "ave"
@@ -109,7 +117,10 @@ class ReynoldsPlotter ():
         args['formattedDate'] = formattedDate
         filename = filename + ".nc" 
         dataset = Dataset(filename, 'r')
-        sst = dataset.variables[self.config.getVariableType(variable)][0][0]
+        if variable == 'dec':
+            sst = dataset.variables[self.config.getVariableType(variable)]
+        else:
+            sst = dataset.variables[self.config.getVariableType(variable)][0][0]
         lats = dataset.variables['lat'][:]
         lons = dataset.variables['lon'][:]
 
@@ -135,15 +146,6 @@ class ReynoldsPlotter ():
         #plot.plotScale(sst, variable, self.config, outputFilename)
 
         if variable == 'dec':
-            # Temporary patch until decile calculation code is fixed
-            sst = np.where((sst < 0.5), 0, sst)
-            sst = np.where((sst >= 0.5) & (sst < 1.5), 1, sst)
-            sst = np.where((sst >= 1.5) & (sst < 3.5), 2, sst)
-            sst = np.where((sst >= 3.5) & (sst < 7.5), 3, sst)
-            sst = np.where((sst >= 7.5) & (sst < 9.5), 4, sst)
-            sst = np.where((sst >= 9.5) & (sst < 10.5), 5, sst)
-            sst = np.where((sst >= 10.5), 6, sst)
-            sst = sst + 1
             contourLines = False
         else:
             contourLines = True

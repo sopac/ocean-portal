@@ -8,24 +8,24 @@
         "id":"meansst",
         "bid": "mean",
         "name":"Mean Temperature",
-        "periods": ["daily", "monthly", "yearly"],
+        "periods": ["daily", "monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map"]
     },{
         "id":"sstanom",
         "bid": "anom",
         "name":"Anomalies",
-        "periods": ["daily", "monthly", "yearly"],
+        "periods": ["daily", "monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map"]
     },{
         "id":"sstdec",
         "bid": "dec",
         "name":"Deciles",
-        "periods": ["monthly"],
+        "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map"]
     }],
     "dateRange" : {
         "minDate": "19820101",
-        "maxDate": "20111231"
+        "maxDate": "20121031"
     }
 },{
     "id":"ersst",
@@ -52,8 +52,8 @@
         "plottypes": ["map"]
     }],
     "dateRange" : {
-        "minDate": "18890101",
-        "maxDate": "20120831"
+        "minDate": "19500101",
+        "maxDate": "20121031"
     }
 },{
     "id":"ww3",
@@ -97,12 +97,6 @@
         "name":"Salinity",
         "periods": ["monthly"],
         "plottypes": ["map", "xsections"]
-    }, {
-        "id":"rec",
-        "bid": "eta",
-        "name":"Reconstruction",
-        "periods": ["monthly"],
-        "plottypes": ["map"]
     }, {
         "id":"uvtemp",
         "name":"Temp & Currents",

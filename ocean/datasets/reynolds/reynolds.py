@@ -26,7 +26,9 @@ class reynolds(SST):
     __periods__ = [
         'daily',
         'monthly',
-        'yearly',
+        '3monthly',
+        '6monthly',
+        '12monthly',
     ]
 
     def __init__(self):
