@@ -14,7 +14,6 @@ import datetime
 
 import netCDF4
 import numpy as np
-import pylab as py
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
@@ -73,16 +72,16 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
                           lat_cnt, lon_cnt, output_filename='noname.png', title='', units='m/s',
                           cb_ticks=None, cb_tick_fmt="%.0f", cmp_name='jet', proj='cyl',
                           product_label_str=None):
-    fg = py.figure()
+    fg = plt.figure()
     gs = mpl.gridspec.GridSpec(2,5)
-    ax1=py.subplot(gs[1,0:2])
+    ax1=plt.subplot(gs[1,0:2])
         
     n_colours = cb_ticks.size - 1
     d_cmap = discrete_cmap(cmp_name, n_colours)
     
     # Draw contour
     x, y = np.meshgrid(lons, depths)
-    ctr = py.contour(x, y, zonal_data, levels=cb_ticks, colors='k', linewidths=0.4)
+    ctr = plt.contour(x, y, zonal_data, levels=cb_ticks, colors='k', linewidths=0.4)
     plt.clabel(ctr, inline=True, fmt=cb_tick_fmt, fontsize=8)
 
     lons2 = get_grid_edges(lons)
@@ -90,7 +89,7 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
         
     # Plot data
     x2, y2 = np.meshgrid(lons2, depths2)
-    img = py.pcolormesh(x2, y2, zonal_data, shading='flat', cmap=d_cmap, vmin=cb_ticks.min(), vmax=cb_ticks.max())
+    img = plt.pcolormesh(x2, y2, zonal_data, shading='flat', cmap=d_cmap, vmin=cb_ticks.min(), vmax=cb_ticks.max())
     
     ax = plt.gca()
     ax.set_ylim(0,300)
@@ -99,14 +98,14 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
     ax.tick_params(axis='x', labelsize=8)
     ax.tick_params(axis='y', labelsize=9)
 
-    py.ylabel("Depth (m)", fontsize=10)
-    py.xlabel("Longitude", fontsize=10)
-    py.subplots_adjust(right=1.0)
-    ax2=py.subplot(gs[1,2:4])
+    plt.ylabel("Depth (m)", fontsize=10)
+    plt.xlabel("Longitude", fontsize=10)
+    plt.subplots_adjust(right=1.0)
+    ax2=plt.subplot(gs[1,2:4])
 
     # Draw contour
     x, y = np.meshgrid(lats, depths)
-    ctr = py.contour(x, y, meridional_data, levels=cb_ticks, colors='k', linewidths=0.4)
+    ctr = plt.contour(x, y, meridional_data, levels=cb_ticks, colors='k', linewidths=0.4)
     plt.clabel(ctr, inline=True, fmt=cb_tick_fmt, fontsize=8)
 
     lats2 = get_grid_edges(lats)
@@ -114,7 +113,7 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
         
     # Plot data
     x2, y2 = np.meshgrid(lats2, depths2)
-    img = py.pcolormesh(x2, y2, meridional_data, shading='flat', cmap=d_cmap, vmin=cb_ticks.min(), vmax=cb_ticks.max())
+    img = plt.pcolormesh(x2, y2, meridional_data, shading='flat', cmap=d_cmap, vmin=cb_ticks.min(), vmax=cb_ticks.max())
         
     ax = plt.gca()
     ax.set_ylim(0,300)
@@ -123,9 +122,9 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
     ax.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(format_latitude))
     ax.tick_params(axis='x', labelsize=8)
     
-    py.xlabel("Latitude", fontsize=10)
+    plt.xlabel("Latitude", fontsize=10)
     
-    ax3=py.subplot(gs[0,:-1])
+    ax3=plt.subplot(gs[0,:-1])
 
     lat_min = lats[0] - 5.0
     lat_max = lats[-1] + 5.0
@@ -136,9 +135,9 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
                 urcrnrlat=lat_max, urcrnrlon=lon_max, resolution='h')
     m.drawcoastlines(linewidth=0.1, zorder=6)
     m.fillcontinents(color='#cccccc', zorder=7)
-    py.hold(True)
-    py.plot([lon_cnt,lon_cnt],[lats[0],lats[-1]], color='k', linestyle='--', linewidth=2, zorder=8)
-    py.plot([lons[0],lons[-1]],[lat_cnt,lat_cnt], color='k', linestyle='--', linewidth=2, zorder=8)
+    plt.hold(True)
+    plt.plot([lon_cnt,lon_cnt],[lats[0],lats[-1]], color='k', linestyle='--', linewidth=2, zorder=8)
+    plt.plot([lons[0],lons[-1]],[lat_cnt,lat_cnt], color='k', linestyle='--', linewidth=2, zorder=8)
     
     # Convert centre lat/lons to corner values required for pcolormesh
     lons2 = get_grid_edges(lons_all)
