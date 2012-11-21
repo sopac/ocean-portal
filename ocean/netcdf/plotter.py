@@ -19,7 +19,6 @@ import datetime
 import sys
 import multiprocessing
 
-import pylab as py
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import mpl
@@ -120,7 +119,7 @@ class Plotter:
             x, y = None, None
             if plotStyle == 'contourf':
                 x, y = m(*np.meshgrid(lons, lats))
-                img = py.contourf(x, y, data, levels=cm_edge_values,
+                img = plt.contourf(x, y, data, levels=cm_edge_values,
                                   shading='flat', cmap=d_cmap, extend=extend)
             elif plotStyle == 'pcolormesh':
                 # Convert centre lat/lons to corner values required for
@@ -134,7 +133,7 @@ class Plotter:
             if contourLines:
                 if x is None:
                     x, y = m(*np.meshgrid(lons, lats))
-                cnt = py.contour(x, y, data, levels=cm_edge_values,
+                cnt = plt.contour(x, y, data, levels=cm_edge_values,
                                  colors = 'k', linewidths = 0.4, hold='on')
                 plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8)
 
@@ -171,7 +170,7 @@ class Plotter:
                 tick_pos = cm_edge_values
             else:
                 tick_pos = cb_label_pos
-            cb = py.colorbar(img, cax=cax,
+            cb = plt.colorbar(img, cax=cax,
                              spacing='proportional',
                              drawedges='True',
                              orientation='vertical',
@@ -451,5 +450,5 @@ def draw_vector_plot(m, x, y, u, v, draw_every=1, arrow_scale=10, quiverkey_valu
     q = m.quiver(x, y, u, v, pivot='mid', scale=arrow_scale,
                   minshaft=1, minlength=0.85, headlength=2.5, headaxislength=2.5)
     quiverkey_label = '$' + str(quiverkey_value) + units + '$'
-    py.quiverkey(q, 1.08, -0.07, quiverkey_value, quiverkey_label, coordinates='axes',
+    plt.quiverkey(q, 1.08, -0.07, quiverkey_value, quiverkey_label, coordinates='axes',
                  labelpos='N', labelsep=0.01, fontproperties={'size':'xx-small', 'weight':'1000'})
