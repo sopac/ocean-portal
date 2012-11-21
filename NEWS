@@ -1,3 +1,24 @@
+Ocean Map Portal 0.2.90
+=======================
+
+New Features:
+
+ - Reorient to be variable driven (Danni)
+ - Unit and acceptance tests (Danni)
+ - Select any past map layer from Outputs (Danni)
+ - No more ExtJS [faster loading] (Danni)
+ - Parallelise plotting (Danni)
+
+Bugs Fixed:
+
+ - Refactor SST classes (Danni)
+ - Fix rounding bug in lat/lon displays (Danni)
+ - Improve scalebar readability (Nick)
+ - Improve plots, move all plots to the generic plotter (Nick)
+ - Drive regions listing from backend (Danni)
+ - WCAG fixes (Danni)
+ - Separate out control panel from other frontend components (Danni)
+
 Ocean Map Portal 0.2.0
 ======================
 
