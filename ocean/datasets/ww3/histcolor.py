@@ -9,7 +9,6 @@
 
 import matplotlib.pyplot as plt
 import matplotlib
-import pylab as m
 import scipy as sci
 import scipy.stats
 
@@ -70,7 +69,7 @@ def stddev_colors(wheight,wavg,stddev,Nmax):
                     (sd3upp, 0.0, 0.0),
                     (1.0, 0.0, 0.0))}
 
-    my_cmap = m.matplotlib.colors.LinearSegmentedColormap('my_colormap', cdict, 1024)
+    my_cmap = matplotlib.colors.LinearSegmentedColormap('my_colormap', cdict, 1024)
 
     return(my_cmap)
 
@@ -111,7 +110,7 @@ def decile_rose():
                     (0.5, 1.0, 0.8),
                     (1.0, 0.8, 0.0))}
 
-    my_cmap = m.matplotlib.colors.LinearSegmentedColormap('my_colormap', cdict, 1024)
+    my_cmap = matplotlib.colors.LinearSegmentedColormap('my_colormap', cdict, 1024)
 
     return(my_cmap)
 
@@ -183,7 +182,7 @@ def decile_colors(wheight,Nmax):
                     (d9n, 1.0, 1.0),
                     (1.0, 1.0, 0.0))}
 
-    my_cmap = m.matplotlib.colors.LinearSegmentedColormap('my_colormap', cdict, 1024)
+    my_cmap = matplotlib.colors.LinearSegmentedColormap('my_colormap', cdict, 1024)
 
     return(my_cmap)
 
@@ -229,7 +228,7 @@ def quartile_colors(wheight,wavg,Nmax,binwd):
                     (q3n, 0.0, 1.0),
                     (1.0, 1.0, 0.0))}
 
-    my_cmap = m.matplotlib.colors.LinearSegmentedColormap('my_colormap', cdict, 1024)
+    my_cmap = matplotlib.colors.LinearSegmentedColormap('my_colormap', cdict, 1024)
 
     return(my_cmap)
 
@@ -287,7 +286,7 @@ def quartoutlier_colors(wheight,wavg,Nmax,binwd):
                     (o2n, 1.0, 0.0),
                     (1.0, 0.0, 0.0))}
 
-    my_cmap = m.matplotlib.colors.LinearSegmentedColormap('my_colormap', cdict, 1024)
+    my_cmap = matplotlib.colors.LinearSegmentedColormap('my_colormap', cdict, 1024)
 
     return(my_cmap)
 
@@ -345,7 +344,7 @@ def tercile_colors(wheight,wavg,Nmax,binwd):
                     (o2n, 1.0, 0.0),
                     (1.0, 0.0, 0.0))}
 
-    my_cmap = m.matplotlib.colors.LinearSegmentedColormap('my_colormap', cdict, 1024)
+    my_cmap = matplotlib.colors.LinearSegmentedColormap('my_colormap', cdict, 1024)
 
     return(my_cmap)
 
@@ -403,6 +402,6 @@ def tercoutlier_colors(wheight,wavg,Nmax,binwd):
                     (o2n, 1.0, 0.0),
                     (1.0, 0.0, 0.0))}
 
-    my_cmap = m.matplotlib.colors.LinearSegmentedColormap('my_colormap', cdict, 1024)
+    my_cmap = matplotlib.colors.LinearSegmentedColormap('my_colormap', cdict, 1024)
 
     return(my_cmap)
