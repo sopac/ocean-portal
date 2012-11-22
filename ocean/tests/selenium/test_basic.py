@@ -49,7 +49,10 @@ def test_mean_sst_monthly(b, url):
     b.select_param('period', 'Monthly')
     b.select_param('month', 'January')
     b.select_param('year', '2012')
-    b.ensure_selected('dataset', 'ERSST')
+
+    assert b.select_contains('dataset', ['reynolds', 'ersst'])
+    b.select_param('dataset', 'ERSST')
+
     b.submit()
 
     b.wait(output('ERA'))
@@ -111,7 +114,10 @@ def test_removing_outputs(b, url):
     b.select_param('period', 'Monthly')
     b.select_param('month', 'January')
     b.select_param('year', '2012')
-    b.ensure_selected('dataset', 'ERSST')
+
+    assert b.select_contains('dataset', ['reynolds', 'ersst'])
+    b.select_param('dataset', 'ERSST')
+
     b.submit()
 
     b.wait(output('ERA'))
@@ -188,7 +194,7 @@ def test_removing_outputs(b, url):
 @pytest.mark.parametrize(('variable', 'min', 'max'), [
     ('Reconstruction', '1950', '2009'),
     ('Altimetry', '1993', '2011'),
-    ('Anomalies', '1889', '2012'),
+    ('Anomalies', '1950', '2012'),
 ])
 def test_date_range(b, url, variable, min, max):
     """
@@ -204,3 +210,33 @@ def test_date_range(b, url, variable, min, max):
     options = b.find_elements_by_jquery('#year option')
     assert options[0].get_attribute('value') == min
     assert options[-1].get_attribute('value') == max
+
+@pytest.mark.bug204
+def test_date_range_multi_month_periods_1(b, url):
+    b.get(url)
+
+    b.select_param('variable', 'Mean Temperature')
+    b.select_param('plottype', 'Sub-surface Cross-section')
+    b.select_param('period', '3 monthly')
+    b.select_param('year', '1993')
+
+    b.ensure_selected('dataset', 'BRAN')
+
+    elem = b.find_element_by_jquery('#year option:first')
+    assert elem.get_attribute('value') == '1993'
+
+    elem = b.find_element_by_jquery('#month option:first')
+    assert elem.get_attribute('value') == '2' # months enumerate from 0 in JS
+
+@pytest.mark.bug204
+def test_date_range_multi_month_periods_2(b, url):
+    b.get(url)
+
+    b.select_param('variable', 'Mean Temperature')
+    b.select_param('plottype', 'Surface Map')
+    b.select_param('period', '3 monthly')
+    b.select_param('year', '1993')
+    b.select_param('month', 'Nov 92 - Jan 93')
+
+    elems = b.find_elements_by_jquery('#dataset option')
+    assert 'bran' not in map(lambda e: e.get_attribute('value'), elems)

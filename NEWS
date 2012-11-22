@@ -1,6 +1,10 @@
 Ocean Map Portal 0.2.90
 =======================
 
+"Behold me fettered, clamped to these rough rocks, even as a ship is moored
+ fast by timid sailors, fearful of night because of the roaring sea."
+ --Prometheus Lyomenos, Aeschylus
+
 New Features:
 
  - Reorient to be variable driven (Danni)
@@ -8,6 +12,9 @@ New Features:
  - Select any past map layer from Outputs (Danni)
  - No more ExtJS [faster loading] (Danni)
  - Parallelise plotting (Danni)
+ - New periods: Reynolds/ERSST/BRAN 3/6/12 month (mean) (Nick)
+ - New variables: anom/dec for Reynolds/ERSST
+ - New generic processing script (Nick)
 
 Bugs Fixed:
 

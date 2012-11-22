@@ -46,7 +46,6 @@ def test_histogram(b, url, variable):
     ('Deciles', 'ERSST', 'ERA'),
     ('Mean Temperature', 'BRAN', 'BRN'),
     ('Salinity', 'BRAN', 'BRN'),
-    ('Reconstruction', 'BRAN', 'BRN'),
     ('Reconstruction', 'Church & White', 'SEA'),
     ('Altimetry', 'Church & White', 'SEA'),
 ])

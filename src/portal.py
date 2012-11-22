@@ -11,6 +11,9 @@ import os
 import sys
 import json
 
+import matplotlib
+matplotlib.use('agg')
+
 from ocean import util
 from ocean.config import get_server_config
 from ocean.datasets import Dataset, MissingParameter, ValidationError
