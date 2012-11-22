@@ -43,6 +43,9 @@ class bran(Dataset):
 
     __periods__ = [
         'monthly',
+        '3monthly',
+        '6monthly',
+        '12monthly',
     ]
 
     __required_params__ = Dataset.__required_params__ + [

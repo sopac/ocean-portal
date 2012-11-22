@@ -35,7 +35,7 @@ class ErsstConfig ():
                                          "format": '%5.1f'
                                        },
                                        "anom"),
-                               "dec": ("Sea Surface Temperature Decile: ",
+                               "dec": ("Sea Surface Temperature Deciles: ",
                                         {"colorbounds": [0,11],
                                          "colormap": 'RdBu_r',
                                          "contourlevels": [-1,0,1,3,7,9,10,11],
@@ -45,7 +45,7 @@ class ErsstConfig ():
                                          "unit": '',
                                          "format": '%5.1f'
                                        },
-                                       "decile"),
+                                       "sst_dec_cats"),
                                "trend": ("Sea Surface Temperature Trend: ",
                                         {"colorbounds": [-0.28,0.28],
                                          "colormap": 'RdBu_r',
