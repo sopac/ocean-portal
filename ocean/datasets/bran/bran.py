@@ -81,13 +81,13 @@ class bran(Dataset):
             lat_cnt = params['lat']
             lon_cnt = np.mod(params['lon'], 360.0)
             if (0 <= lon_cnt <= 360) and (-90 <= lat_cnt <= 90):
-                lon_str = '%.2fE' % lat_cnt
+                lon_str = '%.2fE' % lon_cnt
                 if lat_cnt >= 0:
                     lat_str = '%.2fN' % lat_cnt
                 else:
-                    lat_str = '%.2fS' % lat_cnt
+                    lat_str = '%.2fS' % abs(lat_cnt)
 
-                regionStr = '_' + lat_str + lon_str
+                regionStr = '%s_%s' % (lat_str, lon_str)
                 regionStr = regionStr.replace('.', '')
             else:
                 response['error'] = "Invalid lat/lon coordinates"

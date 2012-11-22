@@ -133,8 +133,8 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
     
     m = Basemap(projection=proj, llcrnrlat=lat_min, llcrnrlon=lon_min, \
                 urcrnrlat=lat_max, urcrnrlon=lon_max, resolution='h')
-    m.drawcoastlines(linewidth=0.1, zorder=6)
-    m.fillcontinents(color='#cccccc', zorder=7)
+    m.drawcoastlines(linewidth=0.5, zorder=8, color='#505050')
+    m.fillcontinents(color='#F1EBB7', zorder=7)
     plt.hold(True)
     plt.plot([lon_cnt,lon_cnt],[lats[0],lats[-1]], color='k', linestyle='--', linewidth=2, zorder=8)
     plt.plot([lons[0],lons[-1]],[lat_cnt,lat_cnt], color='k', linestyle='--', linewidth=2, zorder=8)
