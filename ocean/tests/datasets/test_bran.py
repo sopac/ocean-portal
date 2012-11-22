@@ -41,7 +41,7 @@ def test_surface(report, variable, period):
     'temp',
     'salt',
 ])
-def test_salt_xsection(report, var, period):
+def test_xsection(report, var, period):
     util.clear_cache('BRN')
 
     params = {
@@ -60,5 +60,35 @@ def test_salt_xsection(report, var, period):
 
     assert not 'error' in r
     assert 'img' in r
+
+    report(params, r['img'])
+
+@pytest.mark.parametrize(('lat', 'lon'), [
+    (-30., 160.),
+    (-30., 150.),
+    (-20., 160.),
+])
+def test_crosssection_zonal_meridional(report, lat, lon):
+    util.clear_cache('BRN')
+
+    params = {
+        'area': 'pac',
+        'date': datetime.date(2006, 1, 1),
+        'period': 'monthly',
+        'variable': 'temp',
+        'lat': lat,
+        'lon': lon,
+    }
+
+    ds = Dataset()
+    r = ds.process(params)
+
+    print r
+
+    assert not 'error' in r
+    assert 'img' in r
+
+    assert ('%i' % abs(lat)) in r['img']
+    assert ('%i' % abs(lon)) in r['img']
 
     report(params, r['img'])
