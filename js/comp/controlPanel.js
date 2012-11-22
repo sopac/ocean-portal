@@ -296,7 +296,7 @@ $(document).ready(function() {
 
         if ($('#date').is(':visible') || $('#year').is(':visible')) {
             filter = function(dataset) {
-                var range = getDateRange(dataset, ocean.variable);
+                var range = getDateRange(dataset, ocean.variable, ocean.period);
 
                 if (!range)
                     return true; /* no date range defined */
@@ -466,14 +466,27 @@ function getBackendId(datasetid, varid) {
  *
  * Returns: { minDate, maxDate }
  */
-function getDateRange(datasetid, varid)
+function getDateRange(datasetid, varid, period)
 {
     var dataset = ocean.datasets[datasetid];
     var variable = $.grep(dataset.variables, function (var_) {
         return (var_.id == varid);
     });
     var range;
+    var month_delta = 0;
 
+    /* multi-month periods decrease the available start date range */
+    switch (period) {
+        case '3monthly':
+            month_delta = 2;
+            break;
+        case '6monthly':
+            month_delta = 5;
+            break;
+        case '12monthly':
+            month_delta = 11;
+            break;
+    }
 
     if (variable.length == 1 && 'dateRange' in variable[0]) {
         range = variable[0].dateRange;
@@ -486,8 +499,12 @@ function getDateRange(datasetid, varid)
 
     /* 'yy' is correct, believe it or not, see
      * http://docs.jquery.com/UI/Datepicker/parseDate */
-    return { min: $.datepicker.parseDate('yymmdd', range.minDate),
-             max: $.datepicker.parseDate('yymmdd', range.maxDate) };
+    var mindate = $.datepicker.parseDate('yymmdd', range.minDate);
+    var maxdate = $.datepicker.parseDate('yymmdd', range.maxDate);
+
+    mindate.setMonth(mindate.getMonth() + month_delta);
+
+    return { min: mindate, max: maxdate };
 }
 
 /**
@@ -503,7 +520,7 @@ function getCombinedDateRange() {
     var maxDate = Number.MIN_VALUE;
 
     $.each(datasets, function(i, datasetid) {
-        var range = getDateRange(datasetid, ocean.variable);
+        var range = getDateRange(datasetid, ocean.variable, ocean.period);
 
         if (!range)
             return; /* continue */
