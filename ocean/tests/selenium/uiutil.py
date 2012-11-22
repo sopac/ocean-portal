@@ -61,6 +61,15 @@ class _BaseMapPortalDriver(object):
         #     options = filter(lambda o: o.is_displayed(), select.options)
         #     assert len(options) == noptions
 
+    def select_contains(self, select, values):
+        select = self.find_element_by_id(select)
+        options = select.find_elements_by_tag_name('option')
+        opt_values = map(lambda o: o.get_attribute('value'), options)
+
+        assert sorted(values) == sorted(opt_values)
+
+        return True
+
     def submit(self):
         self.find_element_by_id('submit').click()
 

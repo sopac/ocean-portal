@@ -49,7 +49,10 @@ def test_mean_sst_monthly(b, url):
     b.select_param('period', 'Monthly')
     b.select_param('month', 'January')
     b.select_param('year', '2012')
-    b.ensure_selected('dataset', 'ERSST')
+
+    assert b.select_contains('dataset', ['reynolds', 'ersst'])
+    b.select_param('dataset', 'ERSST')
+
     b.submit()
 
     b.wait(output('ERA'))
@@ -111,7 +114,10 @@ def test_removing_outputs(b, url):
     b.select_param('period', 'Monthly')
     b.select_param('month', 'January')
     b.select_param('year', '2012')
-    b.ensure_selected('dataset', 'ERSST')
+
+    assert b.select_contains('dataset', ['reynolds', 'ersst'])
+    b.select_param('dataset', 'ERSST')
+
     b.submit()
 
     b.wait(output('ERA'))
@@ -188,7 +194,7 @@ def test_removing_outputs(b, url):
 @pytest.mark.parametrize(('variable', 'min', 'max'), [
     ('Reconstruction', '1950', '2009'),
     ('Altimetry', '1993', '2011'),
-    ('Anomalies', '1889', '2012'),
+    ('Anomalies', '1950', '2012'),
 ])
 def test_date_range(b, url, variable, min, max):
     """
