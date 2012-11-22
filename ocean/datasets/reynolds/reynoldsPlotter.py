@@ -65,7 +65,7 @@ class ReynoldsPlotter ():
                 filename = self.serverCfg["dataDir"]["reynolds"] + "/averages/monthly/reynolds_sst_avhrr-only-v2_" + date[:6]
             elif period=='3monthly':
                 months = dateRange.getMonths(date, 3)
-                formattedDate = months[0].strftime('%B %Y') + ' to ' + months[-1].strftime('%B %Y') 
+                formattedDate = months[0].strftime('%B %Y') + ' to ' + months[-1].strftime('%B %Y')
                 filename = self.serverCfg["dataDir"]["reynolds"] + \
                            "/averages/3monthly/reynolds_sst_avhrr-only-v2_3mthavg_" + \
                            months[0].strftime('%Y%m') + '_' + months[-1].strftime('%Y%m')

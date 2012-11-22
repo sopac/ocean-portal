@@ -90,22 +90,22 @@
         "id":"meansst",
         "bid": "temp",
         "name":"Mean Temperature",
-        "periods": ["monthly"],
+        "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map", "xsections"]
     }, {
         "id":"salt",
         "name":"Salinity",
-        "periods": ["monthly"],
+        "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map", "xsections"]
     }, {
         "id":"uvtemp",
         "name":"Temp & Currents",
-        "periods": ["monthly"],
+        "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map"]
     }, {
         "id":"uveta",
         "name":"Sea Level & Currents",
-        "periods": ["monthly"],
+        "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map"]
     }],
     "dateRange" : {

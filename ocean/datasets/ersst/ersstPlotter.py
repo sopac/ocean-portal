@@ -58,17 +58,20 @@ class ErsstPlotter ():
                       + util.format_old_date(inputDate)
             elif period=='3monthly' or period == '6monthly': 
                 if period=='3monthly':
-                    filename = self.serverCfg["dataDir"]["ersst"] + "seasonalclim/ersst_v3b_" + date[:6] + "_3mthavg"
+                    months = dateRange.getMonths(date, 3)
+                    filename = self.serverCfg["dataDir"]["ersst"] + "averages/3monthly/ersst_v3b_3mthavg_" + months[0].strftime('%Y%m') + '_' + months[-1].strftime('%Y%m')
                 elif period=='6monthly':
-                    filename = self.serverCfg["dataDir"]["ersst"] + "seasonalclim/ersst_v3b_" + date[:6] + "_6mthavg"
+                    months = dateRange.getMonths(date, 6)
+                    filename = self.serverCfg["dataDir"]["ersst"] + "averages/6monthly/ersst_v3b_6mthavg_" + months[0].strftime('%Y%m') + '_' + months[-1].strftime('%Y%m')
                 title = regionLongName + '\n' \
                       + self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + util.format_old_date(dateRange.getMonths(date, period[:1])[0]) \
                       + " to "\
                       + util.format_old_date(inputDate)
-            elif period == '12monthly': 
-                filename = self.serverCfg["dataDir"]["ersst"] + "seasonalclim/ersst_v3b_" + date[:6] + "_12mthavg"
+            elif period == '12monthly':
+                months = dateRange.getMonths(date, 12)
+                filename = self.serverCfg["dataDir"]["ersst"] + "averages/12monthly/ersst_v3b_12mthavg_" + months[0].strftime('%Y%m') + '_' + months[-1].strftime('%Y%m')
                 title = regionLongName + '\n' \
                       + self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
@@ -78,10 +81,10 @@ class ErsstPlotter ():
 
         elif variable == 'dec':
             centerLabel = True
-            baseYear = str(args['baseYear'])
+            baseYear = '1950' #str(args['baseYear'])
             filename = os.path.join(self.serverCfg['dataDir']['ersst'],
                                     'decile', baseYear, period,
-                                    'ersst.' + date[:6] + 'dec')
+                                    'ersst.' + date[:6] + '_dec')
 
             if period=='monthly':
                 title = regionLongName + '\n' \
@@ -172,15 +175,19 @@ class ErsstPlotter ():
         filename = filename + ".nc" 
         filename = glob.glob(filename)[0]
         dataset = Dataset(filename, 'r')
-
-        sst = dataset.variables[self.config.getVariableType(variable)][0][0]
+        
+        if variable == 'dec':
+            sst = dataset.variables[self.config.getVariableType(variable)]
+        else:
+            sst = dataset.variables[self.config.getVariableType(variable)][0][0]
+        
         lats = dataset.variables['lat'][:]
         lons = dataset.variables['lon'][:]
         
         lons = np.array(lons,np.float64)
         lats = np.array(lats,np.float64)
 
-        sst = sm.smooth(sst, 5)
+        #sst = sm.smooth(sst, 5)
 
         contourLines = True
 
@@ -194,14 +201,6 @@ class ErsstPlotter ():
         cmap_name = self.config.getColorMap(variable)
 
         if variable == 'dec':
-            # Temporary patch until decile calculation code is fixed
-            sst = np.where((sst < 0.5), 0, sst)
-            sst = np.where((sst >= 0.5) & (sst < 1.5), 1, sst)
-            sst = np.where((sst >= 1.5) & (sst < 3.5), 2, sst)
-            sst = np.where((sst >= 3.5) & (sst < 7.5), 3, sst)
-            sst = np.where((sst >= 7.5) & (sst < 9.5), 4, sst)
-            sst = np.where((sst >= 9.5) & (sst < 10.5), 5, sst)
-            sst = np.where((sst >= 10.5), 6, sst)
             contourLines = False
         else:
             contourLines = True
