@@ -28,6 +28,7 @@ def wcag(driver, url):
     b.select_param('period', '3 monthly')
     b.select_param('year', '2012')
     b.select_param('month', 'Jan 12 - Mar 12')
+    b.select_param('dataset', 'ERSST')
 
     b.submit()
     b.wait(output('ERA'))
