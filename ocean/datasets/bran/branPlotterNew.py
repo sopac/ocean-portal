@@ -18,7 +18,6 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from matplotlib.offsetbox import AnchoredOffsetbox, TextArea
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from ocean.netcdf.plotter import getCopyright, get_tick_values, discrete_cmap
 from ocean.util.pngcrush import pngcrush

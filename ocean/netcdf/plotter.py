@@ -25,7 +25,11 @@ from matplotlib import mpl
 from matplotlib.offsetbox import AnchoredOffsetbox, TextArea
 from matplotlib.transforms import offset_copy
 from mpl_toolkits.basemap import Basemap
-from mpl_toolkits.axes_grid1 import make_axes_locatable
+try:
+    from mpl_toolkits.axes_grid1 import make_axes_locatable
+except ImportError:
+    # support older matplotlib
+    from mpl_toolkits.axes_grid import make_axes_locatable
 
 from ocean import util
 from ocean.util.pngcrush import pngcrush
