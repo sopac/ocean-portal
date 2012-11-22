@@ -18,6 +18,7 @@ from ocean.config import regionConfig, productName
 from ocean.netcdf import plotter
 from ocean.netcdf.plotter import COMMON_FILES
 from ocean.datasets import Dataset
+from ocean.util import dateRange
 
 import branConfig as bc
 import branPlotterNew
@@ -64,8 +65,10 @@ class bran(Dataset):
         varName = params['variable']
         regionStr = params['area']
         periodStr = params['period']
-        yearStr = '%04i' % params['date'].year
-        monthStr = '%02i' % params['date'].month
+        inputDate = params["date"]
+        date = inputDate.strftime('%Y%m%d')
+        yearStr = '%04i' % inputDate.year
+        monthStr = '%02i' % inputDate.month
         yearMonthStr = yearStr + monthStr
 
         if ('lat' in params) and ('lon' in params):
@@ -93,18 +96,18 @@ class bran(Dataset):
                 response['error'] = "Invalid lat/lon coordinates"
                 return response
 
-            plot_filename = '%s_%s_%s_%s' % (branProduct['monthly'],
+            plot_filename = '%s_%s_%s_%s' % (branProduct[periodStr],
                                              varName, yearMonthStr, regionStr)
             plot_filename_fullpath = os.path.join(server_config['outputDir'],
                                                   plot_filename)
-            basemap_filename = '%s_%s_%s' % (branProduct['monthly'],
+            basemap_filename = '%s_%s_%s' % (branProduct[periodStr],
                                              varName, yearMonthStr)
             basemap_filename_fullpath = os.path.join(server_config['outputDir'],
                                                      basemap_filename)
 
             # Generate basemap if does not exist
             if not check_basemap_exists(basemap_filename_fullpath):
-                plot_surface_data(varName, yearStr, monthStr, regionStr,
+                plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
                                   basemap_filename_fullpath, basemap_only=True)
 
             # Determine plot settings
@@ -117,15 +120,22 @@ class bran(Dataset):
                 varLongName = 'Surface and Subsurface Salinity Profile'
                 cb_ticks = np.arange(33, 37.1, 0.5)
 
-            title_date_str = params['date'].strftime('%B %Y')
-            titleStr = varLongName + ': \n' + title_date_str + '\n'
-
             # Load sub-surface data
-            input_data_file = os.path.join(server_config['dataDir']['bran'],
-                                           'monthly', varName,
-                                           '%s_%s_%s.nc4' % (varName,
-                                                             yearStr,
-                                                             monthStr))
+            if periodStr == 'monthly':
+                title_date_str = params['date'].strftime('%B %Y')
+                input_data_file = os.path.join(server_config['dataDir']['bran'],
+                                              periodStr, varName,
+                                              '%s_%s_%s.nc4' % (varName,
+                                                                yearStr,
+                                                                monthStr))
+            else:
+                monthInt = ''.join(i for i in periodStr if i.isdigit())
+                months = dateRange.getMonths(date, monthInt)
+                title_date_str = months[0].strftime('%B %Y') + ' to ' + months[-1].strftime('%B %Y')
+                input_data_file = os.path.join(server_config['dataDir']['bran'],
+                                              'averages', periodStr, varName,
+                                              'bran2.1_%smthavg_%s_%s.nc4' % (monthInt, months[0].strftime('%Y%m'), months[-1].strftime('%Y%m')))
+            titleStr = varLongName + ': \n' + title_date_str + '\n'
 
             lats1, lons1, zlevels1, zonal_data = \
                 branPlotterNew.load_BRAN_data(input_data_file, varName,
@@ -139,12 +149,6 @@ class bran(Dataset):
                                               depth_min=0.0, depth_max=300.0)
 
             # Load surface data
-            input_data_file = os.path.join(server_config['dataDir']['bran'],
-                                           'monthly', varName,
-                                           '%s_%s_%s.nc4' % (varName,
-                                                             yearStr,
-                                                             monthStr))
-
             lats, lons, zlevels, data = \
                 branPlotterNew.load_BRAN_data(input_data_file, varName,
                                               -999.0, 999.0, -999.0, 999.0)
@@ -160,7 +164,7 @@ class bran(Dataset):
                                                  product_label_str='Bluelink Reanalysis 2.1')
         else:
             # Plot surface data
-            plot_filename = '%s_%s_%s_%s' % (branProduct['monthly'],
+            plot_filename = '%s_%s_%s_%s' % (branProduct[periodStr],
                                              varName, yearMonthStr, regionStr)
             plot_filename_fullpath = os.path.join(server_config['outputDir'],
                                                   plot_filename)
@@ -189,7 +193,7 @@ class bran(Dataset):
                 else:
                     draw_every, arrow_scale = None, None
 
-                plot_surface_data(varName, yearStr, monthStr, regionStr,
+                plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
                                   basemap_filename_fullpath,
                                   plot_filename_fullpath=plot_filename_fullpath,
                                   basemap_only=False, draw_every=draw_every,
@@ -218,7 +222,7 @@ class bran(Dataset):
 
         return response
 
-def plot_surface_data(varName, yearStr, monthStr, regionStr,
+def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
                       basemap_filename_fullpath,
                       plot_filename_fullpath=None, basemap_only=False,
                       draw_every=1, arrow_scale=10):
@@ -276,11 +280,21 @@ def plot_surface_data(varName, yearStr, monthStr, regionStr,
         currents = True
 
     # Load surface data
-    input_data_file = os.path.join(server_config['dataDir']['bran'],
-                                   'monthly', dataVar,
-                                   '%s_%s_%s.nc4' % (dataVar,
-                                                     yearStr,
-                                                     monthStr))
+    if periodStr == 'monthly':
+        title_date_str = datetime.date(int(yearStr), int(monthStr), 1).strftime('%B %Y')
+        input_data_file = os.path.join(server_config['dataDir']['bran'],
+                                      periodStr, dataVar,
+                                      '%s_%s_%s.nc4' % (dataVar,
+                                                        yearStr,
+                                                        monthStr))
+    else:
+        monthInt = ''.join(i for i in periodStr if i.isdigit())
+        months = dateRange.getMonths(date, monthInt)
+        title_date_str = months[0].strftime('%B %Y') + ' to ' + months[-1].strftime('%B %Y')
+        input_data_file = os.path.join(server_config['dataDir']['bran'],
+                                      'averages', periodStr, dataVar,
+                                      'bran2.1_%smthavg_%s_%s.nc4' % (monthInt, months[0].strftime('%Y%m'), months[-1].strftime('%Y%m')))
+
     lats, lons, zlevels, data = \
         branPlotterNew.load_BRAN_data(input_data_file, dataVar,
                                       -999.0, 999.0, -999.0, 999.0)
@@ -303,15 +317,9 @@ def plot_surface_data(varName, yearStr, monthStr, regionStr,
         lon_max = regionConfig.regions[regionStr][1]['urcrnrlon']
 
         # Construct title
-        title_date_str = datetime.date(int(yearStr), int(monthStr), 1).strftime('%B %Y')
         regionLongName = regionConfig.regions[regionStr][2]
         title = regionLongName + '\n' + varLongName + ': ' + title_date_str
 
-        input_data_file = os.path.join(server_config['dataDir']['bran'],
-                                       'monthly', dataVar,
-                                       '%s_%s_%s.nc4' % (dataVar,
-                                                         yearStr,
-                                                         monthStr))
         lats, lons, zlevels, data = \
             branPlotterNew.load_BRAN_data(input_data_file, dataVar,
                                           lat_min - 1.0, lat_max + 1.0,
@@ -319,17 +327,26 @@ def plot_surface_data(varName, yearStr, monthStr, regionStr,
 
         # Load current data if required
         if currents == True:
-            input_data_file = os.path.join(server_config['dataDir']['bran'],
-                                           'monthly', 'u',
-                                           'u_%s_%s.nc4' % (yearStr, monthStr))
+            if periodStr == 'monthly':
+                input_data_file = os.path.join(server_config['dataDir']['bran'],
+                                               periodStr, 'u',
+                                               'u_%s_%s.nc4' % (yearStr, monthStr))
+            else:
+                input_data_file = os.path.join(server_config['dataDir']['bran'],
+                                               'averages', periodStr, 'u',
+                                               'bran2.1_%smthavg_%s_%s.nc4' % (monthInt, months[0].strftime('%Y%m'), months[-1].strftime('%Y%m')))
             lats2, lons2, zlevels, u = \
                 branPlotterNew.load_BRAN_data(input_data_file, 'u',
                                               lat_min - 1.0, lat_max + 1.0,
                                               lon_min - 1.0, lon_max + 1.0)
-
-            input_data_file = os.path.join(server_config['dataDir']['bran'],
-                                           'monthly', 'v',
-                                           'v_%s_%s.nc4' % (yearStr, monthStr))
+            if periodStr == 'monthly':
+                input_data_file = os.path.join(server_config['dataDir']['bran'],
+                                               periodStr, 'v',
+                                               'v_%s_%s.nc4' % (yearStr, monthStr))
+            else:
+                input_data_file = os.path.join(server_config['dataDir']['bran'],
+                                               'averages', periodStr, 'v',
+                                               'bran2.1_%smthavg_%s_%s.nc4' % (monthInt, months[0].strftime('%Y%m'), months[-1].strftime('%Y%m')))
             lats2, lons2, zlevels, v = \
                 branPlotterNew.load_BRAN_data(input_data_file, 'v',
                                               lat_min - 1.0, lat_max + 1.0,
