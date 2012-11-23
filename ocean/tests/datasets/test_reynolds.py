@@ -20,9 +20,6 @@ in the Dataset class.
 def test_reynolds(report, variable, period):
     util.clear_cache('REY')
 
-    if variable == 'dec' and period != 'monthly':
-        pytest.xfail("Data not available for this test")
-
     params = {
         'area': 'pac',
         'date': datetime.date(2000, 1, 1),
