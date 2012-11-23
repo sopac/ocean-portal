@@ -58,7 +58,12 @@ def RosePlot(opath, wdir, units, lat, lon, ilat, ilon, xstr, title, var, binwd):
     else:
         wdir = conv.dirshift(wdir)
     #make a basic histogram of wave directions over the range (-22.5,337.5).
-    whist = np.histogram(wdir, wdnbin, (-22.5,337.5), density=False)
+    try:
+        whist = np.histogram(wdir, wdnbin, (-22.5,337.5), density=False)
+    except TypeError:
+        # support older numpy
+        whist = np.histogram(wdir, wdnbin, (-22.5,337.5), normed=False)
+
     #calculate mean bearing
     meanb = meanbearing(wdir)
     #force square figure and square axes looks better for polar
@@ -69,8 +74,13 @@ def RosePlot(opath, wdir, units, lat, lon, ilat, ilon, xstr, title, var, binwd):
     #rotate axis to zero at North and set direction of increasing angle clockwise.
     plt.rgrids((0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9), angle=0)
     plt.ylim(0.0,1.0)
-    ax.set_theta_direction(-1)
-    ax.set_theta_zero_location('N')
+    try:
+        ax.set_theta_direction(-1)
+        ax.set_theta_zero_location('N')
+    except:
+        # hack around older matplotlib
+        pass
+
     #lines, labels = plt.rgrids()
     #set Nmax
     Nmax = 1
@@ -184,7 +194,14 @@ def HistPlot(opath, wheight, units, lat, lon, ilat, ilon, xstr, title, var, binw
     final = round(Nmax+0.001,3)
 
     #histogram of selected variable
-    whist,wbins = np.histogram(wheight,Nmax*binperunit,(initial,final),density=True)
+    try:
+        whist,wbins = np.histogram(wheight, Nmax * binperunit,
+                                   (initial, final), density=True)
+    except TypeError:
+        # support older numpy
+        whist,wbins = np.histogram(wheight, Nmax * binperunit,
+                                   (initial, final), normed=True)
+
     #print wbins
     #calculate max and mins of histogram
     maxy = np.max(whist*binwd)
