@@ -40,12 +40,11 @@ class WaveWatch3Extraction ():
         self.serverCfg = config.get_server_config()
 
 
-    def extract(self, inputLat, inputLon, variableName, k1, k2, delta=_DELTA):
-        files = glob.glob(self.serverCfg["dataDir"]["ww3"] + 'monthly/' +  '*.nc')
+    def extract(self, inputLat, inputLon, variableName, month, delta=_DELTA):
+        files = glob.glob(self.serverCfg['dataDir']['ww3'] + 'monthly/' +
+                          '*%s.nc' % month)
         #sort the files back in time.
-        files = sorted(files, key=lambda filename: filename[-5:-3])
-        filez =  files[k1:k2]
-        filez = sorted(filez, key=lambda filename: filename[-9:-3]) 
+        filez = sorted(files, key=lambda filename: filename[-9:-3])
         #align the input lat/lon to grid lat/lon
         xtractor = extractor.Extractor()
 

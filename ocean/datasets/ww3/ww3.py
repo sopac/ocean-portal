@@ -78,11 +78,10 @@ class ww3(Dataset):
         lllonStr = params['lllon']
         urlatStr = params['urlat']
         urlonStr = params['urlon']
-        dateStr = params['date'].strftime('%Y%m%d')
         periodStr = params['period']
 
-        month = dateStr[4:6]
-        k1, k2, mthStr = mc.monthconfig(month)
+        month = params['date'].strftime('%m')
+        mthStr = params['date'].strftime('%B')
 
         if lllatStr == urlatStr and lllonStr == urlonStr:
             lats, lons, vari = getGrid.getGridPoint(lllatStr, lllonStr, varStr)
@@ -105,7 +104,7 @@ class ww3(Dataset):
         if not os.path.exists(outputFileName + '.txt'):
             timeseries, latsLons, latLonValues, gridValues, \
                 (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr,
-                                                       varStr, k1, k2)
+                                                       varStr, month)
 
             dataVals = copy.copy(gridValues)
             extractor.writeOutput(outputFileName + '.txt',
@@ -125,7 +124,7 @@ class ww3(Dataset):
                 # only reload the data if we have to
                 timeseries, latsLons, latLonValues, gridValues, \
                     (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr,
-                                                           varStr, k1, k2)
+                                                           varStr, month)
             try:
                 wc.wavecaller(outputFileName, varStr,
                               gridLat, gridLon, lllatStr, lllonStr,
