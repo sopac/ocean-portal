@@ -18,7 +18,10 @@ products = {"reynolds": {"daily":     "REY00001",
                          "weekly":    "REY00007",
                          "yearlyAve": "REY00101",
                          "monthlyAve":"REY00102",
-                         "monthlyDec":"REY00201"
+                         "monthlyDec":"REY00201",
+                         "3monthlyDec":"REY00202",
+                         "6monthlyDec":"REY00203",
+                         "12monthlyDec":"REY00204"
                         },
             "ersst": {"monthly":       "ERA00001",
                       "3monthly":      "ERA00002",

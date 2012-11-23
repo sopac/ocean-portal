@@ -43,11 +43,17 @@ class ReynoldsPlotter ():
         date = dateObj.strftime('%Y%m%d')
 
         formattedDate = ''
-        cntLabel = False
         if variable == 'dec':
-            formattedDate = dateObj.strftime('%B %Y')
-            filename = self.serverCfg["dataDir"]["reynolds"] + "decile/1950/" + period + "/" + "reynolds_sst_avhrr-only-v2_" + date[:6]  + "_dec"
-            cntLabel = True
+            if period=='monthly':
+                formattedDate = dateObj.strftime('%B %Y')
+                filename = self.serverCfg["dataDir"]["reynolds"] + "decile/1950/" + period + "/" + "reynolds_sst_avhrr-only-v2_" + date[:6]  + "_dec"
+            else:
+                monthInt = ''.join(i for i in period if i.isdigit())
+                months = dateRange.getMonths(date, monthInt)
+                formattedDate = months[0].strftime('%B %Y') + ' to ' + months[-1].strftime('%B %Y')
+                filename = self.serverCfg["dataDir"]["reynolds"] + "decile/1950/" + period + "/" + \
+                           "reynolds_sst_avhrr-only-v2_" + monthInt + "mthavg_" + \
+                           months[0].strftime('%Y%m') + "_" + months[-1].strftime('%Y%m') + "_dec"
         else:
             if period=='daily':
                 formattedDate = dateObj.strftime('%d %B %Y')
