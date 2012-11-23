@@ -60,6 +60,8 @@ def __main__():
                        extents['urcrnrlat']], # top
         })
 
+    response.sort(key=lambda e: e['name'])
+
     print 'Status: 200 Ok'
     print 'Content-Type: application/json; charset=utf-8'
     print 'ETag: %s' % etag
