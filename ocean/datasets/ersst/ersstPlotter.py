@@ -15,7 +15,6 @@ import numpy as np
 from netCDF4 import Dataset
 
 import ersstConfig as ec
-import smooth as sm
 
 from ocean import util, config
 from ocean.util import dateRange
@@ -186,8 +185,6 @@ class ErsstPlotter ():
         
         lons = np.array(lons,np.float64)
         lats = np.array(lats,np.float64)
-
-        #sst = sm.smooth(sst, 5)
 
         contourLines = True
 

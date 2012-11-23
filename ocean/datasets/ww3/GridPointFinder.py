@@ -31,7 +31,8 @@ class Extractor ():
         """
         Align the input lat/lon to the grid lat/lon. Also returns the index of the grid lat/lon.
         """
-        file = glob.glob(self.serverCfg["dataDir"]["ww3"] + 'monthly/' + 'ww3_outf_197901.nc')
+        file = glob.glob(self.serverCfg["dataDir"]["ww3"] + 'monthly/' +
+                         'ww3_outf_1979??.nc')
         nc = Dataset(file[0], 'r')
         lats  = nc.variables['y'][:] 
         lons = nc.variables['x'][:]
