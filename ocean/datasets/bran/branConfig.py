@@ -104,9 +104,10 @@ class BranConfig ():
                                        "uv"),
                               }
 
-        periods = [ 'monthly' ]
-        vars = [ 'eta', 'salt', 'temp', 'u', 'v' ]
-        self.subDirs = [ os.path.join(p, v) for p in periods for v in vars ]
+        self.subDirs = [
+            'averages',
+            'monthly',
+        ]
 
     def getTitle(self, variableName):
         return self.variableConfig[variableName][0]
