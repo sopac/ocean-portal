@@ -107,6 +107,7 @@ def pan_map(b, offsetx, offsety):
 
 @pytest.mark.bug183
 @pytest.mark.bug195
+@pytest.mark.unstable
 def test_gauge_bug195(b, url):
     b.get(url)
 
@@ -128,6 +129,7 @@ def test_gauge_bug195(b, url):
     assert len(b.find_elements_by_jquery('svg circle')) == 2
 
 @pytest.mark.bug183
+@pytest.mark.unstable
 @pytest.mark.parametrize(('lat', 'lon'), [
     (-18, 177),
     (-16, -178),

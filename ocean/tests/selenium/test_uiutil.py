@@ -13,7 +13,6 @@ import pytest
 
 from uiutil import *
 
-@pytest.mark.tryfirst
 def test_jquery(b, url):
     b.get(url)
 
