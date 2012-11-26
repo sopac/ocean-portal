@@ -390,7 +390,7 @@ function _createOutput(image, dataURL, name, extras, data)
     }).appendTo(div);
 
     var img = $('<img>', {
-        src: image + '?' + $.param({ time: $.now() })
+        src: image
     }).appendTo(a);
 
     div.hide();
