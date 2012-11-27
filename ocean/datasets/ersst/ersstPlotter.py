@@ -13,6 +13,7 @@ import glob
 
 import numpy as np
 from netCDF4 import Dataset
+import bisect
 
 import ersstConfig as ec
 
@@ -171,17 +172,21 @@ class ErsstPlotter ():
         filename = filename + ".nc" 
         filename = glob.glob(filename)[0]
         dataset = Dataset(filename, 'r')
-        
-        if variable == 'dec':
-            sst = dataset.variables[self.config.getVariableType(variable)]
-        else:
-            sst = dataset.variables[self.config.getVariableType(variable)][0][0]
-        
+
         lats = dataset.variables['lat'][:]
         lons = dataset.variables['lon'][:]
         
         lons = np.array(lons,np.float64)
         lats = np.array(lats,np.float64)
+
+        if variable == 'dec':
+            sst = dataset.variables[self.config.getVariableType(variable)][:]
+            # Mask out polar region to avoid problem of calculating deciles over sea ice
+            sst.mask[0:bisect.bisect_left(lats,-60),:] = True
+            sst.mask[bisect.bisect_left(lats,60):-1,:] = True
+            title = 'z'
+        else:
+            sst = dataset.variables[self.config.getVariableType(variable)][0][0]
 
         contourLines = True
 
