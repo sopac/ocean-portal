@@ -187,8 +187,6 @@ class ErsstPlotter ():
         else:
             sst = dataset.variables[self.config.getVariableType(variable)][0][0]
 
-        contourLines = True
-
         resolution='h'
         if not area=='pac':
            resolution='f'
