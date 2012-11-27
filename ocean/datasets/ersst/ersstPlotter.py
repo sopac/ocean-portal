@@ -184,7 +184,6 @@ class ErsstPlotter ():
             # Mask out polar region to avoid problem of calculating deciles over sea ice
             sst.mask[0:bisect.bisect_left(lats,-60),:] = True
             sst.mask[bisect.bisect_left(lats,60):-1,:] = True
-            title = 'z'
         else:
             sst = dataset.variables[self.config.getVariableType(variable)][0][0]
 
