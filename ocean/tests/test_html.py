@@ -5,8 +5,12 @@
 #
 # Authors: Danielle Madeley <d.madeley@bom.gov.au>
 
+import os.path
 import subprocess
+
+import ocean
 
 def test_html_validates():
     # FIXME: find this file on the disk more reliably
-    subprocess.check_call(['xmllint', 'html/compmap.html'])
+    path = os.path.join(ocean.__path__[0], '..', 'html', 'compmap.html')
+    subprocess.check_call(['xmllint', path])
