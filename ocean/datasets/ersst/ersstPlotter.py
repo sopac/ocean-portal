@@ -81,32 +81,29 @@ class ErsstPlotter ():
         elif variable == 'dec':
             centerLabel = True
             baseYear = '1950' #str(args['baseYear'])
-            filename = os.path.join(self.serverCfg['dataDir']['ersst'],
-                                    'decile', baseYear, period,
-                                    'ersst.' + date[:6] + '_dec')
 
             if period=='monthly':
                 title = regionLongName + '\n' \
                       + self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
                       + util.format_old_date(inputDate)
-
-            elif period == '3monthly' or period == '6monthly': 
+                filename = os.path.join(self.serverCfg['dataDir']['ersst'],
+                                        'decile', baseYear, period,
+                                        'ersst.' + date[:6] + '_dec')
+            elif (period == '3monthly') or (period == '6monthly') or (period == '12monthly'):
+                monthInt = ''.join(i for i in period if i.isdigit())
+                months = dateRange.getMonths(date, monthInt)
+                formattedDate = months[0].strftime('%B %Y') + ' to ' + months[-1].strftime('%B %Y')
+                filename = os.path.join(self.serverCfg['dataDir']['ersst'],
+                                        'decile', baseYear, period,
+                                        'ersst_v3b_' + monthInt + 'mthavg_' + \
+                                        months[0].strftime('%Y%m') + "_" + months[-1].strftime('%Y%m') + "_dec")
                 title = regionLongName + '\n' \
                       + self.config.getPeriodPrefix(period)\
                       + self.config.getTitle(variable)\
-                      + util.format_old_date(dateRange.getMonths(date, period[:1])[0]) \
+                      + months[0].strftime('%B %Y') \
                       + " to "\
-                      + util.format_old_date(inputDate)
-
-            elif period == '12monthly':
-                title = regionLongName + '\n' \
-                      + self.config.getPeriodPrefix(period)\
-                      + self.config.getTitle(variable)\
-                      + util.format_old_date(dateRange.getMonths(date, period[:2])[0]) \
-                      + " to "\
-                      + util.format_old_date(inputDate)
-
+                      + months[-1].strftime('%B %Y')
         elif variable == 'trend':
             baseYear = str(args["baseYear"])
             if period=='monthly':
