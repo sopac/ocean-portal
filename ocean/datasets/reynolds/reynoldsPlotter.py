@@ -9,6 +9,7 @@ import datetime
 
 from netCDF4 import Dataset
 import numpy as np
+import bisect
 
 from ocean import util, config
 from ocean.config import regionConfig
@@ -123,8 +124,15 @@ class ReynoldsPlotter ():
         args['formattedDate'] = formattedDate
         filename = filename + ".nc" 
         dataset = Dataset(filename, 'r')
+
+        lats = dataset.variables['lat'][:]
+        lons = dataset.variables['lon'][:]
+
         if variable == 'dec':
-            sst = dataset.variables[self.config.getVariableType(variable)]
+            sst = dataset.variables[self.config.getVariableType(variable)][:]
+            # Mask out polar region to avoid problem of calculating deciles over sea ice
+            sst.mask[0:bisect.bisect_left(lats,-60),:] = True
+            sst.mask[bisect.bisect_left(lats,60):-1,:] = True
         else:
             sst = dataset.variables[self.config.getVariableType(variable)][0][0]
         lats = dataset.variables['lat'][:]
