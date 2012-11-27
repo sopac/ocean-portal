@@ -62,6 +62,7 @@ def test_unique_accesskeys(wcag):
 
     assert util.unique(accesskeys)
 
+@pytest.mark.xfail
 @pytest.mark.wcagF17
 def test_labels_have_for(wcag):
     """
@@ -87,6 +88,7 @@ def test_labels_have_for(wcag):
 
     assert not failed
 
+@pytest.mark.xfail
 @pytest.mark.wcagF68
 def test_controls_have_label_or_title(wcag):
     """
@@ -158,6 +160,7 @@ def test_linked_images_have_alt_text(wcag):
 
     assert not failed
 
+@pytest.mark.xfail
 @pytest.mark.wcagF38
 @pytest.mark.wcagF65
 def test_img_have_alt_attributes(wcag):

@@ -70,10 +70,7 @@ class Report(object):
         else:
             # FIXME: make unique, write into the header
             self._testdir = '/tmp/test-report/'
-            try:
-                os.removedirs(self._testdir)
-            except OSError:
-                pass
+            shutil.rmtree(self._testdir, True)
 
         os.makedirs(self._testdir)
 

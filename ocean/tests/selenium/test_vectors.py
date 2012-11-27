@@ -132,7 +132,7 @@ def test_gauge_bug195(b, url):
 @pytest.mark.unstable
 @pytest.mark.parametrize(('lat', 'lon'), [
     (-18, 177),
-    (-16, -178),
+    (-16, -179),
 ])
 def test_display_markers_big_movements(b, url, lat, lon):
     b.get(url)
@@ -152,18 +152,20 @@ def test_display_markers_big_movements(b, url, lat, lon):
     select_region(b, 'fiji')
     assert len(b.find_elements_by_jquery('svg > polygon')) == 1
 
-    LEFT_PAN = 200
-
-    pan_map(b, -LEFT_PAN, 0)
-    assert len(b.find_elements_by_jquery('svg > polygon')) == 0
+    # asymmetric because it makes the test a little more stable
+    LEFT_PAN = -250
+    RIGHT_PAN = 300
 
     pan_map(b, LEFT_PAN, 0)
+    assert len(b.find_elements_by_jquery('svg > polygon')) == 0
+
+    pan_map(b, RIGHT_PAN, 0)
     assert len(b.find_elements_by_jquery('svg > polygon')) == 1
 
-    pan_map(b, LEFT_PAN, 0)
+    pan_map(b, RIGHT_PAN, 0)
     assert len(b.find_elements_by_jquery('svg > polygon')) == 0
 
-    pan_map(b, -LEFT_PAN, 0)
+    pan_map(b, LEFT_PAN, 0)
     assert len(b.find_elements_by_jquery('svg > polygon')) == 1
 
 @pytest.mark.bug183

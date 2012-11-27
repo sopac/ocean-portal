@@ -100,6 +100,11 @@ def test_changing_regions(b, url, region1, region2):
                          for region2 in PAC_REGIONS
                          if region1 != region2 ])
 def test_changing_regions_small_map(b, url, region1, region2):
+
+    if region1 in ['samoa', 'fiji'] and \
+       region2 in ['samoa', 'fiji']:
+        pytest.xfail("Bug 197")
+
     b.set_window_size(1080, 600)
     b.get(url)
 
