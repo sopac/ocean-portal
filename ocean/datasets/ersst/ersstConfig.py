@@ -62,9 +62,8 @@ class ErsstConfig ():
                              "12monthly": "12 Monthly Average "
                              }
 
-        self.subDirs = ['seasonalclim',
+        self.subDirs = ['averages',
                         'decile',
-                        'trend',
                         'monthly'
                        ]
 

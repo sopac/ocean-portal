@@ -50,13 +50,8 @@ class ReynoldsConfig ():
                              'yearly': "Yearly ",
                             }
 
-        self.subDirs = ['daily',
-                        # 'weekly',
-                        'monthly',
-                        # '3monthly',
-                        # '6monthly',
-                        'yearly',
-                        # 'yearly_trend',
+        self.subDirs = ['daily-new-uncompressed',
+                        'averages',
                         'decile',
                        ]
 

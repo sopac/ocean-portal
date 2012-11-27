@@ -31,7 +31,7 @@
     "id":"ersst",
     "name":"ERSST",
     "title": "Sea Surface Temperature - ERSST",
-    "help": "/cosppac/comp/ocean-portal/about_errst.pdf",
+    "help": "/cosppac/comp/ocean-portal/about_ersst.pdf",
     "variables": [{
         "id":"meansst",
         "bid": "mean",

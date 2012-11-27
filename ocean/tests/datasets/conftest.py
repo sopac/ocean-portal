@@ -16,7 +16,9 @@ from ocean.config import get_server_config
 
 config = get_server_config()
 
-def pytest_generate_tests(metafunc):
+def pytest_generate_tests(__multicall__, metafunc):
+    __multicall__.execute()
+
     if 'variable' in metafunc.fixturenames:
         # run the test for all possible variables
         variables = metafunc.module.Dataset.__variables__
@@ -26,6 +28,20 @@ def pytest_generate_tests(metafunc):
         # run the test for all possible periods
         periods = metafunc.module.Dataset.__periods__
         metafunc.parametrize('period', periods)
+
+@pytest.mark.tryfirst
+def pytest_runtest_makereport(__multicall__, item, call):
+    rep = __multicall__.execute()
+
+    try:
+        report = item.funcargs['report']
+
+        if rep.when == 'call' and rep.failed:
+            report(status='failed')
+    except KeyError:
+        pass
+
+    return rep
 
 class JSONEncoder(json.JSONEncoder):
     """
@@ -54,6 +70,10 @@ class Report(object):
         else:
             # FIXME: make unique, write into the header
             self._testdir = '/tmp/test-report/'
+            try:
+                os.removedirs(self._testdir)
+            except OSError:
+                pass
 
         os.makedirs(self._testdir)
 
@@ -96,17 +116,3 @@ def report(request, reportcls):
 
     return lambda *args, **kwargs: reportcls.report(request.node.nodeid,
                                                     *args, **kwargs)
-
-@pytest.mark.tryfirst
-def pytest_runtest_makereport(item, call, __multicall__):
-    rep = __multicall__.execute()
-
-    try:
-        report = item.funcargs['report']
-
-        if rep.when == 'call' and rep.failed:
-            report(status='failed')
-    except KeyError:
-        pass
-
-    return rep

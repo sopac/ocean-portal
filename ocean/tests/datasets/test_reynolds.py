@@ -18,10 +18,11 @@ in the Dataset class.
 """
 
 def test_reynolds(report, variable, period):
-    util.clear_cache('REY')
 
-    if variable == 'dec' and period != 'monthly':
-        pytest.xfail("Data not available for this test")
+    if variable == 'dec' and period == 'daily':
+        pytest.xfail("No data available for this var/period")
+
+    util.clear_cache('REY')
 
     params = {
         'area': 'pac',
