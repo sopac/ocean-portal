@@ -673,9 +673,11 @@ function filterOpts(comboid, keys) {
 
         if (opt.val() in keys) {
             opt.parent('optgroup').show();
-            opt.show();
+            opt.show()
+               .attr('disabled', false);
         } else {
-            opt.hide();
+            opt.hide()
+               .attr('disabled', true);
         }
     });
 }
