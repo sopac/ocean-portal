@@ -18,6 +18,7 @@ a img {
 
 .panel {
   position: absolute;
+  background-color: white;
 }
 
 .border {

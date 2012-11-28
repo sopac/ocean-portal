@@ -24,8 +24,8 @@
 
 #mapControlsToolbar {
   position: absolute;
-  bottom: 6px;
-  right: 6px;
+  top: 24px;
+  right: 6px !important;
 }
 
 .dataLbl, .dataLayersDiv, .baseLbl {
