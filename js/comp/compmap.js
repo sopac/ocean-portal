@@ -335,7 +335,7 @@ function prependOutputSet()
                 div.find(':checked').remove();
                 /* select a new layer in case it isn't disabled */
                 $('.outputgroup input[type=radio]:first')
-                    .attr('checked', 'checked')
+                    .attr('checked', true)
                     .change();
                 selectMapLayer("Bathymetry");
             }
@@ -370,8 +370,12 @@ function _createOutput(image, dataURL, name, extras, data)
     }
 
     if (data) {
+        /* Workaround in IE8 to deselect other radios */
+        $('.outputLayerRadio').attr('checked', false);
+
         $('<input>', {
             type: 'radio',
+            'class': 'outputLayerRadio',
             name: 'outputLayer',
             title: "Set as map layer",
             checked: true
