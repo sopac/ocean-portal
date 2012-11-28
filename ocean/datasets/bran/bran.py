@@ -367,7 +367,8 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
                                contourLines=contourLines,
                                product_label_str='Bluelink Reanalysis 2.1',
                                vlat=lats2, vlon=lons2, u=u, v=v,
-                               draw_every=draw_every, arrow_scale=arrow_scale)
+                               draw_every=draw_every, arrow_scale=arrow_scale,
+                               area=regionStr)
 
     plot.wait()
 

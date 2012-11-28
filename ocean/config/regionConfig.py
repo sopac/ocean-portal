@@ -45,7 +45,7 @@ regions = {
             'urcrnrlon': 173
            },
            "Marshall Islands",
-           {}),
+           {'resolution': 'f'}),
     'nauru': ('pac',
            {'llcrnrlat': -1,
             'llcrnrlon': 166,

@@ -210,7 +210,8 @@ class ErsstPlotter ():
                                product_label_str='Extended Reconstructed SST',
                                cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt,
                                cb_labels=cb_labels, cb_label_pos=cb_label_pos,
-                               cmp_name=cmap_name, extend=extend, contourLines=contourLines)
+                               cmp_name=cmap_name, extend=extend,
+                               contourLines=contourLines, area=area)
 
         plot.plot_basemaps_and_colorbar(lats, lons, sst,
                                         output_filename=output_filename,

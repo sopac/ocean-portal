@@ -174,7 +174,9 @@ class ReynoldsPlotter ():
                                cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt,
                                cb_labels=cb_labels, cb_label_pos=cb_label_pos,
                                cmp_name=cmap_name, extend=extend,
-                               contourLines=contourLines, product_label_str='Reynolds SST')
+                               contourLines=contourLines,
+                               product_label_str='Reynolds SST',
+                               area=area)
 
         plot.plot_basemaps_and_colorbar(lats, lons, sst,
                                         output_filename=output_filename,

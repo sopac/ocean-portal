@@ -34,7 +34,7 @@ except ImportError:
 from ocean import util
 from ocean.util.pngcrush import pngcrush
 from ocean.config import get_server_config
-from ocean.config import regionConfig as rc
+from ocean.config.regionConfig import regions
 
 COMMON_FILES = {
     'img': '.png',
@@ -65,7 +65,6 @@ class Plotter:
     def __init__(self):
         """The simple constructor of Plotter"""
         self.serverConfig = get_server_config()
-        self.regionConfig = rc.regions
         self._processes = []
 
     def wait(self):
@@ -104,14 +103,22 @@ class Plotter:
                                plotStyle='contourf', contourLines=True,
                                proj=self._DEFAULT_PROJ, product_label_str=None,
                                vlat=None, vlon=None, u=None, v=None,
-                               draw_every=1, arrow_scale=10):
+                               draw_every=1, arrow_scale=10,
+                               resolution=None, area=None):
+
+            if resolution is None and area is not None:
+                # try and get a resolution from the area default
+                resolution = regions[area][3].get('resolution', None)
+
+            if resolution is None:
+                # still no resolution? try and guess
+                resolution = guess_resolution(lat_min, lat_max,
+                                              lon_min, lon_max)
 
             m = Basemap(projection=proj,
                         llcrnrlat=lat_min, llcrnrlon=lon_min,
                         urcrnrlat=lat_max, urcrnrlon=lon_max,
-                        # FIXME: should resolution be part of the regionConfig?
-                        resolution=guess_resolution(lat_min, lat_max,
-                                                    lon_min, lon_max))
+                        resolution=resolution)
 
             # Create colormap
             if cm_edge_values is None:

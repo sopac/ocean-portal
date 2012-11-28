@@ -75,17 +75,7 @@ class SeaLevelPlotter ():
         date = args['date']
         args['formattedDate'] = date.strftime('%B %Y')
 
-        resolution='h'
-        if not area=='pac':
-           resolution='f'
-
         plot = plotter.Plotter()
-        #plot.plot(height, lats, lons, variable, self.config, outputFilename,\
-        #          regionConfig.regions[area][1]["llcrnrlat"],\
-        #          regionConfig.regions[area][1]["llcrnrlon"],\
-        #          regionConfig.regions[area][1]["urcrnrlat"],\
-        #          regionConfig.regions[area][1]["urcrnrlon"],\
-        #          res=resolution, centerLabel=cntLabel, **args)
         output_filename = self.serverCfg["outputDir"] + outputFilename + '.png'
         regionLongName = regionConfig.regions[area][2]
         title = regionLongName + '\n' + self.config.getTitle(variable) + args['formattedDate']
@@ -98,7 +88,7 @@ class SeaLevelPlotter ():
                                regionConfig.regions[area][1]["urcrnrlon"],
                                output_filename, title=title, units=units,
                                cmp_name=cmap_name, cm_edge_values=np.arange(-300,300.01,60.0),
-                               cb_tick_fmt="%.0f")
+                               cb_tick_fmt="%.0f", area=area)
         plot.plot_basemaps_and_colorbar(lats, lons, height,
                                         output_filename=output_filename,
                                         units=units, cm_edge_values=np.arange(-300,300.01,60.0),
