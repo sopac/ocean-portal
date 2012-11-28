@@ -37,7 +37,7 @@ regions = {
             'urcrnrlon': 210
            },
            "Kiribati",
-           {}),
+           {'resolution': 'h'}),
     'marshall': ('pac',
            {'llcrnrlat': 4,
             'llcrnrlon': 160,
