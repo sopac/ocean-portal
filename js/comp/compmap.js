@@ -75,7 +75,7 @@ $(document).ready(function() {
 
                 e.height(e.parent().innerHeight() - e.position().top);
             });
-        }).resize();
+        }).resize().resize(); /* IE8 can't work out the height first time! */
 
         /* position centre layout */
         $('.layout-center')
