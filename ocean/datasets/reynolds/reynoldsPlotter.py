@@ -15,6 +15,7 @@ from ocean import util, config
 from ocean.config import regionConfig
 from ocean.util import dateRange
 from ocean.netcdf import plotter
+from ocean.datasets.bran import branPlotterNew
 
 import reynoldsConfig as rc
 import reynoldsSpatialMean as spatialMean
@@ -128,15 +129,15 @@ class ReynoldsPlotter ():
         lats = dataset.variables['lat'][:]
         lons = dataset.variables['lon'][:]
 
-        if variable == 'dec':
-            sst = dataset.variables[self.config.getVariableType(variable)][:]
-            # Mask out polar region to avoid problem of calculating deciles over sea ice
-            sst.mask[0:bisect.bisect_left(lats,-60),:] = True
-            sst.mask[bisect.bisect_left(lats,60):-1,:] = True
-        else:
-            sst = dataset.variables[self.config.getVariableType(variable)][0][0]
-        lats = dataset.variables['lat'][:]
-        lons = dataset.variables['lon'][:]
+        #if variable == 'dec':
+        #    sst = dataset.variables[self.config.getVariableType(variable)][:]
+        #    # Mask out polar region to avoid problem of calculating deciles over sea ice
+        #    sst.mask[0:bisect.bisect_left(lats,-60),:] = True
+        #    sst.mask[bisect.bisect_left(lats,60):-1,:] = True
+        #else:
+        #    sst = dataset.variables[self.config.getVariableType(variable)][0][0]
+        #lats = dataset.variables['lat'][:]
+        #lons = dataset.variables['lon'][:]
 
         resolution='h'
         if not area=='pac':
@@ -164,11 +165,18 @@ class ReynoldsPlotter ():
         else:
             contourLines = True
 
+        lat_min = regionConfig.regions[area][1]['llcrnrlat']
+        lat_max = regionConfig.regions[area][1]['urcrnrlat']
+        lon_min = regionConfig.regions[area][1]['llcrnrlon']
+        lon_max = regionConfig.regions[area][1]['urcrnrlon']
+
+        lats, lons, skip, sst = \
+            branPlotterNew.load_BRAN_data(filename, self.config.getVariableType(variable),
+                                          lat_min - 1.0, lat_max + 1.0,
+                                          lon_min - 1.0, lon_max + 1.0)
+
         plot.plot_surface_data(lats, lons, sst,
-                               regionConfig.regions[area][1]["llcrnrlat"],
-                               regionConfig.regions[area][1]["urcrnrlat"],
-                               regionConfig.regions[area][1]["llcrnrlon"],
-                               regionConfig.regions[area][1]["urcrnrlon"],
+                               lat_min, lat_max, lon_min, lon_max,
                                output_filename=output_filename,
                                title=title, units=units,
                                cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt,
@@ -177,6 +185,14 @@ class ReynoldsPlotter ():
                                contourLines=contourLines,
                                product_label_str='Reynolds SST',
                                area=area)
+
+        lats, lons, skip, sst = \
+            branPlotterNew.load_BRAN_data(filename, self.config.getVariableType(variable), -999.0, 999.0, -999.0, 999.0)
+
+        if variable == 'dec':
+            # Mask out polar region to avoid problem of calculating deciles over sea ice
+            sst.mask[0:bisect.bisect_left(lats,-60),:] = True
+            sst.mask[bisect.bisect_left(lats,60):-1,:] = True
 
         plot.plot_basemaps_and_colorbar(lats, lons, sst,
                                         output_filename=output_filename,

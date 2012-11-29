@@ -221,8 +221,6 @@ class ErsstPlotter ():
                                cmp_name=cmap_name, extend=extend,
                                contourLines=contourLines, area=area)
 
-
-
         lats, lons, skip, sst = \
             branPlotterNew.load_BRAN_data(filename, self.config.getVariableType(variable), -999.0, 999.0, -999.0, 999.0)
 
