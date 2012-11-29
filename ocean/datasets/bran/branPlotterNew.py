@@ -40,6 +40,9 @@ def load_BRAN_data(input_data_file, var_name, lat_min, lat_max, lon_min, lon_max
     elif ('xu_ocean' in dimensions) and ('yu_ocean' in dimensions):
         lons = nc.variables['xu_ocean'][:]
         lats = nc.variables['yu_ocean'][:]
+    elif ('lat' in dimensions) and ('lon' in dimensions):
+        lats = nc.variables['lat'][:]
+        lons = nc.variables['lon'][:]
     if 'zt_ocean' in dimensions:
         depth = nc.variables['zt_ocean'][:]
     else:

@@ -21,6 +21,7 @@ from ocean import util, config
 from ocean.util import dateRange
 from ocean.config import regionConfig
 from ocean.netcdf import plotter
+from ocean.datasets.bran import branPlotterNew
 
 class ErsstPlotter ():
     """ 
@@ -179,13 +180,13 @@ class ErsstPlotter ():
         lons = np.array(lons,np.float64)
         lats = np.array(lats,np.float64)
 
-        if variable == 'dec':
-            sst = dataset.variables[self.config.getVariableType(variable)][:]
-            # Mask out polar region to avoid problem of calculating deciles over sea ice
-            sst.mask[0:bisect.bisect_left(lats,-60),:] = True
-            sst.mask[bisect.bisect_left(lats,60):-1,:] = True
-        else:
-            sst = dataset.variables[self.config.getVariableType(variable)][0][0]
+        #if variable == 'dec':
+        #    sst = dataset.variables[self.config.getVariableType(variable)][:]
+        #    # Mask out polar region to avoid problem of calculating deciles over sea ice
+        #    sst.mask[0:bisect.bisect_left(lats,-60),:] = True
+        #    sst.mask[bisect.bisect_left(lats,60):-1,:] = True
+        #else:
+        #    sst = dataset.variables[self.config.getVariableType(variable)][0][0]
 
         resolution='h'
         if not area=='pac':
@@ -201,17 +202,34 @@ class ErsstPlotter ():
         else:
             contourLines = True
 
+        lat_min = regionConfig.regions[area][1]['llcrnrlat']
+        lat_max = regionConfig.regions[area][1]['urcrnrlat']
+        lon_min = regionConfig.regions[area][1]['llcrnrlon']
+        lon_max = regionConfig.regions[area][1]['urcrnrlon']
+
+        lats, lons, skip, sst = \
+            branPlotterNew.load_BRAN_data(filename, self.config.getVariableType(variable),
+                                          lat_min - 1.0, lat_max + 1.0,
+                                          lon_min - 1.0, lon_max + 1.0)
+
         plot.plot_surface_data(lats, lons, sst,
-                               regionConfig.regions[area][1]["llcrnrlat"],
-                               regionConfig.regions[area][1]["urcrnrlat"],
-                               regionConfig.regions[area][1]["llcrnrlon"],
-                               regionConfig.regions[area][1]["urcrnrlon"],
+                               lat_min, lat_max, lon_min, lon_max,
                                output_filename, title=title, units=units,
                                product_label_str='Extended Reconstructed SST',
                                cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt,
                                cb_labels=cb_labels, cb_label_pos=cb_label_pos,
                                cmp_name=cmap_name, extend=extend,
                                contourLines=contourLines, area=area)
+
+
+
+        lats, lons, skip, sst = \
+            branPlotterNew.load_BRAN_data(filename, self.config.getVariableType(variable), -999.0, 999.0, -999.0, 999.0)
+
+        if variable == 'dec':
+            # Mask out polar region to avoid problem of calculating deciles over sea ice
+            sst.mask[0:bisect.bisect_left(lats,-60),:] = True
+            sst.mask[bisect.bisect_left(lats,60):-1,:] = True
 
         plot.plot_basemaps_and_colorbar(lats, lons, sst,
                                         output_filename=output_filename,
