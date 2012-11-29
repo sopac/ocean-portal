@@ -59,8 +59,10 @@ def load_BRAN_data(input_data_file, var_name, lat_min, lat_max, lon_min, lon_max
     # Load data
     if len(dimensions) == 4:
         data = nc.variables[var_name][0, zlevel_idx1:zlevel_idx2, lat_idx1:lat_idx2, lon_idx1:lon_idx2]
-    else:
+    elif len(dimensions) == 3:
         data = nc.variables[var_name][0, lat_idx1:lat_idx2, lon_idx1:lon_idx2]
+    else:
+        data = nc.variables[var_name][lat_idx1:lat_idx2, lon_idx1:lon_idx2]
     
     # Close file
     nc.close()
