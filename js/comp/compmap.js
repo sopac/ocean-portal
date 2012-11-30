@@ -93,7 +93,8 @@ $(document).ready(function() {
         var bounds = selected.data('bounds');
 
         map.setCenter(bounds.getCenterLonLat(),
-                      map.getZoomForExtent(bounds));
+                      map.getZoomForExtent(bounds),
+                      false, true);
 
         ocean.area = selected.val();
     });
