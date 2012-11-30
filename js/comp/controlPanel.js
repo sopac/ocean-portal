@@ -944,10 +944,7 @@ function updatePage() {
             },
             complete: function(jqXHR, textStatus) {
                 ocean.processing = false;
-
-                if (!ocean.mapLoading) {
-                    $('#loading-dialog').dialog('close');
-                }
+                maybe_close_loading_dialog();
             }
         });
     }
