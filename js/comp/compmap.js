@@ -394,8 +394,15 @@ function _createOutput(image, dataURL, name, extras, data)
         target: '_blank'
     }).appendTo(div);
 
+    var params = '';
+
+    /* this hack required to ensure IE8 always loads the image */
+    if ($.browser.msie && $.browser.version == '8.0') {
+        params = '?' + $.param({ time: $.now() });
+    }
+
     var img = $('<img>', {
-        src: image
+        src: image + params
     }).appendTo(a);
 
     div.hide();
