@@ -1,4 +1,4 @@
-Ocean Map Portal 0.2.91
+Ocean Map Portal 0.2.92
 =======================
 
 "Behold me fettered, clamped to these rough rocks, even as a ship is moored
@@ -7,13 +7,13 @@ Ocean Map Portal 0.2.91
 
 New Features:
 
- - Reorient to be variable driven (Danni)
+ - Reorient to be variable driven, totally new control panel (Danni)
  - Unit and acceptance tests (Danni)
  - Select any past map layer from Outputs (Danni)
  - No more ExtJS [faster loading] (Danni)
  - Parallelise plotting (Danni)
  - New periods: Reynolds/ERSST/BRAN 3/6/12 month (mean) (Nick)
- - New variables: anom/dec for Reynolds/ERSST
+ - New variables: anom/dec for Reynolds/ERSST multi-month
  - New generic processing script (Nick)
 
 Bugs Fixed:
@@ -25,6 +25,13 @@ Bugs Fixed:
  - Drive regions listing from backend (Danni)
  - WCAG fixes (Danni)
  - Separate out control panel from other frontend components (Danni)
+ - Subset Reynolds/ERSST datasets (Nick)
+ - Ensure contour labels are shown for Reynolds/ERSST (Nick)
+ - Autoguess plot resolution (with optional per-region override) (Danni)
+ - IE8 fixes (Danni)
+ - Plot fixes (Nick)
+ - Fix typo to ERSST About file (Danni)
+ - Compatibility fixes for standard RHEL6 libraries (Danni)
 
 Ocean Map Portal 0.2.0
 ======================

@@ -98,9 +98,15 @@ class _BaseMapPortalDriver(object):
 
 def output(src):
     def __call__(browser):
+        # check no error dialog
         dialog = browser.find_element_by_id('error-dialog')
         if dialog.is_displayed():
             raise FrontendError()
+
+        # check no loading dialog
+        dialog = browser.find_element_by_id('loading-dialog')
+        if dialog.is_displayed():
+            return False
 
         outputDiv = browser.find_element_by_id('outputDiv')
         output = outputDiv.find_element_by_tag_name('img')

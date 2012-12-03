@@ -23,6 +23,19 @@ function fatal_error(msg)
     $('#error-dialog').dialog('open');
 }
 
+/**
+ * maybe_close_loading_dialog:
+ *
+ * Checks if all things have loaded and we can close the loading dialog.
+ */
+function maybe_close_loading_dialog()
+{
+    if (ocean.mapLoading || ocean.outputsLoading > 0)
+        return;
+
+    $('#loading-dialog').dialog('close');
+}
+
 window.onerror = function (msg, url, line) {
     fatal_error("Javascript error: " + msg + " &mdash; please " +
                 '<a href="javascript:location.reload()">' +
@@ -75,7 +88,7 @@ $(document).ready(function() {
 
                 e.height(e.parent().innerHeight() - e.position().top);
             });
-        }).resize();
+        }).resize().resize(); /* IE8 can't work out the height first time! */
 
         /* position centre layout */
         $('.layout-center')
@@ -93,7 +106,8 @@ $(document).ready(function() {
         var bounds = selected.data('bounds');
 
         map.setCenter(bounds.getCenterLonLat(),
-                      map.getZoomForExtent(bounds));
+                      map.getZoomForExtent(bounds),
+                      false, true);
 
         ocean.area = selected.val();
     });
@@ -153,7 +167,7 @@ $(document).ready(function() {
         setValue('region', ocean.config);
     })
     .fail(function () {
-        $('#loading-dialog').dialog('close');
+        maybe_close_loading_dialog();
         fatal_error("Failed to load portal.");
     });
 });
@@ -214,9 +228,7 @@ function createMap () {
             transitionEffect: 'resize',
             wrapDateLine: true,
             eventListeners: {
-                loadend: function () {
-                    $('#loading-dialog').dialog('close');
-                }
+                loadend: maybe_close_loading_dialog
             }
         });
 
@@ -233,7 +245,7 @@ function createMap () {
             },
             loadend: function () {
                 ocean.mapLoading = false;
-                $('#loading-dialog').dialog('close');
+                maybe_close_loading_dialog();
             }
         }
     });
@@ -357,6 +369,7 @@ function prependOutputSet()
     $('#outputDiv').animate({ scrollTop: 0 }, 75);
 }
 
+ocean.outputsLoading = 0;
 function _createOutput(image, dataURL, name, extras, data)
 {
     var div = $('<div>', {
@@ -393,14 +406,29 @@ function _createOutput(image, dataURL, name, extras, data)
         target: '_blank'
     }).appendTo(div);
 
+    var params = '';
+
+    /* this hack required to ensure IE8 always loads the image */
+    if ($.browser.msie && $.browser.version == '8.0') {
+        params = '?' + $.param({ time: $.now() });
+    }
+
     var img = $('<img>', {
-        src: image
+        src: image + params
     }).appendTo(a);
 
     div.hide();
-    img.load(function () {
-        div.slideDown();
-    });
+    ocean.outputsLoading += 1;
+
+    function outputLoaded () {
+        div.slideDown(400, function () {
+            ocean.outputsLoading -= 1;
+            maybe_close_loading_dialog();
+        });
+    }
+
+    img.load(outputLoaded)
+       .error(outputLoaded);
 
     img.hover(
         function (e) {
