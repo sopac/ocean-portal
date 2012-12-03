@@ -101,6 +101,7 @@ class Plotter:
                                cb_labels=None, cb_label_pos=None,
                                cmp_name='jet', extend='both',
                                plotStyle='contourf', contourLines=True,
+                               contourLabels=True,
                                proj=self._DEFAULT_PROJ, product_label_str=None,
                                vlat=None, vlon=None, u=None, v=None,
                                draw_every=1, arrow_scale=10,
@@ -146,7 +147,8 @@ class Plotter:
                     x, y = m(*np.meshgrid(lons, lats))
                 cnt = plt.contour(x, y, data, levels=cm_edge_values,
                                  colors = 'k', linewidths = 0.4, hold='on')
-                plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8)
+                if contourLabels:
+                    plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8)
 
             img.set_clim(cm_edge_values.min(), cm_edge_values.max())
 

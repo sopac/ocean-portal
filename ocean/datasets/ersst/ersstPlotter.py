@@ -198,9 +198,9 @@ class ErsstPlotter ():
         cmap_name = self.config.getColorMap(variable)
 
         if variable == 'dec':
-            contourLines = False
+            contourLabels = False
         else:
-            contourLines = True
+            contourLabels = True
 
         lat_min = regionConfig.regions[area][1]['llcrnrlat']
         lat_max = regionConfig.regions[area][1]['urcrnrlat']
@@ -219,7 +219,7 @@ class ErsstPlotter ():
                                cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt,
                                cb_labels=cb_labels, cb_label_pos=cb_label_pos,
                                cmp_name=cmap_name, extend=extend,
-                               contourLines=contourLines, area=area)
+                               contourLabels=contourLabels, area=area)
 
         lats, lons, skip, sst = \
             branPlotterNew.load_BRAN_data(filename, self.config.getVariableType(variable), -999.0, 999.0, -999.0, 999.0)

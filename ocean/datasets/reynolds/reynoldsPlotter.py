@@ -161,9 +161,9 @@ class ReynoldsPlotter ():
         #plot.plotScale(sst, variable, self.config, outputFilename)
 
         if variable == 'dec':
-            contourLines = False
+            contourLabels = False
         else:
-            contourLines = True
+            contourLabels = True
 
         lat_min = regionConfig.regions[area][1]['llcrnrlat']
         lat_max = regionConfig.regions[area][1]['urcrnrlat']
@@ -182,7 +182,7 @@ class ReynoldsPlotter ():
                                cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt,
                                cb_labels=cb_labels, cb_label_pos=cb_label_pos,
                                cmp_name=cmap_name, extend=extend,
-                               contourLines=contourLines,
+                               contourLabels=contourLabels,
                                product_label_str='Reynolds SST',
                                area=area)
 
