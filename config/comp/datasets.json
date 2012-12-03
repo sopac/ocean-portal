@@ -24,7 +24,7 @@
         "plottypes": ["map"]
     }],
     "dateRange" : {
-        "minDate": "19820101",
+        "minDate": "19810901",
         "maxDate": "20121031"
     }
 },{
