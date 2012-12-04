@@ -32,6 +32,11 @@ Bugs Fixed:
  - Plot fixes (Nick)
  - Fix typo to ERSST About file (Danni)
  - Compatibility fixes for standard RHEL6 libraries (Danni)
+ - Gracefully fail for requests outside data range (Danni)
+ - Add contour lines to decile plots (Nick)
+ - Update Reynolds start date (Nick)
+ - Fix bug where map wouldn't change position with some screen sizes (Danni)
+ - Fix bug where double-clicking caused map to jump (Danni)
 
 Ocean Map Portal 0.2.0
 ======================
