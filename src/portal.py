@@ -15,8 +15,9 @@ import matplotlib
 matplotlib.use('agg')
 
 from ocean import util
+from ocean.core import ReportableException
 from ocean.config import get_server_config
-from ocean.datasets import Dataset, MissingParameter, ValidationError
+from ocean.datasets import Dataset
 
 config = get_server_config()
 
@@ -42,7 +43,7 @@ def main():
         ds = module.Dataset()
 
         response.update(ds.process(params))
-    except (MissingParameter, ValidationError) as e:
+    except ReportableException as e:
         response['error'] = e.message
     except ImportError:
         if config['debug']:

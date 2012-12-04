@@ -9,11 +9,12 @@ import cgi
 import datetime
 
 from ocean.config import regionConfig
+from ocean.core import ReportableException
 
-class MissingParameter(Exception):
+class MissingParameter(ReportableException):
     pass
 
-class ValidationError(Exception):
+class ValidationError(ReportableException):
     pass
 
 class Dataset(object):
