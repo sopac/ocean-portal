@@ -13,7 +13,15 @@ import math
 import numpy as np
 import numpy.ma as ma
 
-class Extractor ():
+from ocean.core import ReportableException
+
+class OutOfDataRange(ReportableException):
+    def __init__(self, point, lats, lons):
+        ReportableException.__init__(self,
+            "%s is outside the available range (%g, %g)-(%g, %g)" % (
+                point, lats[0], lats[-1], lons[0], lons[-1]))
+
+class Extractor():
     """
     Extract point/rectangular area data.
     """
@@ -23,7 +31,7 @@ class Extractor ():
     _EXHAUSTIVE_STRATEGY = 'exhaustive'
 
     _AVERAGE_STRATEGY = 'average'
- 
+
     _RADIUS = 2
 
     def __init__(self):
@@ -46,6 +54,10 @@ class Extractor ():
         if lons[-1] > 180:
             if inputLon < 0:
                 dataLon = inputLon + 360
+
+        if not lats[0] < inputLat < lats[-1] or \
+           not lons[0] < inputLon < lons[-1]:
+            raise OutOfDataRange((inputLat, inputLon), lats, lons)
 
         nearestPoints = []
         lonInsertIndex = bisect.bisect_left(lons, dataLon)
