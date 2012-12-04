@@ -7,6 +7,8 @@
 
 import datetime
 
+import pytest
+
 from ocean.datasets.ww3 import Dataset
 from ocean.tests import util
 
@@ -37,3 +39,22 @@ def test_plot(report, variable, period):
     assert 'img' in r
 
     report(params, r['img'])
+
+def test_land_error():
+
+    params = {
+        'date': datetime.date(2000, 1, 1),
+        'period': 'monthly',
+        'variable': 'Dm',
+        'lllat': -23.,
+        'lllon': 146.,
+        'urlat': -23.,
+        'urlon': 146.,
+    }
+
+    ds = Dataset()
+
+    from ocean.datasets.ww3.landerror import LandError
+
+    with pytest.raises(LandError):
+        ds.process(params)
