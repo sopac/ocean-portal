@@ -23,10 +23,10 @@ from ocean.netcdf.plotter import getCopyright
 from ocean.util.pngcrush import pngcrush
 
 from radbearing import meanbearing
-import angleconv as conv
 from formatter import NESWformat
+from landerror import LandError
+import angleconv as conv
 import histcolor as hc
-import landerror as le
 
 def RosePlot(opath, wdir, units, lat, lon, ilat, ilon, xstr, title, var, binwd):
 
@@ -50,7 +50,7 @@ def RosePlot(opath, wdir, units, lat, lon, ilat, ilon, xstr, title, var, binwd):
     N,wdnbin,wdmax = 8,8,2*np.pi
     degree = ur'\u00b0'
     if wdir[0] == -999.0:
-       raise le.LandError("Error")
+       raise LandError("Invalid data point. Please try another location.")
     #flip directions as WWIII direction are given in meteorological convention.
     if var == "Dm":
         wdir = conv.dirflip(wdir)
@@ -179,7 +179,7 @@ def HistPlot(opath, wheight, units, lat, lon, ilat, ilon, xstr, title, var, binw
     #binthresh = maxwave - minwave
     #Error message if selected coordinates are out of range or on land
     if maxwave == -999.0:
-       raise le.LandError("Error")
+       raise LandError("Invalid data point. Please try another location.")
     #alter bin width depending on range of data
     #if binthresh < 10:
      #  binwd = 0.1

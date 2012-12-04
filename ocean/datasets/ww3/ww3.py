@@ -20,9 +20,8 @@ from ocean.datasets import Dataset
 import wavecaller as wc
 import formatter as frm
 import monthconfig as mc
-import landerror as le
-import ww3ExtA
 import GridPointFinder as GPF
+import ww3ExtA
 
 #Maybe move these into configuration later
 pointExt = '%s_%s_%s_%s_%s'
@@ -125,12 +124,9 @@ class ww3(Dataset):
                 timeseries, latsLons, latLonValues, gridValues, \
                     (gridLat, gridLon) = extractor.extract(lllatStr, lllonStr,
                                                            varStr, month)
-            try:
-                wc.wavecaller(outputFileName, varStr,
-                              gridLat, gridLon, lllatStr, lllonStr,
-                              gridValues, mthStr)
-            except le.LandError:
-                response['error'] = "Invalid data point. Please try another location."
+            wc.wavecaller(outputFileName, varStr,
+                          gridLat, gridLon, lllatStr, lllonStr,
+                          gridValues, mthStr)
 
         if os.path.exists(outputFileName + '.png'):
             response['img'] = os.path.join(serverCfg['baseURL'],
