@@ -18,8 +18,8 @@ from ocean.core import ReportableException
 class OutOfDataRange(ReportableException):
     def __init__(self, point, lats, lons):
         ReportableException.__init__(self,
-            "%s is outside the available range (%g, %g)-(%g, %g)" % (
-                point, lats[0], lats[-1], lons[0], lons[-1]))
+            "The selected location (%.3f,%.3f) is outside the available range (%g, %g)-(%g, %g)" % (
+                point[0], point[1], lats[0], lats[-1], lons[0], lons[-1]))
 
 class Extractor():
     """
