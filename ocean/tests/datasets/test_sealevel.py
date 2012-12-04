@@ -160,3 +160,20 @@ def test_rec_ts(report):
     assert 'rec' in r['recimg']
 
     report(params, r['recimg'])
+
+@pytest.mark.bug219
+def test_alt_ts_bad():
+    params = {
+        'variable': 'rec',
+        'plot': 'ts',
+        'period': 'monthly',
+        'lat': 24.,
+        'lon': -140.,
+    }
+
+    ds = Dataset()
+
+    from ocean.netcdf.extractor import OutOfDataRange
+
+    with pytest.raises(OutOfDataRange):
+        ds.process(params)
