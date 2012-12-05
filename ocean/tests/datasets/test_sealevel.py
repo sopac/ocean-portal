@@ -177,3 +177,18 @@ def test_alt_ts_bad():
 
     with pytest.raises(OutOfDataRange):
         ds.process(params)
+
+@pytest.mark.bug224
+def test_alt_range_wrapping():
+    params = {
+        'variable': 'alt',
+        'plot': 'ts',
+        'period': 'monthly',
+        'lat': -12.270,
+        'lon': -163.475
+    }
+
+    ds = Dataset()
+    r = ds.process(params)
+
+    assert 'error' not in r
