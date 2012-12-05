@@ -23,7 +23,7 @@ class OutOfDataRange(ReportableException):
 
 class LandError(ReportableException):
     def __init__(self,
-                 msg="Selected point is on land. Please choose another point"):
+                 msg="Selected point is on land. Please choose another point."):
         ReportableException.__init__(self, msg)
 
 class Extractor():

@@ -192,3 +192,21 @@ def test_alt_range_wrapping():
     r = ds.process(params)
 
     assert 'error' not in r
+
+@pytest.mark.bug222
+def test_land_error():
+
+    params = {
+        'variable': 'alt',
+        'plot': 'ts',
+        'period': 'monthly',
+        'lat': -23.,
+        'lon': 146.,
+    }
+
+    ds = Dataset()
+
+    from ocean.netcdf.extractor import LandError
+
+    with pytest.raises(LandError):
+        ds.process(params)
