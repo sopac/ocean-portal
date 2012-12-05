@@ -21,6 +21,11 @@ class OutOfDataRange(ReportableException):
             "The selected location (%.3f,%.3f) is outside the available range (%g, %g)-(%g, %g)" % (
                 point[0], point[1], lats[0], lats[-1], lons[0], lons[-1]))
 
+class LandError(ReportableException):
+    def __init__(self,
+                 msg="Selected point is on land. Please choose another point"):
+        ReportableException.__init__(self, msg)
+
 class Extractor():
     """
     Extract point/rectangular area data.
