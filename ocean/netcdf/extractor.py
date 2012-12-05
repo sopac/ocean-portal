@@ -56,7 +56,7 @@ class Extractor():
                 dataLon = inputLon + 360
 
         if not lats[0] < inputLat < lats[-1] or \
-           not lons[0] < inputLon < lons[-1]:
+           not lons[0] < dataLon < lons[-1]:
             raise OutOfDataRange((inputLat, inputLon), lats, lons)
 
         nearestPoints = []
