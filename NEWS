@@ -1,5 +1,5 @@
-Ocean Map Portal 0.2.92
-=======================
+Ocean Map Portal 0.3.0
+======================
 
 "Behold me fettered, clamped to these rough rocks, even as a ship is moored
  fast by timid sailors, fearful of night because of the roaring sea."
@@ -37,6 +37,7 @@ Bugs Fixed:
  - Update Reynolds start date (Nick)
  - Fix bug where map wouldn't change position with some screen sizes (Danni)
  - Fix bug where double-clicking caused map to jump (Danni)
+ - Report error when sealevel data is out of bounds or on land (Danni)
 
 Ocean Map Portal 0.2.0
 ======================
