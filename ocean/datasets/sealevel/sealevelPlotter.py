@@ -14,6 +14,7 @@ import datetime
 
 from netCDF4 import Dataset
 import numpy as np
+import numpy.ma as ma
 import matplotlib.pyplot as plt
 import matplotlib.dates
 
@@ -205,6 +206,8 @@ class SeaLevelPlotter ():
         (gridLat, gridLon), (latIndex, lonIndex) = xtractor.getGridPoint(lat, lon, lats, lons, var, strategy='exhaustive')
         y_height = dataset.variables[self.config.getVariableType(variable)][:, latIndex, lonIndex]
 
+        if var[latIndex, lonIndex] is ma.masked:
+            raise extractor.LandError()
         
         x_date = []
         date_label = []

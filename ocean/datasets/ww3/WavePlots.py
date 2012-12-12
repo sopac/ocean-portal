@@ -20,11 +20,11 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as pa
 
 from ocean.netcdf.plotter import getCopyright
+from ocean.netcdf.extractor import LandError
 from ocean.util.pngcrush import pngcrush
 
 from radbearing import meanbearing
 from formatter import NESWformat
-from landerror import LandError
 import angleconv as conv
 import histcolor as hc
 
@@ -50,7 +50,7 @@ def RosePlot(opath, wdir, units, lat, lon, ilat, ilon, xstr, title, var, binwd):
     N,wdnbin,wdmax = 8,8,2*np.pi
     degree = ur'\u00b0'
     if wdir[0] == -999.0:
-       raise LandError("Invalid data point. Please try another location.")
+       raise LandError()
     #flip directions as WWIII direction are given in meteorological convention.
     if var == "Dm":
         wdir = conv.dirflip(wdir)
@@ -179,7 +179,7 @@ def HistPlot(opath, wheight, units, lat, lon, ilat, ilon, xstr, title, var, binw
     #binthresh = maxwave - minwave
     #Error message if selected coordinates are out of range or on land
     if maxwave == -999.0:
-       raise LandError("Invalid data point. Please try another location.")
+       raise LandError()
     #alter bin width depending on range of data
     #if binthresh < 10:
      #  binwd = 0.1

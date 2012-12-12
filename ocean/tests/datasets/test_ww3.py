@@ -54,7 +54,7 @@ def test_land_error():
 
     ds = Dataset()
 
-    from ocean.datasets.ww3.landerror import LandError
+    from ocean.netcdf.extractor import LandError
 
     with pytest.raises(LandError):
         ds.process(params)
