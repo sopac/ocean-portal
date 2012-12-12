@@ -10,7 +10,10 @@ import subprocess
 
 import ocean
 
+def get_resource(*args):
+    return os.path.join(ocean.__path__[0], '..', *args)
+
 def test_html_validates():
     # FIXME: find this file on the disk more reliably
-    path = os.path.join(ocean.__path__[0], '..', 'html', 'compmap.html')
+    path = get_resource('html', 'compmap.html')
     subprocess.check_call(['xmllint', path])
