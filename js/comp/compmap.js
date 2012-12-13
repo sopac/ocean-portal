@@ -182,13 +182,6 @@ $(document).ready(function() {
             /* append the regions and their extents */
             $.each(data, function (i, region) {
                 if (region.parent) {
-                    var opt = $('#region option[value="' + region.parent + '"]');
-                    var subregions = opt.data('subregions') || []
-
-                    subregions.push(region);
-
-                    opt.data('subregions', subregions);
-
                     return; /* continue */
                 }
 
@@ -197,6 +190,19 @@ $(document).ready(function() {
                     text: region.name
                 }).data('extent', region.extent)
                   .appendTo('#region');
+            });
+
+            $.each(data, function (i, region) {
+                if (!region.parent) {
+                    return; /* continue */
+                }
+
+                var opt = $('#region option[value="' + region.parent + '"]');
+                var subregions = opt.data('subregions') || []
+
+                subregions.push(region);
+
+                opt.data('subregions', subregions);
             });
         }),
 
