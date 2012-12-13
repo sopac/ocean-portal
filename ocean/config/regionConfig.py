@@ -86,22 +86,22 @@ regions = {
            },
            "Samoa",
            {}),
-    'wsm_nor': ('pac',                     #Samoa Northern Coast. wsm is the ISO code of Samoa
+    'wsm_nor': ('pac',
            {'llcrnrlat': -14,
             'llcrnrlon': 186.5,
             'urcrnrlat': -12,
             'urcrnrlon': 189
            },
            "Samoa Northern Coast",
-           {}),
-    'wsm_sou': ('pac',                     #Samoa Southern Coast
+           {'parent': 'samoa'}),
+    'wsm_sou': ('pac',
            {'llcrnrlat': -15,
             'llcrnrlon': 186.5,
             'urcrnrlat': -13.3,
             'urcrnrlon': 189
            },
            "Samoa Southern Coast",
-           {}),
+           {'parent': 'samoa'}),
     'solomon': ('pac',
            {'llcrnrlat': -12,
             'llcrnrlon': 155,
