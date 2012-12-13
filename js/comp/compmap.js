@@ -68,7 +68,7 @@ $(document).ready(function() {
     });
 
     $('button').button();
-    $('#enlargeDiv').hide();
+    $('#enlargeDiv, #subregion').hide();
 
     /* initialise and show the loading dialog */
     $('#loading-dialog')
@@ -136,6 +136,12 @@ $(document).ready(function() {
             }).data('bounds', b)
               .appendTo('#subregion');
         });
+
+        if ($('#subregion option').length > 1) {
+            $('#subregion').slideDown('fast');
+        } else {
+            $('#subregion').slideUp('fast');
+        }
 
         $('#subregion').change();
     });
