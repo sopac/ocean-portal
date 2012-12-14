@@ -68,7 +68,7 @@ $(document).ready(function() {
     });
 
     $('button').button();
-    $('#enlargeDiv').hide();
+    $('#enlargeDiv, #subregion').hide();
 
     /* initialise and show the loading dialog */
     $('#loading-dialog')
@@ -119,6 +119,40 @@ $(document).ready(function() {
             return;
         }
 
+        $('#subregion option').remove();
+        $('<option>', {
+            text: "Whole Region",
+            value: selected.val(),
+            selected: true
+        }).appendTo('#subregion')
+          .data('bounds', selected.data('bounds'));
+
+        $.each(selected.data('subregions') || [], function (i, region) {
+            var b = new OpenLayers.Bounds(region.extent);
+
+            $('<option>', {
+                value: region.abbr,
+                text: region.name
+            }).data('bounds', b)
+              .appendTo('#subregion');
+        });
+
+        if ($('#subregion option').length > 1) {
+            $('#subregion').slideDown('fast');
+        } else {
+            $('#subregion').slideUp('fast');
+        }
+
+        $('#subregion').change();
+    });
+
+    $('#subregion').change(function () {
+        var selected = $('#subregion option:selected');
+
+        if (selected.length == 0) {
+            return;
+        }
+
         var bounds = selected.data('bounds');
 
         map.setCenter(bounds.getCenterLonLat(),
@@ -147,11 +181,28 @@ $(document).ready(function() {
 
             /* append the regions and their extents */
             $.each(data, function (i, region) {
+                if (region.parent) {
+                    return; /* continue */
+                }
+
                 $('<option>', {
                     value: region.abbr,
                     text: region.name
                 }).data('extent', region.extent)
                   .appendTo('#region');
+            });
+
+            $.each(data, function (i, region) {
+                if (!region.parent) {
+                    return; /* continue */
+                }
+
+                var opt = $('#region option[value="' + region.parent + '"]');
+                var subregions = opt.data('subregions') || []
+
+                subregions.push(region);
+
+                opt.data('subregions', subregions);
             });
         }),
 

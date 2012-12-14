@@ -51,14 +51,17 @@ def __main__():
            portal != group:
             continue
 
-        response.append({
+        d = {
             'name': name,
             'abbr': abbr,
             'extent': [extents['llcrnrlon'],  # left
                        extents['llcrnrlat'],  # bottom
                        extents['urcrnrlon'],  # right
                        extents['urcrnrlat']], # top
-        })
+        }
+
+        d.update(opts)
+        response.append(d)
 
     response.sort(key=lambda e: e['name'])
 
