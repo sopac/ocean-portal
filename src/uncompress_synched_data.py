@@ -44,7 +44,7 @@ class uncompress_synched_data():
         delta = 0
         valid_dates = []
         while 1:
-            new_date = start_date + dateutil.relativedelta.relativedelta(days=delta)            
+            new_date = start_date + dateutil.relativedelta.relativedelta(days=delta)
             if new_date <= end_date:
                 valid_dates.append(new_date)
             else:
