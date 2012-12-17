@@ -9,11 +9,9 @@ Description:
                         
             Input arguments:
                 input_files:        List of file names.
-                data_var_name:      Name of data variable for averaging.
+                data_var_names:     List of data variables for averaging.
                 output_file:        Output file name.
-                global_attributes:  Dictionary containing global attributes for output file.
-            
-            Note: Time variable will be set to value found in first file processed.
+                scale_factors:      List of weightings for each file.
 """
 import numpy
 import netCDF4
