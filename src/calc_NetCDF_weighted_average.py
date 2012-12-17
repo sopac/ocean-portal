@@ -20,12 +20,16 @@ import netCDF4
 import datetime
 
 
-def calc_NetCDF_weighted_average(input_files, data_var_names, output_file, scale_factors):
+def calc_NetCDF_weighted_average(input_files, data_var_names, output_file, scale_factors=None):
     
     output_file_created = False
-    
+
     for k2, data_var_name in enumerate(data_var_names):
-        scale_factor = scale_factors[k2]
+        if scale_factors is None:
+            scale_factor = 1.0
+        else
+            scale_factor = scale_factors[k2]
+
         for k, input_file in enumerate(input_files):
 
             # Open input file
