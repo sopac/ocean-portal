@@ -8,25 +8,29 @@ Description:
             Function for calculating weighted average from multiple NetCDF files.
                         
             Input arguments:
-                input_files:        List of file names.
-                data_var_names:     List of data variables for averaging.
+                input_files:        List of input files.
                 output_file:        Output file name.
-                scale_factors:      List of weightings for each file.
+                weighting_factors:  List of weightings for each file.
 """
 import numpy
 import netCDF4
 import datetime
 
 
-def calc_NetCDF_weighted_average(input_files, data_var_names, output_file, scale_factors=None):
+def calc_NetCDF_weighted_average(input_files, output_file, weighting_factors=None):
     
-    output_file_created = False
+    nc = netCDF4.Dataset(input_files[0], mode='r')
+    dims = nc.dimensions.keys()
+    vars = nc.variables.keys()
+    data_var_names = dims
+    for var in vars:
+        if var in dims:
+            continue
+        else:
+            data_var_names.append(var)
+    nc.close()
 
     for k2, data_var_name in enumerate(data_var_names):
-        if scale_factors is None:
-            scale_factor = 1.0
-        else
-            scale_factor = scale_factors[k2]
 
         for k, input_file in enumerate(input_files):
 
@@ -36,11 +40,10 @@ def calc_NetCDF_weighted_average(input_files, data_var_names, output_file, scale
             data_var = nc.variables[data_var_name]
             data_var_attrs = data_var.ncattrs()
 
-            if output_file_created is False: 
+            if k == 0 and k2 == 0:
 
                 # Create output file
                 nc_out = netCDF4.Dataset(output_file, 'w', format='NETCDF4')
-                output_file_created = True
 
                 # Create dimensions by replicating those in input file
                 for dimName, dim in nc.dimensions.iteritems():
@@ -49,49 +52,65 @@ def calc_NetCDF_weighted_average(input_files, data_var_names, output_file, scale
                         dimLen = 0
                     nc_out.createDimension(dimName, dimLen)
 
-                # Create dimension variables and copy values from input file
-                for varName in nc.variables.keys():
-                    if varName in nc.dimensions.keys():
-                        var = nc.variables[varName]
-                        var_out = nc_out.createVariable(varName, var.dtype, var.dimensions)
-                        for attr in var.ncattrs():
-                            if attr == '_FillValue':
-                                continue
-                            var_out.setncattr(attr, var.getncattr(attr))
-                        var_out[:] = var[:]
-
-                # Copy global attributes
-                #for attr in global_attributes:
-                #    nc_out.setncattr(attr, global_attributes[attr])
-                    
                 # Copy global attributes
                 attdict = nc.__dict__
                 attdict['filename'] = unicode(output_file)
-                attdict['history'] = datetime.datetime.utcnow().strftime("%a %b %d %H:%M:%S %Y") + \
-                                    ': Calculated weighted average.' + '\n  ' + \
-                                    attdict['history']
-                         
-                for attr in attdict:
-                    nc_out.setncattr(attr, attdict[attr])      
 
-                if 'missing_value' in data_var_attrs:
-                    missing_value = data_var.getncattr('missing_value')
+                # Append message to history attribute
+                date_str = datetime.datetime.utcnow().strftime("%a %b %d %H:%M:%S %Y")
+                log_str = ': Calculated weighted average.' + '\n  '
+                if 'history' in attdict:
+                    attdict['history'] = date_str + log_str + attdict['history']
+                elif 'History' in attdict:
+                    attdict['History'] = date_str + log_str + attdict['History']
                 else:
-                    missing_value = -999
+                    attdict['history'] = date_str + log_str
+
+                # Save global attributes
+                for attr in attdict:
+                    nc_out.setncattr(attr, attdict[attr])
 
             if k == 0:
+
+                # Determine fill value
+                if '_FillValue' in data_var_attrs:
+                    fill_value = data_var.getncattr('_FillValue')
+                elif 'missing_value' in data_var_attrs:
+                    fill_value = data_var.getncattr('missing_value')
+                else:
+                    fill_value = None
+
                 # Initialise masked array for calculating mean
-                sum_array = numpy.ma.zeros(data_var.shape, fill_value=missing_value)
+                if fill_value is None:
+                    sum_array = numpy.ma.zeros(data_var.shape)
+                else:
+                    sum_array = numpy.ma.zeros(data_var.shape, fill_value=fill_value)
 
                 # Create data variable for storing calculated mean
-                data_var_mean = nc_out.createVariable(data_var_name, 'f', data_var.dimensions,
-                                                      zlib=True, complevel=6, fill_value=missing_value)
+                if fill_value is None:
+                    data_var_mean = nc_out.createVariable(data_var_name, 'f', data_var.dimensions,
+                                                          zlib=True, complevel=6)
+                else:
+                    data_var_mean = nc_out.createVariable(data_var_name, 'f', data_var.dimensions,
+                                                          zlib=True, complevel=6, fill_value=fill_value)
+
                 for attr in data_var_attrs:
                     if attr == '_FillValue':
                         continue
+                    elif attr == 'scale_factor':
+                        continue
+                    elif attr == 'add_offset':
+                        continue
                     data_var_mean.setncattr(attr, data_var.getncattr(attr))
 
-            sum_array += (data_var[:] * float(scale_factor))
+            if weighting_factors is None:
+                weighting_factor = 1.0
+            else:
+                weighting_factor = weighting_factors[k2]
+
+            sum_array += data_var[:] * float(weighting_factor)
+
+            # Close input file
             nc.close()
 
         data_var_mean[:] = sum_array / len(input_files)

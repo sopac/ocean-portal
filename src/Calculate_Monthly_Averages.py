@@ -15,6 +15,7 @@ import pdb
 import calendar
 import datetime
 import dateutil.relativedelta
+import calc_NetCDF_weighted_average
 
 class Calculate_Monthly_Averages():
 
@@ -190,7 +191,7 @@ class Calculate_Monthly_Averages():
         else:
             # Create output directory if doesn't exist
             if not os.path.exists(output_dir):
-                os.makedirs(output_dir)            
+                os.makedirs(output_dir)
 
         ncea_path = '/srv/map-portal/run-portal-environ ncea'
         if settings.has_key('use_old_version_of_ncea'):
@@ -201,5 +202,6 @@ class Calculate_Monthly_Averages():
             ncea_settings = settings['processing_settings'] + ' '
         else:
             ncea_settings = ''
-        cmd = ncea_path + ' -O ' + ncea_settings + ' '.join(input_files) + ' ' + output_file_fullpath
-        proc = subprocess.call(cmd, shell=True)
+        calc_NetCDF_weighted_average.calc_NetCDF_weighted_average(input_files, output_file_fullpath)
+        #cmd = ncea_path + ' -O ' + ncea_settings + ' '.join(input_files) + ' ' + output_file_fullpath
+        #proc = subprocess.call(cmd, shell=True)
