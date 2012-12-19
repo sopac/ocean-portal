@@ -15,7 +15,6 @@ import pdb
 import calendar
 import datetime
 import dateutil.relativedelta
-import calc_NetCDF_weighted_average
 
 class Calculate_Monthly_Averages():
 
@@ -202,6 +201,5 @@ class Calculate_Monthly_Averages():
             ncea_settings = settings['processing_settings'] + ' '
         else:
             ncea_settings = ''
-        calc_NetCDF_weighted_average.calc_NetCDF_weighted_average(input_files, output_file_fullpath)
-        #cmd = ncea_path + ' -O ' + ncea_settings + ' '.join(input_files) + ' ' + output_file_fullpath
-        #proc = subprocess.call(cmd, shell=True)
+        cmd = ncea_path + ' -O ' + ncea_settings + ' '.join(input_files) + ' ' + output_file_fullpath
+        proc = subprocess.call(cmd, shell=True)

@@ -18,13 +18,15 @@ import copy
 import pdb
 import calendar
 import tempfile
+import datetime
+import dateutil.relativedelta
 
 class Calculate_MultiMonth_Averages():
 
     def __init__(self):
-        # Settings for each dataset
-        self.ncea_path = '/srv/map-portal/run-portal-environ ncea'
-        self.ncflint_path = '/srv/map-portal/run-portal-environ ncflint'
+
+        reynolds_end_date = self.get_date_for_last_complete_month()
+
         self.config = \
             {'ERSST':{
                 'product_str': 'ersst_v3b',
@@ -41,8 +43,8 @@ class Calculate_MultiMonth_Averages():
                 'product_str': 'reynolds_sst',
                 'start_year': 1981,
                 'start_month': 9,
-                'end_year': 2012,
-                'end_month': 10,
+                'end_year': reynolds_end_date.year,
+                'end_month': reynolds_end_date.month,
                 'input_dir': '/data/sst/reynolds/averages/monthly/',
                 'input_filename': '%(product_str)s_avhrr-only-v2_%(year)04d%(month)02d.nc',
                 'input_filename_preliminary': '%(product_str)s_avhrr-only-v2_%(year)04d%(month)02d_preliminary.nc',
@@ -111,6 +113,15 @@ class Calculate_MultiMonth_Averages():
         """
         Calculate multi-month averages for the dataset specified by the input argument.
         """
+
+        if dataset == 'Reynolds':
+            self.ncea_path = 'ncea'
+            self.ncflint_path = 'ncflint'
+        else:
+            self.ncea_path = '/srv/map-portal/run-portal-environ ncea'
+            self.ncflint_path = '/srv/map-portal/run-portal-environ ncflint'
+
+        # Settings for each dataset
         settings = self.config[dataset]
         start_year = settings['start_year']
         start_month = settings['start_month']
@@ -129,6 +140,16 @@ class Calculate_MultiMonth_Averages():
                 for avg_period in settings['avg_periods']:
                     if k >= avg_period:
                         self._calc_multimonth_average(settings, year, month, avg_period)
+
+    def get_date_for_last_complete_month(self):
+        last_date_to_use = datetime.date.today() + dateutil.relativedelta.relativedelta(days=-5)
+        year = last_date_to_use.year
+        month = last_date_to_use.month - 1
+        if month == -1:
+            month = 12
+            year -= 1
+        end_date = datetime.datetime(year, month, 1)
+        return end_date
 
     def _calc_multimonth_average(self, settings, end_date_year, end_date_month, N):
         """

@@ -20,14 +20,7 @@ import datetime
 def calc_NetCDF_weighted_average(input_files, output_file, weighting_factors=None):
     
     nc = netCDF4.Dataset(input_files[0], mode='r')
-    dims = nc.dimensions.keys()
-    vars = nc.variables.keys()
-    data_var_names = dims
-    for var in vars:
-        if var in dims:
-            continue
-        else:
-            data_var_names.append(var)
+    data_var_names = nc.variables.keys()
     nc.close()
 
     for k2, data_var_name in enumerate(data_var_names):

@@ -14,7 +14,6 @@ import subprocess
 import datetime
 import dateutil.relativedelta
 
-
 class uncompress_synched_data():
 
     def __init__(self):
