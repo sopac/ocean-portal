@@ -110,6 +110,11 @@ $(document).ready(function() {
         $('.layout-center')
             .css('left', $('.layout-west').outerWidth())
             .css('right', $('.layout-east').outerWidth());
+
+        if (map) {
+            /* poke the map to resize */
+            map.updateSize();
+        }
     });
 
     $('#region').change(function () {

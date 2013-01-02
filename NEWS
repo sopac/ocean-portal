@@ -1,9 +1,16 @@
+Ocean Map Portal 0.3.1
+======================
+
+Bugs Fixed:
+
+ - Fix race where map isn't always sized properly onload in Chrome (Danni)
+
 Ocean Map Portal 0.3.0.1
 ========================
 
 Bugs Fixed:
 
- - Cache OpenLayers.js
+ - Cache OpenLayers.js (Danni)
 
 Ocean Map Portal 0.3.0
 ======================
