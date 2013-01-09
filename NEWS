@@ -4,6 +4,7 @@ Ocean Map Portal 0.3.1
 Bugs Fixed:
 
  - Fix race where map isn't always sized properly onload in Chrome (Danni)
+ - Improve position and sizing of map labels when zoomed out (Danni)
 
 Ocean Map Portal 0.3.0.1
 ========================

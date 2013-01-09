@@ -328,6 +328,7 @@ MAP
         PROCESSING "LABEL_NO_CLIP=True"
         LABELITEM    "NAME"
         CLASSITEM    "SCALERANK"
+        SYMBOLSCALEDENOM 200
         CLASS
             EXPRESSION ([SCALERANK]==1)
             LABEL
@@ -336,13 +337,14 @@ MAP
                 TYPE TRUETYPE
                 FONT sans
                 SIZE 11
+                MINSIZE 8
+                MAXSIZE 12
                 MAXLENGTH 10
                 WRAP ' '
                 ANTIALIAS TRUE
                 POSITION AUTO
-                PARTIALS FALSE
                 OFFSET 1 1
-                FORCE FALSE
+                PARTIALS FALSE
             END # end of label
         END
     END
@@ -357,6 +359,7 @@ MAP
         CLASSITEM    "SCALERANK"
         MINSCALEDENOM    1
         MAXSCALEDENOM    200
+        SYMBOLSCALEDENOM 200
 
         CLASS
             EXPRESSION ([SCALERANK]==2)
@@ -366,16 +369,17 @@ MAP
                 TYPE TRUETYPE
                 FONT sans
                 SIZE 8
+                MAXSIZE 8
                 ANTIALIAS TRUE
                 POSITION AUTO
                 PARTIALS FALSE
-                FORCE FALSE
             END # end of label
 
             STYLE
                 SYMBOL "natcap"
                 COLOR 0 0 0
                 SIZE 8
+                MAXSIZE 12
             END
         END
     END
