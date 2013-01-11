@@ -145,7 +145,7 @@ class Calculate_MultiMonth_Averages():
         last_date_to_use = datetime.date.today() + dateutil.relativedelta.relativedelta(days=-5)
         year = last_date_to_use.year
         month = last_date_to_use.month - 1
-        if month == -1:
+        if month == 0:
             month = 12
             year -= 1
         end_date = datetime.datetime(year, month, 1)
