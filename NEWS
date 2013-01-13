@@ -7,6 +7,10 @@ Bugs Fixed:
  - Improve position and sizing of map labels when zoomed out (Danni)
  - Move capitals for Kiribati and Tuvalu to be on land (Danni)
 
+Data:
+
+ - Update datasets.json for latest data (Nick)
+
 Ocean Map Portal 0.3.0.1
 ========================
 
