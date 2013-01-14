@@ -9,11 +9,19 @@
   margin: 0;
 }
 
+html, body {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+
 body {
   font-size: 12px;
   font-family: tahoma,arial,verdana,sans-serif;
   border: 1px solid rgb(211, 211, 211);
-  overflow: hidden;
 }
 
 a img {
