@@ -278,20 +278,28 @@ function createMap () {
         var layerName;
         var legendDiv = $('#legendDiv');
         var enableOL = false;
+        var barsrc = null;
 
-        if (evt)
+        if (evt) {
             layerName = evt.layer.name;
+        }
+
+        legendDiv.children().remove();
 
         if (layerName == null || layerName == 'Bathymetry') {
-            legendDiv.html("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='180'/>");
+            $('<b>', { text: "Bathymetry (m)" }).appendTo(legendDiv);
+            barsrc = 'images/bathymetry_ver.png';
         }
         else {
-            if (ocean.map_scale)
-                legendDiv.html('<p><img src="' + ocean.map_scale + '" />');
-            else
-                legendDiv.html('<p></p>');
-
+            barsrc = ocean.map_scale;
             enableOL = true;
+        }
+
+        if (barsrc) {
+            $('<img>', {
+                src: barsrc,
+                alt: "Scale bar"
+            }).appendTo(legendDiv);
         }
 
         $('.outputgroup input[type=radio]').attr('disabled', !enableOL);
