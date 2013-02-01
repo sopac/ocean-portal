@@ -107,9 +107,11 @@ $(document).ready(function() {
         }).resize().resize(); /* IE8 can't work out the height first time! */
 
         /* position centre layout */
-        $('.layout-center')
-            .css('left', $('.layout-west').outerWidth())
-            .css('right', $('.layout-east').outerWidth());
+        $('.layout-center').css({
+            left: $('.layout-west').outerWidth(),
+            right: $('.layout-east').outerWidth(),
+            height: '100%'
+        });
 
         if (map) {
             /* poke the map to resize */
