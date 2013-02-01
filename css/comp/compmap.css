@@ -9,11 +9,19 @@
   margin: 0;
 }
 
+html, body {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+
 body {
   font-size: 12px;
   font-family: tahoma,arial,verdana,sans-serif;
   border: 1px solid rgb(211, 211, 211);
-  overflow: hidden;
 }
 
 a img {
@@ -115,8 +123,14 @@ a img {
     pointer-events: none;
     bottom: 40px;
     left: 10px;
-    width: 100px;
     z-index: 1020;
+}
+
+#legendDiv img {
+  display: block;
+  margin: 3px;
+  max-height: 200px;
+  max-width: auto;
 }
 
 #enlargeDiv {
@@ -207,12 +221,11 @@ a img {
   padding-left: 1.5em;
 }
 
-.thumbnail input[type=radio] {
+.thumbnail .outputLayerRadio {
   vertical-align: middle;
-  margin-top: -50%;
-  position: relative;
-  left: -1.5em;
-  margin-right: -1.5em;
+  position: absolute;
+  top: 47%;
+  left: 0;
   width: 1.5em;
 }
 

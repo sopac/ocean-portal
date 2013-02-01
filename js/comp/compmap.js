@@ -107,9 +107,11 @@ $(document).ready(function() {
         }).resize().resize(); /* IE8 can't work out the height first time! */
 
         /* position centre layout */
-        $('.layout-center')
-            .css('left', $('.layout-west').outerWidth())
-            .css('right', $('.layout-east').outerWidth());
+        $('.layout-center').css({
+            left: $('.layout-west').outerWidth(),
+            right: $('.layout-east').outerWidth(),
+            height: '100%'
+        });
 
         if (map) {
             /* poke the map to resize */
@@ -329,20 +331,28 @@ function createMap () {
         var layerName;
         var legendDiv = $('#legendDiv');
         var enableOL = false;
+        var barsrc = null;
 
-        if (evt)
+        if (evt) {
             layerName = evt.layer.name;
+        }
+
+        legendDiv.children().remove();
 
         if (layerName == null || layerName == 'Bathymetry') {
-            legendDiv.html("<p><b>Bathymetry (m)</b></p><br/><img src='images/bathymetry_ver.png' height='180'/>");
+            $('<b>', { text: "Bathymetry (m)" }).appendTo(legendDiv);
+            barsrc = 'images/bathymetry_ver.png';
         }
         else {
-            if (ocean.map_scale)
-                legendDiv.html('<p><img src="' + ocean.map_scale + '" />');
-            else
-                legendDiv.html('<p></p>');
-
+            barsrc = ocean.map_scale;
             enableOL = true;
+        }
+
+        if (barsrc) {
+            $('<img>', {
+                src: barsrc,
+                alt: "Scale bar"
+            }).appendTo(legendDiv);
         }
 
         $('.outputgroup input[type=radio]').attr('disabled', !enableOL);
@@ -493,6 +503,12 @@ function _createOutput(image, dataURL, name, extras, data)
     ocean.outputsLoading += 1;
 
     function outputLoaded () {
+        /* this kludge is required for IE7, where it turns out you can't do
+         * slideDown on a block contained in a relative positioned parent
+         * unless that block has a defined height */
+        if ($.browser.msie && $.browser.version == '7.0')
+            div.css('height', div.height());
+
         div.slideDown(400, function () {
             ocean.outputsLoading -= 1;
             maybe_close_loading_dialog();
@@ -581,6 +597,17 @@ function enlargeImg(img, show) {
             src: img.src,
             'class' : 'imagepreview'
         }).appendTo(enlargeDiv);
+
+        /* fix broken positioning in IE7 */
+        if ($.browser.msie && $.browser.version == '7.0') {
+            var eimgraw = eimg.get(0);
+
+            var offset = eimg.offset();
+            eimg.offset({
+                top: offset.top + enlargeDiv.height() / 2 - eimgraw.height / 2,
+                left: offset.left + enlargeDiv.width() / 2 - eimgraw.width / 2
+            });
+        }
 
         enlargeDiv.fadeIn(100);
         enlargeDiv.show();
