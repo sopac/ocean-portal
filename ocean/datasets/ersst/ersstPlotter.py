@@ -8,11 +8,9 @@
 #          Matthew Howie
 
 import os.path
-import datetime
 import glob
 
 import numpy as np
-from netCDF4 import Dataset
 import bisect
 
 import ersstConfig as ec
@@ -167,30 +165,10 @@ class ErsstPlotter ():
             cb_tick_fmt="%.1f"
             cb_ticks = np.arange(0.5,7.51,1)
             cb_labels=['Lowest on \nrecord','Very much \nbelow average \n[1]','Below average \n[2-3]','Average \n[4-7]','Above average \n[8-9]','Very much \nabove average \n[10]','Highest on \nrecord']
-            #cb_labels=['Very much \nbelow average \n[1]','Below average \n[2-3]','Average \n[4-7]','Above average \n[8-9]','Very much \nabove average \n[10]']
             cb_label_pos=[1.0,2.0,3.0,4.0,5.0,6.0,7.0]
             
         filename = filename + ".nc" 
         filename = glob.glob(filename)[0]
-        dataset = Dataset(filename, 'r')
-
-        lats = dataset.variables['lat'][:]
-        lons = dataset.variables['lon'][:]
-        
-        lons = np.array(lons,np.float64)
-        lats = np.array(lats,np.float64)
-
-        #if variable == 'dec':
-        #    sst = dataset.variables[self.config.getVariableType(variable)][:]
-        #    # Mask out polar region to avoid problem of calculating deciles over sea ice
-        #    sst.mask[0:bisect.bisect_left(lats,-60),:] = True
-        #    sst.mask[bisect.bisect_left(lats,60):-1,:] = True
-        #else:
-        #    sst = dataset.variables[self.config.getVariableType(variable)][0][0]
-
-        resolution='h'
-        if not area=='pac':
-           resolution='f'
 
         plot = plotter.Plotter()
         output_filename = self.serverCfg["outputDir"] + outputFilename + '.png'
@@ -207,7 +185,7 @@ class ErsstPlotter ():
         lon_min = regionConfig.regions[area][1]['llcrnrlon']
         lon_max = regionConfig.regions[area][1]['urcrnrlon']
 
-        lats, lons, skip, sst = \
+        lats, lons, _, sst = \
             branPlotterNew.load_BRAN_data(filename, self.config.getVariableType(variable),
                                           lat_min - 1.0, lat_max + 1.0,
                                           lon_min - 1.0, lon_max + 1.0)
@@ -221,7 +199,7 @@ class ErsstPlotter ():
                                cmp_name=cmap_name, extend=extend,
                                contourLabels=contourLabels, area=area)
 
-        lats, lons, skip, sst = \
+        lats, lons, _, sst = \
             branPlotterNew.load_BRAN_data(filename, self.config.getVariableType(variable), -999.0, 999.0, -999.0, 999.0)
 
         if variable == 'dec':
@@ -240,6 +218,5 @@ class ErsstPlotter ():
                                         extend=extend)
 
         plot.wait()
-        dataset.close()
 
         return 0
