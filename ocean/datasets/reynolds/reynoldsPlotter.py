@@ -5,9 +5,6 @@
 #
 # Authors: Sheng Guo <s.guo@bom.gov.au>
 
-import datetime
-
-from netCDF4 import Dataset
 import numpy as np
 import bisect
 
@@ -40,7 +37,7 @@ class ReynoldsPlotter ():
         variable = args['variable']
         area = args['area']
         period = args['period']
-        
+
         dateObj = args['date']
         date = dateObj.strftime('%Y%m%d')
 
@@ -123,25 +120,7 @@ class ReynoldsPlotter ():
             cb_label_pos=[1.0,2.0,3.0,4.0,5.0,6.0,7.0]
 
         args['formattedDate'] = formattedDate
-        filename = filename + ".nc" 
-        dataset = Dataset(filename, 'r')
-
-        lats = dataset.variables['lat'][:]
-        lons = dataset.variables['lon'][:]
-
-        #if variable == 'dec':
-        #    sst = dataset.variables[self.config.getVariableType(variable)][:]
-        #    # Mask out polar region to avoid problem of calculating deciles over sea ice
-        #    sst.mask[0:bisect.bisect_left(lats,-60),:] = True
-        #    sst.mask[bisect.bisect_left(lats,60):-1,:] = True
-        #else:
-        #    sst = dataset.variables[self.config.getVariableType(variable)][0][0]
-        #lats = dataset.variables['lat'][:]
-        #lons = dataset.variables['lon'][:]
-
-        resolution='h'
-        if not area=='pac':
-           resolution='f'
+        filename = filename + ".nc"
 
         output_filename = self.serverCfg["outputDir"] + outputFilename + '.png'
 
@@ -156,9 +135,6 @@ class ReynoldsPlotter ():
         units = self.config.getUnit(variable)
 
         plot = plotter.Plotter()
-        #plot.plotBasemapEast(sst, lats, lons, variable, self.config, outputFilename)
-        #plot.plotBasemapWest(sst, lats, lons, variable, self.config, outputFilename)
-        #plot.plotScale(sst, variable, self.config, outputFilename)
 
         if variable == 'dec':
             contourLabels = False
@@ -170,7 +146,7 @@ class ReynoldsPlotter ():
         lon_min = regionConfig.regions[area][1]['llcrnrlon']
         lon_max = regionConfig.regions[area][1]['urcrnrlon']
 
-        lats, lons, skip, sst = \
+        lats, lons, _, sst = \
             branPlotterNew.load_BRAN_data(filename, self.config.getVariableType(variable),
                                           lat_min - 1.0, lat_max + 1.0,
                                           lon_min - 1.0, lon_max + 1.0)
@@ -186,7 +162,7 @@ class ReynoldsPlotter ():
                                product_label_str='Reynolds SST',
                                area=area)
 
-        lats, lons, skip, sst = \
+        lats, lons, _, sst = \
             branPlotterNew.load_BRAN_data(filename, self.config.getVariableType(variable), -999.0, 999.0, -999.0, 999.0)
 
         if variable == 'dec':
@@ -201,6 +177,5 @@ class ReynoldsPlotter ():
                                         cmp_name=cmap_name, extend=extend)
 
         plot.wait()
-        dataset.close()
 
         return 0
