@@ -7,70 +7,64 @@
 #          Elisabeth Thompson <e.thompson@bom.gov.au>
 #          Danielle Madeley <d.madeley@bom.gov.au>
 
-import math
-import bisect
-import pdb
-import datetime
-
-import netCDF4
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from matplotlib.offsetbox import AnchoredOffsetbox, TextArea
 
+from ocean.netcdf.grid import Grid
 from ocean.netcdf.plotter import getCopyright, get_tick_values, discrete_cmap
 from ocean.util.pngcrush import pngcrush
 
-def load_BRAN_data(input_data_file, var_name, lat_min, lat_max, lon_min, lon_max, depth_min=0, depth_max=0):
+class BRANGrid(Grid):
+    def get_lats(self, variables):
+        for v in ['yt_ocean', 'yu_ocean']:
+            try:
+                return variables[v][:]
+            except KeyError:
+                pass
 
-    # Open file
-    nc = netCDF4.Dataset(input_data_file)
+        return Grid.get_lats(self, variables)
 
-    if var_name == 'eta':
-        if 'eta' not in nc.variables:
-            var_name = 'eta_t'
+    def get_lons(self, variables):
+        for v in ['xt_ocean', 'xu_ocean']:
+            try:
+                return variables[v][:]
+            except KeyError:
+                pass
 
-    dimensions = nc.variables[var_name].dimensions
+        return Grid.get_lons(self, variables)
 
-    # Load lat/lon values
-    if ('xt_ocean' in dimensions) and ('yt_ocean' in dimensions):
-        lons = nc.variables['xt_ocean'][:]
-        lats = nc.variables['yt_ocean'][:]
-    elif ('xu_ocean' in dimensions) and ('yu_ocean' in dimensions):
-        lons = nc.variables['xu_ocean'][:]
-        lats = nc.variables['yu_ocean'][:]
-    elif ('lat' in dimensions) and ('lon' in dimensions):
-        lats = nc.variables['lat'][:]
-        lons = nc.variables['lon'][:]
-    if 'zt_ocean' in dimensions:
-        depth = nc.variables['zt_ocean'][:]
-    else:
-        depth = [0.]
-            
-    # Subset dimensions
-    lat_idx1, lat_idx2 = get_subset_idxs(lats, lat_min, lat_max)
-    lon_idx1, lon_idx2 = get_subset_idxs(lons, lon_min, lon_max)
-    zlevel_idx1, zlevel_idx2 = get_subset_idxs(depth, abs(depth_min), abs(depth_max))
-    lons = lons[lon_idx1:lon_idx2]
-    lats = lats[lat_idx1:lat_idx2]
-    zlevels = depth[zlevel_idx1:zlevel_idx2]
-    
-    # Load data
-    if len(dimensions) == 4:
-        data = nc.variables[var_name][0, zlevel_idx1:zlevel_idx2, lat_idx1:lat_idx2, lon_idx1:lon_idx2]
-    elif len(dimensions) == 3:
-        data = nc.variables[var_name][0, lat_idx1:lat_idx2, lon_idx1:lon_idx2]
-    else:
-        data = nc.variables[var_name][lat_idx1:lat_idx2, lon_idx1:lon_idx2]
-    
-    # Close file
-    nc.close()
+    def get_depths(self, variables):
+        try:
+            return variables['zt_ocean'][:]
+        except KeyError:
+            return Grid.get_depths(self, variables)
 
-    # Remove single dimensions from array
-    data = np.squeeze(data)
-    
-    return lats, lons, zlevels, data
+    def get_variable(self, variables, var_name):
+        if var_name == 'eta':
+            if 'eta' not in variables:
+                var_name = 'eta_t'
+
+        return Grid.get_variable(self, variables, var_name)
+
+def load_BRAN_data(input_data_file, var_name,
+                   lat_min, lat_max,
+                   lon_min, lon_max,
+                   depth_min=0, depth_max=0):
+    """
+    A thin wrapper around BRANGrid. Exists only for compatibility, should
+    eventually be replaced by direct use of BRANGrid.
+    """
+
+
+    grid = BRANGrid(input_data_file, var_name,
+                    latrange=(lat_min, lat_max),
+                    lonrange=(lon_min, lon_max),
+                    depthrange=(depth_min, depth_max))
+
+    return grid.lats, grid.lons, grid.depths, grid.data
 
 def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_all, lons_all, data_sf,
                           lat_cnt, lon_cnt, output_filename='noname.png', title='', units='m/s',
@@ -179,19 +173,6 @@ def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_
     pngcrush(output_filename)
 
     return
-
-def get_subset_idxs(x, x_min, x_max):
-
-    if x_min == x_max:
-        closest_idx = np.abs(np.array(x) - x_min).argmin()
-        return closest_idx, closest_idx + 1
-
-    # assuming that x is sorted, find indexes to the left of x_min and the
-    # right of x_max
-    start_idx = bisect.bisect_left(x, x_min)
-    end_idx = bisect.bisect_right(x, x_max)
-
-    return start_idx, end_idx
 
 def get_grid_edges(x):
     x = np.array(x)
