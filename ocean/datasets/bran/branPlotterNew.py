@@ -13,33 +13,19 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from matplotlib.offsetbox import AnchoredOffsetbox, TextArea
 
-from ocean.netcdf.grid import Grid
+from ocean.netcdf.grid import Grid, GridWrongFormat
 from ocean.netcdf.plotter import getCopyright, get_tick_values, discrete_cmap
 from ocean.util.pngcrush import pngcrush
 
 class BRANGrid(Grid):
-    def get_lats(self, variables):
-        for v in ['yt_ocean', 'yu_ocean']:
-            try:
-                return variables[v][:]
-            except KeyError:
-                pass
-
-        return Grid.get_lats(self, variables)
-
-    def get_lons(self, variables):
-        for v in ['xt_ocean', 'xu_ocean']:
-            try:
-                return variables[v][:]
-            except KeyError:
-                pass
-
-        return Grid.get_lons(self, variables)
+    LATS_VARIABLE = ['yt_ocean', 'yu_ocean'] + Grid.LATS_VARIABLE
+    LONS_VARIABLE = ['xt_ocean', 'xu_ocean'] + Grid.LONS_VARIABLE
+    DEPTHS_VARIABLE = ['zt_ocean']
 
     def get_depths(self, variables):
         try:
-            return variables['zt_ocean'][:]
-        except KeyError:
+            return self._get_variable(variables, self.DEPTHS_VARIABLE)
+        except GridWrongFormat:
             return Grid.get_depths(self, variables)
 
     def get_variable(self, variables, var_name):

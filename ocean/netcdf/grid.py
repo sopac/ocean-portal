@@ -37,9 +37,17 @@ class Grid(object):
     Subclass this class to handle specific grid layouts.
     """
 
-    def __init__(self, filename, variable, latrange=(-90, 90),
-                                           lonrange=(-180, 180),
-                                           depthrange=(0, 0)):
+    # a list of possible variables for latitudes
+    LATS_VARIABLE = ['lat']
+
+    # a list of possible variables for longitude
+    LONS_VARIABLE = ['lon']
+
+    def __init__(self, filename, variable,
+                 latrange=(-90, 90),
+                 lonrange=(-180, 180),
+                 depthrange=(0, 0),
+                 **kwargs):
         with Dataset(filename) as nc:
 
             lats = self.get_lats(nc.variables)
@@ -68,17 +76,20 @@ class Grid(object):
                                        (depth_idx1, depth_idx2))
             self.data = np.squeeze(data)
 
+    def _get_variable(self, variables, options):
+        for v in options:
+            try:
+                return variables[v][:]
+            except KeyError:
+                pass
+
+        raise GridWrongFormat("No variable in choices: %s" % options)
+
     def get_lats(self, variables):
-        try:
-            return variables['lat'][:]
-        except KeyError as e:
-            raise GridWrongFormat(e)
+        return self._get_variable(variables, self.LATS_VARIABLE)
 
     def get_lons(self, variables):
-        try:
-            return variables['lon'][:]
-        except KeyError as e:
-            raise GridWrongFormat(e)
+        return self._get_variable(variables, self.LONS_VARIABLE)
 
     def get_depths(self, variables):
         return [0.]
@@ -92,7 +103,10 @@ class Grid(object):
     def load_data(self, variable, (lat_idx1, lat_idx2),
                                   (lon_idx1, lon_idx2),
                                   (depth_idx1, depth_idx2)):
-        ndim = len(variable.dimensions)
+        try:
+            ndim = len(variable.dimensions)
+        except AttributeError:
+            ndim = variable.ndim
 
         if ndim == 4:
             # data arranged time, depth, lat, lon
