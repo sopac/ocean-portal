@@ -6,11 +6,14 @@
 # Authors: Nick Summons <n.summons@bom.gov.au>
 #          Danielle Madeley <d.madeley@bom.gov.au>
 
+import os.path
 import bisect
 
 import numpy as np
 from netCDF4 import Dataset
 
+from ocean import util
+from ocean.util.dateRange import getMonths
 from ocean.core import ReportableException
 
 class GridWrongFormat(ReportableException):
@@ -54,16 +57,11 @@ class Grid(object):
             lons = self.get_lons(nc.variables)
             depths = self.get_depths(nc.variables)
 
-            # calculate the data subset indexes
-            lat_min, lat_max = latrange
-            lon_min, lon_max = lonrange
-            depth_min, depth_max = depthrange
-
-            lat_idx1, lat_idx2 = get_subset_idxs(lats, lat_min, lat_max)
-            lon_idx1, lon_idx2 = get_subset_idxs(lons, lon_min, lon_max)
-            depth_idx1, depth_idx2 = get_subset_idxs(depths,
-                                                     abs(depth_min),
-                                                     abs(depth_max))
+            indexes = self.get_indexes((lats, latrange),
+                                       (lons, lonrange),
+                                       (depths, depthrange))
+            (lat_idx1, lat_idx2), (lon_idx1, lon_idx2), \
+                                  (depth_idx1, depth_idx2) = indexes
 
             # subset the dimension arrays
             self.lats = lats[lat_idx1:lat_idx2]
@@ -71,12 +69,14 @@ class Grid(object):
             self.depths = depths[depth_idx1:depth_idx2]
 
             var = self.get_variable(nc.variables, variable)
-            data = self.load_data(var, (lat_idx1, lat_idx2),
-                                       (lon_idx1, lon_idx2),
-                                       (depth_idx1, depth_idx2))
+            data = self.load_data(var, *indexes)
             self.data = np.squeeze(data)
 
     def _get_variable(self, variables, options):
+        """
+        Generic routine to try and load a variable from a list of @options
+        """
+
         for v in options:
             try:
                 return variables[v][:]
@@ -86,15 +86,43 @@ class Grid(object):
         raise GridWrongFormat("No variable in choices: %s" % options)
 
     def get_lats(self, variables):
+        """
+        Retrieve the latitudes for a dataset.
+        """
+
         return self._get_variable(variables, self.LATS_VARIABLE)
 
     def get_lons(self, variables):
+        """
+        Retrieve the longitudes for a dataset.
+        """
+
         return self._get_variable(variables, self.LONS_VARIABLE)
 
     def get_depths(self, variables):
+        """
+        Implement to retrieve the depths for a dataset.
+        """
+
         return [0.]
 
+    def get_indexes(self, *args):
+        """
+        Get the subsetting indexes for any number of datasets, passed as an
+        iterable of elements (dataset, (min, max)).
+
+        e.g. (lat_idx1, lat_idx2), (lon_idx1, lon_idx2) = \
+            get_indexes([(lats, (latmin, latmax)), (lons, (lonmin, lonmax))])
+        """
+
+        return [get_subset_idxs(data, min, max)
+                for data, (min, max) in args]
+
     def get_variable(self, variables, variable):
+        """
+        Retrieve @variable
+        """
+
         try:
             return variables[variable]
         except KeyError as e:
@@ -103,6 +131,13 @@ class Grid(object):
     def load_data(self, variable, (lat_idx1, lat_idx2),
                                   (lon_idx1, lon_idx2),
                                   (depth_idx1, depth_idx2)):
+        """
+        Load the subset of @variable. Assumes spatial data with layout:
+        (time, (depth)), lat, lon
+
+        Override to handle other data layouts.
+        """
+
         try:
             ndim = len(variable.dimensions)
         except AttributeError:
@@ -114,7 +149,6 @@ class Grid(object):
                             depth_idx1:depth_idx2,
                             lat_idx1:lat_idx2,
                             lon_idx1:lon_idx2]
-
         elif ndim == 3:
             # data arranged time, lat, lon
             return variable[0,
@@ -126,3 +160,63 @@ class Grid(object):
                             lon_idx1:lon_idx2]
         else:
             raise GridWrongFormat()
+
+class Gridset(Grid):
+    """
+    Generic accessor for sets of grids where grids are separated
+    temporally in different files.
+    """
+
+    SUFFIX = '.nc'
+
+    pp = util.Parameterise()
+
+    def __init__(self, path, variable, period,
+                       prefix=None, suffix=SUFFIX, date=None, **kwargs):
+
+        assert prefix is not None
+        assert suffix is not None
+        assert date is not None
+
+        filename = self.get_filename(path, prefix, suffix, date, period)
+
+        Grid.__init__(self, filename, variable, **kwargs)
+
+    def get_filename(self, path, prefix, suffix, date, period):
+        """
+        Returns the filename for a grid file given the specified @path,
+        @prefix, @date and @period of the file.
+        """
+
+        return os.path.join(path,
+                            '%s%s%s' % (
+                            prefix,
+                            self.get_filename_date(date,
+                                                   params=dict(period=period)),
+                            suffix))
+
+    @pp.apply_to(period='daily')
+    def get_filename_date(self, date, **kwargs):
+        return date.strftime('%Y%m%d')
+
+    @pp.apply_to(period='monthly')
+    def get_filename_date(self, date, **kwargs):
+        return date.strftime('%Y%m')
+
+    def _get_filename_date(self, date, nmonths):
+        months = getMonths(date, nmonths)
+        return '%imthavg_%s_%s' % (nmonths,
+                                   months[0].strftime('%Y%m'),
+                                   months[-1].strftime('%Y%m'))
+
+    @pp.apply_to(period='3monthly')
+    def get_filename_date(self, date, **kwargs):
+        return self._get_filename_date(date, 3)
+
+    @pp.apply_to(period='6monthly')
+    def get_filename_date(self, date, **kwargs):
+        return self._get_filename_date(date, 6)
+
+    @pp.apply_to(period='12monthly')
+    def get_filename_date(self, date, **kwargs):
+        return self._get_filename_date(date, 12)
