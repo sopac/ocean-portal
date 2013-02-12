@@ -7,6 +7,8 @@
 
 import datetime
 
+import pytest
+
 import ocean
 from ocean import util
 
@@ -42,3 +44,69 @@ def test_format_old_date():
     ds = util.format_old_date(d)
 
     assert ds == 'May 1850'
+
+def test_funcregister_good():
+    class Test(object):
+        pp = util.Parameterise()
+
+        @pp.apply_to(variable='mean')
+        def get_filename(self, params={}):
+            return 'canoe'
+
+        @pp.apply_to(variable='anom')
+        def get_filename(self, params={}):
+            return 'yacht'
+
+    t = Test()
+
+    assert t.get_filename(params={ 'variable': 'mean'}) == 'canoe'
+    assert t.get_filename(params={ 'variable': 'anom'}) == 'yacht'
+
+    with pytest.raises(AttributeError) as e:
+        t.get_filename(params={ 'variable': 'dec' })
+
+    assert e.value.message.startswith('No function')
+
+def test_funcregister_ambiguous():
+    class Test(object):
+        pp = util.Parameterise()
+
+        @pp.apply_to(variable='mean')
+        def get_filename(self, params={}):
+            return 'canoe'
+
+        @pp.apply_to(period='monthly')
+        def get_filename(self, params={}):
+            return 'yacht'
+
+    t = Test()
+
+    with pytest.raises(AttributeError) as e:
+        t.get_filename(params={ 'variable': 'mean', 'period': 'monthly' })
+
+    assert e.value.message.startswith('Ambiguous')
+
+def test_funcregister_good_multi():
+    class Test(object):
+        pp = util.Parameterise()
+
+        @pp.apply_to(variable='mean', period='monthly')
+        def get_filename(self, params={}):
+            return 'Monthly Mean'
+
+        @pp.apply_to(variable='anom', period='monthly')
+        def get_filename(self, params={}):
+            return 'Monthly Anom'
+
+    t = Test()
+    t.badger = 1
+
+    assert t.get_filename(params={ 'variable': 'mean', 'period': 'monthly' }) \
+        == 'Monthly Mean'
+    assert t.get_filename(params={ 'variable': 'anom', 'period': 'monthly' }) \
+        == 'Monthly Anom'
+
+    with pytest.raises(AttributeError) as e:
+        t.get_filename(params={ 'variable': 'dec', 'period': 'monthly' })
+
+    assert e.value.message.startswith('No function')
