@@ -110,3 +110,40 @@ def test_funcregister_good_multi():
         t.get_filename(params={ 'variable': 'dec', 'period': 'monthly' })
 
     assert e.value.message.startswith('No function')
+
+def test_funcregister_tight_binding_good():
+    class Test(object):
+        pp = util.Parameterise()
+
+        @pp.apply_to()
+        def get_title(self, params={}):
+            return 'Monthly Average'
+
+        @pp.apply_to(variable='anom')
+        def get_title(self, params={}):
+            return 'Monthly Anom'
+
+    t = Test()
+
+    assert t.get_title(params=dict(variable='mean')) == 'Monthly Average'
+    assert t.get_title(params=dict(variable='anom')) == 'Monthly Anom'
+    assert t.get_title(params={}) == 'Monthly Average'
+
+def test_func_register_tight_binding_ambiguous():
+    class Test(object):
+        pp = util.Parameterise()
+
+        @pp.apply_to(period='monthly')
+        def get_title(self, params={}):
+            return 'Monthly Average'
+
+        @pp.apply_to(variable='anom')
+        def get_title(self, params={}):
+            return 'Monthly Anom'
+
+    t = Test()
+
+    with pytest.raises(AttributeError) as e:
+        t.get_title(params=dict(variable='anom', period='monthly'))
+
+    assert e.value.message.startswith('Ambiguous')

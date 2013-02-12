@@ -63,12 +63,18 @@ class Parameterise(object):
                 params = kwargs['params']
 
                 candidates = filter(matches(params), funcs)
+                candidates.sort(key=lambda f: len(f._methodparams),
+                                reverse=True)
 
-                print candidates
                 if len(candidates) == 1:
                     return candidates[0](*args, **kwargs)
                 elif len(candidates) > 1:
-                    raise AttributeError("Ambiguous. Too many matches")
+                    if len(candidates[0]._methodparams) == \
+                       len(candidates[1]._methodparams):
+                        print candidates
+                        raise AttributeError("Ambiguous. Too many matches")
+                    else:
+                        return candidates[0](*args, **kwargs)
                 else:
                     raise AttributeError("No function matches parameters")
 
