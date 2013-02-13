@@ -1,5 +1,8 @@
 __all__ = [
     'extractor',
     'grid',
-    'plotter',
+    'surfaceplotter',
 ]
+
+from grid import Grid, Gridset
+from surfaceplotter import SurfacePlotter

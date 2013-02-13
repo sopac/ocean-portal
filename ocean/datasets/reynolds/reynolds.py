@@ -6,15 +6,14 @@
 # Authors: Sheng Guo <s.guo@bom.gov.au>
 #          Danielle Madeley <d.madeley@bom.gov.au>
 
-import os
 import os.path
-import sys
 
 from ocean import config
 from ocean.datasets import SST
 from ocean.config import productName
+from ocean.netcdf import SurfacePlotter
 
-import reynoldsPlotter
+from reynoldsConfig import ReynoldsConfig
 
 serverCfg = config.get_server_config()
 
@@ -35,4 +34,25 @@ class reynolds(SST):
         SST.__init__(self)
 
         self.product = productName.products['reynolds']
-        self.plotter = reynoldsPlotter.ReynoldsPlotter()
+        self.plotter = ReynoldsPlotter()
+
+class ReynoldsPlotter(SurfacePlotter):
+    DATASET = 'reynolds'
+    PRODUCT_NAME = "Reynolds SST"
+    CONFIG = ReynoldsConfig
+
+    apply_to = SurfacePlotter.apply_to
+
+    @apply_to(period='daily')
+    def get_path(self, params={}):
+        return os.path.join(serverCfg['dataDir'][self.DATASET],
+                            'daily-new-uncompressed' )
+
+    # --- get_prefix ---
+    @apply_to(period='daily')
+    def get_prefix(self, params={}):
+        return 'avhrr-only-v2.'
+
+    @apply_to()
+    def get_prefix(self, params={}):
+        return 'reynolds_sst_avhrr-only-v2_'
