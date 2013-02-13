@@ -129,7 +129,7 @@ def test_funcregister_tight_binding_good():
     assert t.get_title(params=dict(variable='anom')) == 'Monthly Anom'
     assert t.get_title(params={}) == 'Monthly Average'
 
-def test_func_register_tight_binding_ambiguous():
+def test_funcregister_tight_binding_ambiguous():
     class Test(object):
         pp = util.Parameterise()
 
@@ -147,3 +147,38 @@ def test_func_register_tight_binding_ambiguous():
         t.get_title(params=dict(variable='anom', period='monthly'))
 
     assert e.value.message.startswith('Ambiguous')
+
+def test_funcregister_ignore():
+    class Test(object):
+        pp = util.Parameterise()
+        apply_to = pp.apply_to
+
+        @apply_to()
+        def get_path(self, params={}):
+            return '/usual/path'
+
+        @apply_to(variable='dec')
+        def get_path(self, params={}):
+            return '/deciles/path'
+
+    class TestSubClass(Test):
+        apply_to = Test.apply_to
+
+        @apply_to(period='monthly')
+        def get_path(self, params={}):
+            return '/original/data/path'
+
+        @apply_to(period='monthly', variable='dec')
+        def get_path(self, params={}):
+            return self.get_path(params=params, _ignore=['period'])
+
+    t = TestSubClass()
+
+    assert t.get_path(params=dict(variable='anom',
+                                  period='monthly')) == '/original/data/path'
+    assert t.get_path(params=dict(variable='anom',
+                                  period='3monthly')) == '/usual/path'
+    assert t.get_path(params=dict(variable='dec',
+                                  period='monthly')) == '/deciles/path'
+    assert t.get_path(params=dict(variable='dec',
+                                  period='3monthly')) == '/deciles/path'

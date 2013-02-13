@@ -48,9 +48,12 @@ class Parameterise(object):
             funcs.append(func)
             func._methodparams = methodparams
 
-            def matches(params):
+            def matches(params, ignores):
                 def inner(func):
                     for k, v in func._methodparams.items():
+                        if k in ignores:
+                            return False
+
                         if k not in params or params[k] != v:
                             return False
 
@@ -62,7 +65,13 @@ class Parameterise(object):
             def inner(*args, **kwargs):
                 params = kwargs['params']
 
-                candidates = filter(matches(params), funcs)
+                try:
+                    ignore = kwargs['_ignore']
+                    del kwargs['_ignore']
+                except KeyError:
+                    ignore = []
+
+                candidates = filter(matches(params, ignore), funcs)
                 candidates.sort(key=lambda f: len(f._methodparams),
                                 reverse=True)
 
@@ -71,7 +80,8 @@ class Parameterise(object):
                 elif len(candidates) > 1:
                     if len(candidates[0]._methodparams) == \
                        len(candidates[1]._methodparams):
-                        print candidates
+                        for c in candidates:
+                            print c._methodparams
                         raise AttributeError("Ambiguous. Too many matches")
                     else:
                         return candidates[0](*args, **kwargs)
