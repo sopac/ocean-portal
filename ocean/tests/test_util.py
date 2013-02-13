@@ -47,13 +47,13 @@ def test_format_old_date():
 
 def test_funcregister_good():
     class Test(object):
-        pp = util.Parameterise()
+        apply_to = util.Parameterise()
 
-        @pp.apply_to(variable='mean')
+        @apply_to(variable='mean')
         def get_filename(self, params={}):
             return 'canoe'
 
-        @pp.apply_to(variable='anom')
+        @apply_to(variable='anom')
         def get_filename(self, params={}):
             return 'yacht'
 
@@ -69,13 +69,13 @@ def test_funcregister_good():
 
 def test_funcregister_ambiguous():
     class Test(object):
-        pp = util.Parameterise()
+        apply_to = util.Parameterise()
 
-        @pp.apply_to(variable='mean')
+        @apply_to(variable='mean')
         def get_filename(self, params={}):
             return 'canoe'
 
-        @pp.apply_to(period='monthly')
+        @apply_to(period='monthly')
         def get_filename(self, params={}):
             return 'yacht'
 
@@ -88,13 +88,13 @@ def test_funcregister_ambiguous():
 
 def test_funcregister_good_multi():
     class Test(object):
-        pp = util.Parameterise()
+        apply_to = util.Parameterise()
 
-        @pp.apply_to(variable='mean', period='monthly')
+        @apply_to(variable='mean', period='monthly')
         def get_filename(self, params={}):
             return 'Monthly Mean'
 
-        @pp.apply_to(variable='anom', period='monthly')
+        @apply_to(variable='anom', period='monthly')
         def get_filename(self, params={}):
             return 'Monthly Anom'
 
@@ -113,13 +113,13 @@ def test_funcregister_good_multi():
 
 def test_funcregister_tight_binding_good():
     class Test(object):
-        pp = util.Parameterise()
+        apply_to = util.Parameterise()
 
-        @pp.apply_to()
+        @apply_to()
         def get_title(self, params={}):
             return 'Monthly Average'
 
-        @pp.apply_to(variable='anom')
+        @apply_to(variable='anom')
         def get_title(self, params={}):
             return 'Monthly Anom'
 
@@ -131,13 +131,13 @@ def test_funcregister_tight_binding_good():
 
 def test_funcregister_tight_binding_ambiguous():
     class Test(object):
-        pp = util.Parameterise()
+        apply_to = util.Parameterise()
 
-        @pp.apply_to(period='monthly')
+        @apply_to(period='monthly')
         def get_title(self, params={}):
             return 'Monthly Average'
 
-        @pp.apply_to(variable='anom')
+        @apply_to(variable='anom')
         def get_title(self, params={}):
             return 'Monthly Anom'
 
@@ -150,8 +150,7 @@ def test_funcregister_tight_binding_ambiguous():
 
 def test_funcregister_ignore():
     class Test(object):
-        pp = util.Parameterise()
-        apply_to = pp.apply_to
+        apply_to = util.Parameterise()
 
         @apply_to()
         def get_path(self, params={}):
@@ -162,7 +161,7 @@ def test_funcregister_ignore():
             return '/deciles/path'
 
     class TestSubClass(Test):
-        apply_to = Test.apply_to
+        apply_to = util.Parameterise(Test)
 
         @apply_to(period='monthly')
         def get_path(self, params={}):
@@ -182,3 +181,33 @@ def test_funcregister_ignore():
                                   period='monthly')) == '/deciles/path'
     assert t.get_path(params=dict(variable='dec',
                                   period='3monthly')) == '/deciles/path'
+
+def test_funcregister_subclass():
+    class BaseTest(object):
+        apply_to = util.Parameterise()
+
+        @apply_to()
+        def get_a(self, params={}):
+            return 'a'
+
+    class Lowercase(BaseTest):
+        apply_to = util.Parameterise(BaseTest)
+
+        @apply_to()
+        def get_b(self, params={}):
+            return 'b'
+
+    class Uppercase(BaseTest):
+        apply_to = util.Parameterise(BaseTest)
+
+        @apply_to()
+        def get_b(self, params={}):
+            return 'B'
+
+    t = Lowercase()
+    T = Uppercase()
+
+    assert t.get_a(params={}) == 'a'
+    assert t.get_b(params={}) == 'b'
+    assert T.get_a(params={}) == 'a' # yes, lowercase
+    assert T.get_b(params={}) == 'B'

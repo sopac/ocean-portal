@@ -29,10 +29,19 @@ class Parameterise(object):
     AttributeError is raised. Similarly if there are no available matches.
     """
 
-    def __init__(self):
+    def __init__(self, supercls=object):
         self._registry = {}
+        self._supercls = supercls
 
-    def apply_to(self, **methodparams):
+    def registry(self, name):
+        try:
+            funcs = self._registry[name]
+        except KeyError:
+            funcs = self._registry[name] = []
+
+        return funcs
+
+    def __call__(self, **methodparams):
         """
         This is the decorator.
         """
@@ -40,12 +49,7 @@ class Parameterise(object):
         def outer(func):
             name = func.__name__
 
-            try:
-                funcs = self._registry[name]
-            except KeyError:
-                funcs = self._registry[name] = []
-
-            funcs.append(func)
+            self.registry(name).append(func)
             func._methodparams = methodparams
 
             def matches(params, ignores):
@@ -63,6 +67,8 @@ class Parameterise(object):
 
             @wraps(func)
             def inner(*args, **kwargs):
+                __tracebackhide__ = True
+
                 params = kwargs['params']
 
                 try:
@@ -70,6 +76,27 @@ class Parameterise(object):
                     del kwargs['_ignore']
                 except KeyError:
                     ignore = []
+
+                def find_registry(cls):
+                    try:
+                        for v in cls.__dict__.values():
+                            if isinstance(v, Parameterise):
+                                return v
+                    except AttributeError:
+                        pass
+
+                    return None
+
+                def walk_back(funcs, supercls):
+                    pp = find_registry(supercls)
+
+                    if pp is not None:
+                        funcs = walk_back(funcs, pp._supercls) + \
+                                pp.registry(name)
+
+                    return funcs
+
+                funcs = walk_back(self.registry(name), self._supercls)
 
                 candidates = filter(matches(params, ignore), funcs)
                 candidates.sort(key=lambda f: len(f._methodparams),
@@ -81,11 +108,13 @@ class Parameterise(object):
                     if len(candidates[0]._methodparams) == \
                        len(candidates[1]._methodparams):
                         for c in candidates:
-                            print c._methodparams
+                            print name, c._methodparams
                         raise AttributeError("Ambiguous. Too many matches")
                     else:
                         return candidates[0](*args, **kwargs)
                 else:
+                    for f in funcs:
+                        print name, f._methodparams
                     raise AttributeError("No function matches parameters")
 
             return inner
