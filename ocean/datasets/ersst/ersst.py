@@ -14,8 +14,9 @@ import sys
 from ocean import config
 from ocean.datasets import SST
 from ocean.config import productName
+from ocean.netcdf import SurfacePlotter
 
-import ersstPlotter
+from ersstConfig import ErsstConfig
 
 serverCfg = config.get_server_config()
 
@@ -41,4 +42,28 @@ class ersst(SST):
         SST.__init__(self)
 
         self.product = productName.products['ersst']
-        self.plotter = ersstPlotter.ErsstPlotter()
+        self.plotter = ERSSTPlotter()
+
+class ERSSTPlotter(SurfacePlotter):
+
+    DATASET = 'ersst'
+    PRODUCT_NAME = "Extended Reconstructed SST"
+    CONFIG = ErsstConfig
+
+    apply_to = SurfacePlotter.apply_to
+
+    @apply_to()
+    def get_prefix(self, params={}):
+        return 'ersst_v3b_'
+
+    @apply_to(period='monthly')
+    def get_prefix(self, params={}):
+        return 'ersst.'
+
+    @apply_to(period='monthly')
+    def get_path(self, params={}):
+        return os.path.join(serverCfg['dataDir'][self.DATASET], 'monthly')
+
+    @apply_to(period='monthly', variable='dec')
+    def get_path(self, params={}):
+        return self.get_path(params=params, _ignore=['period'])

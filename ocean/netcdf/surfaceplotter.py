@@ -42,7 +42,7 @@ class SurfacePlotter(object):
 
     @apply_to(variable='dec')
     def get_path(self, params={}):
-        return os.path.join(serverCfg['dataDir']['reynolds'],
+        return os.path.join(serverCfg['dataDir'][self.DATASET],
                             'decile', self.BASE_YEAR, params['period'])
 
     # --- get_suffix ---
