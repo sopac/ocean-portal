@@ -36,6 +36,7 @@ packages = [
     'ocean.config',
     'ocean.netcdf',
     'ocean.util',
+    'ocean.plotter',
     # dataset
     'ocean.datasets',
     'ocean.datasets.bran',

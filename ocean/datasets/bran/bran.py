@@ -59,6 +59,11 @@ class bran(Dataset):
         'xsections',
     ]
 
+    __subdirs__ = [
+        'monthly',
+        'averages',
+    ]
+
     def process(self, params):
         response = {}
 

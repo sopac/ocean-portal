@@ -69,6 +69,10 @@ class ww3(Dataset):
         'waverose',
     ]
 
+    __subdirs__ = [
+        'monthly'
+    ]
+
     def process(self, params):
         response = {}
 

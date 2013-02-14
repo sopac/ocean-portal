@@ -31,25 +31,16 @@ to_data = serverConfig.servers[to_server]['dataDir']
 
 for (dataset, from_datadir), to_datadir in zip(from_data.items(), to_data.values()):
     try:
-        config = __import__('ocean.datasets.%s.%sConfig' % (dataset, dataset),
-                fromlist=[''])
-    except ImportError:
-        print >> sys.stderr, "Could not import %sConfig, skipping" % (dataset)
+        Dataset = util.import_dataset(dataset)
+    except ImportError as e:
+        print >> sys.stderr, "Could not import %s, skipping (%s)" % (dataset, e)
         continue
 
-    class_name = '%sConfig' % (dataset.title())
-
-    if not hasattr(config, class_name):
-        print >> sys.stderr, "No %s class, skipping" % (class_name)
+    try:
+        Dataset.__subdirs__
+    except AttributeError:
+        print >> sys.stderr, "%s.__subdirs__ not defined, skipping" % (dataset)
         continue
-
-    config_class = getattr(config, class_name)()
-
-    if not hasattr(config_class, 'subDirs'):
-        print >> sys.stderr, "%s.subDirs not defined" % (class_name)
-        continue
-
-    subdirs = config_class.subDirs
 
     for subdir in subdirs:
         from_dir = '%s/' % (os.path.join(from_datadir, subdir))
