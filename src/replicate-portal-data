@@ -37,7 +37,7 @@ for (dataset, from_datadir), to_datadir in zip(from_data.items(), to_data.values
         continue
 
     try:
-        Dataset.__subdirs__
+        subdirs = Dataset.__subdirs__
     except AttributeError:
         print >> sys.stderr, "%s.__subdirs__ not defined, skipping" % (dataset)
         continue
