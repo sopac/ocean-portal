@@ -10,6 +10,7 @@ import os
 import os.path
 import sys
 from datetime import datetime
+from functools import wraps
 from warnings import warn
 
 from ocean import config
@@ -65,6 +66,38 @@ class _Logger(object):
 
         return elapsed
 
+    def time_and_log(self, arg1):
+        """
+        Decorator to time the execution of a function/method and log it.
+        """
+
+        if not callable(arg1):
+            name = arg1
+        else:
+            name = None
+
+        def outer(func):
+
+            if name is None:
+                timer_name = func.__name__
+            else:
+                timer_name = name
+
+            @wraps(func)
+            def inner(*args, **kwargs):
+                self.start_timer(timer_name)
+                r = func(*args, **kwargs)
+                self.stop_timer(timer_name)
+
+                return r
+
+            return inner
+
+        if callable(arg1):
+            return outer(arg1)
+        else:
+            return outer
+
 # singleton logger
 _logger = _Logger()
 
@@ -72,3 +105,4 @@ _logger = _Logger()
 log = _logger.log
 start_timer = _logger.start_timer
 stop_timer = _logger.stop_timer
+time_and_log = _logger.time_and_log

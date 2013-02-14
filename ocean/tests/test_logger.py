@@ -91,7 +91,7 @@ def test_timers_fail2(log):
     with pytest.raises(KeyError):
         log.stop_timer('method')
 
-def test_timers_reuse(log):
+def test_timers_reuse(log, warnings_as_errors):
 
     log.start_timer('method')
 
@@ -101,3 +101,43 @@ def test_timers_reuse(log):
     log.start_timer('method')
 
     assert dt < log._timers['method']
+
+def test_timers_decorator(log, warnings_as_errors):
+
+    @log.time_and_log
+    def time_me():
+        return 'badger'
+
+    a = time_me()
+    assert a == 'badger'
+
+    with open('/tmp/test-log.csv') as f:
+        reader = csv.reader(f, delimiter=' ')
+
+        lines = [ r for r in reader ]
+
+        assert len(lines) == 2
+
+        _, (_, name, _) = lines
+
+        assert name == 'time_me'
+
+def test_timers_decorator2(log, warnings_as_errors):
+
+    @log.time_and_log('some-other-name')
+    def time_me():
+        return 'badger'
+
+    a = time_me()
+    assert a == 'badger'
+
+    with open('/tmp/test-log.csv') as f:
+        reader = csv.reader(f, delimiter=' ')
+
+        lines = [ r for r in reader ]
+
+        assert len(lines) == 2
+
+        _, (_, name, _) = lines
+
+        assert name == 'some-other-name'
