@@ -12,7 +12,7 @@ import bisect
 import numpy as np
 from netCDF4 import Dataset
 
-from ocean import util
+from ocean import util, logger
 from ocean.util.dateRange import getMonths
 from ocean.core import ReportableException
 
@@ -46,6 +46,7 @@ class Grid(object):
     # a list of possible variables for longitude
     LONS_VARIABLE = ['lon']
 
+    @logger.time_and_log('load-grid')
     def __init__(self, filename, variable,
                  latrange=(-91, 91),
                  lonrange=(-361, 361),
@@ -53,6 +54,7 @@ class Grid(object):
                  **kwargs):
         with Dataset(filename) as nc:
 
+            logger.log("Dataset", filename)
             lats = self.get_lats(nc.variables)
             lons = self.get_lons(nc.variables)
             depths = self.get_depths(nc.variables)
@@ -85,6 +87,7 @@ class Grid(object):
 
         raise GridWrongFormat("No variable in choices: %s" % options)
 
+    @logger.time_and_log
     def get_lats(self, variables):
         """
         Retrieve the latitudes for a dataset.
@@ -92,6 +95,7 @@ class Grid(object):
 
         return self._get_variable(variables, self.LATS_VARIABLE)
 
+    @logger.time_and_log
     def get_lons(self, variables):
         """
         Retrieve the longitudes for a dataset.
@@ -106,6 +110,7 @@ class Grid(object):
 
         return [0.]
 
+    @logger.time_and_log
     def get_indexes(self, *args):
         """
         Get the subsetting indexes for any number of datasets, passed as an
@@ -128,6 +133,7 @@ class Grid(object):
         except KeyError as e:
             raise GridWrongFormat(e)
 
+    @logger.time_and_log
     def load_data(self, variable, (lat_idx1, lat_idx2),
                                   (lon_idx1, lon_idx2),
                                   (depth_idx1, depth_idx2)):
