@@ -143,9 +143,58 @@ class SurfacePlotter(object):
     def get_contour_labels(self, params={}):
         return False
 
+    # --- get_title ---
+    @apply_to()
+    def get_title(self, params={}):
+        d = {
+            'mean': "Average Sea Surface Temperature",
+            'anom': "Average Sea Surface Temperature Anomaly",
+            'dec': "Average Sea Surface Temperature Deciles"
+        }
+
+        return d[params['variable']]
+
+    # --- get_period_name ---
+    @apply_to()
+    def get_period_name(self, params={}):
+        d = {
+            'daily': "Daily",
+            'weekly': "Weekly",
+            'monthly': "Monthly",
+            '3monthly': "3 monthly",
+            '6monthly': "6 monthly",
+            '12monthly': "12 monthly",
+            'yearly': "Yearly",
+        }
+
+        return d[params['period']]
+
+    # --- get_units ---
+    @apply_to()
+    def get_units(self, params={}):
+        return ur'\u00b0' + 'C' # degrees C
+
+    @apply_to(variable='dec')
+    def get_units(self, params={}):
+        return ''
+
+    # --- get_colormap ---
+    @apply_to()
+    def get_colormap(self, params={}):
+        return 'RdBu_r'
+
+    @apply_to(variable='mean')
+    def get_colormap(self, params={}):
+        return 'jet'
+
     # ---
-    def __init__(self):
-        self.config = self.CONFIG()
+    def get_variable_mapping(self, params={}):
+        var = params['variable']
+
+        try:
+            return self.VARIABLE_MAP[var]
+        except KeyError:
+            return var
 
     def get_grid(self, params={}, **kwargs):
         """
@@ -154,7 +203,7 @@ class SurfacePlotter(object):
         Override this method to access grids in a different way.
         """
 
-        gridvar = self.config.getVariableType(params['variable'])
+        gridvar = self.get_variable_mapping(params=params)
 
         return Gridset(self.get_path(params=params), gridvar, params['period'],
                        prefix=self.get_prefix(params=params),
@@ -176,13 +225,13 @@ class SurfacePlotter(object):
         regionLongName = regionConfig.regions[area][2]
         title = regionLongName + '\n'
 
-        if hasattr(self.config, 'getPeriodPrefix') and 'period' in args:
-            title += self.config.getPeriodPrefix(args['period'])
-            title += self.config.getTitle(variable) + args['formattedDate']
+        if 'period' in args:
+            title += "%s %s: %s" % (self.get_period_name(params=args),
+                                    self.get_title(params=args),
+                                    args['formattedDate'])
 
-        cmap_name = self.config.getColorMap(variable)
-        units = self.config.getUnit(variable)
-
+        units = self.get_units(params=args)
+        cmap_name = self.get_colormap(params=args)
         cb_ticks = self.get_ticks(params=args)
         cb_tick_fmt = self.get_ticks_format(params=args)
         cb_labels, cb_label_pos = self.get_labels(params=args)
