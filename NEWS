@@ -1,9 +1,14 @@
 Ocean Map Portal 0.3.2
 ======================
 
-Bugs Fixed:
+New Features:
 
  - reimplement IE7 support (Danni)
+ - reduce code duplication (Danni)
+
+Bugs Fixed:
+
+ - no scrollbars on loading dialog (Danni)
 
 Ocean Map Portal 0.3.1
 ======================
