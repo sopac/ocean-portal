@@ -33,12 +33,12 @@ def main():
 
     try:
         params = Dataset.parse(validate=False)
-        Dataset = util.import_dataset(params['dataset'])
+        ChosenDataset = util.import_dataset(params['dataset'])
 
         # reparse the params with the module, this time with validation
-        params = Dataset.parse()
+        params = ChosenDataset.parse()
 
-        ds = Dataset()
+        ds = ChosenDataset()
 
         response.update(ds.process(params))
     except ReportableException as e:
