@@ -31,8 +31,7 @@ class SurfacePlotter(object):
     BASE_YEAR = '1950'
     FILE_EXTENSION = '.nc'
 
-    _pp = util.Parameterise()
-    apply_to = _pp.apply_to
+    apply_to = util.Parameterise()
 
     # --- get_path ---
     @apply_to()

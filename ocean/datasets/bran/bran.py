@@ -129,7 +129,8 @@ class bran(Dataset):
                                                                 yearStr,
                                                                 monthStr))
             else:
-                monthInt = ''.join(i for i in periodStr if i.isdigit())
+                # FIXME: this is horrific
+                monthInt = int(''.join(i for i in periodStr if i.isdigit()))
                 months = dateRange.getMonths(date, monthInt)
                 title_date_str = months[0].strftime('%B %Y') + ' to ' + months[-1].strftime('%B %Y')
                 input_data_file = os.path.join(server_config['dataDir']['bran'],
@@ -288,7 +289,7 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
                                                         yearStr,
                                                         monthStr))
     else:
-        monthInt = ''.join(i for i in periodStr if i.isdigit())
+        monthInt = int(''.join(i for i in periodStr if i.isdigit()))
         months = dateRange.getMonths(date, monthInt)
         title_date_str = months[0].strftime('%B %Y') + ' to ' + months[-1].strftime('%B %Y')
         input_data_file = os.path.join(server_config['dataDir']['bran'],

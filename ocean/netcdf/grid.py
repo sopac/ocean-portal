@@ -169,7 +169,7 @@ class Gridset(Grid):
 
     SUFFIX = '.nc'
 
-    pp = util.Parameterise()
+    apply_to = util.Parameterise(Grid)
 
     def __init__(self, path, variable, period,
                        prefix=None, suffix=SUFFIX, date=None, **kwargs):
@@ -195,11 +195,11 @@ class Gridset(Grid):
                                                    params=dict(period=period)),
                             suffix))
 
-    @pp.apply_to(period='daily')
+    @apply_to(period='daily')
     def get_filename_date(self, date, **kwargs):
         return date.strftime('%Y%m%d')
 
-    @pp.apply_to(period='monthly')
+    @apply_to(period='monthly')
     def get_filename_date(self, date, **kwargs):
         return date.strftime('%Y%m')
 
@@ -209,14 +209,14 @@ class Gridset(Grid):
                                    months[0].strftime('%Y%m'),
                                    months[-1].strftime('%Y%m'))
 
-    @pp.apply_to(period='3monthly')
+    @apply_to(period='3monthly')
     def get_filename_date(self, date, **kwargs):
         return self._get_filename_date(date, 3)
 
-    @pp.apply_to(period='6monthly')
+    @apply_to(period='6monthly')
     def get_filename_date(self, date, **kwargs):
         return self._get_filename_date(date, 6)
 
-    @pp.apply_to(period='12monthly')
+    @apply_to(period='12monthly')
     def get_filename_date(self, date, **kwargs):
         return self._get_filename_date(date, 12)

@@ -15,6 +15,7 @@ from ocean import config
 from ocean.datasets import SST
 from ocean.config import productName
 from ocean.netcdf import SurfacePlotter
+from ocean.util import Parameterise
 
 from ersstConfig import ErsstConfig
 
@@ -50,7 +51,7 @@ class ERSSTPlotter(SurfacePlotter):
     PRODUCT_NAME = "Extended Reconstructed SST"
     CONFIG = ErsstConfig
 
-    apply_to = SurfacePlotter.apply_to
+    apply_to = Parameterise(SurfacePlotter)
 
     @apply_to()
     def get_prefix(self, params={}):

@@ -8,7 +8,7 @@
 
 import os.path
 
-from ocean import config
+from ocean import config, util
 from ocean.datasets import SST
 from ocean.config import productName
 from ocean.netcdf import SurfacePlotter
@@ -41,7 +41,7 @@ class ReynoldsPlotter(SurfacePlotter):
     PRODUCT_NAME = "Reynolds SST"
     CONFIG = ReynoldsConfig
 
-    apply_to = SurfacePlotter.apply_to
+    apply_to = util.Parameterise(SurfacePlotter)
 
     @apply_to(period='daily')
     def get_path(self, params={}):
