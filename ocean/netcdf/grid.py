@@ -48,7 +48,7 @@ class Grid(object):
 
     def __init__(self, filename, variable,
                  latrange=(-90, 90),
-                 lonrange=(-180, 180),
+                 lonrange=(-360, 360),
                  depthrange=(0, 0),
                  **kwargs):
         with Dataset(filename) as nc:
