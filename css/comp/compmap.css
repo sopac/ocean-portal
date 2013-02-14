@@ -109,6 +109,10 @@ a img {
   padding-bottom: 5px;
 }
 
+#loading-dialog * {
+  overflow: none;
+}
+
 #loading-dialog b {
   position: relative;
   top: -12px;
