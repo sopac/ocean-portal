@@ -7,23 +7,46 @@
 #          Matthew Howie
 #          Danielle Madeley <d.madeley@bom.gov.au>
 
-import os
 import os.path
-import sys
 
 from ocean import config
 from ocean.datasets import SST
-from ocean.config import productName
-
-import ersstPlotter
+from ocean.netcdf import SurfacePlotter
+from ocean.util import Parameterise
 
 serverCfg = config.get_server_config()
 
-class ersst(SST):
+class ERSSTPlotter(SurfacePlotter):
 
-    CACHE_URL = os.path.join(serverCfg['baseURL'],
-                             serverCfg['rasterURL'],
-                             serverCfg['cacheDir']['ersst'])
+    DATASET = 'ersst'
+    PRODUCT_NAME = "Extended Reconstructed SST"
+
+    VARIABLE_MAP = {
+        'mean': 'sst',
+        'dec': 'sst_dec_cats',
+    }
+
+    apply_to = Parameterise(SurfacePlotter)
+
+    @apply_to()
+    def get_prefix(self, params={}):
+        return 'ersst_v3b_'
+
+    @apply_to(period='monthly')
+    def get_prefix(self, params={}):
+        return 'ersst.'
+
+    @apply_to(period='monthly')
+    def get_path(self, params={}):
+        return os.path.join(serverCfg['dataDir'][self.DATASET], 'monthly')
+
+    @apply_to(period='monthly', variable='dec')
+    def get_path(self, params={}):
+        return self.get_path(params=params, _ignore=['period'])
+
+class ersst(SST):
+    DATASET = 'ersst'
+    PLOTTER = ERSSTPlotter
 
     __form_params__ = {
         'baseYear': int,
@@ -37,8 +60,8 @@ class ersst(SST):
         '12monthly',
     ]
 
-    def __init__(self):
-        SST.__init__(self)
-
-        self.product = productName.products['ersst']
-        self.plotter = ersstPlotter.ErsstPlotter()
+    __subdirs__ = [
+        'monthly',
+        'averages',
+        'deciles',
+    ]

@@ -6,22 +6,42 @@
 # Authors: Sheng Guo <s.guo@bom.gov.au>
 #          Danielle Madeley <d.madeley@bom.gov.au>
 
-import os
 import os.path
-import sys
 
-from ocean import config
+from ocean import config, util
 from ocean.datasets import SST
-from ocean.config import productName
-
-import reynoldsPlotter
+from ocean.netcdf import SurfacePlotter
 
 serverCfg = config.get_server_config()
 
+class ReynoldsPlotter(SurfacePlotter):
+    DATASET = 'reynolds'
+    PRODUCT_NAME = "Reynolds SST"
+
+    VARIABLE_MAP = {
+        'mean': 'sst',
+        'dec': 'sst_dec_cats',
+    }
+
+    apply_to = util.Parameterise(SurfacePlotter)
+
+    @apply_to(period='daily')
+    def get_path(self, params={}):
+        return os.path.join(serverCfg['dataDir'][self.DATASET],
+                            'daily-new-uncompressed' )
+
+    # --- get_prefix ---
+    @apply_to(period='daily')
+    def get_prefix(self, params={}):
+        return 'avhrr-only-v2.'
+
+    @apply_to()
+    def get_prefix(self, params={}):
+        return 'reynolds_sst_avhrr-only-v2_'
+
 class reynolds(SST):
-    CACHE_URL = os.path.join(serverCfg['baseURL'],
-                             serverCfg['rasterURL'],
-                             serverCfg['cacheDir']['reynolds'])
+    DATASET = 'reynolds'
+    PLOTTER = ReynoldsPlotter
 
     __periods__ = [
         'daily',
@@ -31,8 +51,8 @@ class reynolds(SST):
         '12monthly',
     ]
 
-    def __init__(self):
-        SST.__init__(self)
-
-        self.product = productName.products['reynolds']
-        self.plotter = reynoldsPlotter.ReynoldsPlotter()
+    __subdirs__ = [
+        'daily-new-uncompressed',
+        'averages',
+        'deciles',
+    ]

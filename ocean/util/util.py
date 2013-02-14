@@ -11,6 +11,17 @@ import datetime
 
 import ocean
 
+def import_dataset(dataset):
+    module = __import__('ocean.datasets.%s' % (dataset),
+                        fromlist=[''])
+
+    try:
+        ds = module.Dataset
+    except AttributeError as e:
+        raise ImportError(e)
+
+    return ds
+
 def get_resource(*args):
     """
     Return the path to a resource.

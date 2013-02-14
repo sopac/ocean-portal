@@ -20,21 +20,25 @@ weekDelta = [relativedelta(weekday=MO),
 
 def getMonths(date, monthRange):
     """
-    Get the months using the input date as the last month and count back in time.
+    Get the months using the input date as the last month and count back in
+    time.
     """
-    year = int(date[0:4])
-    month = int(date[4:6])
-    day = int(date[6:8])
-  
-    mthRange = int(monthRange)
 
-    initDate = datetime.date(year, month, day)
+    if isinstance(date, str):
+        # for compatibility with code that passes dates as strings
+        year = int(date[0:4])
+        month = int(date[4:6])
+        day = int(date[6:8])
 
-    months = []
-    for delta in range(0, mthRange):
-        months.append(initDate + relativedelta(months=-delta))
+        initDate = datetime.date(year, month, day)
+    else:
+        initDate = date
+
+    months = [ initDate + relativedelta(months=-delta)
+               for delta in range(monthRange) ]
     months.reverse()
-    return months 
+
+    return months
 
 def getWeekDays(date):
     """

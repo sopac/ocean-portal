@@ -3,4 +3,5 @@ __all__ = [
     'datasets',
     'netcdf',
     'util',
+    'plotter',
 ]

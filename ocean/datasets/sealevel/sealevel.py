@@ -54,6 +54,11 @@ class sealevel(Dataset):
         'ts',
     ]
 
+    __subdirs__ = [
+        'grids',
+        'tide_gauge',
+    ]
+
     @classmethod
     def validate_tidalGaugeId(self, p):
         assert p in tidalGaugeConfig.tidalGauge

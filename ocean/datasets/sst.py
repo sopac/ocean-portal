@@ -14,10 +14,20 @@ from ocean import util, config
 from ocean.datasets import Dataset
 from ocean.netcdf.plotter import COMMON_FILES
 from ocean.util import areaMean
+from ocean.config import productName
 
 serverCfg = config.get_server_config()
 
 class SST(Dataset):
+    """
+    Base class for SST datasets.
+
+    At a minimum dataset class must define:
+
+    class mydataset(SST):
+        DATASET = 'mydataset'
+        PLOTTER = MyDatasetPlotter
+    """
 
     __form_params__ = {
         'average': bool,
@@ -40,6 +50,16 @@ class SST(Dataset):
     __plots__ = [
         'map',
     ]
+
+    @property
+    def CACHE_URL(self):
+        return os.path.join(serverCfg['baseURL'],
+                            serverCfg['rasterURL'],
+                            serverCfg['cacheDir'][self.DATASET])
+
+    def __init__(self):
+        self.product = productName.products[self.DATASET]
+        self.plotter = self.PLOTTER()
 
     def process_average(self, params):
 
