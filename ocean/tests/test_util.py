@@ -9,11 +9,12 @@ import datetime
 
 import pytest
 
+import ocean
 from ocean import util
 
 def test_get_resource():
     p = util.get_resource('maps', 'raster.map')
-    assert p.startswith(util.__path__[0])
+    assert p.startswith(ocean.__path__[0])
     assert p.endswith('maps/raster.map')
 
 def test_build_response_object():
