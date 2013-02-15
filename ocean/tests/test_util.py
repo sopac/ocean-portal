@@ -9,12 +9,11 @@ import datetime
 
 import pytest
 
-import ocean
 from ocean import util
 
 def test_get_resource():
     p = util.get_resource('maps', 'raster.map')
-    assert p.startswith(ocean.__path__[0])
+    assert p.startswith(util.__path__[0])
     assert p.endswith('maps/raster.map')
 
 def test_build_response_object():
@@ -211,3 +210,58 @@ def test_funcregister_subclass():
     assert t.get_b(params={}) == 'b'
     assert T.get_a(params={}) == 'a' # yes, lowercase
     assert T.get_b(params={}) == 'B'
+
+def test_daterange_get_months_from_datetime():
+    d = datetime.datetime(year=2000, month=3, day=1)
+
+    jan, feb, mar = util.dateRange.getMonths(d, 3)
+
+    assert jan.year == 2000 and jan.month == 1
+    assert feb.year == 2000 and feb.month == 2
+    assert mar.year == 2000 and mar.month == 3
+
+def test_daterange_get_months_from_date():
+    d = datetime.date(year=2000, month=1, day=1)
+
+    oct, nov, dec, jan = util.dateRange.getMonths(d, 4)
+
+    assert oct.year == 1999 and oct.month == 10
+    assert nov.year == 1999 and nov.month == 11
+    assert dec.year == 1999 and dec.month == 12
+    assert jan.year == 2000 and jan.month == 1
+
+def test_daterange_get_months_from_string(recwarn):
+    oct, nov = util.dateRange.getMonths('20081116', 2)
+
+    assert oct.year == 2008 and oct.month == 10
+    assert nov.year == 2008 and nov.month == 11
+
+    w = recwarn.pop()
+
+    assert issubclass(w.category, DeprecationWarning)
+
+def test_daterange_get_weekdays():
+
+    WEEK_7 = range(11, 18) # week 7 of 2013
+
+    for day in WEEK_7:
+        d = datetime.date(year=2013, month=2, day=day)
+
+        assert util.dateRange.getWeekDays(d) == [
+            datetime.date(year=2013, month=2, day=i)
+            for i in WEEK_7
+        ]
+
+def test_daterange_get_weekdays_across_year():
+
+    d = datetime.date(year=2013, month=1, day=1)
+
+    assert util.dateRange.getWeekDays(d) == [
+        datetime.date(year=2012, month=12, day=31),
+        datetime.date(year=2013, month=1, day=1),
+        datetime.date(year=2013, month=1, day=2),
+        datetime.date(year=2013, month=1, day=3),
+        datetime.date(year=2013, month=1, day=4),
+        datetime.date(year=2013, month=1, day=5),
+        datetime.date(year=2013, month=1, day=6),
+    ]
