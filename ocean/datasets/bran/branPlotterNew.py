@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from matplotlib.offsetbox import AnchoredOffsetbox, TextArea
 
+from ocean import logger
 from ocean.netcdf.grid import Grid, GridWrongFormat
 from ocean.netcdf.plotter import getCopyright, get_tick_values, discrete_cmap
 from ocean.util.pngcrush import pngcrush
@@ -22,6 +23,7 @@ class BRANGrid(Grid):
     LONS_VARIABLE = ['xt_ocean', 'xu_ocean'] + Grid.LONS_VARIABLE
     DEPTHS_VARIABLE = ['zt_ocean']
 
+    @logger.time_and_log
     def get_depths(self, variables):
         try:
             return self._get_variable(variables, self.DEPTHS_VARIABLE)
@@ -52,6 +54,7 @@ def load_BRAN_data(input_data_file, var_name,
 
     return grid.lats, grid.lons, grid.depths, grid.data
 
+@logger.time_and_log
 def plot_BRAN_depth_slice(depths, lats, lons, zonal_data, meridional_data, lats_all, lons_all, data_sf,
                           lat_cnt, lon_cnt, output_filename='noname.png', title='', units='m/s',
                           cb_ticks=None, cb_tick_fmt="%.0f", cmp_name='jet', proj='cyl',
