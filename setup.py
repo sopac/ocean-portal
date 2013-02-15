@@ -28,6 +28,7 @@ src = [
     'map.py',
     'portal.py',
     'regions.py',
+    'logs.py',
 ]
 
 packages = [
