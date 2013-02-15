@@ -14,7 +14,7 @@ import json
 import matplotlib
 matplotlib.use('agg')
 
-from ocean import util
+from ocean import util, logger
 from ocean.core import ReportableException
 from ocean.config import get_server_config
 from ocean.datasets import Dataset
@@ -31,16 +31,22 @@ if 'PORTALPATH' in os.environ:
 def main():
     response = {}
 
+    logger.log('-START-')
+
     try:
         params = Dataset.parse(validate=False)
         ChosenDataset = util.import_dataset(params['dataset'])
 
         # reparse the params with the module, this time with validation
+        logger.log("Parsing", params)
         params = ChosenDataset.parse()
 
         ds = ChosenDataset()
 
+        logger.log("Process", params['dataset'])
+        logger.start_timer('total-process')
         response.update(ds.process(params))
+        logger.stop_timer('total-process')
     except ReportableException as e:
         response['error'] = e.message
     except ImportError:
@@ -59,6 +65,7 @@ def main():
     print
 
     json.dump(response, sys.stdout)
+    logger.log('-DONE-')
 
 if __name__ == '__main__':
     if config.get('profile', False):

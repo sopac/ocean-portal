@@ -165,11 +165,20 @@ if __name__ == '__main__':
                     output_dir = '/data/sst/ersst/data/decile/1950/monthly/'
             else:
                 if product == 'reynolds':
-                    input_files =  glob.glob('/data/sst/reynolds/averages/' + avg_period_str + 'monthly/reynolds_sst_avhrr-only-v2_' + avg_period_str + 'mthavg_[1-2][0-9][0-9][0-9]' + month_str + '_*.nc')
+                    input_files =  glob.glob('/data/sst/reynolds/averages/' + \
+                                             avg_period_str + 'monthly/reynolds_sst_avhrr-only-v2_' + \
+                                             avg_period_str + 'mthavg_[1-2][0-9][0-9][0-9]' + \
+                                             month_str + '_[1-2][0-9][0-9][0-9][0-9][0-9].nc')
                     output_dir = '/data/sst/reynolds/decile/1950/' + avg_period_str + 'monthly/'
                 elif product == 'ersst':
-                    input_files = glob.glob('/data/sst/ersst/data/averages/' + avg_period_str + 'monthly/ersst_v3b_' + avg_period_str + 'mthavg_19[5-9][0-9]' + month_str + '_*.nc') + \
-                                  glob.glob('/data/sst/ersst/data/averages/' + avg_period_str + 'monthly/ersst_v3b_' + avg_period_str + 'mthavg_20[0-9][0-9]' + month_str + '_*.nc')
+                    input_files = glob.glob('/data/sst/ersst/data/averages/' + \
+                                            avg_period_str + 'monthly/ersst_v3b_' + \
+                                            avg_period_str + 'mthavg_19[5-9][0-9]' + \
+                                            month_str + '_[1-2][0-9][0-9][0-9][0-9][0-9].nc') + \
+                                  glob.glob('/data/sst/ersst/data/averages/' + \
+                                            avg_period_str + 'monthly/ersst_v3b_' + \
+                                            avg_period_str + 'mthavg_20[0-9][0-9]' + \
+                                            month_str + '_[1-2][0-9][0-9][0-9][0-9][0-9].nc')
                     output_dir = '/data/sst/ersst/data/decile/1950/' + avg_period_str + 'monthly/'
             input_files.sort()
-            calc_dec.process(input_files, output_dir)
+            calc_dec.process(input_files, output_dir, variable_name)

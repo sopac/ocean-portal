@@ -12,14 +12,14 @@
 <title>Ocean Maps Portal Loading...</title>
 
 <script type="text/javascript" src="lib/jquery/{{jquery.js}}"></script>
-<script type="text/javascript" src="lib/jquery/js/jquery-ui-1.8.22.custom.min.js"></script>
+<script type="text/javascript" src="lib/jquery/{{jquery-ui.js}}"></script>
 
 <script type="text/javascript" src="js/comp/controlPanel.js?v={{VERSION}}"></script>
 <script type="text/javascript" src="js/comp/compmap.js?v={{VERSION}}"></script>
 <script type="text/javascript" src="js/comp/dsConf.js?v={{VERSION}}"></script>
 
 <link rel="stylesheet" type="text/css" href="lib/OpenLayers/theme/default/style.css"/>
-<link rel="stylesheet" type="text/css" href="lib/jquery/css/smoothness/jquery-ui-1.8.22.custom.css"/>
+<link rel="stylesheet" type="text/css" href="lib/jquery/{{jquery-ui.css}}"/>
 
 <link rel="stylesheet" type="text/css" href="css/comp/controlPanel.css?v={{VERSION}}" />
 <link rel="stylesheet" type="text/css" href="css/comp/compmap.css?v={{VERSION}}" />
@@ -54,6 +54,8 @@
         <div class="controlvar">
           <label for="region">Select Country/Region:</label>
           <select id="region" class="widefield"></select>
+          <label class="hidden" for="subregion">Region/Subregion</label>
+          <select id="subregion" class="widefield"></select>
         </div>
       </div>
     </div>

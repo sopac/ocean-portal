@@ -8,6 +8,7 @@
 import cgi
 import datetime
 
+from ocean import logger
 from ocean.config import regionConfig
 from ocean.core import ReportableException
 
@@ -48,6 +49,7 @@ class Dataset(object):
     ]
 
     @classmethod
+    @logger.time_and_log
     def parse(self, validate=True):
         form = cgi.FieldStorage()
 

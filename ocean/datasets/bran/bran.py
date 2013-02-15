@@ -13,7 +13,7 @@ import datetime
 
 import numpy as np
 
-from ocean import util, config
+from ocean import util, config, logger
 from ocean.config import regionConfig, productName
 from ocean.netcdf import plotter
 from ocean.netcdf.plotter import COMMON_FILES
@@ -228,6 +228,7 @@ class bran(Dataset):
 
         return response
 
+@logger.time_and_log
 def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
                       basemap_filename_fullpath,
                       plot_filename_fullpath=None, basemap_only=False,

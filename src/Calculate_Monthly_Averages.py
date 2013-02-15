@@ -13,24 +13,30 @@ import subprocess
 import copy
 import pdb
 import calendar
+import datetime
+import dateutil.relativedelta
 
 class Calculate_Monthly_Averages():
 
     def __init__(self):
+
+        reynolds_end_date = self.get_date_for_last_complete_month()
+
         # Settings for each dataset
         self.config = \
             {'Reynolds':{
                 'product_str': 'reynolds_sst',
                 'start_year': 1981,
                 'start_month': 9,
-                'end_year': 2012,
-                'end_month': 10,
+                'end_year': reynolds_end_date.year,
+                'end_month': reynolds_end_date.month,
                 'input_dir': '/data/sst/reynolds/daily-new-uncompressed/',
                 'input_filename': 'avhrr-only-v2.%(year)04d%(month)02d%(day)02d.nc',
                 'output_dir': '/data/sst/reynolds/averages/monthly/',
                 'output_filename': '%(product_str)s_avhrr-only-v2_%(year)04d%(month)02d.nc',
                 'input_filename_preliminary': 'avhrr-only-v2.%(year)04d%(month)02d%(day)02d_preliminary.nc',
-                'output_filename_preliminary': '%(product_str)s_avhrr-only-v2_%(year)04d%(month)02d_preliminary.nc'},
+                'output_filename_preliminary': '%(product_str)s_avhrr-only-v2_%(year)04d%(month)02d_preliminary.nc',
+                'use_old_version_of_ncea': True},
              'BRAN_eta':{
                 'product_str': 'bran2.1_',
                 'start_year': 1993,
@@ -117,6 +123,16 @@ class Calculate_Monthly_Averages():
                     break
                 self._calc_monthly_average(settings, year, month)
 
+    def get_date_for_last_complete_month(self):
+        last_date_to_use = datetime.date.today() + dateutil.relativedelta.relativedelta(days=-5)
+        year = last_date_to_use.year
+        month = last_date_to_use.month - 1
+        if month == 0:
+            month = 12
+            year -= 1
+        end_date = datetime.datetime(year, month, 1)
+        return end_date
+
     def _calc_monthly_average(self, settings, year, month):
         input_files = []
         input_files_timestamps = []
@@ -129,7 +145,7 @@ class Calculate_Monthly_Averages():
         preliminary_data_used = False
         settings['year'] = year
         settings['month'] = month
-        
+
         # Create list of input files and check if the files exist
         for day in range(1, days_in_month + 1):
             settings['day'] = day
@@ -174,11 +190,16 @@ class Calculate_Monthly_Averages():
         else:
             # Create output directory if doesn't exist
             if not os.path.exists(output_dir):
-                os.makedirs(output_dir)            
+                os.makedirs(output_dir)
+
+        ncea_path = '/srv/map-portal/run-portal-environ ncea'
+        if settings.has_key('use_old_version_of_ncea'):
+            if settings['use_old_version_of_ncea']:
+                ncea_path = 'ncea'
 
         if 'processing_settings' in settings:
             ncea_settings = settings['processing_settings'] + ' '
         else:
             ncea_settings = ''
-        cmd = "/srv/map-portal/run-portal-environ ncea -O " + ncea_settings + ' '.join(input_files) + " " + output_file_fullpath
+        cmd = ncea_path + ' -O ' + ncea_settings + ' '.join(input_files) + ' ' + output_file_fullpath
         proc = subprocess.call(cmd, shell=True)
