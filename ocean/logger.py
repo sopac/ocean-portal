@@ -34,7 +34,7 @@ class _Logger(object):
             pass
 
         self.logfile = open(os.path.join(path, filename), 'a')
-        self.writer = csv.writer(self.logfile, delimiter=' ')
+        self.writer = csv.writer(self.logfile)
 
         print >> self.logfile, "# %s instance started %s" % (
             sys.argv[0], datetime.now().strftime('%c'))
@@ -62,7 +62,7 @@ class _Logger(object):
         del self._timers[timer_name]
 
         if log:
-            self.log(timer_name, elapsed)
+            self.log(timer_name, '', elapsed)
 
         return elapsed
 

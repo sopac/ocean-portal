@@ -38,7 +38,7 @@ def test_logging(log):
     log.log('Item 1', 'Item 2')
 
     with open('/tmp/test-log.csv') as f:
-        reader = csv.reader(f, delimiter=' ')
+        reader = csv.reader(f)
 
         lines = [ r for r in reader ]
 
@@ -59,7 +59,7 @@ def test_timers(log):
     assert isinstance(elapsed, float)
 
     with open('/tmp/test-log.csv') as f:
-        reader = csv.reader(f, delimiter=' ')
+        reader = csv.reader(f)
 
         lines = [ r for r in reader ]
 
@@ -112,7 +112,7 @@ def test_timers_decorator(log, warnings_as_errors):
     assert a == 'badger'
 
     with open('/tmp/test-log.csv') as f:
-        reader = csv.reader(f, delimiter=' ')
+        reader = csv.reader(f)
 
         lines = [ r for r in reader ]
 
@@ -132,7 +132,7 @@ def test_timers_decorator2(log, warnings_as_errors):
     assert a == 'badger'
 
     with open('/tmp/test-log.csv') as f:
-        reader = csv.reader(f, delimiter=' ')
+        reader = csv.reader(f)
 
         lines = [ r for r in reader ]
 
