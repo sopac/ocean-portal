@@ -63,5 +63,5 @@ class ersst(SST):
     __subdirs__ = [
         'monthly',
         'averages',
-        'deciles',
+        'decile',
     ]
