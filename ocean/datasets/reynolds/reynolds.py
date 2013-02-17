@@ -54,5 +54,5 @@ class reynolds(SST):
     __subdirs__ = [
         'daily-new-uncompressed',
         'averages',
-        'deciles',
+        'decile',
     ]
