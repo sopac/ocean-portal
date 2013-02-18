@@ -26,9 +26,10 @@ def get_subset_idxs(x, x_min, x_max):
         return closest_idx, closest_idx + 1
 
     # assuming that x is sorted, find indexes to the left of x_min and the
-    # right of x_max
-    start_idx = bisect.bisect_left(x, x_min)
-    end_idx = bisect.bisect_right(x, x_max)
+    # right of x_max, because of weirdly sized bins, extend the bins by
+    # 1 degree each way
+    start_idx = bisect.bisect_left(x, x_min - 1.0)
+    end_idx = bisect.bisect_right(x, x_max + 1.0)
 
     return start_idx, end_idx
 
@@ -120,7 +121,7 @@ class Grid(object):
             get_indexes([(lats, (latmin, latmax)), (lons, (lonmin, lonmax))])
         """
 
-        return [get_subset_idxs(data, min - 1.0, max + 1.0)
+        return [get_subset_idxs(data, min, max)
                 for data, (min, max) in args]
 
     def get_variable(self, variables, variable):
