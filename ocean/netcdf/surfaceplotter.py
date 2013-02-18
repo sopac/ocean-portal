@@ -149,7 +149,9 @@ class SurfacePlotter(object):
         d = {
             'mean': "Average Sea Surface Temperature",
             'anom': "Average Sea Surface Temperature Anomaly",
-            'dec': "Average Sea Surface Temperature Deciles"
+            'dec': "Average Sea Surface Temperature Deciles",
+            'alt': "Sea Level Altimetry",
+            'rec': "Sea Level Reconstruction",
         }
 
         return d[params['variable']]

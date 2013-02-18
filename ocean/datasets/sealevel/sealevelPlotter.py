@@ -7,133 +7,151 @@
 # Authors: Sheng Guo <s.guo@bom.gov.au>
 #          Danielle Madeley <d.madeley@bom.gov.au>
 
-import datetime
 import csv
-import shutil
 import datetime
+import shutil
+import os.path
 
-from netCDF4 import Dataset
 import numpy as np
 import numpy.ma as ma
 import matplotlib.pyplot as plt
 import matplotlib.dates
 
-from ocean import util, config
-from ocean.config import regionConfig
-from ocean.netcdf import plotter, extractor
+from ocean import config
+from ocean.netcdf.extractor import Extractor, LandError
+from ocean.netcdf.grid import Grid
+from ocean.netcdf.surfaceplotter import SurfacePlotter
+from ocean.plotter import getCopyright
 from ocean.util.pngcrush import pngcrush
 
-import sealevelConfig as rc
+serverCfg = config.get_server_config()
 
-class SeaLevelPlotter ():
-    """ 
-    Sea-leve plotter is specifically designed to plot the altimetry and reconstruction
-    netcdf data
+# filenames for the respective gridfiles (in datadir/grids/)
+GRIDS = {
+    'alt': 'CSIRO_SatAlt_199301_201112.nc',
+    'rec': 'CSIRO_Recons_195001_200912.nc',
+}
+
+# start date for the time index in each grid file
+REFERENCE_DATE = {
+    'alt': datetime.date(1990, 1, 1),
+    'rec': datetime.date(1950, 1, 1),
+}
+
+class SeaLevelGrid(Grid):
     """
-    config = None
-    serverCfg = None
-    referenceDate = None
-    altRefDate = datetime.date(1990, 1, 1)
-    recRefDate = datetime.date(1950, 1, 1)
+    Load a CMAR dataset using a spatial representation
+    """
 
-    def __init__(self):
-        """Initialise the plotter by getting the settings ready for the plotting.""" 
-        self.config = rc.SealevelConfig()
-        self.serverCfg = config.get_server_config()
+    def __init__(self, variable, date=None, **kwargs):
 
-    def plot(self, outputFilename, **args):
-        """
-        Plot the thumbnail image and also the east and west map images.
-        """
-        cntLabel = False
-        variable = args['variable']
-        area = args['area']
+        self.date = date
+        self.refdate = REFERENCE_DATE[variable]
 
-        if variable == 'alt':
-            filename = self.serverCfg["dataDir"]["sealevel"] + "grids/" + "CSIRO_SatAlt_199301_201112"
-            self.referenceDate = self.altRefDate
-        elif variable == 'rec':
-            filename = self.serverCfg["dataDir"]["sealevel"] + "grids/" + "CSIRO_Recons_195001_200912"
-            self.referenceDate = self.recRefDate
-        else:
-            return -1
-        
-        filename = filename + ".nc"
-        dataset = Dataset(filename, 'r')
-        time = dataset.variables["time"]
-        height = dataset.variables[self.config.getVariableType(variable)][self.getDateIndex(time[:].tolist(), args["date"])]
-        lats = dataset.variables['lat'][:]
-        lons = dataset.variables['lon'][:]
+        filename = os.path.join(serverCfg['dataDir']['sealevel'],
+                                'grids',
+                                GRIDS[variable])
 
-        delon = lons[1]-lons[0]; delat = lats[1]-lats[0]
-        lons2 = (lons - 0.5*delon).tolist()
-        lons2.append(lons2[-1]+delon)
-        lons2 = np.array(lons2,np.float64)
-        lats2 = (lats - 0.5*delat).tolist()
-        lats2.append(lats2[-1]+delat)
-        lats2 = np.array(lats2,np.float64)
+        Grid.__init__(self, filename, variable, **kwargs)
 
-        date = args['date']
-        args['formattedDate'] = date.strftime('%B %Y')
-
-        plot = plotter.Plotter()
-        output_filename = self.serverCfg["outputDir"] + outputFilename + '.png'
-        regionLongName = regionConfig.regions[area][2]
-        title = regionLongName + '\n' + self.config.getTitle(variable) + args['formattedDate']
-        units = self.config.getUnit(variable)
-        cmap_name = self.config.getColorMap(variable)
-        plot.plot_surface_data(lats, lons, height,
-                               regionConfig.regions[area][1]["llcrnrlat"],
-                               regionConfig.regions[area][1]["urcrnrlat"],
-                               regionConfig.regions[area][1]["llcrnrlon"],
-                               regionConfig.regions[area][1]["urcrnrlon"],
-                               output_filename, title=title, units=units,
-                               cmp_name=cmap_name, cm_edge_values=np.arange(-300,300.01,60.0),
-                               cb_tick_fmt="%.0f", area=area)
-        plot.plot_basemaps_and_colorbar(lats, lons, height,
-                                        output_filename=output_filename,
-                                        units=units, cm_edge_values=np.arange(-300,300.01,60.0),
-                                        cb_tick_fmt="%.0f",
-                                        cmp_name=cmap_name)
-        plot.wait()
-
-        dataset.close()
-
-        return 0
-
-    def getDateIndex(self, timeList, date):
+    def get_days_elapsed(self, date):
         """
         Get the the index of the given date in the data file
         """
 
-        timeElapsed = datetime.date(date.year, date.month, 15) - self.referenceDate
-        index = timeList.index(timeElapsed.days)
-        return index
+        timeElapsed = datetime.date(date.year, date.month, 15) - self.refdate
 
+        return timeElapsed.days
 
-    def plotTidalGauge(self, outputFilename, saveData=True, **args):
-        """
-        Plot tidal gauge data
-        """
+    def get_variable(self, variables, variable):
 
-        tidalGaugeId = args["tidalGaugeId"]
-        tidalGaugeName = args["tidalGaugeName"]
-        filename = self.serverCfg["dataDir"]["sealevel"] + "tide_gauge/" + tidalGaugeId + "SLD.txt.tmp"
- 
-        if saveData:
-            shutil.copyfile(filename, outputFilename + ".txt")
+        # find the index for the requested date
+        elapsed = self.get_days_elapsed(self.date)
+        time = variables['time'][:]
+        time_index = np.where(time == elapsed)[0][0]
 
-        file = open(filename, 'r')
+        var = Grid.get_variable(self, variables, 'height')
+
+        return var[time_index]
+
+class SeaLevelSeries(SeaLevelGrid):
+    """
+    Load a CMAR dataset using a temporal representation
+    """
+
+    def get_variable(self, variables, variable):
+
+        @np.vectorize
+        def timeidx2datetime(time):
+            return self.refdate + datetime.timedelta(int(time))
+
+        time = Grid.get_variable(self, variables, 'time')
+        self.time = timeidx2datetime(time)
+
+        return Grid.get_variable(self, variables, 'height')
+
+    def get_indexes(self, variable,
+                          (lats, (latmin, latmax)),
+                          (lons, (lonmin, lonmax)),
+                          *args):
+        _, (latidx, lonidx) = Extractor.getGridPoint(latmin, lonmin, lats, lons,
+                                                     variable[0],
+                                                     strategy='exhaustive')
+
+        return (latidx, latidx + 1), (lonidx, lonidx + 1), (0, 0)
+
+    def load_data(self, variable, (lat_idx1, lat_idx2),
+                                  (lon_idx1, lon_idx2),
+                                  (depth_idx1, depth_idx2)):
+
+        data = variable[:, lat_idx1, lon_idx1]
+
+        if data[0] is ma.masked:
+            raise LandError()
+
+        return data
+
+class SeaLevelSurfacePlotter(SurfacePlotter):
+    DATASET = 'sealevel'
+    PRODUCT_NAME = "CSIRO CMAR, Church and White"
+
+    def get_grid(self, params={}, **kwargs):
+        return SeaLevelGrid(params['variable'], date=params['date'])
+
+    def get_ticks(self, params={}, **kwargs):
+        return np.arange(-300,300.01,60.0)
+
+    def get_ticks_format(self, params={}, **kwargs):
+        return '%.0f'
+
+    def get_units(self, params={}, **kwargs):
+        return 'mm'
+
+def plotTidalGauge(outputFilename, saveData=True, **args):
+    """
+    Plot tidal gauge data
+    """
+
+    tidalGaugeId = args["tidalGaugeId"]
+    tidalGaugeName = args["tidalGaugeName"]
+    filename = serverCfg["dataDir"]["sealevel"] + "tide_gauge/" + tidalGaugeId + "SLD.txt.tmp"
+
+    if saveData:
+        shutil.copyfile(filename, outputFilename + ".txt")
+
+    with open(filename, 'r') as file:
         reader = csv.reader(file, delimiter='\t')
-        reader.next()
+        reader.next() # skip one line
+
         y_max = []
         y_mean = []
         y_min = []
         x_date = []
+
         for line in reader:
             date = '%4d%02d' % (int(line[1]), int(line[0]))
             date = datetime.datetime.strptime(date, '%Y%m')
-            x_date.append(matplotlib.dates.date2num(date))
+            x_date.append(date)
             try:
                 y_max.append(float(line[5]))
                 y_mean.append(float(line[6]))
@@ -143,110 +161,82 @@ class SeaLevelPlotter ():
                 y_mean.append(None)
                 y_min.append(None)
 
-        figure = plt.figure()
-        plt.rc('font', size=8)
-        plt.title('Monthly sea levels for ' + tidalGaugeName)
-        plt.ylabel('Sea Level Height (metres)')
-        plt.xlabel('Year')
-        ax = figure.gca()
-        ax.grid(True)
-#        ax.set_aspect(5)
-        maxPlot, = ax.plot_date(x_date, y_max, 'r-') 
-        meanPlot, = ax.plot_date(x_date, y_mean, 'k-') 
-        minPlot, = ax.plot_date(x_date, y_min, 'b-')
+    figure = plt.figure()
+    plt.rc('font', size=8)
+    plt.title('Monthly sea levels for ' + tidalGaugeName)
+    plt.ylabel('Sea Level Height (metres)')
+    plt.xlabel('Year')
+    ax = figure.gca()
+    ax.grid(True)
+    ax.set_aspect(5)
+    maxPlot, = ax.plot(x_date, y_max, 'r-')
+    meanPlot, = ax.plot(x_date, y_mean, 'k-')
+    minPlot, = ax.plot(x_date, y_min, 'b-')
 
-        #add legend
-        ax.legend([maxPlot, meanPlot, minPlot], ['Max', 'Mean', 'Min'])
+    #add legend
+    ax.legend([maxPlot, meanPlot, minPlot], ['Max', 'Mean', 'Min'])
 
-        plt.axhline(y=0, color='k')
-        plt.figtext(0.02, 0.02, plotter.getCopyright(), fontsize=6)
-        plt.figtext(0.90, 0.05, "0.0 = Tidal Gauge Zero",
-                    fontsize=8, horizontalalignment='right')
+    plt.axhline(y=0, color='k')
+    plt.figtext(0.02, 0.02, getCopyright(), fontsize=6)
+    plt.figtext(0.90, 0.05, "0.0 = Tidal Gauge Zero",
+                fontsize=8, horizontalalignment='right')
 
-        plt.savefig(outputFilename + ".png", dpi=150, bbox_inches='tight', pad_inches=.1)
+    plt.savefig(outputFilename + ".png", dpi=150,
+                bbox_inches='tight', pad_inches=.1)
 
-        plt.close()
-        file.close()
+    plt.close()
+    pngcrush(outputFilename + ".png")
 
-        pngcrush(outputFilename + ".png")
+    return 0
 
-        return 0
+def plotTimeseries(outputFilename, saveData=True, **args):
+    """
+    Plot altimetry/reconstruction timeseries 
+    """
+    tidalGaugeName = args["tidalGaugeName"]
+    variable = args['variable']
+    lat = args['lat']
+    lon = args['lon']
 
-    def plotTimeseries(self, outputFilename, saveData=True, **args):
-        """
-        Plot altimetry/reconstruction timeseries 
-        """
-        tidalGaugeName = args["tidalGaugeName"]
-        variable = args['variable']
-        lat = args["lat"]
-        lon = args["lon"]
-        titlePrefix = None
-        aspectRatio = None
-        if variable == 'alt':
-            filename = self.serverCfg["dataDir"]["sealevel"] + "grids/" + "CSIRO_SatAlt_199301_201112"
-            titlePrefix = "Altimetry"
-            self.referenceDate = self.altRefDate
-            aspectRatio = 2.5
-        elif variable == 'rec':
-            filename = self.serverCfg["dataDir"]["sealevel"] + "grids/" + "CSIRO_Recons_195001_200912"
-            titlePrefix = "Reconstruction"
-            self.referenceDate = self.recRefDate
-            aspectRatio = 8
-        else:
-            return -1
-        
-        filename = filename + ".nc" 
-        dataset = Dataset(filename, 'r')
-        time = dataset.variables["time"]
-        lats = dataset.variables['lat'][:]
-        lons = dataset.variables['lon'][:]
-        var = dataset.variables[self.config.getVariableType(variable)][0]
-        
-        xtractor = extractor.Extractor()
-        (gridLat, gridLon), (latIndex, lonIndex) = xtractor.getGridPoint(lat, lon, lats, lons, var, strategy='exhaustive')
-        y_height = dataset.variables[self.config.getVariableType(variable)][:, latIndex, lonIndex]
+    titlePrefix = {
+        'alt': "Altimetry",
+        'rec': "Reconstruction",
+    }[variable]
 
-        if var[latIndex, lonIndex] is ma.masked:
-            raise extractor.LandError()
-        
-        x_date = []
-        date_label = []
-        for date in time[:].tolist():
-            date_label.append(self.referenceDate + datetime.timedelta(date))
-            x_date.append(matplotlib.dates.date2num(self.referenceDate + datetime.timedelta(date))) 
- 
-        if saveData:
-            file = open(outputFilename + ".txt", 'w')
+    grid = SeaLevelSeries(variable,
+                          latrange=(lat, lat),
+                          lonrange=(lon, lon))
+
+    if saveData:
+        with open(outputFilename + ".txt", 'w') as file:
             writer = csv.writer(file, delimiter='\t')
-            writer.writerow(('# Sea Level %s for %s' % (titlePrefix, tidalGaugeName),))
+            writer.writerow(('# Sea Level %s for %s' % (
+                             titlePrefix, tidalGaugeName),))
             writer.writerow(('# Datum: GSFC00.1',))
             writer.writerow(['Date (YYYY-MM)', '%s (mm)' % titlePrefix])
 
-            for date, height in zip(date_label, y_height):
+            for date, height in zip(grid.time, grid.data):
                 writer.writerow([date.strftime('%Y-%m'), height])
-            file.close()
 
-        figure = plt.figure()
-        plt.rc('font', size=8)
-        plt.title("Sea Level %s for %s" % (titlePrefix, tidalGaugeName))
-        plt.ylabel('Sea-Surface Height (mm)')
-        plt.xlabel('Year')
-        ax = figure.gca()
-        ax.grid(True)
-#        ax.set_ylim(-350, 350)
-#        ax.set_aspect(aspectRatio)
-        ax.plot_date(x_date, y_height, 'b-') 
-        plt.axhline(y=0, color='k')
+    figure = plt.figure()
+    plt.rc('font', size=8)
+    plt.title("Sea Level %s for %s" % (titlePrefix, tidalGaugeName))
+    plt.ylabel('Sea-Surface Height (mm)')
+    plt.xlabel('Year')
+    ax = figure.gca()
+    ax.grid(True)
+    ax.set_ylim(-350, 350)
+    ax.plot(grid.time, grid.data, 'b-')
+    plt.axhline(y=0, color='k')
 
-        plt.figtext(0.02, 0.02, plotter.getCopyright(), fontsize=6)
-        plt.figtext(0.90, 0.05, "Height relative to GSFC00.1",
-                    fontsize=8, horizontalalignment='right')
+    plt.figtext(0.02, 0.02, getCopyright(), fontsize=6)
+    plt.figtext(0.90, 0.05, "Height relative to GSFC00.1",
+                fontsize=8, horizontalalignment='right')
 
-        plt.savefig(outputFilename + ".png", dpi=150, bbox_inches='tight', pad_inches=.1)
+    plt.savefig(outputFilename + ".png", dpi=150,
+                bbox_inches='tight', pad_inches=.1)
 
-        plt.close()
-        dataset.close()
+    plt.close()
+    pngcrush(outputFilename + ".png")
 
-        pngcrush(outputFilename + ".png")
-
-        return 0
+    return 0

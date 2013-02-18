@@ -60,7 +60,9 @@ class Grid(object):
             lons = self.get_lons(nc.variables)
             depths = self.get_depths(nc.variables)
 
-            indexes = self.get_indexes((lats, latrange),
+            var = self.get_variable(nc.variables, variable)
+            indexes = self.get_indexes(var,
+                                       (lats, latrange),
                                        (lons, lonrange),
                                        (depths, depthrange))
             (lat_idx1, lat_idx2), (lon_idx1, lon_idx2), \
@@ -71,7 +73,6 @@ class Grid(object):
             self.lons = lons[lon_idx1:lon_idx2]
             self.depths = depths[depth_idx1:depth_idx2]
 
-            var = self.get_variable(nc.variables, variable)
             data = self.load_data(var, *indexes)
             self.data = np.squeeze(data)
 
@@ -112,13 +113,15 @@ class Grid(object):
         return [0.]
 
     @logger.time_and_log
-    def get_indexes(self, *args):
+    def get_indexes(self, variable, *args):
         """
         Get the subsetting indexes for any number of datasets, passed as an
         iterable of elements (dataset, (min, max)).
 
         e.g. (lat_idx1, lat_idx2), (lon_idx1, lon_idx2) = \
-            get_indexes([(lats, (latmin, latmax)), (lons, (lonmin, lonmax))])
+            get_indexes(variable,
+                        (lats, (latmin, latmax)),
+                        (lons, (lonmin, lonmax)))
         """
 
         return [get_subset_idxs(data, min, max)

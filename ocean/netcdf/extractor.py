@@ -31,30 +31,24 @@ class Extractor():
     Extract point/rectangular area data.
     """
 
-    _NEAREST_STRATEGY = 'nearest'
-
-    _EXHAUSTIVE_STRATEGY = 'exhaustive'
-
-    _AVERAGE_STRATEGY = 'average'
-
     _RADIUS = 2
 
-    def __init__(self):
+    @classmethod
+    def getGridPoint(self, inputLat, inputLon, lats, lons, var,
+                     strategy='nearest'):
         """
-        Initialise variables.
+        Align the input lat/lon to the grid lat/lon. Also returns the index
+        of the grid lat/lon.
         """
 
-    def getGridPoint(self, inputLat, inputLon, lats, lons, var, strategy=_NEAREST_STRATEGY):
-        """
-        Align the input lat/lon to the grid lat/lon. Also returns the index of the grid lat/lon.
-        """
         gridPointColIndex = 0
-        inputLat = float(inputLat)
-        inputLon = float(inputLon)        
 
         latInsertIndex = bisect.bisect_left(lats, inputLat)
-        #For lon, first we need to check the lon range in the dataset. if the lon range is from 0 to a number larger
-        #than 180, than we should convert the input lon. Otherwise the input lon is fine.
+        # For lon, first we need to check the lon range in the dataset.
+        # if the lon range is from 0 to a number larger
+        # than 180, than we should convert the input lon. Otherwise the
+        # input lon is fine.
+
         dataLon = inputLon
         if lons[-1] > 180:
             if inputLon < 0:
@@ -93,22 +87,28 @@ class Extractor():
         input = (inputLon, inputLat)
         nearestPoints.sort(key=lambda coord: (input[0] - lons[coord[0]]) ** 2 + (input[1] - lats[coord[1]]) ** 2)
 
-        if strategy == self._NEAREST_STRATEGY:
-            return self._nearest_strategy(nearestPoints, lats, lons, var)
-        elif strategy == self._EXHAUSTIVE_STRATEGY:
-            return self._exhaustive_strategy(nearestPoints, lats, lons, var)
+        return getattr(self, '_%s_strategy' % strategy)(nearestPoints,
+                                                        lats, lons,
+                                                        var)
 
+    @classmethod
     def _nearest_strategy(self, sortedNearestPoints, lats, lons, var):
-        return ((lats[sortedNearestPoints[0][1]], lons[sortedNearestPoints[0][0]]), sortedNearestPoints[0][::-1])
+        return ((lats[sortedNearestPoints[0][1]],
+                 lons[sortedNearestPoints[0][0]]),
+                sortedNearestPoints[0][::-1])
 
+    @classmethod
     def _exhaustive_strategy(self, sortedNearestPoints, lats, lons, var):
-        result = self._nearest_strategy(sortedNearestPoints, lats, lons, var) 
+        result = self._nearest_strategy(sortedNearestPoints, lats, lons, var)
         for point in sortedNearestPoints:
             if var[point[1], point[0]] is not ma.masked:
-                result = ((lats[point[1]], lons[point[0]]), (point[1], point[0]))
+                result = ((lats[point[1]], lons[point[0]]),
+                          (point[1], point[0]))
                 break
+
         return result
 
+    @classmethod
     def extract(self, data, lats, lons, latTop, latBottom, lonLeft, lonRight):
         """
         Extract an area of data from the gridded data.
@@ -119,7 +119,7 @@ class Extractor():
         lonmax = lons <= lonRight
 
         latrange = latmin & latmax
-        lonrange = lonmin & lonmax 
+        lonrange = lonmin & lonmax
 
         latSlice = sst[latrange]
         extracted = latSlice[:, lonrange]

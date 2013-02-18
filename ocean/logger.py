@@ -90,6 +90,8 @@ class _Logger(object):
 
             @wraps(func)
             def inner(*args, **kwargs):
+                __tracebackhide__ = True
+
                 self.start_timer(timer_name)
                 r = func(*args, **kwargs)
                 self.stop_timer(timer_name)

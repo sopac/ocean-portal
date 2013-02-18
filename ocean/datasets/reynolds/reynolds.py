@@ -28,7 +28,7 @@ class ReynoldsPlotter(SurfacePlotter):
     @apply_to(period='daily')
     def get_path(self, params={}):
         return os.path.join(serverCfg['dataDir'][self.DATASET],
-                            'daily-new-uncompressed' )
+                            'daily-new-uncompressed')
 
     # --- get_prefix ---
     @apply_to(period='daily')

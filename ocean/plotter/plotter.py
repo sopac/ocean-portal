@@ -56,7 +56,7 @@ def getCopyright():
            + datetime.date.today().strftime('%Y')\
            + "\nAustralian Bureau of Meteorology, COSPPac COMP"
 
-class Plotter:
+class Plotter(object):
     """The base class for plotting netCDF files."""
 
     _DEFAULT_PROJ = "cyl" #Equidistant Cylindrical Projection

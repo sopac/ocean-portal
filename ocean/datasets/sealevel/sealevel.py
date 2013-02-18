@@ -11,11 +11,11 @@ import os.path
 import sys
 
 from ocean import util, config
-from ocean.netcdf.plotter import COMMON_FILES
+from ocean.plotter import COMMON_FILES
 from ocean.config import productName, tidalGaugeConfig
 from ocean.datasets import Dataset, MissingParameter, ValidationError
 
-import sealevelPlotter
+from sealevelPlotter import *
 
 #Maybe move these into configuration later
 seaGraph = '%s_%s_%s_%s'
@@ -26,9 +26,6 @@ serverCfg = config.get_server_config()
 
 #get dataset dependant production information
 seaLevelProduct = productName.products['sealevel']
-
-#get the plotter
-plotter = sealevelPlotter.SeaLevelPlotter()
 
 class sealevel(Dataset):
 
@@ -64,6 +61,7 @@ class sealevel(Dataset):
         assert p in tidalGaugeConfig.tidalGauge
 
     def plot_surface(self, params):
+        plotter = SeaLevelSurfacePlotter()
         response = {}
 
         if 'date' not in params:
@@ -124,7 +122,7 @@ class sealevel(Dataset):
             outputFileName = os.path.join(serverCfg['outputDir'], fileName)
 
             if not os.path.exists(outputFileName + '.png'):
-                plotter.plotTimeseries(outputFileName, **params)
+                plotTimeseries(outputFileName, **params)
 
             if not os.path.exists(outputFileName + '.png'):
                 response['error'] = \
@@ -163,7 +161,7 @@ class sealevel(Dataset):
             outputFileName = os.path.join(serverCfg['outputDir'], fileName)
 
             if not os.path.exists(outputFileName + '.png'):
-                plotter.plotTimeseries(outputFileName, **params)
+                plotTimeseries(outputFileName, **params)
 
             if not os.path.exists(outputFileName + '.png'):
                 responseObj['error'] = \
@@ -201,7 +199,7 @@ class sealevel(Dataset):
         outputFileName = os.path.join(serverCfg['outputDir'], fileName)
 
         if not os.path.exists(outputFileName + '.png'):
-            plotter.plotTidalGauge(outputFileName, **params)
+            plotTidalGauge(outputFileName, **params)
 
         if not os.path.exists(outputFileName + '.png'):
             responseObj['error'] = \
