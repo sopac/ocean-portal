@@ -48,8 +48,8 @@ class Grid(object):
 
     @logger.time_and_log('load-grid')
     def __init__(self, filename, variable,
-                 latrange=(-91, 91),
-                 lonrange=(-361, 361),
+                 latrange=(-90, 90),
+                 lonrange=(-360, 360),
                  depthrange=(0, 0),
                  **kwargs):
         with Dataset(filename) as nc:
@@ -120,7 +120,7 @@ class Grid(object):
             get_indexes([(lats, (latmin, latmax)), (lons, (lonmin, lonmax))])
         """
 
-        return [get_subset_idxs(data, min, max)
+        return [get_subset_idxs(data, min - 1.0, max + 1.0)
                 for data, (min, max) in args]
 
     def get_variable(self, variables, variable):
