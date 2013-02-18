@@ -2,4 +2,4 @@ __all__ = [
     'plotter'
 ]
 
-from plotter import Plotter
+from plotter import *

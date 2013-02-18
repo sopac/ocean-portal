@@ -12,7 +12,7 @@ import sys
 
 from ocean import util, config
 from ocean.datasets import Dataset
-from ocean.netcdf.plotter import COMMON_FILES
+from ocean.plotter import COMMON_FILES
 from ocean.util import areaMean
 from ocean.config import productName
 
