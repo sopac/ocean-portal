@@ -19,7 +19,6 @@ from ocean.datasets import Dataset
 
 import wavecaller as wc
 import formatter as frm
-import monthconfig as mc
 import GridPointFinder as GPF
 import ww3ExtA
 

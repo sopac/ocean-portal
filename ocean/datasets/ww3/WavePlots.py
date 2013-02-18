@@ -19,7 +19,7 @@ from matplotlib.pyplot import figure, show, rc
 import matplotlib.pyplot as plt
 import matplotlib.patches as pa
 
-from ocean.netcdf.plotter import getCopyright
+from ocean.plotter import getCopyright
 from ocean.netcdf.extractor import LandError
 from ocean.util.pngcrush import pngcrush
 
