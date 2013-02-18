@@ -55,16 +55,21 @@ class _Logger(object):
         self._timers[timer_name] = datetime.now()
 
     def stop_timer(self, timer_name, log=True):
-        time = datetime.now()
-        delta = time - self._timers[timer_name]
-        elapsed = delta.seconds + delta.microseconds / 1e6
+        try:
+            time = datetime.now()
+            delta = time - self._timers[timer_name]
+            elapsed = delta.seconds + delta.microseconds / 1e6
 
-        del self._timers[timer_name]
+            del self._timers[timer_name]
 
-        if log:
-            self.log(timer_name, '', elapsed)
+            if log:
+                self.log(timer_name, '', elapsed)
 
-        return elapsed
+            return elapsed
+        except KeyError:
+            warn("Timer %s is not running" % timer_name, RuntimeWarning)
+
+            return None
 
     def time_and_log(self, arg1):
         """

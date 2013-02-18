@@ -5,6 +5,7 @@ New Features:
 
  - reimplement IE7 support (Danni)
  - reduce code duplication (Danni)
+ - logging to monitor performance (Danni)
 
 Bugs Fixed:
 

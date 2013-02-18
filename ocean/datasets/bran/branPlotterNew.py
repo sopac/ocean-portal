@@ -15,7 +15,7 @@ from matplotlib.offsetbox import AnchoredOffsetbox, TextArea
 
 from ocean import logger
 from ocean.netcdf.grid import Grid, GridWrongFormat
-from ocean.netcdf.plotter import getCopyright, get_tick_values, discrete_cmap
+from ocean.plotter import getCopyright, get_tick_values, discrete_cmap
 from ocean.util.pngcrush import pngcrush
 
 class BRANGrid(Grid):

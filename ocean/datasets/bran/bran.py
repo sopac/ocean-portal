@@ -15,8 +15,7 @@ import numpy as np
 
 from ocean import util, config, logger
 from ocean.config import regionConfig, productName
-from ocean.netcdf import plotter
-from ocean.netcdf.plotter import COMMON_FILES
+from ocean.plotter import Plotter, COMMON_FILES
 from ocean.datasets import Dataset
 from ocean.util import dateRange
 
@@ -308,7 +307,7 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
 
     # Plot background image layers
     config = bc.BranConfig()
-    plot = plotter.Plotter()
+    plot = Plotter()
     plot.plot_basemaps_and_colorbar(lats, lons, data,
                                     output_filename=basemap_filename_fullpath,
                                     units=unitStr, cm_edge_values=cb_ticks,
@@ -329,8 +328,8 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
 
         lats, lons, zlevels, data = \
             branPlotterNew.load_BRAN_data(input_data_file, dataVar,
-                                          lat_min - 1.0, lat_max + 1.0,
-                                          lon_min - 1.0, lon_max + 1.0)
+                                          lat_min, lat_max,
+                                          lon_min, lon_max)
 
         # Load current data if required
         if currents == True:
