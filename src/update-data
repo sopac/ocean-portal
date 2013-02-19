@@ -15,6 +15,11 @@ case $DATASET in
         DATA_SUBDIR=daily-new
         ;;
 
+    sealevel)
+        BASE_URL=http://www.bom.gov.au/ntc
+        DATA_SUBDIR=gauges-new
+        ;;
+
     *)
         echo "Unknown dataset $DATASET" >&2
         exit 1
@@ -35,9 +40,33 @@ fi
 
 cd $DATA_DIR/$DATA_SUBDIR || exit 1
 
-lftp $SERVER << EOF
+case $DATASET in
+    reynolds|ersst)
+
+        lftp $SERVER << EOF
 cd $SERVER_PATH || exit 1
 mirror -ve
 EOF
+    ;;
+
+    sealevel)
+    python << EOF | while read PRODUCT GAUGE
+from ocean.config.tidalGaugeConfig import tidalGauge
+
+for gauge in tidalGauge:
+    product = gauge.split('_')[0]
+    print product, gauge
+EOF
+    do
+        echo -n "$GAUGE: "
+        FILE=${GAUGE}SLD.txt
+        URL=$BASE_URL/$PRODUCT/$FILE
+        echo -n "$URL "
+        wget -qO $FILE $URL || echo -n "error ($?)"
+        echo
+    done
+    ;;
+
+esac
 
 # FIXME: how do I run deciles etc
