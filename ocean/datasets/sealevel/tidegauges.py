@@ -68,7 +68,11 @@ class TideGauge(np.recarray):
             def generate():
                 for row in reader:
                     if len(row) != nheaders - 1:
-                        raise StopIteration
+                        if row[0] == 'Totals':
+                            raise StopIteration
+                        else:
+                            # pad missing values with NaNs
+                            row += [np.nan] * (nheaders - len(row) - 1)
 
                     month, year = row[0:2]
                     date = datetime.date(day=1,
