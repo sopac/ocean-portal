@@ -14,7 +14,7 @@ import copy
 
 from ocean import util, config
 from ocean.config import productName
-from ocean.netcdf import extractor as xt
+from ocean.netcdf.extractor import Extractor
 from ocean.datasets import Dataset
 
 import wavecaller as wc
@@ -35,7 +35,6 @@ ww3Product = productName.products['ww3']
 #get the plotter
 extractor = ww3ExtA.WaveWatch3Extraction()
 getGrid = GPF.Extractor()
-GridPoints = xt.Extractor()
 
 class ww3(Dataset):
 
@@ -88,8 +87,9 @@ class ww3(Dataset):
         if lllatStr == urlatStr and lllonStr == urlonStr:
             lats, lons, vari = getGrid.getGridPoint(lllatStr, lllonStr, varStr)
             (latStr,lonStr),(latgrid,longrid) = \
-                GridPoints.getGridPoint(lllatStr, lllonStr, lats, lons,
-                                        vari,strategy='exhaustive')
+                Extractor.getGridPoint(lllatStr, lllonStr, lats, lons,
+                                       vari, strategy='exhaustive',
+                                       validate_range=False)
             (latStr, lonStr) = frm.nameformat(latStr, lonStr)
             filename = pointExt % (ww3Product['point'], latStr, lonStr,
                                    varStr, month)

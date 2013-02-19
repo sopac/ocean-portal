@@ -60,7 +60,8 @@ class WaveWatch3Extraction ():
 
         vari = nc.variables[variableName][:, latl:latr, lonl:lonr]
         (gridLat, gridLon), (gridLatIndex, gridLonIndex) = \
-                xtractor.getGridPoint(inputLat, inputLon, lats, lons, vari)
+                xtractor.getGridPoint(inputLat, inputLon, lats, lons, vari,
+                                      validate_range=False)
 
         # add the indexes from the sliced array
         gridLatIndex += latl

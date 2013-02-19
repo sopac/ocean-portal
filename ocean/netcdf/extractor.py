@@ -35,7 +35,7 @@ class Extractor():
 
     @classmethod
     def getGridPoint(self, inputLat, inputLon, lats, lons, var,
-                     strategy='nearest'):
+                     strategy='nearest', validate_range=True):
         """
         Align the input lat/lon to the grid lat/lon. Also returns the index
         of the grid lat/lon.
@@ -54,15 +54,16 @@ class Extractor():
             if inputLon < 0:
                 dataLon = inputLon + 360
 
-        if not lats[0] < inputLat < lats[-1] or \
-           not lons[0] < dataLon < lons[-1]:
-            raise OutOfDataRange((inputLat, inputLon), lats, lons)
-
         nearestPoints = []
         lonInsertIndex = bisect.bisect_left(lons, dataLon)
 
         # check if the dataset wraps around the globe
-        dataset_wraps = ((lons[0] + lons[-1]) % 360) ** 2 <= 25
+        dataset_wraps = (np.abs(lons[0] + lons[-1]) % 360) ** 2 <= 25
+
+        if validate_range and \
+           (not lats[0] < inputLat < lats[-1] or \
+            (not dataset_wraps and not lons[0] < dataLon < lons[-1])):
+            raise OutOfDataRange((inputLat, inputLon), lats, lons)
 
         # extract a square grid of points size 2r x 2r
         for latIndex in range(latInsertIndex - self._RADIUS,

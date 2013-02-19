@@ -58,3 +58,20 @@ def test_land_error():
 
     with pytest.raises(LandError):
         ds.process(params)
+
+def test_wrapping():
+    params = {
+        'date':  datetime.date(2000, 1, 1),
+        'period': 'monthly',
+        'variable': 'Dm',
+        'lllat': -7.383,
+        'lllon': -179.756,
+        'urlat': -7.383,
+        'urlon': -179.756,
+    }
+
+    ds = Dataset()
+    r = ds.process(params)
+
+    assert not 'error' in r
+    assert 'img' in r
