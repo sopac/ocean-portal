@@ -19,21 +19,25 @@ cfg = config.get_server_config()
 
 class _Logger(object):
 
-    def __init__(self, path=None, filename=None):
+    def __init__(self, path=None, filename=None, file=None):
         self._timers = {}
 
-        if path is None:
-            path = os.path.join(cfg['outputDir'], 'logs')
+        if file is None:
+            if path is None:
+                path = os.path.join(cfg['outputDir'], 'logs')
 
-        if filename is None:
-            filename = '%s.csv' % os.getpid()
+            if filename is None:
+                filename = '%s.csv' % os.getpid()
 
-        try:
-            os.makedirs(path)
-        except OSError:
-            pass
+            try:
+                os.makedirs(path)
+            except OSError:
+                pass
 
-        self.logfile = open(os.path.join(path, filename), 'a')
+            self.logfile = open(os.path.join(path, filename), 'a')
+        else:
+            self.logfile = file
+
         self.writer = csv.writer(self.logfile)
 
         print >> self.logfile, "# %s instance started %s" % (

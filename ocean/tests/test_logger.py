@@ -14,19 +14,16 @@ import pytest
 from ocean import logger
 
 @pytest.fixture
-def log():
-    try:
-        os.unlink('/tmp/test-log.csv')
-    except OSError:
-        pass
-
-    return logger._Logger('/tmp', 'test-log.csv')
+def log(tmpdir):
+    return logger._Logger(file=tmpdir.join('test-log.csv').open('w'))
 
 @pytest.fixture
 def warnings_as_errors(request):
     warnings.simplefilter('error')
 
     request.addfinalizer(lambda *args: warnings.resetwarnings())
+
+    return True
 
 def test_singleton():
     import ocean.logger
@@ -37,7 +34,7 @@ def test_singleton():
 def test_logging(log):
     log.log('Item 1', 'Item 2')
 
-    with open('/tmp/test-log.csv') as f:
+    with open(log.logfile.name) as f:
         reader = csv.reader(f)
 
         lines = [ r for r in reader ]
@@ -58,7 +55,7 @@ def test_timers(log):
     assert elapsed > 0
     assert isinstance(elapsed, float)
 
-    with open('/tmp/test-log.csv') as f:
+    with open(log.logfile.name) as f:
         reader = csv.reader(f)
 
         lines = [ r for r in reader ]
@@ -78,17 +75,17 @@ def test_timers_warn(log, warnings_as_errors):
 
     assert dt == log._timers['method']
 
-def test_timers_fail(log):
+def test_timers_fail(log, warnings_as_errors):
 
-    with pytest.raises(KeyError):
+    with pytest.raises(RuntimeWarning):
         log.stop_timer('method')
 
-def test_timers_fail2(log):
+def test_timers_fail2(log, warnings_as_errors):
 
     log.start_timer('method')
     log.stop_timer('method')
 
-    with pytest.raises(KeyError):
+    with pytest.raises(RuntimeWarning):
         log.stop_timer('method')
 
 def test_timers_reuse(log, warnings_as_errors):
@@ -111,14 +108,14 @@ def test_timers_decorator(log, warnings_as_errors):
     a = time_me()
     assert a == 'badger'
 
-    with open('/tmp/test-log.csv') as f:
+    with open(log.logfile.name) as f:
         reader = csv.reader(f)
 
         lines = [ r for r in reader ]
 
         assert len(lines) == 2
 
-        _, (_, name, _) = lines
+        (_, name, _, _) = lines[1]
 
         assert name == 'time_me'
 
@@ -131,13 +128,13 @@ def test_timers_decorator2(log, warnings_as_errors):
     a = time_me()
     assert a == 'badger'
 
-    with open('/tmp/test-log.csv') as f:
+    with open(log.logfile.name) as f:
         reader = csv.reader(f)
 
         lines = [ r for r in reader ]
 
         assert len(lines) == 2
 
-        _, (_, name, _) = lines
+        (_, name, _, _) = lines[1]
 
         assert name == 'some-other-name'
