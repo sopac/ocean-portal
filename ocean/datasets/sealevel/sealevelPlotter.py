@@ -15,7 +15,6 @@ import os.path
 import numpy as np
 import numpy.ma as ma
 import matplotlib.pyplot as plt
-import matplotlib.dates
 
 from ocean import config
 from ocean.netcdf.extractor import Extractor, LandError
@@ -23,6 +22,8 @@ from ocean.netcdf.grid import Grid
 from ocean.netcdf.surfaceplotter import SurfacePlotter
 from ocean.plotter import getCopyright
 from ocean.util.pngcrush import pngcrush
+
+from tidegauges import TideGauge
 
 serverCfg = config.get_server_config()
 
@@ -132,48 +133,27 @@ def plotTidalGauge(outputFilename, saveData=True, **args):
     Plot tidal gauge data
     """
 
-    tidalGaugeId = args["tidalGaugeId"]
-    tidalGaugeName = args["tidalGaugeName"]
+    tidalGaugeId = args['tidalGaugeId']
+    tidalGaugeName = args['tidalGaugeName']
     filename = serverCfg["dataDir"]["sealevel"] + "tide_gauge/" + tidalGaugeId + "SLD.txt.tmp"
 
-    if saveData:
-        shutil.copyfile(filename, outputFilename + ".txt")
-
-    with open(filename, 'r') as file:
-        reader = csv.reader(file, delimiter='\t')
-        reader.next() # skip one line
-
-        y_max = []
-        y_mean = []
-        y_min = []
-        x_date = []
-
-        for line in reader:
-            date = '%4d%02d' % (int(line[1]), int(line[0]))
-            date = datetime.datetime.strptime(date, '%Y%m')
-            x_date.append(date)
-            try:
-                y_max.append(float(line[5]))
-                y_mean.append(float(line[6]))
-                y_min.append(float(line[4]))
-            except:
-                y_max.append(None)
-                y_mean.append(None)
-                y_min.append(None)
+    data = TideGauge(tidalGaugeId)
 
     figure = plt.figure()
+
     plt.rc('font', size=8)
     plt.title('Monthly sea levels for ' + tidalGaugeName)
     plt.ylabel('Sea Level Height (metres)')
     plt.xlabel('Year')
+
     ax = figure.gca()
     ax.grid(True)
-    ax.set_aspect(5)
-    maxPlot, = ax.plot(x_date, y_max, 'r-')
-    meanPlot, = ax.plot(x_date, y_mean, 'k-')
-    minPlot, = ax.plot(x_date, y_min, 'b-')
 
-    #add legend
+    maxPlot, = ax.plot(data.date, data.maximum, 'r-')
+    meanPlot, = ax.plot(data.date, data.mean_, 'k-')
+    minPlot, = ax.plot(data.date, data.minimum, 'b-')
+
+    # add legend
     ax.legend([maxPlot, meanPlot, minPlot], ['Max', 'Mean', 'Min'])
 
     plt.axhline(y=0, color='k')

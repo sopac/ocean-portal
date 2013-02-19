@@ -53,7 +53,7 @@ class sealevel(Dataset):
 
     __subdirs__ = [
         'grids',
-        'tide_gauge',
+        'gauges-new',
     ]
 
     @classmethod
