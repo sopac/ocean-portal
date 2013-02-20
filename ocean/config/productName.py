@@ -38,7 +38,7 @@ products = {"reynolds": {"daily":     "REY00001",
                       "monthlyTre":    "ERA00301",# Trend ID
                       "3monthlyTre":   "ERA00302",
                       "6monthlyTre":   "ERA00303",
-                      "12monthlyTre":  "ERA00304"
+                      "yearlyTre":     "ERA00304"
                      },
             "bran": {"monthly":       "BRN00001",
                      "3monthly":      "BRN00002",

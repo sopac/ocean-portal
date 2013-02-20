@@ -48,16 +48,12 @@ class ersst(SST):
     DATASET = 'ersst'
     PLOTTER = ERSSTPlotter
 
-    __form_params__ = {
-        'baseYear': int,
-    }
-    __form_params__.update(SST.__form_params__)
-
     __periods__ = [
         'monthly',
         '3monthly',
         '6monthly',
         '12monthly',
+        'yearly',
     ]
 
     __subdirs__ = [

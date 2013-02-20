@@ -33,6 +33,7 @@ class SST(Dataset):
         'average': bool,
         'trend': bool,
         'runningInterval': int,
+        'baseYear': int,
     }
     __form_params__.update(Dataset.__form_params__)
 
@@ -45,11 +46,14 @@ class SST(Dataset):
         'mean',
         'dec',
         'anom',
+        'trend',
     ]
 
     __plots__ = [
         'map',
     ]
+
+    apply_to = util.Parameterise(Dataset)
 
     @property
     def CACHE_URL(self):
@@ -61,93 +65,19 @@ class SST(Dataset):
         self.product = productName.products[self.DATASET]
         self.plotter = self.PLOTTER()
 
-    def process_average(self, params):
+    @apply_to()
+    def get_filename_format(self, params={}):
+        return '%(product_name)s_%(area)s_%(formatted_date)s_%(variable)s'
 
-        response = {}
-
-        mapStr = params['variable']
-        dateStr = params['date'].strftime('%Y%m%d')
-        areaStr = params['area']
-        periodStr = params['period']
-
-        dateStr = dateStr[4:6] # extract month value
-
-        if params['trend']:
-            if periodStr == 'monthly':
-                response['aveImg'] = CACHE_URL + \
-                    self.product['monthlyAve'] + \
-                    '_%s_ave_%s_trend.png' % (dateStr, areaStr)
-                response['aveData'] = CACHE_URL + \
-                    self.product['monthlyAve'] + \
-                    '_%s_ave_%s.txt' % (dateStr, areaStr)
-                response['mean'] = areaMean.monthlyMean[dateStr][areaStr]
-
-            elif periodStr == 'yearly':
-                response['aveImg'] = CACHE_URL + \
-                    self.product['yearlyAve'] + \
-                    '_ave_%s_trend.png"' % (areaStr)
-                response['aveData'] = CACHE_URL + \
-                    self.product['yearlyAve'] + \
-                    '_ave_%s.txt' % (areaStr)
-                response['mean'] = areaMean.yearlyMean[areaStr]
-
-        elif params['runningAve']:
-            if periodStr == 'monthly':
-                if 'runningInterval' in params:
-                    runningInterval = params['runningInterval']
-
-                    response['aveImg'] = CACHE_URL + \
-                        self.product['monthlyAve'] + \
-                        '_%s_ave_%s_%02dmoving.png' % (dateStr,
-                                                       areaStr,
-                                                       runningInterval)
-                    response['aveData'] = CACHE_URL + \
-                        self.product['monthlyAve'] + \
-                        '_%s_ave_%s.txt"' % (dateStr, areaStr)
-                    response['mean'] = areaMean.monthlyMean[dateStr][areaStr]
-
-            elif periodStr == 'yearly':
-                response['aveImg'] = CACHE_URL + \
-                    self.product['yearlyAve'] + \
-                    '_ave_%s_%02dmoving.png' % (areaStr,
-                                                runningInterval)
-                response['aveData'] = CACHE_URL + \
-                    self.product['yearlyAve'] + \
-                    '_ave_%s.txt' % (areaStr)
-                response['mean'] = areaMean.yearlyMean[areaStr]
-
-        else: # not trend or runningAve
-            if periodStr == 'monthly':
-                response['aveImg'] = CACHE_URL + \
-                    self.product['monthlyAve'] + \
-                    '_%s_ave_%s.png"' % (dateStr, areaStr)
-                response['aveData'] = CACHE_URL + \
-                    self.product['monthlyAve'] + \
-                    '_%s_ave_%s.txt"' % (dateStr, areaStr)
-                response['mean'] = areaMean.monthlyMean[dateStr][areaStr]
-
-            elif periodStr == 'yearly':
-                response['aveImg'] = CACHE_URL + \
-                    self.product['yearlyAve'] + \
-                    '_ave_%s.png"' % (areaStr)
-                response['aveData'] = CACHE_URL + \
-                    self.product['yearlyAve'] + \
-                    '_ave_%s.txt"' % (areaStr)
-                response['mean'] = areaMean.yearlyMean[areaStr]
-
-    def get_filename_format(self, params):
-        format = {
-            'mean': '%s_%s_%s_mean',
-            'dec': '%s_%s_%s_dec',
-            'anom': '%s_%s_%s_anom',
-        }
-
-        return format[params['variable']]
+    @apply_to(variable='trend')
+    def get_filename_format(self, params={}):
+        return '%(product_name)s_%(area)s_%(formatted_date)s_%(variable)s_%(baseYear)s'
 
     def get_product_name(self, params):
 
         suffix = {
             'dec': 'Dec',
+            'trend': 'Tre',
         }
 
         key = '%s%s' % (params['period'], suffix.get(params['variable'], ''))
@@ -169,33 +99,32 @@ class SST(Dataset):
     def process(self, params):
         response = {}
 
-        if params.get('average', False): # averages
-            response.update(self.process_average(self, params))
+        p = params.copy()
+        p.update({
+            'product_name': self.get_product_name(params=params),
+            'formatted_date': self.get_date_format(params=params),
+        })
+
+        fileName = self.get_filename_format(params=params) % p
+        outputFileName = os.path.join(serverCfg['outputDir'], fileName)
+
+        if not util.check_files_exist(outputFileName,
+                                      COMMON_FILES.values()):
+            self.plotter.plot(fileName, **params)
+
+        if not util.check_files_exist(outputFileName,
+                                      COMMON_FILES.values()):
+            response['error'] = \
+                "Requested image is not available at this time."
         else:
-
-            fileName = self.get_filename_format(params) % (
-                self.get_product_name(params),
-                params['area'],
-                self.get_date_format(params))
-            outputFileName = os.path.join(serverCfg['outputDir'], fileName)
-
-            if not util.check_files_exist(outputFileName,
-                                          COMMON_FILES.values()):
-                self.plotter.plot(fileName, **params)
-
-            if not util.check_files_exist(outputFileName,
-                                          COMMON_FILES.values()):
-                response['error'] = \
-                    "Requested image is not available at this time."
-            else:
-                response.update(util.build_response_object(
-                        COMMON_FILES.keys(),
-                        os.path.join(serverCfg['baseURL'],
-                                     serverCfg['rasterURL'],
-                                     fileName),
-                        COMMON_FILES.values()))
-                util.touch_files(os.path.join(serverCfg['outputDir'],
-                                              fileName),
-                                 COMMON_FILES.values())
+            response.update(util.build_response_object(
+                    COMMON_FILES.keys(),
+                    os.path.join(serverCfg['baseURL'],
+                                 serverCfg['rasterURL'],
+                                 fileName),
+                    COMMON_FILES.values()))
+            util.touch_files(os.path.join(serverCfg['outputDir'],
+                                          fileName),
+                             COMMON_FILES.values())
 
         return response

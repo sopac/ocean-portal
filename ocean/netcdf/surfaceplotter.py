@@ -15,6 +15,7 @@ from ocean import util, config
 from ocean.config import regionConfig
 from ocean.netcdf import Gridset
 from ocean.plotter import Plotter
+from ocean.processing.trends import TrendGrid
 
 serverCfg = config.get_server_config()
 
@@ -74,10 +75,37 @@ class SurfacePlotter(object):
     def get_formatted_date(self, params={}):
         return self._get_formatted_date(params, 12)
 
+    @apply_to(period='yearly')
+    def get_formatted_date(self, params={}):
+        return params['date'].strftime('%Y')
+
     def _get_formatted_date(self, params, range):
         months = util.getMonths(params['date'], range)
         return "%s to %s" % (months[0].strftime('%B %Y'),
                              months[-1].strftime('%B %Y'))
+
+    @apply_to(variable='trend', period='monthly')
+    def get_formatted_date(self, params={}):
+        return "%s, %s to present" % (params['date'].strftime('%B'),
+                                      params['baseYear'])
+
+    @apply_to(variable='trend', period='3monthly')
+    def get_formatted_date(self, params={}):
+        return self._get_formatted_date_trend(params, 3)
+
+    @apply_to(variable='trend', period='6monthly')
+    def get_formatted_date(self, params={}):
+        return self._get_formatted_date_trend(params, 6)
+
+    def _get_formatted_date_trend(self, params, range):
+        months = util.getMonths(params['date'], range)
+        return "%s to %s, %s to present" % (months[0].strftime('%B'),
+                                            months[-1].strftime('%B'),
+                                            params['baseYear'])
+
+    @apply_to(variable='trend', period='yearly')
+    def get_formatted_date(self, params={}):
+        return '%s to present' % (params['baseYear'])
 
     # --- get_ticks_format ---
     @apply_to()
@@ -123,7 +151,12 @@ class SurfacePlotter(object):
 
     @apply_to(variable='dec')
     def get_ticks(self, params={}):
+        # range is chosen to match label positions
         return np.arange(0.5, 7.51, 1)
+
+    @apply_to(variable='trend')
+    def get_ticks(self, params={}):
+        return np.arange(-0.6, 0.61, 0.1)
 
     # --- get_extend ---
     @apply_to()
@@ -150,6 +183,7 @@ class SurfacePlotter(object):
             'mean': "Average Sea Surface Temperature",
             'anom': "Average Sea Surface Temperature Anomaly",
             'dec': "Average Sea Surface Temperature Deciles",
+            'trend': "Trend",
             'alt': "Sea Level Altimetry",
             'rec': "Sea Level Reconstruction",
         }
@@ -180,6 +214,10 @@ class SurfacePlotter(object):
     def get_units(self, params={}):
         return ''
 
+    @apply_to(variable='trend')
+    def get_units(self, params={}):
+        return ur'\u00b0' + 'C/decade' # degrees C/decade
+
     # --- get_colormap ---
     @apply_to()
     def get_colormap(self, params={}):
@@ -189,15 +227,8 @@ class SurfacePlotter(object):
     def get_colormap(self, params={}):
         return 'jet'
 
-    # ---
-    def get_variable_mapping(self, params={}):
-        var = params['variable']
-
-        try:
-            return self.VARIABLE_MAP[var]
-        except KeyError:
-            return var
-
+    # --- get_grid ---
+    @apply_to()
     def get_grid(self, params={}, **kwargs):
         """
         Request a Grid object for this dataset.
@@ -212,6 +243,26 @@ class SurfacePlotter(object):
                        suffix=self.get_suffix(params=params),
                        date=params['date'],
                        **kwargs)
+
+    @apply_to(variable='trend')
+    def get_grid(self, params={}, **kwargs):
+        """
+        Request a spatial trend map.
+        """
+
+        return TrendGrid(self,
+                         base_year=params['baseYear'],
+                         period=params['period'],
+                         end_month=params['date'].month)
+
+    # ---
+    def get_variable_mapping(self, params={}):
+        var = params['variable']
+
+        try:
+            return self.VARIABLE_MAP[var]
+        except KeyError:
+            return var
 
     def plot(self, outputFilename, **args):
         """

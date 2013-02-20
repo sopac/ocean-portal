@@ -7,6 +7,8 @@
 
 import datetime
 
+import pytest
+
 from ocean.datasets.ersst import Dataset
 from ocean.tests import util
 
@@ -16,6 +18,11 @@ Test plots for all variables and periods
 
 def test_ersst(report, variable, period):
     util.clear_cache('ERA')
+
+    if variable == 'trend' and period == '12monthly':
+        pytest.skip("Not useful")
+    elif variable != 'trend' and period == 'yearly':
+        pytest.skip("No data for this var/period")
 
     params = {
         'area': 'pac',
