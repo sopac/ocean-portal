@@ -28,7 +28,7 @@ $(document).ready(function() {
 
     hideControls();
 
-    /* set up the loading dialog */
+    /* set up the date picker */
     $(".datepicker").datepicker({
         dateFormat: 'd MM yy',
         changeMonth: true,
@@ -58,6 +58,7 @@ $(document).ready(function() {
             return;
         }
 
+        updateVisibilities('variable', ocean.variable, varid)
         ocean.variable = varid;
 
         /* filter the options list */
@@ -78,6 +79,7 @@ $(document).ready(function() {
             return;
         }
 
+        updateVisibilities('plottype', ocean.plottype, plottype);
         ocean.plottype = plottype;
 
         /* filter the period list */
@@ -87,8 +89,10 @@ $(document).ready(function() {
         showControls('period');
         selectFirstIfRequired('period');
 
-        /* FIXME: consider exposing these in CSS ? */
-        /* plot specific controls */
+        /* plot specific controls -
+         * Note: do not call showControls or hideControls here, control
+         * visibility based on plottype should be specified in controlvars.css
+         */
         switch (plottype) {
             case 'xsections':
             case 'histogram':
@@ -96,17 +100,14 @@ $(document).ready(function() {
             case 'ts':
                 if (ocean.variable == 'gauge') {
                     /* really the default case */
-                    hideControls('latitude', 'longitude');
                     removePointLayer();
                     break;
                 }
 
-                showControls('latitude', 'longitude');
                 addPointLayer();
                 break;
 
             default:
-                hideControls('latitude', 'longitude');
                 removePointLayer();
                 break;
         }
@@ -117,73 +118,22 @@ $(document).ready(function() {
     /* Period */
     $('#period').change(function () {
         var period = getValue('period');
-        var show = [ 'dataset' ];
-        var hide = [];
 
         if (!(period in ocean.variables[ocean.variable].plots[ocean.plottype])) {
             return;
         }
 
+        updateVisibilities('period', ocean.period, period)
         ocean.period = period;
 
-        /* FIXME: consider exposing these in CSS ? */
-        /* period specific date controls */
-        switch (period) {
-            case 'daily':
-            case 'weekly':
-                show.push('date');
-                hide.push('month');
-                hide.push('year');
-
-                $('#date').datepicker('option', {
-                    showWeek: (period == 'weekly')
-                });
-                break;
-
-            case 'yearly':
-                hide.push('date');
-                hide.push('month');
-                show.push('year');
-                break;
-
-            case 'monthly':
-            case '3monthly':
-            case '6monthly':
-            case '12monthly':
-                hide.push('date');
-
-                switch (ocean.plottype) {
-                    case 'ts':
-                        hide.push('month');
-                        hide.push('year');
-                        break;
-
-                    case 'histogram':
-                    case 'waverose':
-                        show.push('month');
-                        hide.push('year');
-                        break;
-
-                    default:
-                        show.push('month');
-                        show.push('year');
-                        break;
-                }
-                break;
-
-            default:
-                console.error("ERROR: should not be reached");
-                break;
-        }
-
-        hideControls.apply(null, hide);
+        showControls('dataset');
 
         /* FIXME: is this strictly correct? it would collapse for datasets
          * with holes in them. That's fine for the year combo, but not the
          * datepicker */
         var range = getCombinedDateRange();
 
-        if ($.inArray('year', show) != -1) {
+        if ($('#year').is(':visible')) {
             /* populate year */
             var year = $('#year');
 
@@ -208,11 +158,11 @@ $(document).ready(function() {
             } else {
                 setValue('year', y);
             }
-        } else if ($.inArray('month', show) != -1) {
+        } else if ($('#month').is(':visible')) {
             /* if year is shown, we populate month based on the selected year
              * (see below) */
             updateMonths();
-        } else if ($.inArray('date', show) != -1) {
+        } else if ($('#date').is(':visible')) {
             var date_ = $('#date');
 
             /* set range on datepicker */
@@ -228,8 +178,6 @@ $(document).ready(function() {
             /* datasets are not date dependent */
             updateDatasets();
         }
-
-        showControls.apply(null, show);
     });
 
     /* Year */
@@ -615,6 +563,7 @@ function updateMonths(minMonth, maxMonth) {
         setValue('month', selectedmonth);
     }
 }
+
 /**
  * updateDatasets:
  *
@@ -842,6 +791,8 @@ function _controlVarParent(control) {
  *
  * Shows a div.controlvar based on the id of the field within it.
  *
+ * Be aware that control visibility is also affected by controlvars.css
+ *
  * See Also: hideControls()
  */
 function showControls() {
@@ -869,6 +820,8 @@ function showControls() {
  * See Also: showControls()
  */
 function hideControls() {
+    /* FIXME: integrate with controlvars.css so all visibility is controlled
+     * through a series of CSS rules */
     var controls = arguments;
 
     if (controls.length == 0) {
@@ -882,6 +835,39 @@ function hideControls() {
         parent.hide();
 
         /* hide control group if required */
+        if (group.children('.controlvar:visible').length == 0) {
+            group.hide();
+        }
+    });
+}
+
+/**
+ * updateVisibilities:
+ *
+ * Update the visibility of the controls by applying the rules in
+ * controlvars.css
+ */
+function updateVisibilities(controlvar, old, new_) {
+    /* update the classes */
+    $('.controlvar').removeClass(controlvar + '-' + old)
+                    .addClass(controlvar + '-' + new_);
+
+    /* show any control groups that now need showing */
+    $('.controlgroup .controlvar .field').each(function () {
+        var field = $(this);
+
+        if (field.css('display') != 'none') {
+            field.closest('.controlvar').show();
+            field.closest('.controlgroup').show();
+        } else {
+            field.closest('.controlvar').hide();
+        }
+    });
+
+    /* hide any empty controlgroups */
+    $('.controlgroup').each(function () {
+        var group = $(this);
+
         if (group.children('.controlvar:visible').length == 0) {
             group.hide();
         }

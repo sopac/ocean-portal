@@ -1,0 +1,72 @@
+/* This CSS file defines variable, plot and period specific controls.
+ * It is done in CSS because it's actually nice to express in CSS, because
+ * rules cascade. As such ORDER IS IMPORTANT. Matching rules lower down
+ * override higher up rules.
+ */
+
+/* hide these by default */
+#date,
+#month,
+#year,
+#tidalgauge,
+#latitude,
+#longitude
+{
+  display: none;
+}
+
+/* show #date for daily and weekly data */
+.period-daily #date,
+.period-weekly #date
+{
+  display: inline;
+}
+
+/* show month/year for other data types */
+.period-monthly #month,
+.period-monthly #year,
+.period-3monthly #month,
+.period-3monthly #year,
+.period-6monthly #month,
+.period-6monthly #year,
+.period-12monthly #month,
+.period-12monthly #year,
+.period-yearly #year
+{
+  display: inline;
+}
+
+/* hide months/years for ts, waveroses and histograms */
+.plottype-ts #month,
+.plottype-ts #year,
+.plottype-waverose #year,
+.plottype-histogram #year,
+.variable-ssttrend #year
+{
+  display: none;
+}
+
+/* show latitude and longitude for TS, xsection, waverose and histogram */
+.plottype-ts #latitude,
+.plottype-ts #longtide,
+.plottype-xsection #latitude,
+.plottype-xsection #longitude,
+.plottype-waverose #latitude,
+.plottype-waverose #longitude,
+.plottype-histogram #latitude,
+.plottype-histogram #longitude
+{
+  display: inline;
+}
+
+/* Tidal gauges should show the gauge selector instead */
+.variable-gauge #latitude,
+.variable-gauge #longitude
+{
+  display: none;
+}
+
+.variable-gauge #tidalgauge
+{
+  display: inline;
+}

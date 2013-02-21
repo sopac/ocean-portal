@@ -161,8 +161,6 @@ ocean.dsConf = {
                 return;
             }
 
-            showControls('tidalgauge');
-
             /* generate a list of filters for the configured tidal
              * gauge regions */
             var filter;
