@@ -49,8 +49,8 @@
 /* show latitude and longitude for TS, xsection, waverose and histogram */
 .plottype-ts #latitude,
 .plottype-ts #longtide,
-.plottype-xsection #latitude,
-.plottype-xsection #longitude,
+.plottype-xsections #latitude,
+.plottype-xsections #longitude,
 .plottype-waverose #latitude,
 .plottype-waverose #longitude,
 .plottype-histogram #latitude,
