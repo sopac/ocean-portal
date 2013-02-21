@@ -83,7 +83,8 @@ class SST(Dataset):
         key = '%s%s' % (params['period'], suffix.get(params['variable'], ''))
         return self.product[key]
 
-    def get_date_format(self, params):
+    @apply_to()
+    def get_date_format(self, params={}):
         format = {
             'daily': '%Y%m%d',
             'weekly': '%Y%m%d',
@@ -95,6 +96,13 @@ class SST(Dataset):
         }
 
         return params['date'].strftime(format[params['period']])
+
+    @apply_to(variable='trend')
+    def get_date_format(self, params={}):
+        if params['period'] == 'yearly':
+            return 'annual'
+        else:
+            return params['date'].strftime('%m')
 
     def process(self, params):
         response = {}
