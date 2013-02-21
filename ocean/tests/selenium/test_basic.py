@@ -240,3 +240,19 @@ def test_date_range_multi_month_periods_2(b, url):
 
     elems = b.find_elements_by_jquery('#dataset option')
     assert 'bran' not in map(lambda e: e.get_attribute('value'), elems)
+
+def test_date_range_years_present_not_present(b, url):
+    b.get(url)
+
+    # select a thing where we do specify the year
+    b.select_param('variable', 'Anomalies')
+    b.select_param('plottype', 'Surface Map')
+    b.select_param('period', '3 monthly')
+    b.select_param('year', '2012')
+    b.select_param('month', 'Dec 11 - Feb 12')
+
+    # select a thing where we don't
+    b.select_param('variable', 'Trend')
+    b.select_param('month', 'Dec - Feb')
+
+    assert len(b.find_elements_by_jquery('#year:visible')) == 0

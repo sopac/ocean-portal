@@ -497,6 +497,26 @@ function updateMonths(minMonth, maxMonth) {
         maxMonth = 11;
     }
 
+    function _dateRange(year, range) {
+        range -= 1;
+
+        if ($('#year').is(':visible')) {
+            return function (m) {
+                return $.datepicker.formatDate('M y',
+                        new Date(selectedyear, m - range)) + ' &ndash; ' +
+                    $.datepicker.formatDate('M y',
+                        new Date(selectedyear, m));
+            }
+        } else {
+            return function (m) {
+                return $.datepicker.formatDate('M',
+                        new Date(selectedyear, m - range)) + ' &ndash; ' +
+                    $.datepicker.formatDate('M',
+                        new Date(selectedyear, m));
+            }
+        }
+    }
+
     switch (ocean.period) {
         case 'monthly':
             fmt = function (m) {
@@ -506,30 +526,15 @@ function updateMonths(minMonth, maxMonth) {
             break;
 
         case '3monthly':
-            fmt = function (m) {
-                return $.datepicker.formatDate('M y',
-                        new Date(selectedyear, m - 2)) + ' &ndash; ' +
-                    $.datepicker.formatDate('M y',
-                        new Date(selectedyear, m));
-            };
+            fmt = _dateRange(selectedyear, 3);
             break;
 
         case '6monthly':
-            fmt = function (m) {
-                return $.datepicker.formatDate('M y',
-                        new Date(selectedyear, m - 5)) + ' &ndash; ' +
-                    $.datepicker.formatDate('M y',
-                        new Date(selectedyear, m));
-            };
+            fmt = _dateRange(selectedyear, 6);
             break;
 
         case '12monthly':
-            fmt = function (m) {
-                return $.datepicker.formatDate('M y',
-                        new Date(selectedyear, m - 11)) + ' &ndash; ' +
-                    $.datepicker.formatDate('M y',
-                        new Date(selectedyear, m));
-            };
+            fmt = _dateRange(selectedyear, 12);
             break;
 
         case 'yearly':
