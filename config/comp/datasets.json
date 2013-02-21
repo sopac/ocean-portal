@@ -50,6 +50,12 @@
         "name":"Deciles",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map"]
+    },{
+        "id":"ssttrend",
+        "bid":"trend",
+        "name":"Trend",
+        "periods": ["monthly", "3monthly", "6monthly", "yearly"],
+        "plottypes": ["map"]
     }],
     "dateRange" : {
         "minDate": "19500101",

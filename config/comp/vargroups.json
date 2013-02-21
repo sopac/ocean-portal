@@ -1,7 +1,7 @@
 {
   "sst": {
     "name": "Ocean Temperature",
-    "vars": [ "meansst", "sstanom", "sstdec" ]
+    "vars": [ "meansst", "sstanom", "sstdec", "ssttrend" ]
   },
 
   "salt": {

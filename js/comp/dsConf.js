@@ -61,7 +61,7 @@ ocean.dsConf = {
     },
     ersst: {
         params: override(function (dataset) { return {
-            baseYear: 1900,
+            baseYear: 1950,
             average: dataset.aveCheck.average,
             trend: dataset.aveCheck.trend,
             runningAve: dataset.aveCheck.runningAve,
