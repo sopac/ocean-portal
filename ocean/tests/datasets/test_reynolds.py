@@ -21,6 +21,8 @@ def test_reynolds(report, variable, period):
 
     if variable == 'dec' and period == 'daily':
         pytest.xfail("No data available for this var/period")
+    elif variable == 'trend':
+        pytest.skip("Record not long enough")
 
     util.clear_cache('REY')
 
