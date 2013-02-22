@@ -220,6 +220,7 @@ class Plotter(object):
             box = TextArea(getCopyright(),
                            textprops=dict(color='k', fontsize=6))
             copyrightBox = AnchoredOffsetbox(loc=3, child=box,
+                                             borderpad=0.1,
                                              bbox_to_anchor=(copyright_label_xadj, copyright_label_yadj),
                                              frameon=False,
                                              bbox_transform=ax.transAxes)
