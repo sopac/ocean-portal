@@ -132,7 +132,7 @@
         "plottypes": ["map", "ts"],
         "dateRange" : {
             "minDate": "19930101",
-            "maxDate": "20110201"
+            "maxDate": "20121101"
         }
     },{
         "id":"rec",

@@ -29,14 +29,14 @@ serverCfg = config.get_server_config()
 
 # filenames for the respective gridfiles (in datadir/grids/)
 GRIDS = {
-    'alt': 'CSIRO_SatAlt_199301_201112.nc',
-    'rec': 'CSIRO_Recons_195001_200912.nc',
+    'alt': 'jb_ibn_srn_gtn_giy.nc',
+    'rec': 'recons_1950_2009_noib_seasinc.nc',
 }
 
 # start date for the time index in each grid file
 REFERENCE_DATE = {
     'alt': datetime.date(1990, 1, 1),
-    'rec': datetime.date(1950, 1, 1),
+    'rec': datetime.date(1900, 1, 1),
 }
 
 class SeaLevelGrid(Grid):
