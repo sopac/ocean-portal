@@ -114,7 +114,10 @@ class SeaLevelSeries(SeaLevelGrid):
 
 class SeaLevelSurfacePlotter(SurfacePlotter):
     DATASET = 'sealevel'
-    PRODUCT_NAME = "CSIRO CMAR, Church and White"
+    PRODUCT_NAME = """
+IB not removed; seasonal not removed; global trend not removed; GIA removed
+Height relative to GSFC00.1
+Data from CSIRO CMAR, Church and White 2009"""
 
     def get_grid(self, params={}, **kwargs):
         return SeaLevelGrid(params['variable'], date=params['date'])
@@ -202,6 +205,8 @@ def plotTimeseries(outputFilename, saveData=True, **args):
             writer = csv.writer(file, delimiter='\t')
             writer.writerow(('# Sea Level %s for %s' % (
                              titlePrefix, tidalGaugeName),))
+            writer.writerow(['# Corrections: IB not removed; seasonal not removed; global trend not removed; GIA removed'])
+            writer.writerow(['# Data from CSIRO CMAR, Church and White 2009'])
             writer.writerow(('# Datum: GSFC00.1',))
             writer.writerow(['Date (YYYY-MM)', '%s (mm)' % titlePrefix])
 
@@ -219,9 +224,15 @@ def plotTimeseries(outputFilename, saveData=True, **args):
     ax.plot(grid.time, grid.data, 'b-')
     plt.axhline(y=0, color='k')
 
+    PRODUCT_NAME = """
+Data from CSIRO CMAR, Church and White 2009
+Height relative to GSFC00.1
+IB not removed; seasonal not removed; global trend not removed; GIA removed
+"""
+
     plt.figtext(0.02, 0.02, getCopyright(), fontsize=6)
-    plt.figtext(0.90, 0.05, "Height relative to GSFC00.1",
-                fontsize=8, horizontalalignment='right')
+    plt.figtext(0.90, 0.02, PRODUCT_NAME.strip(),
+                fontsize=6, horizontalalignment='right')
 
     plt.savefig(outputFilename + ".png", dpi=150,
                 bbox_inches='tight', pad_inches=.1)
