@@ -12,9 +12,7 @@ import datetime
 
 import pytest
 
-from ocean.config import get_server_config
-
-config = get_server_config()
+from ocean.tests import util
 
 def pytest_generate_tests(__multicall__, metafunc):
     __multicall__.execute()
@@ -84,8 +82,7 @@ class Report(object):
             d['params'] = params
 
         if img is not None:
-            img = os.path.basename(img)
-            file = os.path.join(config['outputDir'], img)
+            file = util.get_file_from_url(img)
 
             assert os.path.exists(file)
             assert not os.path.exists(os.path.join(self._testdir, img))

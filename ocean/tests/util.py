@@ -6,6 +6,7 @@
 # Authors: Danielle Madeley <d.madeley@bom.gov.au>
 
 import os
+import os.path
 from glob import glob
 
 import pytest
@@ -35,3 +36,7 @@ def unique(iterable):
         vals.add(i)
 
     return True
+
+def get_file_from_url(url):
+    bn = os.path.basename(url)
+    return os.path.join(config['outputDir'], bn)
