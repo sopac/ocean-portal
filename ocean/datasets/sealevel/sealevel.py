@@ -198,10 +198,12 @@ class sealevel(Dataset):
         fileName = seaChart % (seaLevelProduct['monthly'], tid, 'tid')
         outputFileName = os.path.join(serverCfg['outputDir'], fileName)
 
-        if not os.path.exists(outputFileName + '.png'):
+        FILES = ['.png', '.csv']
+
+        if not util.check_files_exist(outputFileName, FILES):
             plotTidalGauge(outputFileName, **params)
 
-        if not os.path.exists(outputFileName + '.png'):
+        if not util.check_files_exist(outputFileName, FILES):
             responseObj['error'] = \
                 "Requested image is not available at this time."
         else:
@@ -210,10 +212,10 @@ class sealevel(Dataset):
                 os.path.join(serverCfg['baseURL'],
                              serverCfg['rasterURL'],
                              fileName),
-                [ '.png', '.txt' ]))
+                FILES))
             util.touch_files(os.path.join(serverCfg['outputDir'],
                                           fileName),
-                             [ '.png', '.txt' ])
+                             FILES)
 
         return response
 

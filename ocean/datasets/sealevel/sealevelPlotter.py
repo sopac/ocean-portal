@@ -135,16 +135,15 @@ def plotTidalGauge(outputFilename, saveData=True, **args):
 
     tidalGaugeId = args['tidalGaugeId']
     tidalGaugeName = args['tidalGaugeName']
-    filename = serverCfg["dataDir"]["sealevel"] + "tide_gauge/" + tidalGaugeId + "SLD.txt.tmp"
 
     data = TideGauge(tidalGaugeId)
 
     figure = plt.figure()
 
     plt.rc('font', size=8)
-    plt.title('Monthly sea levels for ' + tidalGaugeName)
-    plt.ylabel('Sea Level Height (metres)')
-    plt.xlabel('Year')
+    plt.title("Monthly sea levels for " + tidalGaugeName)
+    plt.ylabel("Sea Level Height (metres)")
+    plt.xlabel("Year")
 
     ax = figure.gca()
     ax.grid(True)
@@ -161,13 +160,24 @@ def plotTidalGauge(outputFilename, saveData=True, **args):
     plt.figtext(0.90, 0.05, "0.0 = Tidal Gauge Zero",
                 fontsize=8, horizontalalignment='right')
 
-    plt.savefig(outputFilename + ".png", dpi=150,
+    plt.savefig(outputFilename + '.png', dpi=150,
                 bbox_inches='tight', pad_inches=.1)
 
     plt.close()
-    pngcrush(outputFilename + ".png")
+    pngcrush(outputFilename + '.png')
 
-    return 0
+    with open(outputFilename + '.csv', 'w') as f:
+
+        writer = csv.writer(f)
+
+        writer.writerow(["# Monthly sea levels for " + tidalGaugeName])
+        writer.writerow(["# Data from tidalGaugeId"])
+        writer.writerow(["# Sea Level Height (metres) relative to Tidal Gauge Zero"])
+
+        writer.writerow(data.headers[1:])
+
+        for row in data:
+            writer.writerow(list(row)[1:])
 
 def plotTimeseries(outputFilename, saveData=True, **args):
     """

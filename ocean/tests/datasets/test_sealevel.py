@@ -5,9 +5,10 @@
 #
 # Authors: Danielle Madeley <d.madeley@bom.gov.au>
 
+import csv
+import datetime
 import os
 import urllib
-import datetime
 
 import pytest
 
@@ -61,9 +62,28 @@ def test_gauge_ts(report):
 
     assert 'error' not in r
     assert 'tidimg' in r
+    assert 'tidtxt' in r
     assert len(r) == 2
 
     report(params, r['tidimg'])
+
+    fn = util.get_file_from_url(r['tidtxt'])
+
+    assert os.path.exists(fn)
+
+    with open(fn) as f:
+        reader = csv.reader(f)
+
+        for i in xrange(3):
+            preamble, = reader.next()
+
+            assert preamble.startswith('#')
+
+        headers = reader.next()
+        row = reader.next()
+
+        assert len(headers) == len(row)
+        assert row == map(str, [2, 1993, 6241, 479, 0.337, 0.961, 0.642, 0.187])
 
 def test_surface_alt(report):
     util.clear_cache('SEA')

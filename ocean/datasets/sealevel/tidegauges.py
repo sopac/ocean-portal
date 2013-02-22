@@ -84,4 +84,7 @@ class TideGauge(np.recarray):
             # load the data
             data = list(generate())
 
-            return np.array(data, dtype=cls.COLUMNS).view(cls)
+            r = np.array(data, dtype=cls.COLUMNS).view(cls)
+            r.headers = headers
+
+            return r
