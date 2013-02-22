@@ -193,7 +193,7 @@ def test_removing_outputs(b, url):
 @pytest.mark.bug201
 @pytest.mark.parametrize(('variable', 'min', 'max'), [
     ('Reconstruction', '1950', '2009'),
-    ('Altimetry', '1993', '2011'),
+    ('Altimetry', '1993', '2012'),
     ('Anomalies', '1950', '2012'),
 ])
 def test_date_range(b, url, variable, min, max):
