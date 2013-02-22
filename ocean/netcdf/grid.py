@@ -13,8 +13,18 @@ import numpy as np
 from netCDF4 import Dataset
 
 from ocean import util, logger
+from ocean.config import get_server_config
 from ocean.util.dateRange import getMonths
 from ocean.core import ReportableException
+
+config = get_server_config()
+
+class FileNotFound(ReportableException):
+    def __init__(self, filename, msg="Data not available"):
+        if config['debug']:
+            msg += ': ' + filename
+
+        ReportableException.__init__(self, msg)
 
 class GridWrongFormat(ReportableException):
     pass
@@ -53,6 +63,10 @@ class Grid(object):
                  lonrange=(-360, 360),
                  depthrange=(0, 0),
                  **kwargs):
+
+        if not os.access(filename, os.R_OK):
+            raise FileNotFound(filename)
+
         with Dataset(filename) as nc:
 
             logger.log("Dataset", filename)
