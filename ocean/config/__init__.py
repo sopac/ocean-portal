@@ -13,3 +13,4 @@ __all__ = [
 ]
 
 from config import *
+from serverConfig import default

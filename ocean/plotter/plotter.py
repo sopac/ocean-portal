@@ -79,7 +79,7 @@ class Plotter(object):
         """Queue a plot to be drawn"""
 
         def _target(*args, **kwargs):
-            if self.serverConfig.get('profile', False):
+            if self.serverConfig.profile:
                 import cProfile
 
                 cProfile.runctx('func(*args, **kwargs)', globals(), locals(),

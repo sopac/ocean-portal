@@ -4,6 +4,7 @@
 #     All Rights Reserved
 #
 # Author: Sheng Guo <s.guo@bom.gov.au>
+#         Danielle Madeley <d.madeley@bom.gov.au>
 
 """
 Store the server specific configurations
@@ -11,80 +12,68 @@ Store the server specific configurations
 Don't import config directly, use ocean.config.get_server_config()
 """
 
-servers = {
-    'tuscany': { 'hostname':  'tuscany.bom.gov.au',
-                 # path on web server
-                 'baseURL':   '/portal/',
-                 # relative path to rasters
-                 'rasterURL': 'raster/',
-                 # path on disk to output rasters/caches
-                 'outputDir': '/data/comp/raster/',
-                 # relative path to caches (relative to rasterURL)
-                 'cacheDir': { 'reynolds': 'cache/reynolds/',
-                               'ersst': 'cache/ersst/'
-                             },
-                 # path to data on disk
-                 'dataDir':  { 'reynolds': '/data/sst/reynolds/',
-                               'ww3': '/data/wavewatch3/',
-                               'sealevel': '/data/sea_level/',
-                               'ersst': '/data/sst/ersst/data/',
-                               'bran': '/data/blue_link/data/'
-                             },
-                 'mapservPath': '/usr/libexec/mapserv',
-                 'debug':       True,
-                 'profile':     False,
-               },
-    'tunceli': { 'hostname':  'tunceli.bom.gov.au',
-                 'baseURL':   '/portal/',
-                 'rasterURL': 'raster/',
-                 'outputDir': '/data/comp/raster/',
-                 'cacheDir': { 'reynolds': 'cache/reynolds/',
-                               'ersst':    'cache/ersst/',
-                             },
-                 # shared data directories from ITB (mounted rw)
-                 'dataDir':  { 'reynolds': '/www4/data/cosppac/reynolds/',
-                               'ww3':      '/www4/data/cosppac/wavewatch3/',
-                               'sealevel': '/www4/data/cosppac/sea_level/',
-                               'ersst':    '/www4/data/cosppac/ersst/',
-                               'bran':     '/www4/data/cosppac/bran/',
-                             },
-                 'mapservPath': '/usr/libexec/mapserv',
-                 'debug':       True,
-               },
-    'www4': { 'hostname':  'www4.bom.gov.au',
-              # goes through the proxy on wdev
-              'baseURL':   '/cosppac/apps/portal/',
-              'rasterURL': 'raster/',
-              'outputDir': '/web/cosppac/raster/',
-              'cacheDir': { 'reynolds': 'cache/reynolds/',
-                            'ersst':    'cache/ersst/',
-                          },
-              # shared data directories from ITB (mounted ro)
-              'dataDir':  { 'reynolds': '/web/data/cosppac/reynolds/',
-                            'ww3':      '/web/data/cosppac/wavewatch3/',
-                            'sealevel': '/web/data/cosppac/sea_level/',
-                            'ersst':    '/web/data/cosppac/ersst/',
-                            'bran':     '/web/data/cosppac/bran/',
-                          },
-              'mapservPath': '/usr/libexec/mapserv',
-              'debug':       True,
-            },
-    'hoapp2': { 'hostname':  'hoapp2.bom.gov.au',
-                # goes through the proxy on wdev
-                'baseURL':   '/cosppac/apps/portal/',
-                'rasterURL': 'raster/',
-                'outputDir': '/web/cosppac/raster/',
-                'cacheDir': { 'reynolds': 'cache/reynolds/',
-                              'ersst':    'cache/ersst/',
-                            },
-                # shared data directories from ITB (mounted ro)
-                'dataDir':  { 'reynolds': '/web/data/cosppac/reynolds/',
-                              'ww3':      '/web/data/cosppac/wavewatch3/',
-                              'sealevel': '/web/data/cosppac/sea_level/',
-                              'ersst':    '/web/data/cosppac/ersst/',
-                              'bran':     '/web/data/cosppac/bran/',
-                            },
-                'mapservPath': '/usr/libexec/mapserv',
-                'debug':       False,
-            },
-}
+from ocean.config import BaseConfig
+
+class default(BaseConfig):
+    """
+    Default server config. Inherit this class to set per-server config.
+    """
+
+    # path on web server
+    baseURL = '/portal/'
+
+    # relative path to rasters
+    rasterURL = 'raster/'
+
+    # path on disk to output rasters/caches
+    outputDir = '/data/comp/raster/'
+
+    # relative path to caches (relative to rasterURL) (obsolete?)
+    cacheDir = {
+        'reynolds': 'cache/reynolds/',
+        'ersst': 'cache/ersst/',
+    }
+
+    dataDir = {}
+
+    mapservPath = '/usr/libexec/mapserv'
+    debug = False
+    profile = False
+
+class tuscany(default):
+    debug = True
+    dataDir = {
+        'bran': '/data/blue_link/data/',
+        'ersst': '/data/sst/ersst/data/',
+        'reynolds': '/data/sst/reynolds/',
+        'sealevel': '/data/sea_level/',
+        'ww3': '/data/wavewatch3/',
+    }
+
+class tunceli(default):
+    debug = True
+
+    # shared data directories from ITB (mounted rw)
+    dataDir = {
+        'bran': '/www4/data/cosppac/bran/',
+        'ersst': '/www4/data/cosppac/ersst/',
+        'reynolds': '/www4/data/cosppac/reynolds/',
+        'sealevel': '/www4/data/cosppac/sea_level/',
+        'ww3': '/www4/data/cosppac/wavewatch3/',
+    }
+
+class www4(default):
+    debug = True
+    baseURL = '/cosppac/apps/portal/'
+    outputDir = '/web/cosppac/raster/'
+
+    dataDir = {
+        'bran': '/web/data/cosppac/bran/',
+        'ersst': '/web/data/cosppac/ersst/',
+        'reynolds': '/web/data/cosppac/reynolds/',
+        'sealevel': '/web/data/cosppac/sea_level/',
+        'ww3': '/web/data/cosppac/wavewatch3/',
+    }
+
+class hoapp2(www4):
+    debug = False
