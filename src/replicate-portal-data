@@ -27,7 +27,7 @@ from ocean.config import serverConfig
 to_server = sys.argv[1]
 
 from_data = config.get_server_config()['dataDir']
-to_data = serverConfig.servers[to_server]['dataDir']
+to_data = getattr(serverConfig, to_server)()['dataDir']
 
 for (dataset, from_datadir), to_datadir in zip(from_data.items(), to_data.values()):
     try:
