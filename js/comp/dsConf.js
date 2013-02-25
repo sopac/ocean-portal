@@ -284,8 +284,6 @@ ocean.dsConf = {
         onDeselect: function() {
             var control;
 
-            hideControls('tidalgauge');
-
             layers = map.getLayersByName("Tidal gauges");
             for (layer in layers) {
                 map.removeLayer(layers[layer]);
