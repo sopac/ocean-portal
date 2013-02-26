@@ -13,6 +13,7 @@ case $DATASET in
         SERVER=eclipse.ncdc.noaa.gov
         SERVER_PATH=/pub/oisst/NetCDF/
         DATA_SUBDIR=daily-new
+        MIRROR_FLAGS='-I *.nc.gz'
         ;;
 
     sealevel)
@@ -45,7 +46,7 @@ case $DATASET in
 
         lftp $SERVER << EOF
 cd $SERVER_PATH || exit 1
-mirror -ve
+mirror -ve $MIRROR_FLAGS
 EOF
     ;;
 
