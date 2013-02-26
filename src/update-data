@@ -2,6 +2,8 @@
 
 DATASET=$1
 
+# configuration
+
 case $DATASET in
     ersst)
         SERVER=ftp.ncdc.noaa.gov
@@ -27,6 +29,8 @@ case $DATASET in
         ;;
 esac
 
+# load variables from ocean.config
+
 DATA_DIR=`python << EOF
 from ocean.config import get_server_config
 
@@ -38,6 +42,8 @@ if [ "x$DATA_DIR" = "x" ]; then
     echo "DATA_DIR empty, very bad! Is PYTHONPATH set?" >&2
     exit 1
 fi
+
+# download data
 
 cd $DATA_DIR/$DATA_SUBDIR || exit 1
 
@@ -51,21 +57,21 @@ EOF
     ;;
 
     sealevel)
-    python << EOF | while read PRODUCT GAUGE
+        python << EOF | while read PRODUCT GAUGE
 from ocean.config.tidalGaugeConfig import tidalGauge
 
 for gauge in tidalGauge:
     product = gauge.split('_')[0]
     print product, gauge
 EOF
-    do
-        echo -n "$GAUGE: "
-        FILE=${GAUGE}SLD.txt
-        URL=$BASE_URL/$PRODUCT/$FILE
-        echo -n "$URL "
-        wget -qO $FILE $URL || echo -n "error ($?)"
-        echo
-    done
+        do
+            echo -n "$GAUGE: "
+            FILE=${GAUGE}SLD.txt
+            URL=$BASE_URL/$PRODUCT/$FILE
+            echo -n "$URL "
+            wget -qO $FILE $URL || echo -n "error ($?)"
+            echo
+        done
     ;;
 
 esac
