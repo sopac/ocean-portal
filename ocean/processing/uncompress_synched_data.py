@@ -19,7 +19,7 @@ class uncompress_synched_data():
     def __init__(self):
         # Settings for each dataset
         self.config = \
-            {'Reynolds':{
+            {'reynolds':{
                 'start_year': 1981,
                 'start_month': 9,
                 'start_day': 1,
@@ -127,8 +127,3 @@ class uncompress_synched_data():
                 cmd2 = 'gunzip -f %s' % (temp_file)
                 subprocess.call(cmd1, shell=True)
                 subprocess.call(cmd2, shell=True)
-
-if __name__ == '__main__':
-    import uncompress_synched_data
-    unc = uncompress_synched_data.uncompress_synched_data()
-    unc.process('Reynolds')

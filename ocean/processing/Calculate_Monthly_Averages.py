@@ -24,7 +24,7 @@ class Calculate_Monthly_Averages():
 
         # Settings for each dataset
         self.config = \
-            {'Reynolds':{
+            {'reynolds':{
                 'product_str': 'reynolds_sst',
                 'start_year': 1981,
                 'start_month': 9,
@@ -192,7 +192,7 @@ class Calculate_Monthly_Averages():
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
 
-        ncea_path = '/srv/map-portal/run-portal-environ ncea'
+        ncea_path = '/usr/bin/ncea'
         if settings.has_key('use_old_version_of_ncea'):
             if settings['use_old_version_of_ncea']:
                 ncea_path = 'ncea'

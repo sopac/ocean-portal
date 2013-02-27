@@ -76,4 +76,32 @@ EOF
 
 esac
 
-# FIXME: how do I run deciles etc
+# processing
+
+case $DATASET in
+    reynolds)
+        python << EOF
+# recompress daily data
+from ocean.processing.uncompress_synched_data import uncompress_synched_data
+
+uncompress_synched_data().process("$DATASET")
+
+# calculate monthly averages
+from ocean.processing.Calculate_Monthly_Averages import Calculate_Monthly_Averages
+
+Calculate_Monthly_Averages().process("$DATASET")
+EOF
+
+    ;& # continue
+
+    ersst)
+        python << EOF
+# calculate multi month averages
+from ocean.processing.Calculate_MultiMonth_Averages import Calculate_MultiMonth_Averages
+
+Calculate_MultiMonth_Averages().process("$DATASET")
+
+# FIXME: calculate deciles
+EOF
+    ;;
+esac

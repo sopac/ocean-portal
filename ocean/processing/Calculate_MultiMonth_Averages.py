@@ -28,7 +28,7 @@ class Calculate_MultiMonth_Averages():
         reynolds_end_date = self.get_date_for_last_complete_month()
 
         self.config = \
-            {'ERSST':{
+            {'ersst':{
                 'product_str': 'ersst_v3b',
                 'start_year': 1854,
                 'start_month': 1,
@@ -39,7 +39,7 @@ class Calculate_MultiMonth_Averages():
                 'output_dir': '/data/sst/ersst/data/averages/%(avg_period)dmonthly/',
                 'output_filename': '%(product_str)s_%(avg_period)dmthavg_%(date_str1)s_%(date_str2)s.nc',
                 'avg_periods': [3, 6, 12]},
-             'Reynolds':{
+             'reynolds':{
                 'product_str': 'reynolds_sst',
                 'start_year': 1981,
                 'start_month': 9,
@@ -114,12 +114,13 @@ class Calculate_MultiMonth_Averages():
         Calculate multi-month averages for the dataset specified by the input argument.
         """
 
+        # FIXME: only one version of NCEA
         if dataset == 'Reynolds':
+            self.ncea_path = '/usr/bin/ncea'
+            self.ncflint_path = '/usr/bin/ncflint'
+        else:
             self.ncea_path = 'ncea'
             self.ncflint_path = 'ncflint'
-        else:
-            self.ncea_path = '/srv/map-portal/run-portal-environ ncea'
-            self.ncflint_path = '/srv/map-portal/run-portal-environ ncflint'
 
         # Settings for each dataset
         settings = self.config[dataset]
