@@ -116,7 +116,6 @@ class SeaLevelSurfacePlotter(SurfacePlotter):
     DATASET = 'sealevel'
     PRODUCT_NAME = """
 IB not removed; seasonal not removed; global trend not removed; GIA removed
-Height relative to GSFC00.1
 Data from CSIRO CMAR, Church and White 2009"""
 
     def get_grid(self, params={}, **kwargs):
@@ -207,7 +206,6 @@ def plotTimeseries(outputFilename, saveData=True, **args):
                              titlePrefix, tidalGaugeName),))
             writer.writerow(['# Corrections: IB not removed; seasonal not removed; global trend not removed; GIA removed'])
             writer.writerow(['# Data from CSIRO CMAR, Church and White 2009'])
-            writer.writerow(('# Datum: GSFC00.1',))
             writer.writerow(['Date (YYYY-MM)', '%s (mm)' % titlePrefix])
 
             for date, height in zip(grid.time, grid.data):
@@ -226,7 +224,6 @@ def plotTimeseries(outputFilename, saveData=True, **args):
 
     PRODUCT_NAME = """
 Data from CSIRO CMAR, Church and White 2009
-Height relative to GSFC00.1
 IB not removed; seasonal not removed; global trend not removed; GIA removed
 """
 
