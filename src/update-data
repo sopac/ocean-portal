@@ -96,6 +96,10 @@ EOF
 
     ersst)
         python << EOF
+# apply a patch to ERSST files
+from ocean.processing.convert_ERSST_files import convert
+convert()
+
 # calculate multi month averages
 from ocean.processing.Calculate_MultiMonth_Averages import Calculate_MultiMonth_Averages
 
