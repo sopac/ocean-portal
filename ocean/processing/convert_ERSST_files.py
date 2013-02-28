@@ -35,7 +35,7 @@ def convert():
         if not os.path.exists(output_filename) or \
            os.path.getmtime(input_file) > os.path.getmtime(output_filename):
             print '%s -> %s' % (input_file, output_filename)
-            cmd = ['ncea', '--ovr', input_file, output_filename]
+            cmd = ['/usr/local/bin/ncea', '--ovr', input_file, output_filename]
             proc = subprocess.call(cmd)
 
 if __name__ == '__main__':
