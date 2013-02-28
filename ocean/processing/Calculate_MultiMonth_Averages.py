@@ -114,13 +114,8 @@ class Calculate_MultiMonth_Averages():
         Calculate multi-month averages for the dataset specified by the input argument.
         """
 
-        # FIXME: only one version of NCEA
-        if dataset == 'Reynolds':
-            self.ncea_path = '/usr/bin/ncea'
-            self.ncflint_path = '/usr/bin/ncflint'
-        else:
-            self.ncea_path = 'ncea'
-            self.ncflint_path = 'ncflint'
+        self.ncea_path = 'ncea'
+        self.ncflint_path = 'ncflint'
 
         # Settings for each dataset
         settings = self.config[dataset]

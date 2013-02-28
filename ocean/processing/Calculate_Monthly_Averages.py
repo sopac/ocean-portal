@@ -192,7 +192,7 @@ class Calculate_Monthly_Averages():
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
 
-        ncea_path = '/usr/bin/ncea'
+        ncea_path = 'ncea'
         if settings.has_key('use_old_version_of_ncea'):
             if settings['use_old_version_of_ncea']:
                 ncea_path = 'ncea'
