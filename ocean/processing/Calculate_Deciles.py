@@ -22,6 +22,7 @@ import netCDF4
 import bisect
 import glob
 import os
+import sys
 import copy
 
 class Calculate_Deciles(object):
@@ -145,40 +146,54 @@ class Calculate_Deciles(object):
 if __name__ == '__main__':
 
     product_list = ['reynolds', 'ersst']
-    product = product_list[0]
     variable_name = 'sst'
 
-    import Calculate_Deciles
-    calc_dec = Calculate_Deciles.Calculate_Deciles()
-    for avg_period in [1, 3, 6, 12]:
-        for month in range(1, 12 + 1):
-            month_str = '%02d' % month
-            avg_period_str = '%d' % avg_period
+    if len(argv) < 2:
+        print 'Please specify a dataset as an input argument (e.g. python Calculate_Deciles.py reynolds)'
 
-            if avg_period == 1:
-                if product == 'reynolds':
-                    input_files = glob.glob('/data/sst/reynolds/averages/monthly/reynolds_sst_avhrr-only-v2_[1-2][0-9][0-9][0-9]' + month_str + '.nc')
-                    output_dir = '/data/sst/reynolds/decile/1950/monthly/'
-                elif product == 'ersst':
-                    input_files = glob.glob('/data/sst/ersst/data/monthly_processed/ersst.19[5-9][0-9]' + month_str + '.nc') + \
-                                  glob.glob('/data/sst/ersst/data/monthly_processed/ersst.20[0-9][0-9]' + month_str + '.nc')
-                    output_dir = '/data/sst/ersst/data/decile/1950/monthly/'
-            else:
-                if product == 'reynolds':
-                    input_files =  glob.glob('/data/sst/reynolds/averages/' + \
-                                             avg_period_str + 'monthly/reynolds_sst_avhrr-only-v2_' + \
-                                             avg_period_str + 'mthavg_[1-2][0-9][0-9][0-9]' + \
-                                             month_str + '_[1-2][0-9][0-9][0-9][0-9][0-9].nc')
-                    output_dir = '/data/sst/reynolds/decile/1950/' + avg_period_str + 'monthly/'
-                elif product == 'ersst':
-                    input_files = glob.glob('/data/sst/ersst/data/averages/' + \
-                                            avg_period_str + 'monthly/ersst_v3b_' + \
-                                            avg_period_str + 'mthavg_19[5-9][0-9]' + \
-                                            month_str + '_[1-2][0-9][0-9][0-9][0-9][0-9].nc') + \
-                                  glob.glob('/data/sst/ersst/data/averages/' + \
-                                            avg_period_str + 'monthly/ersst_v3b_' + \
-                                            avg_period_str + 'mthavg_20[0-9][0-9]' + \
-                                            month_str + '_[1-2][0-9][0-9][0-9][0-9][0-9].nc')
-                    output_dir = '/data/sst/ersst/data/decile/1950/' + avg_period_str + 'monthly/'
-            input_files.sort()
-            calc_dec.process(input_files, output_dir, variable_name)
+    elif argv[1] in product_list:
+        product = argv[1]
+        import Calculate_Deciles
+        calc_dec = Calculate_Deciles.Calculate_Deciles()
+        for avg_period in [1, 3, 6, 12]:
+            for month in range(1, 12 + 1):
+                month_str = '%02d' % month
+                avg_period_str = '%d' % avg_period
+
+                if avg_period == 1:
+                    if product == 'reynolds':
+                        input_files = glob.glob('/data/sst/reynolds/averages/monthly/reynolds_sst_avhrr-only-v2_[1-2][0-9][0-9][0-9]' + month_str + '.nc')
+                        output_dir = '/data/sst/reynolds/decile/1950/monthly/'
+                    elif product == 'ersst':
+                        input_files = glob.glob('/data/sst/ersst/data/monthly_processed/ersst.19[5-9][0-9]' + month_str + '.nc') + \
+                                      glob.glob('/data/sst/ersst/data/monthly_processed/ersst.20[0-9][0-9]' + month_str + '.nc')
+                        output_dir = '/data/sst/ersst/data/decile/1950/monthly/'
+                else:
+                    if product == 'reynolds':
+                        input_files =  glob.glob('/data/sst/reynolds/averages/' + \
+                                                 avg_period_str + 'monthly/reynolds_sst_avhrr-only-v2_' + \
+                                                 avg_period_str + 'mthavg_[1-2][0-9][0-9][0-9]' + \
+                                                 month_str + '_[1-2][0-9][0-9][0-9][0-9][0-9].nc')
+                        output_dir = '/data/sst/reynolds/decile/1950/' + avg_period_str + 'monthly/'
+                    elif product == 'ersst':
+                        input_files = glob.glob('/data/sst/ersst/data/averages/' + \
+                                                avg_period_str + 'monthly/ersst_v3b_' + \
+                                                avg_period_str + 'mthavg_19[5-9][0-9]' + \
+                                                month_str + '_[1-2][0-9][0-9][0-9][0-9][0-9].nc') + \
+                                      glob.glob('/data/sst/ersst/data/averages/' + \
+                                                avg_period_str + 'monthly/ersst_v3b_' + \
+                                                avg_period_str + 'mthavg_20[0-9][0-9]' + \
+                                                month_str + '_[1-2][0-9][0-9][0-9][0-9][0-9].nc')
+                        output_dir = '/data/sst/ersst/data/decile/1950/' + avg_period_str + 'monthly/'
+
+                # Remove preliminary files from list when final version also exists
+                filelist = set([k.rstrip('.nc') for k in input_files])
+                duplicates = set([x + '_preliminary' for x in filelist if x + '_preliminary' in filelist])
+                filelist = filelist.difference(duplicates)
+                input_files = [k + '.nc' for k in filelist]
+
+                input_files.sort()
+                calc_dec.process(input_files, output_dir, variable_name)
+
+    else:
+        print 'Invalid dataset selection.'
