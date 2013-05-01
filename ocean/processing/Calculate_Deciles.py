@@ -148,11 +148,11 @@ if __name__ == '__main__':
     product_list = ['reynolds', 'ersst']
     variable_name = 'sst'
 
-    if len(argv) < 2:
+    if len(sys.argv) < 2:
         print 'Please specify a dataset as an input argument (e.g. python Calculate_Deciles.py reynolds)'
 
-    elif argv[1] in product_list:
-        product = argv[1]
+    elif sys.argv[1] in product_list:
+        product = sys.argv[1]
         import Calculate_Deciles
         calc_dec = Calculate_Deciles.Calculate_Deciles()
         for avg_period in [1, 3, 6, 12]:
