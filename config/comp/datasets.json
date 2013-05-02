@@ -25,7 +25,7 @@
     }],
     "dateRange" : {
         "minDate": "19810901",
-        "maxDate": "20121231"
+        "maxDate": "20130331"
     }
 },{
     "id":"ersst",
@@ -59,7 +59,7 @@
     }],
     "dateRange" : {
         "minDate": "19500101",
-        "maxDate": "20121231"
+        "maxDate": "20130331"
     }
 },{
     "id":"ww3",
