@@ -42,6 +42,7 @@ class default(BaseConfig):
 
 class tuscany(default):
     debug = True
+    mapservPath = '/usr/libexec/mapserver'
     dataDir = {
         'bran': '/data/blue_link/data/',
         'ersst': '/data/sst/ersst/data/',
