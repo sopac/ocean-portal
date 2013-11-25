@@ -476,8 +476,8 @@ function getCombinedDateRange() {
         minDate = Math.min(minDate, range.min);
         maxDate = Math.max(maxDate, range.max);
     });
-
-    return { min: new Date(minDate), max: new Date(maxDate) };
+    return ( min: new Date(minDate), max: new Date() };
+/*    return { min: new Date(minDate), max: new Date(maxDate) };
 }
 
 /**
