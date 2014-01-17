@@ -54,6 +54,14 @@ class SurfacePlotter(object):
     def get_suffix(self, params={}):
         return self.FILE_EXTENSION
 
+    @apply_to(variable='dec')
+    def get_suffix_prelim(self, params={}):
+        return '_preliminary_dec' + self.FILE_EXTENSION
+
+    @apply_to()
+    def get_suffix_prelim(self, params={}):
+        return '_preliminary' + self.FILE_EXTENSION
+
     # --- get_formatted_date ---
     @apply_to(period='daily')
     def get_formatted_date(self, params={}):
@@ -172,6 +180,11 @@ class SurfacePlotter(object):
     def get_contour_labels(self, params={}):
         return True
 
+    #GAS Remove Contour labels
+    @apply_to(variable='anom')
+    def get_contour_labels(self, params={}):
+        return False
+
     @apply_to(variable='dec')
     def get_contour_labels(self, params={}):
         return False
@@ -227,6 +240,33 @@ class SurfacePlotter(object):
     def get_colormap(self, params={}):
         return 'jet'
 
+    #GAS ---- get_plotstyle ---
+    @apply_to()
+    def get_plotstyle(self, params={}):
+        return 'contourf'
+
+    @apply_to(variable='anom')
+    def get_plotstyle(self, params={}):
+        return 'contourf'
+
+    #GAS ---- get_contourlines ---
+    @apply_to()
+    def get_contourlines(self, params={}):
+        return True
+
+    @apply_to(variable='mean')
+    def get_contourlines(self, params={}):
+        return True
+
+    #GAS ---- get_smooth_fac ---
+    @apply_to()
+    def get_smooth_fac(self, params={}):
+        return 20
+
+    @apply_to(variable='mean')
+    def get_smooth_fac(self, params={}):
+        return 1
+
     # --- get_grid ---
     @apply_to()
     def get_grid(self, params={}, **kwargs):
@@ -241,6 +281,7 @@ class SurfacePlotter(object):
         return Gridset(self.get_path(params=params), gridvar, params['period'],
                        prefix=self.get_prefix(params=params),
                        suffix=self.get_suffix(params=params),
+                       suffix2=self.get_suffix_prelim(params=params),
                        date=params['date'],
                        **kwargs)
 
@@ -290,6 +331,10 @@ class SurfacePlotter(object):
         cb_labels, cb_label_pos = self.get_labels(params=args)
         extend = self.get_extend(params=args)
         contourLabels = self.get_contour_labels(params=args)
+	plotStyle = self.get_plotstyle(params=args)#GAS
+        contourLines = self.get_contourlines(params=args)#GAS
+	smoothFactor = self.get_smooth_fac(params=args)#GAS
+        
 
         plot = Plotter()
 
@@ -313,7 +358,10 @@ class SurfacePlotter(object):
                                cb_label_pos=cb_label_pos,
                                cmp_name=cmap_name,
                                extend=extend,
+                               plotStyle=plotStyle,
+                               contourLines=contourLines,
                                contourLabels=contourLabels,
+                               smoothFactor=smoothFactor,
                                product_label_str=self.PRODUCT_NAME,
                                area=area)
 

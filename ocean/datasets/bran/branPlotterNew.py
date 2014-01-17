@@ -47,7 +47,8 @@ def load_BRAN_data(input_data_file, var_name,
     """
 
 
-    grid = BRANGrid(input_data_file, var_name,
+    #grid = BRANGrid(input_data_file, var_name,a
+    grid = BRANGrid(input_data_file, input_data_file, var_name,
                     latrange=(lat_min, lat_max),
                     lonrange=(lon_min, lon_max),
                     depthrange=(depth_min, depth_max))

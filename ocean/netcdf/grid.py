@@ -56,16 +56,20 @@ class Grid(object):
 
     # a list of possible variables for longitude
     LONS_VARIABLE = ['lon']
+    GRID_SPACING = 1
 
     @logger.time_and_log('load-grid')
-    def __init__(self, filename, variable,
+    #def __init__(self, filename, variable,
+    def __init__(self, filename, filename2, variable,
                  latrange=(-90, 90),
                  lonrange=(-360, 360),
                  depthrange=(0, 0),
                  **kwargs):
 
         if not os.access(filename, os.R_OK):
-            raise FileNotFound(filename)
+            filename=filename2
+        if not os.access(filename, os.R_OK):
+                raise FileNotFound(filename)
 
         with Dataset(filename) as nc:
 
@@ -83,8 +87,8 @@ class Grid(object):
                                   (depth_idx1, depth_idx2) = indexes
 
             # subset the dimension arrays
-            self.lats = lats[lat_idx1:lat_idx2]
-            self.lons = lons[lon_idx1:lon_idx2]
+            self.lats = lats[lat_idx1:lat_idx2:self.GRID_SPACING]
+            self.lons = lons[lon_idx1:lon_idx2:self.GRID_SPACING]
             self.depths = depths[depth_idx1:depth_idx2]
 
             data = self.load_data(var, *indexes)
@@ -171,17 +175,17 @@ class Grid(object):
             # data arranged time, depth, lat, lon
             return variable[0,
                             depth_idx1:depth_idx2,
-                            lat_idx1:lat_idx2,
-                            lon_idx1:lon_idx2]
+                            lat_idx1:lat_idx2:self.GRID_SPACING,
+                            lon_idx1:lon_idx2:self.GRID_SPACING,]
         elif ndim == 3:
             # data arranged time, lat, lon
             return variable[0,
-                            lat_idx1:lat_idx2,
-                            lon_idx1:lon_idx2]
+                            lat_idx1:lat_idx2:self.GRID_SPACING,
+                            lon_idx1:lon_idx2:self.GRID_SPACING,]
         elif ndim == 2:
             # data arranged lat, lon
-            return variable[lat_idx1:lat_idx2,
-                            lon_idx1:lon_idx2]
+            return variable[lat_idx1:lat_idx2:self.GRID_SPACING,
+                            lon_idx1:lon_idx2:self.GRID_SPACING,]
         else:
             raise GridWrongFormat()
 
@@ -191,20 +195,24 @@ class Gridset(Grid):
     temporally in different files.
     """
 
-    SUFFIX = '.nc'
+    #SUFFIX = '.nc' GAS
 
     apply_to = util.Parameterise(Grid)
 
     def __init__(self, path, variable, period,
-                       prefix=None, suffix=SUFFIX, date=None, **kwargs):
+                       #prefix=None, suffix=None, date=None, **kwargs):
+                       prefix=None, suffix=None, suffix2=None, date=None, **kwargs):
 
         assert prefix is not None
         assert suffix is not None
+        assert suffix2 is not None 
         assert date is not None
 
         filename = self.get_filename(path, prefix, suffix, date, period)
+        filename2 =self.get_filename(path, prefix, suffix2, date, period)
 
-        Grid.__init__(self, filename, variable, **kwargs)
+        #Grid.__init__(self, filename, variable, **kwargs)
+        Grid.__init__(self, filename, filename2, variable, **kwargs)
 
     def get_filename(self, path, prefix, suffix, date, period):
         """

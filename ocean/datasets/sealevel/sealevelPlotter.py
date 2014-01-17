@@ -53,7 +53,7 @@ class SeaLevelGrid(Grid):
                                 'grids',
                                 GRIDS[variable])
 
-        Grid.__init__(self, filename, variable, **kwargs)
+        Grid.__init__(self, filename, filename, variable, **kwargs)
 
     def get_days_elapsed(self, date):
         """

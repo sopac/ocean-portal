@@ -155,7 +155,7 @@ if __name__ == '__main__':
         product = sys.argv[1]
         import Calculate_Deciles
         calc_dec = Calculate_Deciles.Calculate_Deciles()
-        for avg_period in [1, 3, 6, 12]:
+	for avg_period in [1, 3, 6, 12]:
             for month in range(1, 12 + 1):
                 month_str = '%02d' % month
                 avg_period_str = '%d' % avg_period
@@ -163,6 +163,9 @@ if __name__ == '__main__':
                 if avg_period == 1:
                     if product == 'reynolds':
                         input_files = glob.glob('/data/sst/reynolds/averages/monthly/reynolds_sst_avhrr-only-v2_[1-2][0-9][0-9][0-9]' + month_str + '.nc')
+			#GAS
+			input_files_preliminary = glob.glob('/data/sst/reynolds/averages/monthly/reynolds_sst_avhrr-only-v2_[1-2][0-9][0-9][0-9]' + month_str + '_preliminary.nc')
+			input_files = input_files + input_files_preliminary
                         output_dir = '/data/sst/reynolds/decile/1950/monthly/'
                     elif product == 'ersst':
                         input_files = glob.glob('/data/sst/ersst/data/monthly_processed/ersst.19[5-9][0-9]' + month_str + '.nc') + \

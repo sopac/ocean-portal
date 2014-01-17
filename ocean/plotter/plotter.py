@@ -18,6 +18,8 @@ import shutil
 import datetime
 import sys
 import multiprocessing
+#GAS for masking smoothing array
+import numpy.ma as ma
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -35,6 +37,8 @@ from ocean import util, logger
 from ocean.util.pngcrush import pngcrush
 from ocean.config import get_server_config
 from ocean.config.regionConfig import regions
+#GAS for smoothing array
+from scipy.signal import convolve2d
 
 COMMON_FILES = {
     'img': '.png',
@@ -104,7 +108,7 @@ class Plotter(object):
                                cb_labels=None, cb_label_pos=None,
                                cmp_name='jet', extend='both',
                                plotStyle='contourf', contourLines=True,
-                               contourLabels=True,
+                               contourLabels=True, smoothFactor=1,
                                proj=self._DEFAULT_PROJ, product_label_str=None,
                                vlat=None, vlon=None, u=None, v=None,
                                draw_every=1, arrow_scale=10,
@@ -130,6 +134,19 @@ class Plotter(object):
             n_colours = cm_edge_values.size - 1
             d_cmap = discrete_cmap(cmp_name, n_colours, extend=extend)
 
+            #GAS Smoothing section based on smoothFactor
+            if smoothFactor > 1:
+                size=int(smoothFactor)
+                x,y = np.mgrid[-size:size+1,-size:size+1]
+                g = np.exp(-(x**2/float(size)+y**2/float(size)))
+                g=g/g.sum()
+                #data=np.ma.masked_less(data,-998)
+                data[data<-9.9]=0
+                data[data>1000]=5
+                data=convolve2d(data, g, mode='same', boundary='symm')
+                #a=ma.masked_less(data,-998)
+                #np.savetxt('/data/comp/raster/filename.txt',data,delimiter=",")
+
             # Plot data
             x, y = None, None
             if plotStyle == 'contourf':
@@ -148,6 +165,8 @@ class Plotter(object):
             if contourLines:
                 if x is None:
                     x, y = m(*np.meshgrid(lons, lats))
+                #GAS negative contour not to be dashed
+                plt.rcParams['contour.negative_linestyle'] = 'solid'
                 cnt = plt.contour(x, y, data, levels=cm_edge_values,
                                  colors = 'k', linewidths = 0.4, hold='on')
                 if contourLabels:

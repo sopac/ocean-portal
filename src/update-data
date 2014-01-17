@@ -14,7 +14,7 @@ case $DATASET in
 
     reynolds)
         SERVER=eclipse.ncdc.noaa.gov
-        SERVER_PATH=/pub/oisst/NetCDF/
+        SERVER_PATH=/pub/oisst/NetCDF
         DATA_SUBDIR=daily-new
         MIRROR_FLAGS='-I *.nc.gz'
         ;;
