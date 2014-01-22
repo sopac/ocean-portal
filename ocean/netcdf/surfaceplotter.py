@@ -145,7 +145,7 @@ class SurfacePlotter(object):
     def get_ticks(self, params={}):
         try:
             if regionConfig.regions[params['area']][0] == 'pac':
-                return np.arange(26.0, 32.1, 1.0)
+                return np.arange(26.0, 32.1, 0.5)
             else:
                 pass
         except KeyError:
