@@ -39,6 +39,8 @@ from ocean.config import get_server_config
 from ocean.config.regionConfig import regions
 #GAS for smoothing array
 from scipy.signal import convolve2d
+#Nearest neighbour interpolation
+from scipy import ndimage as nd
 
 COMMON_FILES = {
     'img': '.png',
@@ -132,20 +134,20 @@ class Plotter(object):
                 cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
             n_colours = cm_edge_values.size - 1
             d_cmap = discrete_cmap(cmp_name, n_colours, extend=extend)
-
+		
             #GAS Smoothing section based on smoothFactor
             if smoothFactor > 1:
                 size=int(smoothFactor)
                 x,y = np.mgrid[-size:size+1,-size:size+1]
                 g = np.exp(-(x**2/float(size)+y**2/float(size)))
                 g=g/g.sum()
-                #data=np.ma.masked_less(data,-998)
+                #data=np.ma.masked_less(data,-998)a
                 data[data<-9.9]=0
                 data[data>1000]=5
                 data=convolve2d(data, g, mode='same', boundary='symm')
                 #a=ma.masked_less(data,-998)
-                #np.savetxt('/data/comp/raster/filename.txt',data,delimiter=",")
-
+            #np.savetxt('/data/comp/raster/filename.txt',data,delimiter=",")a
+	    
             # Plot data
             x, y = None, None
             if plotStyle == 'contourf':

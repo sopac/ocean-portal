@@ -145,7 +145,7 @@ class SurfacePlotter(object):
     def get_ticks(self, params={}):
         try:
             if regionConfig.regions[params['area']][0] == 'pac':
-                return np.arange(26.0, 32.1, 0.5)
+                return np.arange(24.0, 32.1, 0.5)
             else:
                 pass
         except KeyError:
@@ -261,6 +261,13 @@ class SurfacePlotter(object):
     #GAS ---- get_smooth_fac ---
     @apply_to()
     def get_smooth_fac(self, params={}):
+        try:
+            if regionConfig.regions[params['area']][0] == 'pac':
+                return 1
+            else:
+                pass
+        except KeyError:
+            pass
         return 20
 
     @apply_to(variable='mean')
