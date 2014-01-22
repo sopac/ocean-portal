@@ -122,7 +122,7 @@ class SurfacePlotter(object):
 
     @apply_to(variable='mean')
     def get_ticks_format(self, params={}):
-        return '%.0f'
+        return '%.1f'
 
     # --- get_labels ---
     @apply_to()
@@ -144,13 +144,13 @@ class SurfacePlotter(object):
     @apply_to(variable='mean')
     def get_ticks(self, params={}):
         try:
-            if regionConfig.regions[params['area']][0] == 'pi':
-                return np.arange(20.0, 32.1, 1.0)
+	    if regionConfig.regions[params['area']][0] == 'pac':
+		#return
+                return np.arange(26.0, 32.1, 0.5)
             else:
                 pass
         except KeyError:
             pass
-
         return np.arange(0.0, 32.1, 2.0)
 
     @apply_to(variable='anom')
