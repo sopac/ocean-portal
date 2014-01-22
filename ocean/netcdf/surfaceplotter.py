@@ -119,10 +119,10 @@ class SurfacePlotter(object):
     @apply_to()
     def get_ticks_format(self, params={}):
         return '%.1f'
-
-    @apply_to(variable='mean')
-    def get_ticks_format(self, params={}):
-        return '%.0f'
+    #GAS remove this code so all colorbars jave one decimal place
+    #@apply_to(variable='mean')
+    #def get_ticks_format(self, params={}):
+    #    return '%.0f'
 
     # --- get_labels ---
     @apply_to()
@@ -140,12 +140,12 @@ class SurfacePlotter(object):
                  'Highest on \nrecord'],
                 [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0])
 
-    # --- get_ticks ---
+    # --- get_ticks ---GAS change if statement to detect pac instead of pu
     @apply_to(variable='mean')
     def get_ticks(self, params={}):
         try:
-            if regionConfig.regions[params['area']][0] == 'pi':
-                return np.arange(20.0, 32.1, 1.0)
+            if regionConfig.regions[params['area']][0] == 'pac':
+                return np.arange(26.0, 32.1, 1.0)
             else:
                 pass
         except KeyError:

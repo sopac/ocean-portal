@@ -129,8 +129,9 @@ class Plotter(object):
                         resolution=resolution)
 
             # Create colormap
-            if cm_edge_values is None:
-                cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
+            #if cm_edge_values is None:
+            #    cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
+	    cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
             n_colours = cm_edge_values.size - 1
             d_cmap = discrete_cmap(cmp_name, n_colours, extend=extend)
 
