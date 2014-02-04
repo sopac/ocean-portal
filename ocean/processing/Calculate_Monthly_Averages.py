@@ -113,6 +113,7 @@ class Calculate_Monthly_Averages():
         start_month = settings['start_month']
         end_year = settings['end_year']
         end_month = settings['end_month']
+	print end_month
 
         # Loop through months in date range
         for year in range(start_year, end_year + 1):
@@ -124,7 +125,7 @@ class Calculate_Monthly_Averages():
                 self._calc_monthly_average(settings, year, month)
 
     def get_date_for_last_complete_month(self):
-        last_date_to_use = datetime.date.today() + dateutil.relativedelta.relativedelta(days=-5)
+        last_date_to_use = datetime.date.today() + dateutil.relativedelta.relativedelta(days=-2)
         year = last_date_to_use.year
         month = last_date_to_use.month - 1
         if month == 0:
