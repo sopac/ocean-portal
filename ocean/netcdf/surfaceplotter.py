@@ -119,7 +119,7 @@ class SurfacePlotter(object):
     @apply_to()
     def get_ticks_format(self, params={}):
         return '%.1f'
-    #GAS remove this code so all colorbars jave one decimal place
+    #GAS remove this code so all colorbars have one decimal place
     #@apply_to(variable='mean')
     #def get_ticks_format(self, params={}):
     #    return '%.0f'
