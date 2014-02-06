@@ -10,7 +10,7 @@ export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/
 case $DATASET in
     coral)
         SERVER=http://data.nodc.noaa.gov/
-        SERVER_PATH=/crw/tsps50km/all_in_one/
+        SERVER_PATH=/crw/tsps50km/baa/
         DATA_SUBDIR=data
 	MIRROR_FLAGS='-I *.hdf'
         ;;
