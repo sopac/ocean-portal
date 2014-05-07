@@ -2,19 +2,29 @@
 
 DATASET=$1
 
-export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/
+#export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/
 
-#export PYTHONPATH=${PYTHONPATH}:/srv/gsmith/usr/lib/python2.6/site-packages/
+export PYTHONPATH=${PYTHONPATH}:/srv/gsmith/usr/lib/python2.6/site-packages/
 # configuration
 
 case $DATASET in
+
+    ww3)
+        SERVER=http://opendap.bom.gov.au:8080/
+        SERVER_PATH=thredds/fileServer/nmoc/ww3_global_fc/
+        DATA_SUBDIR=forecast
+        ;;
+    oceanmaps)
+        SERVER=http://opendap.bom.gov.au:8080/
+        SERVER_PATH=thredds/fileServer/nmoc/oceanmaps_ofam_fc/ops/latest/
+        DATA_SUBDIR=data
+        ;;
     coral)
         SERVER=http://data.nodc.noaa.gov/
         SERVER_PATH=/crw/tsps50km/baa/
         DATA_SUBDIR=data
 	MIRROR_FLAGS='-I *.hdf'
         ;;
-
     poama)
         SERVER=http://opendap.bom.gov.au:8080
         SERVER_PATH=thredds/fileServer/paccsap/sea_surface_temperature_seasonal/grid/
@@ -77,7 +87,9 @@ EOF
             wget -O $FILE "$URL" || echo -n "error ($?)"
             echo
     ;;
-
+    ww3)
+	    wget --no-clobber -i ./AUSWAVE_File_List.txt
+    ;;
     sealevel)
         python << EOF | while read PRODUCT GAUGE
 from ocean.config.tidalGaugeConfig import tidalGauge
@@ -134,6 +146,6 @@ EOF
     ;;
     coral)
 find ./ -name "*.hdf" -exec h4toh5 {} \;
-find ./ -name "*.*" -exec chmod 666 {} \;
+find ./ -name "*.*" -exec chmod 777 {} \;
     ;;
 esac

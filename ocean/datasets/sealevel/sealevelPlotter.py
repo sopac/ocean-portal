@@ -30,7 +30,9 @@ serverCfg = config.get_server_config()
 # filenames for the respective gridfiles (in datadir/grids/)
 GRIDS = {
     'alt': 'jb_ibn_srn_gtn_giy.nc',
-    'rec': 'recons_1950_2009_noib_seasinc.nc',
+    'rec': 'recons_1950_2012_noib_seasrem.nc',
+
+#GAS    'rec': 'recons_1950_2009_noib_seasinc.nc',
 }
 
 # start date for the time index in each grid file
