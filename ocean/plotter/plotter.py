@@ -129,7 +129,8 @@ class Plotter(object):
                         llcrnrlat=lat_min, llcrnrlon=lon_min,
                         urcrnrlat=lat_max, urcrnrlon=lon_max,
                         resolution=resolution)
-
+		
+	    #GAS this was removed because different colour ranges makes comparison difficult
             #if cm_edge_values is None:
             #    cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
             n_colours = cm_edge_values.size - 1
