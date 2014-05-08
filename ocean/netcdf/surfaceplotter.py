@@ -140,7 +140,7 @@ class SurfacePlotter(object):
                  'Highest on \nrecord'],
                 [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0])
 
-    # --- get_ticks ---GAS change if statement to detect pac instead of pu
+    # --- get_ticks ---GAS change if statement to detect pac instead of PI
     @apply_to(variable='mean')
     def get_ticks(self, params={}):
         try:
