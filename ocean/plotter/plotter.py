@@ -135,10 +135,6 @@ class Plotter(object):
             n_colours = cm_edge_values.size - 1
             d_cmap = discrete_cmap(cmp_name, n_colours, extend=extend)
 
-	    #GAS determine whether user has zoomed in
-	    #lat_extent = np.float(lat_max) - np.float(lat_min)
-            #lon_extent = np.float(lon_max) - np.float(lon_min)
-		
             #GAS Smoothing section based on smoothFactor
             if smoothFactor > 1:
             #if smoothFactor > 1 and (lat_extent>20 or lon_extent>20):
