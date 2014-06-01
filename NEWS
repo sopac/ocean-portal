@@ -7,7 +7,8 @@ New Features:
 Bugs Fixed:
  - Updated colorbar to only show 26-32 in local regions
  - Change coral download
- - Update date field to today.
+ - Update date field to today
+ - Switch to the new GIT repository
 
 Ocean Map Portal 0.3.2
 ======================
