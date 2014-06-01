@@ -119,10 +119,10 @@ class SurfacePlotter(object):
     @apply_to()
     def get_ticks_format(self, params={}):
         return '%.1f'
-
-    @apply_to(variable='mean')
-    def get_ticks_format(self, params={}):
-        return '%.1f'
+    #GAS remove this code so all colorbars have one decimal place
+    #@apply_to(variable='mean')
+    #def get_ticks_format(self, params={}):
+    #    return '%.0f'
 
     # --- get_labels ---
     @apply_to()
@@ -140,13 +140,12 @@ class SurfacePlotter(object):
                  'Highest on \nrecord'],
                 [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0])
 
-    # --- get_ticks ---
+    # --- get_ticks ---GAS change if statement to detect pac instead of PI
     @apply_to(variable='mean')
     def get_ticks(self, params={}):
         try:
-	    if regionConfig.regions[params['area']][0] == 'pac':
-		#return
-                return np.arange(26.0, 32.1, 0.5)
+            if regionConfig.regions[params['area']][0] == 'pac':
+                return np.arange(24.0, 32.1, 0.5)
             else:
                 pass
         except KeyError:
@@ -261,6 +260,13 @@ class SurfacePlotter(object):
     #GAS ---- get_smooth_fac ---
     @apply_to()
     def get_smooth_fac(self, params={}):
+        try:
+            if regionConfig.regions[params['area']][0] == 'pac':
+                return 1
+            else:
+                pass
+        except KeyError:
+            pass
         return 20
 
     @apply_to(variable='mean')

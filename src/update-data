@@ -2,10 +2,35 @@
 
 DATASET=$1
 
-export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/
+#export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/
+
+export PYTHONPATH=${PYTHONPATH}:/srv/gsmith/usr/lib/python2.6/site-packages/
 # configuration
 
 case $DATASET in
+
+    ww3)
+        SERVER=http://opendap.bom.gov.au:8080/
+        SERVER_PATH=thredds/fileServer/nmoc/ww3_global_fc/
+        DATA_SUBDIR=forecast
+        ;;
+    oceanmaps)
+        SERVER=http://opendap.bom.gov.au:8080/
+        SERVER_PATH=thredds/fileServer/nmoc/oceanmaps_ofam_fc/ops/latest/
+        DATA_SUBDIR=data
+        ;;
+    coral)
+        SERVER=http://data.nodc.noaa.gov/
+        SERVER_PATH=/crw/tsps50km/baa/
+        DATA_SUBDIR=data
+	MIRROR_FLAGS='-I *.hdf'
+        ;;
+    poama)
+        SERVER=http://opendap.bom.gov.au:8080
+        SERVER_PATH=thredds/fileServer/paccsap/sea_surface_temperature_seasonal/grid/
+        DATA_SUBDIR=data
+        ;;
+
     ersst)
         SERVER=ftp.ncdc.noaa.gov
         SERVER_PATH=/pub/data/cmb/ersst/v3b/netcdf/
@@ -14,7 +39,7 @@ case $DATASET in
 
     reynolds)
         SERVER=eclipse.ncdc.noaa.gov
-        SERVER_PATH=/pub/oisst/NetCDF
+        SERVER_PATH=/pub/oisst/NetCDF/
         DATA_SUBDIR=daily-new
         MIRROR_FLAGS='-I *.nc.gz'
         ;;
@@ -49,14 +74,22 @@ fi
 cd $DATA_DIR/$DATA_SUBDIR || exit 1
 
 case $DATASET in
-    reynolds|ersst)
-
+    reynolds|ersst|coral)
         lftp $SERVER << EOF
 cd $SERVER_PATH || exit 1
 mirror -ve $MIRROR_FLAGS
+chmod -R 666
 EOF
     ;;
-
+    poama)
+            FILE=PACCSAP_oa_latest.nc
+            URL=$SERVER/$SERVER_PATH/$FILE
+            wget -O $FILE "$URL" || echo -n "error ($?)"
+            echo
+    ;;
+    ww3)
+	    wget --no-clobber -i ./AUSWAVE_File_List.txt
+    ;;
     sealevel)
         python << EOF | while read PRODUCT GAUGE
 from ocean.config.tidalGaugeConfig import tidalGauge
@@ -86,11 +119,13 @@ case $DATASET in
 from ocean.processing.uncompress_synched_data import uncompress_synched_data
 
 uncompress_synched_data().process("$DATASET")
+print "Calculate Monthly Averages..."
 
 # calculate monthly averages
 from ocean.processing.Calculate_Monthly_Averages import Calculate_Monthly_Averages
 
 Calculate_Monthly_Averages().process("$DATASET")
+
 EOF
 
     ;& # continue
@@ -108,5 +143,9 @@ Calculate_MultiMonth_Averages().process("$DATASET")
 
 # FIXME: calculate deciles
 EOF
+    ;;
+    coral)
+find ./ -name "*.hdf" -exec h4toh5 {} \;
+find ./ -name "*.*" -exec chmod 777 {} \;
     ;;
 esac
