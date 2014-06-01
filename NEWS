@@ -4,7 +4,9 @@ Ocean Map Portal 0.3.3
 New Features:
 
 Bugs Fixed:
-
+ - Updated colorbar to only show 26-32 in local regions
+ - Change coral download
+ - Update date field to today.
 
 Ocean Map Portal 0.3.2
 ======================
