@@ -10,6 +10,7 @@ Bugs Fixed:
  - Update date field to today
  - Switch to the new GIT repository
  - Added git pub key to the gitolite key dir
+ - Set git user name and email
 
 
 Ocean Map Portal 0.3.2
