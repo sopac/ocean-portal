@@ -259,7 +259,7 @@ class SurfacePlotter(object):
         return True
 
     #GAS ---- get_smooth_fac ---
-    @apply_to()
+    @apply_to(variable='anom')
     def get_smooth_fac(self, params={}):
         try:
             if regionConfig.regions[params['area']][0] == 'pac':
@@ -270,7 +270,18 @@ class SurfacePlotter(object):
             pass
         return 20
 
-    @apply_to(variable='mean')
+    @apply_to(variable='dec')
+    def get_smooth_fac(self, params={}):
+        try:
+            if regionConfig.regions[params['area']][0] == 'pac':
+                return 1
+            else:
+                pass
+        except KeyError:
+            pass
+        return 20
+
+    @apply_to()
     def get_smooth_fac(self, params={}):
         return 1
 
