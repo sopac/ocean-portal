@@ -150,7 +150,6 @@ class SurfacePlotter(object):
                 pass
         except KeyError:
             pass
-
         return np.arange(0.0, 32.1, 2.0)
 
     @apply_to(variable='anom')
