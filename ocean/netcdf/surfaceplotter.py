@@ -165,6 +165,14 @@ class SurfacePlotter(object):
     def get_ticks(self, params={}):
         return np.arange(-0.6, 0.61, 0.1)
 
+    @apply_to(variable='alt')
+    def get_ticks(self, params={}):
+        return np.arange(-300, 300, 50)
+
+    @apply_to(variable='rec')
+    def get_ticks(self, params={}):
+        return np.arange(-300, 300, 50)
+
     # --- get_extend ---
     @apply_to()
     def get_extend(self, params={}):
