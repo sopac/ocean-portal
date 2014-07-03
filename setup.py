@@ -91,6 +91,7 @@ BASE_PATH = 'share/portal'
 html = [
 #   'sst.html',
     'compmap.html',
+    'ocean.html'
 ]
 
 script_substitutions = {
@@ -108,6 +109,7 @@ web_files = [
     'css/comp/controlPanel.css',
     'css/comp/compmap.css',
     'css/comp/controlvars.css',
+    'css/comp/jumbotron.css',
     'js/comp/controlPanel.js',
     'js/comp/compmap.js',
     'js/comp/dsConf.js',
@@ -128,6 +130,12 @@ data = [
     'images/bom_logo.gif',
     'images/bathymetry_ver.png',
     'images/email.png',
+    'images/climate.png',
+    'images/coral.png',
+    'images/fishing.png',
+    'images/sealevel.png',
+    'images/shipping.png',
+    'images/surfer.png',
 ]
 
 # CODE BEGINS
