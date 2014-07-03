@@ -113,6 +113,7 @@ web_files = [
     'js/comp/controlPanel.js',
     'js/comp/compmap.js',
     'js/comp/dsConf.js',
+    'js/comp/app.js',
 #   'js/sst.js',
 ]
 
