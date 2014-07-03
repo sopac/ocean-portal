@@ -22,44 +22,56 @@ body {
 
 #coral {
   background-color: #008EAA;
-  opacity: 1.0;
-  filter:alpha(opacity=30); /* For IE8 and earlier */
   background-image: url(../../images/coral.png);
+}
+
+#coral:hover {
+  background-color: #197C90;
 }
 
 #fishery {
   background-color: #7BAFD4;
-  opacity: 1.0;
-  filter:alpha(opacity=30); /* For IE8 and earlier */
   background-image: url(../../images/fishing.png);
+}
+
+#fishery:hover {
+  background-color: #397EAF;
 }
 
 #tour {
   background-color: #00AFD7;
-  opacity: 1.0;
-  filter:alpha(opacity=30); /* For IE8 and earlier */
   background-image: url(../../images/surfer.png);
+}
+
+#tour:hover {
+  background-color: #209AB6;
 }
 
 #sea {
   background-color: #ABC7CA;
-  opacity: 1.0;
-  filter:alpha(opacity=30); /* For IE8 and earlier */
   background-image: url(../../images/sealevel.png);
+}
+
+#sea:hover {
+  background-color: #6C9DA2;
 }
 
 #climate {
   background-color: #00B388;
-  opacity: 1.0;
-  filter:alpha(opacity=30); /* For IE8 and earlier */
   background-image: url(../../images/climate.png);
+}
+
+#climate:hover {
+  background-color: #1A987A;
 }
 
 #shipping {
   background-color: #00965E;
-  opacity: 1.0;
-  filter:alpha(opacity=30); /* For IE8 and earlier */
   background-image: url(../../images/shipping.png);
+}
+
+#shipping:hover {
+  background-color: #167F58;
 }
 
 h5 {
