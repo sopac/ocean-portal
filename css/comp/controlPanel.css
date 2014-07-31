@@ -79,7 +79,7 @@ optgroup option {
   display: inline-block;
   text-align: right;
   white-space: nowrap;
-  width: 58px;
+  width: 100px;
   padding-right: 3px;
   color: #222222;
 }
@@ -115,3 +115,4 @@ optgroup option {
 input[disabled] + label {
   color: #cccccc;
 }
+

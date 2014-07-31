@@ -23,8 +23,17 @@ ocean.compare = { limit: 24 };
 ocean.processing = false;
 ocean.date = new Date();
 
+//Set up the view, model and controller instances
+/**$.DropdownView.prototype = new $.View();
+$.VariableModel.prototype = new $.Model();
+
+var variableDropdownView = new $.DropdownView("variable");
+var variableModel = new $.VariableModel();
+var controller = new $.Controller(variableModel, variableDropdownView);
+**/
+
 /* set up JQuery UI elements */
-$(document).ready(function() {
+$(function() {
 
     hideControls();
 
@@ -297,83 +306,8 @@ $(document).ready(function() {
     var groupings = {};
 
     /* load JSON configuration */
-    $.when(
-        /* Load and parse vargroups.json */
-        $.getJSON('config/comp/vargroups.json').success(function(data) {
-            $.each(data, function(k, v) {
-                $('<optgroup>', {
-                    id: k,
-                    label: v.name
-                }).appendTo('#variable');
-
-                $.each(v.vars, function(i, var_) {
-                    groupings[var_] = k;
-                });
-            });
-        }),
-
-        /* Load and parse datasets.json */
-        $.getJSON('config/comp/datasets.json').success(function(data) {
-            ocean.datasets = {};
-            ocean.variables = {};
-
-            $.each(data, function(i, dataset) {
-                ocean.datasets[dataset.id] = dataset;
-
-                $.each(dataset.variables, function(k, variable) {
-                    if (!ocean.variables[variable.id]) {
-                        ocean.variables[variable.id] = {
-                            name: variable.name,
-                            plots: {},
-                            variable: variable
-                        };
-                    }
-
-                    $.each(variable.plottypes, function(k, plottype) {
-                        if (!ocean.variables[variable.id].plots[plottype]) {
-                            ocean.variables[variable.id].plots[plottype] = {};
-                        }
-
-                        $.each(variable.periods, function(k, period) {
-                            if (!ocean.variables[variable.id].plots[plottype][period]) {
-                                ocean.variables[variable.id].plots[plottype][period] = [];
-                            }
-
-                            ocean.variables[variable.id].plots[plottype][period].push(dataset.id);
-                        });
-                    });
-                });
-
-            });
-        })
-    )
-    /* Successfully fetched all JSON */
-    .done(function() {
-        $.each(ocean.variables, function (k, v) {
-            var parent_;
-
-            if (k in groupings) {
-                parent_ = $('#variable optgroup#' + groupings[k]);
-
-                if (parent_.length == 0) {
-                    parent_ = $('#variable');
-                }
-            } else {
-                parent_ = $('#variable');
-            }
-
-            $('<option>', {
-                text: v.name,
-                value: k
-            }).appendTo(parent_);
-        });
-    })
-
-    /* Failed to load some JSON */
-    .fail(function() {
-        fatal_error("Failed to load portal configuration.");
-    });
-
+    variableModel.getData();
+    regionCountryModel.getData(); 
 });
 
 /**
@@ -476,8 +410,8 @@ function getCombinedDateRange() {
         minDate = Math.min(minDate, range.min);
         maxDate = Math.max(maxDate, range.max);
     });
+
     return { min: new Date(minDate), max: new Date(maxDate) };
-/* return { min: new Date(minDate), max: new Date() };*/
 }
 
 /**

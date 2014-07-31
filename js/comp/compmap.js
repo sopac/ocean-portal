@@ -60,7 +60,7 @@ window.onerror = function (msg, url, line) {
     return false;
 }
 
-$(document).ready(function() {
+$(function() {
     /* initialise jQueryUI elements */
     $('.dialog').dialog({
         autoOpen: false,
@@ -87,7 +87,7 @@ $(document).ready(function() {
 
     /* set up theme */
     $('.panel h1').addClass('ui-widget-header ui-state-default');
-    $('.panel').addClass('border');
+//    $('.panel').addClass('border');
 
     /* set up toolbar */
     $('.toolbar a').addClass('ui-state-default ui-corner-all');
@@ -110,63 +110,13 @@ $(document).ready(function() {
         $('.layout-center').css({
             left: $('.layout-west').outerWidth(),
             right: $('.layout-east').outerWidth(),
-            height: '100%'
+//            height: '100%'
         });
 
         if (map) {
             /* poke the map to resize */
             map.updateSize();
         }
-    });
-
-    $('#region').change(function () {
-        var selected = $('#region option:selected');
-
-        if (selected.length == 0) {
-            return;
-        }
-
-        $('#subregion option').remove();
-        $('<option>', {
-            text: "Whole Region",
-            value: selected.val(),
-            selected: true
-        }).appendTo('#subregion')
-          .data('bounds', selected.data('bounds'));
-
-        $.each(selected.data('subregions') || [], function (i, region) {
-            var b = new OpenLayers.Bounds(region.extent);
-
-            $('<option>', {
-                value: region.abbr,
-                text: region.name
-            }).data('bounds', b)
-              .appendTo('#subregion');
-        });
-
-        if ($('#subregion option').length > 1) {
-            $('#subregion').slideDown('fast');
-        } else {
-            $('#subregion').slideUp('fast');
-        }
-
-        $('#subregion').change();
-    });
-
-    $('#subregion').change(function () {
-        var selected = $('#subregion option:selected');
-
-        if (selected.length == 0) {
-            return;
-        }
-
-        var bounds = selected.data('bounds');
-
-        map.setCenter(bounds.getCenterLonLat(),
-                      map.getZoomForExtent(bounds),
-                      false, true);
-
-        ocean.area = selected.val();
     });
 
     $.when(
@@ -179,40 +129,9 @@ $(document).ready(function() {
                 return;
             }
 
-            document.title = ocean.configProps.name + " Ocean Maps Portal";
+            document.title = ocean.configProps.name + " Ocean Application";
         }),
-
-        /* regions config */
-        $.getJSON('cgi/regions.py', { portal: ocean.config },
-                  function(data, status_, xhr) {
-
-            /* append the regions and their extents */
-            $.each(data, function (i, region) {
-                if (region.parent) {
-                    return; /* continue */
-                }
-
-                $('<option>', {
-                    value: region.abbr,
-                    text: region.name
-                }).data('extent', region.extent)
-                  .appendTo('#region');
-            });
-
-            $.each(data, function (i, region) {
-                if (!region.parent) {
-                    return; /* continue */
-                }
-
-                var opt = $('#region option[value="' + region.parent + '"]');
-                var subregions = opt.data('subregions') || []
-
-                subregions.push(region);
-
-                opt.data('subregions', subregions);
-            });
-        }),
-
+ 
         /* load OpenLayers */
         $.cachedScript($('#map').attr('src')).done(function () {
             OpenLayers.ImgPath = "lib/OpenLayers/img/"
@@ -397,6 +316,7 @@ function updateMap (data) {
     ocean.map_scale = data.scale;
 
     map.setBaseLayer(layer);
+//    layer.params['raster'] = [data.map];
     layer.params['raster'] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw];
     ocean.mapLoading = true;
     layer.redraw(true);
@@ -449,176 +369,5 @@ function prependOutputSet()
 
     /* scroll to the top of the output div */
     $('#outputDiv').animate({ scrollTop: 0 }, 75);
-}
-
-ocean.outputsLoading = 0;
-function _createOutput(image, dataURL, name, extras, data)
-{
-    var div = $('<div>', {
-        'class': 'thumbnail'
-    });
-
-    if (name) {
-        $('<h2>', {
-            text: name
-        }).appendTo(div);
-    }
-
-    if (data) {
-        /* Workaround in IE8 to deselect other radios */
-        $('.outputLayerRadio').attr('checked', false);
-
-        $('<input>', {
-            type: 'radio',
-            'class': 'outputLayerRadio',
-            name: 'outputLayer',
-            title: "Set as map layer",
-            checked: true
-        })
-        .appendTo(div)
-        .change(function () {
-            updateMap(data);
-        });
-    }
-
-    var a = $('<a>', {
-        'class': 'raster',
-        href: image,
-        title: "Click to open in a new window",
-        target: '_blank'
-    }).appendTo(div);
-
-    var params = '';
-
-    /* this hack required to ensure IE8 always loads the image */
-    if ($.browser.msie && $.browser.version == '8.0') {
-        params = '?' + $.param({ time: $.now() });
-    }
-
-    var img = $('<img>', {
-        src: image + params
-    }).appendTo(a);
-
-    div.hide();
-    ocean.outputsLoading += 1;
-
-    function outputLoaded () {
-        /* this kludge is required for IE7, where it turns out you can't do
-         * slideDown on a block contained in a relative positioned parent
-         * unless that block has a defined height */
-        if ($.browser.msie && $.browser.version == '7.0')
-            div.css('height', div.height());
-
-        div.slideDown(400, function () {
-            ocean.outputsLoading -= 1;
-            maybe_close_loading_dialog();
-        });
-    }
-
-    img.load(outputLoaded)
-       .error(outputLoaded);
-
-    img.hover(
-        function (e) {
-            enlargeImg(this, true);
-        },
-        function (e) {
-            enlargeImg(this, false);
-        });
-
-    $('<div>', {
-        'class': 'overlay ui-icon ui-icon-newwin'
-    }).appendTo(div);
-
-    if (dataURL)
-        $('<a>', {
-            'class': 'download-data',
-            href: dataURL,
-            target: '_blank',
-            html: '<span class="ui-icon ui-icon-arrowreturnthick-1-s"></span>Download Data'
-        }).appendTo(div);
-
-    if (extras)
-        $('<span>', {
-            html: extras
-        }).appendTo(div);
-
-    return div;
-}
-
-/**
- * appendOutput:
- * @imageURL: URL for the image
- * @dataURL: optional URL for the data to download
- * @name: optional title for the output
- * @extras: optional extra HTML
- * @data: optional ref to the data object, so this output can be selected as
- *        the map base layer
- *
- * Appends a new output to the topmost output group.
- *
- * See Also: prependOutput()
- */
-function appendOutput()
-{
-    _createOutput.apply(null, arguments).appendTo($('#outputDiv .outputgroup:first'));
-}
-
-/**
- * prependOutput:
- * @imageURL: URL for the image
- * @dataURL: optional URL for the data to download
- * @name: optional title for the output
- * @extras: optional extra HTML
- * @data: optional ref to the data object, so this output can be selected as
- *        the map base layer
- *
- * Prepends a new output to the topmost output group.
- *
- * See Also: appendOutput()
- */
-function prependOutput()
-{
-    _createOutput.apply(null, arguments).prependTo($('#outputDiv .outputgroup:first'));
-}
-
-/**
- * enlargeImg:
- *
- * Shows or hides an enlarged version of the image within the map.
- */
-function enlargeImg(img, show) {
-    var enlargeDiv = $('#enlargeDiv');
-
-    if (show) {
-        enlargeDiv.stop(true, true);
-        $('#enlargeDiv img').remove();
-        var eimg = $('<img>', {
-            src: img.src,
-            'class' : 'imagepreview'
-        }).appendTo(enlargeDiv);
-
-        /* fix broken positioning in IE7 */
-        if ($.browser.msie && $.browser.version == '7.0') {
-            var eimgraw = eimg.get(0);
-
-            var offset = eimg.offset();
-            eimg.offset({
-                top: offset.top + enlargeDiv.height() / 2 - eimgraw.height / 2,
-                left: offset.left + enlargeDiv.width() / 2 - eimgraw.width / 2
-            });
-        }
-
-        enlargeDiv.fadeIn(100);
-        enlargeDiv.show();
-    }
-    else {
-        enlargeDiv.stop(true, true);
-        enlargeDiv.delay(100);
-        enlargeDiv.fadeOut(150, function () {
-            enlargeDiv.html('');
-            enlargeDiv.hide();
-        });
-    }
 }
 

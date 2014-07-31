@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta http-equiv="x-ua-compatible" content="IE=8">
+
+    <title>Ocean Application</title>
+
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="lib/fotorama-4.5.1/fotorama.css"/>
+    <!-- Custom styles for this template -->
+    <link href="css/comp/jumbotron.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="lib/html5shiv.js"></script>
+      <script src="lib/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+     <div class="jumbotron">
+      <div class="container">
+        <h1>Ocean Portal</h1>
+      </div>
+    </div>
+
+
+    <div class="container">
+      <!-- Example row of columns -->
+        <div class="row" id="reactive">
+            <div class="col-sm-8 col-sm-offset-1">
+                <div id="map-container">
+                    <div id="map" src="lib/OpenLayers/OpenLayers.min.js" class="panel">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1" id="legendinfo">
+                <div id="legendDiv"></div>
+            </div>
+        </div>
+        <form>
+        <div class="row" id="breaker">
+            <div class="col-sm-4 col-sm-offset-2" id="ctrl-container">
+                <div id="regionPanel">
+                    <div class="controlgroup">
+                        <div class="controlvar">
+                            <label for="region">Country/Region</label>
+                            <select id="region" class="widefield"></select>
+                            <label for="subregion">Subregion</label>
+                            <select id="subregion" class="widefield"></select>
+                        </div>
+                    </div>
+                </div>
+                <div id="controlPanel">
+                    <div class="controlgroup">
+                        <div class="controlvar">
+                            <label for="variable">Variable</label>
+                            <select id="variable" class="field">
+                                <option value="--">Select variable</option>
+                            </select>
+                        </div>
+
+                        <div class="controlvar">
+                            <label for="plottype">Plot Type</label>
+                            <select id="plottype" class="field">
+                                <optgroup label="Maps">
+                                    <option value="map">Surface Map</option>
+                                    <option value="xsections">Sub-surface Cross-section</option>
+                                </optgroup>
+                                <optgroup label="Timeseries">
+                                    <option value="ts">Timeseries</option>
+                                </optgroup>
+                                <optgroup label="Statistical">
+                                    <option value="histogram">Histogram</option>
+                                    <option value="waverose">Waverose</option>
+                                </optgroup>
+                            </select>
+                        </div>
+               
+                        <div class="controlgroup">
+                            <div class="controlvar">
+                                <label for="period">Period</label>
+                                <select id="period" class="field">
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="3monthly">3 monthly</option>
+                                    <option value="6monthly">6 monthly</option>
+                                    <option value="12monthly">12 monthly</option>
+                                    <option value="yearly">Yearly</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="controlgroup">
+                            <div class="controlvar">
+                                <label for="date">Date</label>
+                                <input type="text" id="date" class="field datepicker"
+                                    title="Click to open calendar"
+                                    readonly="readonly"/>
+                            </div>
+
+                            <div class="controlvar">
+                                <label for="year">Year</label>
+                                <select id="year" class="field"></select>
+                            </div>
+
+                            <div class="controlvar">
+                                <label for="month">Month</label>
+                                <select id="month" class="field"></select>
+                            </div>
+                        </div>
+
+                        <div class="controlgroup">
+                            <span class="hint">Click a tidal gauge on the map to select.</span>
+                            <div class="controlvar">
+                                <label for="tidalgauge">Gauge</label>
+                                <input type="text" id="tidalgauge" class="field" readonly="readonly"/>
+                            </div>
+                            <input type="hidden" id="tgId"/>
+                        </div>
+
+                        <div class="controlgroup">
+                            <span class="hint">Click on the map to select a location.</span>
+                            <div class="controlvar">
+                                <label for="latitude">Latitude</label>
+                                <input type="text" id="latitude" class="field"/>
+                            </div>
+                            <div class="controlvar">
+                                <label for="longitude">Longitude</label>
+                                <input type="text" id="longitude" class="field"/>
+                            </div>
+                        </div>
+
+                        <div class="controlgroup">
+                            <div class="controlvar">
+                                <label for="dataset">Dataset</label>
+                                <select id="dataset" class="field"></select>
+                            </div>
+                            <div class="controlvar">
+                                <span class="label"></span>
+                                <a id="dshelp" target="_blank" href="#">About <span>Dataset</span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="controlgroup">
+                    <div class="controlvar">
+                        <span class="label"></span>
+                        <button id="submit" class="field">Submit</button>
+                    </div> 
+                </div>
+            </div>
+        </div>
+        </form>
+        <div class="row" id="reactive">
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="fotorama" data-auto="false" data-nav="thumbs" data-navposition="top">
+                </div>
+                <span><p class="fotorama-caption"></p><a class="download-data"></a></span>
+            </div>
+        </div>
+    </div>
+
+      <hr>
+
+      <div class="footer">
+        <p>&copy; Commonwealth of Australia , Bureau of Meteorology (ABN 92 637 533 532) 2014</p>
+      </div>
+    </div> <!-- /container -->
+
+    <div id="error-dialog" class="dialog" title="Error">
+        <p>
+            <b>Error:</b>
+            <span id="error-dialog-content"></span>
+            <br/>
+                Please consider reporting this error to
+            <a href="mailto:COSPPac_SoftwareSupport@bom.gov.au">COSPPac Software Support</a>.
+            <br/>
+            <small><a id="error-dialog-request" href="" target="_blank">Server Request</a></small>
+        </p>
+
+    </div>
+    <div id="loading-dialog" class="dialog">
+        <img src="images/loading.gif" />
+        <b>Loading...</b>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script type="text/javascript" src="lib/jquery/jquery-1.8.3.min.js"></script>-->
+    <script type="text/javascript" src="lib/jquery/jquery-1.8.3.js"></script>
+    <script type="text/javascript" src="lib/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="lib/fotorama-4.5.1/fotorama.js"></script>
+    
+    <!--Load the content of the page-->
+    <!--Load the map component-->
+    <script type="text/javascript" src="lib/jquery/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.js"></script>
+    <script type="text/javascript" src="js/comp/controlPanel.js?v=0.3.2-48-g53f7da3-modified"></script>
+    <script type="text/javascript" src="js/comp/compmap.js?v=0.3.2-48-g53f7da3-modified"></script>
+
+    <script type="text/javascript" src="js/comp/Ocean.js"></script>
+
+    <script type="text/javascript" src="js/comp/dsConf.js?v=0.3.2-48-g53f7da3-modified"></script>
+
+    <link rel="stylesheet" type="text/css" href="lib/OpenLayers/theme/default/style.css"/>
+    <link rel="stylesheet" type="text/css" href="lib/jquery/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css"/>  
+    <link rel="stylesheet" type="text/css" href="css/comp/controlPanel.css?v=0.3.3-10-g16e0dfe" />
+    <link rel="stylesheet" type="text/css" href="css/comp/compmap.css?v=0.3.2-48-g53f7da3-modified" />
+    <link rel="stylesheet" type="text/css" href="css/comp/controlvars.css?v=0.3.2-48-g53f7da3-modified" />
+  </body>
+</html>
+

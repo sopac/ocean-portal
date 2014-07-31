@@ -15,13 +15,12 @@ html, body {
   bottom: 0;
   left: 0;
   right: 0;
-  overflow: hidden;
+#  overflow: hidden;
 }
 
 body {
   font-size: 12px;
   font-family: tahoma,arial,verdana,sans-serif;
-  border: 1px solid rgb(211, 211, 211);
 }
 
 a img {
@@ -100,7 +99,9 @@ a img {
 }
 
 #map {
-   z-index: 2;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
 }
 
 .notitle .ui-dialog-titlebar {
@@ -109,7 +110,7 @@ a img {
 
 #loading-dialog {
   text-align: center;
-  padding-top: 10px;
+  padding-top: 8px;
   padding-bottom: 5px;
 }
 
@@ -122,13 +123,14 @@ a img {
   top: -12px;
 }
 
-#legendDiv {
+/*#legendDiv {
     position: absolute;
     pointer-events: none;
     bottom: 40px;
     left: 10px;
     z-index: 1020;
 }
+*/
 
 #legendDiv img {
   display: block;
@@ -136,7 +138,6 @@ a img {
   max-height: 200px;
   max-width: auto;
 }
-
 #enlargeDiv {
     position: absolute;
     z-index: 1021;
@@ -260,8 +261,9 @@ a img {
 }
 
 .download-data {
-  text-decoration: none;
-  display: block;
+    text-decoration: none;
+    display: block;
+    font-weight: bold;
 }
 
 .download-data:hover {
