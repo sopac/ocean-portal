@@ -90,8 +90,9 @@ map_layers = [
 BASE_PATH = 'share/portal'
 html = [
 #   'sst.html',
-    'compmap.html',
-    'ocean.html'
+#    'compmap.html',
+    'ocean.html',
+    'app.html'
 ]
 
 script_substitutions = {
@@ -114,6 +115,7 @@ web_files = [
     'js/comp/compmap.js',
     'js/comp/dsConf.js',
     'js/comp/app.js',
+    'js/comp/Ocean.js'
 #   'js/sst.js',
 ]
 
