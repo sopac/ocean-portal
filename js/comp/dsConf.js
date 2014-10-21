@@ -319,7 +319,7 @@ function appendOutput(image, dataURL, name, extras, data)
     if (name) {
         $('<h2>', {
             text: name
-        }).appendTo(caption);
+        }).appendTo(captionText);
     }
 
     if (data) {

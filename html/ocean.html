@@ -34,32 +34,34 @@
     </div>
 
     <div class="container">
+        <div class="info">
+        </div>
       <!-- Example row of columns -->
       <div class="row">
-        <div class="col-lg-4 col-md-2 app" id="tour">
+        <div class="col-lg-4 col-md-2 app dev" id="tour">
           <h2>Tourism</h2>
-          <p><a class="btn btn-primary" href="#about_tour" data-toggle="modal"><b>&#43;</b></a></p>
+          <a class="btn btn-primary" href="#about_tour" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span></a>
         </div>
         <div class="col-lg-4 col-md-2 app" id="climate">
           <h2>Ocean Climate</h2>
-          <p><a class="btn btn-primary" href="#about_climate" data-toggle="modal"><b>&#43;</b></a></p>
-          <a href="app.html"></a>
+          <a class="btn btn-primary" href="#about_climate" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span></a>
         </div>
-        <div class="col-lg-4 col-md-2 app" id="coral">
+        <div class="col-lg-4 col-md-2 app dev" id="coral">
           <h2>Coral Bleaching</h2>
-          <p><a class="btn btn-primary" href="#about_coral" data-toggle="modal"><b>&#43;</b></a></p>
+          <a class="btn btn-primary" href="#about_coral" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span></a>
         </div>
-        <div class="col-lg-4 col-md-2 app" id="sea">
+        <div class="col-lg-4 col-md-2 app" id="sealevel">
           <h2>Sea Level</h2>
-          <p><a class="btn btn-primary" href="#about_sea" data-toggle="modal"><b>&#43;</b></a></p>
+          <a class="btn btn-primary" href="#about_sealevel" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span></a>
+          <a href="'cgi/portal.py?app=sealevel"></a>
         </div>
-        <div class="col-lg-4 col-md-2 app" id="fishery">
+        <div class="col-lg-4 col-md-2 app dev" id="fishery">
           <h2>Fishery</h2>
-          <p><a class="btn btn-primary " href="#about_fishery" data-toggle="modal"><b>&#43;</b></a></p>
+          <a class="btn btn-primary " href="#about_fishery" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span></a>
         </div>
-        <div class="col-lg-4 col-md-2 app" id="shipping">
+        <div class="col-lg-4 col-md-2 app dev" id="shipping">
           <h2>Shipping</h2>
-          <p><a class="btn btn-primary" href="#about_shipping" data-toggle="modal"><b>&#43;</b></a></p>
+          <a class="btn btn-primary" href="#about_shipping" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span></a>
         </div>
       </div>
 
@@ -68,10 +70,14 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-              <h4 class="modal-title">About coral bleaching</h4>
+              <h3 class="modal-title">About Coral Reafs</h3>
             </div>
             <div class="modal-body">
-              discription goes here.
+                <p>Coral bleaching can occur during periods of elevated temperatures in the ocean. Near-real time and forecasted coral bleaching alert levels are used to anticipate bleaching events. Chlorophyll data is also available here and can identify coral spawning events.</p>
+                <ul>
+                    <li>Coral Bleaching Alert Status - Today</li>
+                    <li>Coral Bleaching Alert Status - Forecasted</li>
+                    <li>Recent Chlorophyll Concentrations - Daily and Monthly</li>
             </div>
           </div>
         </div>
@@ -82,10 +88,14 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-              <h4 class="modal-title">About fishery</h4>
+              <h3 class="modal-title">About Fisheries</h3>
             </div>
             <div class="modal-body">
-              discription goes here.
+                <p>The information provided here can inform fishery departments on the state of the upcoming tuna fishing season for the purpose of licensing and implementing sustainable fishing practices.</p>
+                <p>Native fishermen can use the front detection maps to identify areas of possible upwellings that have high levels of biological activity.</p>
+                <ul>
+                    <li>Seasonal Tuna Forecasts (9-months lead time)</li>
+                    <li>Front Detection . Today</li>
             </div>
           </div>
         </div>
@@ -96,29 +106,40 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-              <h4 class="modal-title">About tourism</h4>
+              <h3 class="modal-title">About Tourism</h3>
             </div>
             <div class="modal-body">
-              discription goes here.
+                <p>Ocean information is available here that can be useful for surfing, diving, wind and kite surfing, and boating.</p>
+
+                <h4>Forecasted Waves Information (7-day lead time)</h4>
+                <ul>
+                    <li>Significant wave height</li>
+                    <li>Peak wave period</li>
+                    <li>Peak wave direction</li>
+                    <li>Wind Speed and direction</li>
+                </ul>
+                <h4>Sea Surface Temperature - Today</h4>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="modal" id="about_sea">
+      <div class="modal" id="about_sealevel">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-              <h4 class="modal-title">About Sea Level</h4>
+              <h3 class="modal-title">About Sea Level</h3>
             </div>
             <div class="modal-body">
-              <h5>Monitoring</h5>
-                  <p>Real time tidal gauge display.</p>
-                  <a href="#" class="btn btn-primary" class="btn">Go&raquo;</a>
-              <h5>Altimetry and Reconstruction</h5>
-                  <p>Satellite Altimetry and Reconstructed gridded datasets by Church et al (2004)</p>
-                  <a href="app.html" class="btn btn-primary" class="btn">Go&raquo;</a>
+                <p>Maps for sea level changes across the Pacific are available from 1950 to present in a relatively low resolution, and a higher resolution from 1993 to present.</p>
+                <ul>
+                    <li> Reconstruction - low resolution (1950 to present) </li>
+                    <li> Altimetry - high resolution (1993 to present) </li>
+                </ul>
+                <br/>
+                <p>The Real Time Data Display shows sea level information, air & water temperature, humidity, wind speed and wind direction. Data is shown in real-time, going back as far as four days.</p>
+                <a class="btn btn-primary app" id="sealevel">Go&raquo;</a>
             </div>
           </div>
         </div>
@@ -154,7 +175,7 @@
                   <li>Salinity</li>
                   <li>Chlorophyll</li>
               </ul>
-               <a href="app.html" class="btn btn-primary" class="btn">Go&raquo;</a>
+               <a class="btn btn-primary app" id="climate">Go&raquo;</a>
             </div>
           </div>
         </div>
@@ -165,10 +186,18 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-              <h4 class="modal-title">About shipping</h4>
+              <h3 class="modal-title">About Shipping</h3>
             </div>
             <div class="modal-body">
-              discription goes here.
+                <p>Forecast information for seagoing stakeholders that include the shipping industry, ferry operators, and commercial/recreational boating.</p>
+
+                <h4>Forecasted Waves (7-days lead time)</h4>
+                <ul>
+                    <li>Significant wave height</li>
+                    <li>Peak wave period</li>
+                    <li>Peak wave direction</li>
+                    <li>Wind Speed and direction</li>
+                </ul>
             </div>
           </div>
         </div>

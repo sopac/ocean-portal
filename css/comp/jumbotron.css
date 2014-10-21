@@ -20,57 +20,57 @@ body {
     margin-top: 10%;
 }
 
-#coral {
+div#coral {
   background-color: #008EAA;
   background-image: url(../../images/coral.png);
 }
 
-#coral:hover {
+div#coral:hover {
   background-color: #197C90;
 }
 
-#fishery {
+div#fishery {
   background-color: #7BAFD4;
   background-image: url(../../images/fishing.png);
 }
 
-#fishery:hover {
+div#fishery:hover {
   background-color: #397EAF;
 }
 
-#tour {
+div#tour {
   background-color: #00AFD7;
   background-image: url(../../images/surfer.png);
 }
 
-#tour:hover {
+div#tour:hover {
   background-color: #209AB6;
 }
 
-#sea {
+div#sealevel {
   background-color: #ABC7CA;
   background-image: url(../../images/sealevel.png);
 }
 
-#sea:hover {
+div#sealevel:hover {
   background-color: #6C9DA2;
 }
 
-#climate {
+div#climate {
   background-color: #00B388;
   background-image: url(../../images/climate.png);
 }
 
-#climate:hover {
+div#climate:hover {
   background-color: #1A987A;
 }
 
-#shipping {
+div#shipping {
   background-color: #00965E;
   background-image: url(../../images/shipping.png);
 }
 
-#shipping:hover {
+div#shipping:hover {
   background-color: #167F58;
 }
 
@@ -100,6 +100,8 @@ h5 {
 #breaker{
     background-color: #BBBBBB;
     padding: 4px;
+    border: 2px solid;
+    border-color: #EEEEEE;
 /*    z-index: 1;*/
 }
 
