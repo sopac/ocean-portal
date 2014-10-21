@@ -123,6 +123,7 @@ data = [
     'config/comp/datasets.json',
     'config/comp/vargroups.json',
     'config/comp/portals.json',
+    'config/comp/app.json',
     'config/comp/tidalGauges.txt',
     'images/search.gif',
     'images/calendar-blue.gif',
