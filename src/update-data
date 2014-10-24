@@ -18,6 +18,18 @@ case $DATASET in
         SERVER=http://opendap.bom.gov.au:8080/
         SERVER_PATH=thredds/fileServer/nmoc/oceanmaps_ofam_fc/ops/latest/
         DATA_SUBDIR=data
+	;;
+    chloro)
+        SERVER=ftp://ftp.acri.fr
+        SERVER_PATH=/GLOB_4KM/RAN/CHL1/MERGED/GSM
+        DATA_SUBDIR=data
+	MIRROR_FLAGS='-I *GLOB_4*.nc.gz' 
+        ;;
+    currents)
+        SERVER=ftp://ftp.hycom.org
+	SERVER_PATH=/datasets/GLBu0.08/expt_91.1/forecasts
+        DATA_SUBDIR=data
+        MIRROR_FLAGS='-I *uv3z.nc'
         ;;
     coral)
         SERVER=http://data.nodc.noaa.gov/
@@ -74,7 +86,7 @@ fi
 cd $DATA_DIR/$DATA_SUBDIR || exit 1
 
 case $DATASET in
-    reynolds|ersst|coral)
+    reynolds|ersst|coral|currents)
         lftp $SERVER << EOF
 cd $SERVER_PATH || exit 1
 mirror -ve $MIRROR_FLAGS
@@ -90,6 +102,12 @@ EOF
     ww3)
 	    wget --no-clobber -i ./AUSWAVE_File_List.txt
     ;;
+    chloro)
+        lftp -u globcolour_data,fgh678 $SERVER << EOF
+cd $SERVER_PATH || exit 1
+mirror -ve $MIRROR_FLAGS
+EOF
+    ;;
     sealevel)
         python << EOF | while read PRODUCT GAUGE
 from ocean.config.tidalGaugeConfig import tidalGauge
@@ -97,6 +115,7 @@ from ocean.config.tidalGaugeConfig import tidalGauge
 for gauge in tidalGauge:
     product = gauge.split('_')[0]
     print product, gauge
+
 EOF
         do
             echo -n "$GAUGE: "

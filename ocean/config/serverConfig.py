@@ -52,6 +52,8 @@ class tuscany(default):
 	'coral':'/data/sst/coral/',
 	'poama':'/data/poama/',
 	'oceanmaps':'/data/oceanmaps/',
+	'chloro':'/data/chloro/',
+	'currents':'/data/currents/',
     }
 
 class tunceli(default):
@@ -67,6 +69,8 @@ class tunceli(default):
 	'coral':'/www4/data/cosppac/coral/',
 	'poama':'/www4/data/cosppac/poama/',
 	'oceanmaps':'/www4/data/cosppac/oceanmaps/',
+        'chloro':'/data/chloro/',
+	'currents':'/data/currents/',
     }
 
 class www4(default):
@@ -83,6 +87,8 @@ class www4(default):
 	'coral': '/web/data/cosppac/coral/',
 	'poama': '/web/data/cosppac/poama/',
 	'oceanmaps': 'web/data/cosppac/oceanmaps/',
+        'chloro':'/data/chloro/',
+	'currents':'/data/currents/',
     }
 
 class hoapp2(www4):
