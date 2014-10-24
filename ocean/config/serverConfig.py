@@ -49,11 +49,11 @@ class tuscany(default):
         'reynolds': '/data/sst/reynolds/',
         'sealevel': '/data/sea_level/',
         'ww3': '/data/wavewatch3/',
-	'coral':'/data/sst/coral/',
-	'poama':'/data/poama/',
-	'oceanmaps':'/data/oceanmaps/',
-	'chloro':'/data/chloro/',
-	'currents':'/data/currents/',
+        'coral':'/data/sst/coral/',
+        'poama':'/data/poama/',
+        'oceanmaps':'/data/oceanmaps/',
+        'chloro':'/data/chloro/',
+        'currents':'/data/currents/'
     }
 
 class tunceli(default):
@@ -66,11 +66,11 @@ class tunceli(default):
         'reynolds': '/www4/data/cosppac/reynolds/',
         'sealevel': '/www4/data/cosppac/sea_level/',
         'ww3': '/www4/data/cosppac/wavewatch3/',
-	'coral':'/www4/data/cosppac/coral/',
-	'poama':'/www4/data/cosppac/poama/',
-	'oceanmaps':'/www4/data/cosppac/oceanmaps/',
+        'coral':'/www4/data/cosppac/coral/',
+        'poama':'/www4/data/cosppac/poama/',
+        'oceanmaps':'/www4/data/cosppac/oceanmaps/',
         'chloro':'/data/chloro/',
-	'currents':'/data/currents/',
+        'currents':'/data/currents/'
     }
 
 class www4(default):
@@ -84,11 +84,11 @@ class www4(default):
         'reynolds': '/web/data/cosppac/reynolds/',
         'sealevel': '/web/data/cosppac/sea_level/',
         'ww3': '/web/data/cosppac/wavewatch3/',
-	'coral': '/web/data/cosppac/coral/',
-	'poama': '/web/data/cosppac/poama/',
-	'oceanmaps': 'web/data/cosppac/oceanmaps/',
+        'coral': '/web/data/cosppac/coral/',
+        'poama': '/web/data/cosppac/poama/',
+        'oceanmaps': 'web/data/cosppac/oceanmaps/',
         'chloro':'/data/chloro/',
-	'currents':'/data/currents/',
+        'currents':'/data/currents/'
     }
 
 class hoapp2(www4):
