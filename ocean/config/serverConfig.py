@@ -69,8 +69,8 @@ class tunceli(default):
         'coral':'/www4/data/cosppac/coral/',
         'poama':'/www4/data/cosppac/poama/',
         'oceanmaps':'/www4/data/cosppac/oceanmaps/',
-        'chloro':'/data/chloro/',
-        'currents':'/data/currents/'
+        'chloro':'/www4/data/cosppac/chloro/',
+        'currents':'/www4/data/cosppac/currents/'
     }
 
 class www4(default):
@@ -86,9 +86,9 @@ class www4(default):
         'ww3': '/web/data/cosppac/wavewatch3/',
         'coral': '/web/data/cosppac/coral/',
         'poama': '/web/data/cosppac/poama/',
-        'oceanmaps': 'web/data/cosppac/oceanmaps/',
-        'chloro':'/data/chloro/',
-        'currents':'/data/currents/'
+        'oceanmaps': '/web/data/cosppac/oceanmaps/',
+        'chloro':'/web/data/cosppac/chloro/',
+        'currents':'/web/data/cosppac/currents/'
     }
 
 class hoapp2(www4):
