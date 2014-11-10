@@ -14,21 +14,27 @@ import subprocess
 import datetime
 import dateutil.relativedelta
 
+from ocean.config import get_server_config
+
 class uncompress_synched_data():
 
     def __init__(self):
-        # Settings for each dataset
+        # Settings for each dataseto
+
+        sys_config = get_server_config()
+
         self.config = \
             {'reynolds':{
                 'start_year': 1981,
                 'start_month': 9,
                 'start_day': 1,
-                'input_dir': '/data/sst/reynolds/daily-new/%(year)04d/AVHRR/',
+                'input_dir': os.path.join(sys_config.dataDir['reynolds'], 'daily-new/%(year)04d/AVHRR/'),
                 'input_filename': 'avhrr-only-v2.%(year)04d%(month)02d%(day)02d.nc.gz',
                 'input_filename_preliminary': 'avhrr-only-v2.%(year)04d%(month)02d%(day)02d_preliminary.nc.gz',
                 'output_filename': 'avhrr-only-v2.%(year)04d%(month)02d%(day)02d.nc',
                 'output_filename_preliminary': 'avhrr-only-v2.%(year)04d%(month)02d%(day)02d_preliminary.nc',
-                'output_dir': '/data/sst/reynolds/daily-new-uncompressed/'}
+                'output_dir': os.path.join(sys_config.dataDir['reynolds'], 'daily-new-uncompressed/')
+                }
             }
 
     def process(self, dataset):

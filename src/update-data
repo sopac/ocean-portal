@@ -22,11 +22,11 @@ case $DATASET in
         SERVER=ftp://ftp.acri.fr
         SERVER_PATH=/GLOB_4KM/RAN/CHL1/MERGED/GSM
         DATA_SUBDIR=data
-	MIRROR_FLAGS='-I *GLOB_4*.nc.gz' 
+        MIRROR_FLAGS='-I *GLOB_4*.nc.gz' 
         ;;
     currents)
         SERVER=ftp://ftp.hycom.org
-	SERVER_PATH=/datasets/GLBu0.08/expt_91.1/forecasts
+        SERVER_PATH=/datasets/GLBu0.08/expt_91.1/forecasts
         DATA_SUBDIR=data
         MIRROR_FLAGS='-I *uv3z.nc'
         ;;
@@ -34,7 +34,7 @@ case $DATASET in
         SERVER=http://data.nodc.noaa.gov/
         SERVER_PATH=/crw/tsps50km/baa/
         DATA_SUBDIR=data
-	MIRROR_FLAGS='-I *.hdf'
+        MIRROR_FLAGS='-I *.hdf'
         ;;
     poama)
         SERVER=http://opendap.bom.gov.au:8080
@@ -88,7 +88,7 @@ case $DATASET in
     reynolds|ersst|coral|currents)
         lftp $SERVER << EOF
 cd $SERVER_PATH || exit 1
-mirror -ve $MIRROR_FLAGS
+mirror --only-missing -n $MIRROR_FLAGS
 chmod -R 666
 EOF
     ;;
@@ -104,7 +104,7 @@ EOF
     chloro)
         lftp -u globcolour_data,fgh678 $SERVER << EOF
 cd $SERVER_PATH || exit 1
-mirror -ve $MIRROR_FLAGS
+mirror --only-missing -n $MIRROR_FLAGS
 EOF
     ;;
     sealevel)
