@@ -38,12 +38,18 @@ $(function() {
     hideControls();
 
     /* set up the date picker */
-    $(".datepicker").datepicker({
-        dateFormat: 'd MM yy',
+    $("#date").datepick({
+        dateFormat: 'd MM yyyy',
+        renderer: $.datepick.themeRollerRenderer,
         changeMonth: true,
-        changeYear: true
-    }).mousedown(function() {
-        $(this).datepicker('show');
+       // alignment: 'bottom'
+        showAnim: 'clip',
+        showSpeed: 'fast',
+        nextText: 'M >',
+        prevText: '< M',
+        todayText: 'dd M yy',
+        commandsAsDateFormat: true,
+        onSelect: dateSelection
     });
 
     /* UI handlers */
@@ -175,14 +181,14 @@ $(function() {
             var date_ = $('#date');
 
             /* set range on datepicker */
-            date_.datepicker('option', {
+            date_.datepick('option', {
                 minDate: range.min,
                 maxDate: range.max,
                 yearRange: range.min.getFullYear() + ':' + range.max.getFullYear()
             });
 
             /* automatically clamps the date to the available range */
-            date_.datepicker('setDate', ocean.date).change();
+            date_.datepick('setDate', ocean.date).change();
         } else {
             /* datasets are not date dependent */
             updateDatasets();
@@ -209,6 +215,7 @@ $(function() {
     });
 
     /* Date range is changed */
+//    $('#date, #month, #year').change(function () {
     $('#date, #month, #year').change(function () {
 
         if (!(ocean.variable in ocean.variables) ||
@@ -217,13 +224,13 @@ $(function() {
             return;
         }
 
-        /* determine the chosen date */
+        // determine the chosen date 
         var date_;
 
         switch (ocean.period) {
             case 'daily':
             case 'weekly':
-                date_ = $('#date').datepicker('getDate');
+                date_ = $('#date').datepick('getDate')[0];
                 break;
 
             case 'monthly':
@@ -256,9 +263,10 @@ $(function() {
                 var range = getDateRange(dataset, ocean.variable, ocean.period);
 
                 if (!range)
-                    return true; /* no date range defined */
+                    return true; // no date range defined 
 
-                return (ocean.date >= range.min) && (ocean.date <= range.max);
+//                return (ocean.date >= range.min) && (ocean.date <= range.max);
+                return true;//(ocean.date >= range.min) && (ocean.date <= range.max);
             };
         }
 
@@ -310,6 +318,13 @@ $(function() {
     regionCountryModel.getData(); 
 });
 
+    /**
+     *
+     */ 
+    function dateSelection () {
+        /* determine the chosen date */
+        $('#date').change();
+    };
 /**
  * getBackendId:
  * @datasetid: a dataset frontend id
@@ -381,8 +396,8 @@ function getDateRange(datasetid, varid, period)
 
     /* 'yy' is correct, believe it or not, see
      * http://docs.jquery.com/UI/Datepicker/parseDate */
-    var mindate = $.datepicker.parseDate('yymmdd', range.minDate);
-    var maxdate = $.datepicker.parseDate('yymmdd', range.maxDate);
+    var mindate = $.datepick.determineDate(range.minDate, null, 'yyyymmdd');
+    var maxdate = $.datepick.determineDate(range.maxDate, null, 'yyyymmdd');
 
     mindate.setMonth(mindate.getMonth() + month_delta);
 
@@ -436,16 +451,16 @@ function updateMonths(minMonth, maxMonth) {
 
         if ($('#year').is(':visible')) {
             return function (m) {
-                return $.datepicker.formatDate('M y',
+                return $.datepick.formatDate('M y',
                         new Date(selectedyear, m - range)) + ' &ndash; ' +
-                    $.datepicker.formatDate('M y',
+                    $.datepick.formatDate('M y',
                         new Date(selectedyear, m));
             }
         } else {
             return function (m) {
-                return $.datepicker.formatDate('M',
+                return $.datepick.formatDate('M',
                         new Date(selectedyear, m - range)) + ' &ndash; ' +
-                    $.datepicker.formatDate('M',
+                    $.datepick.formatDate('M',
                         new Date(selectedyear, m));
             }
         }
@@ -454,7 +469,7 @@ function updateMonths(minMonth, maxMonth) {
     switch (ocean.period) {
         case 'monthly':
             fmt = function (m) {
-                return $.datepicker.formatDate('MM',
+                return $.datepick.formatDate('MM',
                     new Date(selectedyear, m));
             };
             break;

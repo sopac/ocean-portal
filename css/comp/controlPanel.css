@@ -107,9 +107,9 @@ optgroup option {
   cursor: pointer;
 }
 
-.ui-datepicker {
-  /* this is important because else the style overrides it */
-  z-index: 1000 !important;
+.datepick-popup {
+  /* this is important because else the style overrides it*/ 
+  z-index: 1050 !important;
 }
 
 input[disabled] + label {
