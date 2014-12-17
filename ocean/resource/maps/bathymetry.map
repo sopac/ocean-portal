@@ -1,35 +1,32 @@
 MAP
+    NAME           "ocean_portal"
     IMAGETYPE      PNG24
-    SIZE           600 600
+    SIZE           400 300
     SHAPEPATH      "layers"
     IMAGECOLOR     135 216 250
     FONTSET        "../fonts/fonts.list"
+
     PROJECTION
         "init=epsg:4326"
     END
 
     EXTENT         -180 -90 180 90
-
-    LAYER # States polygon layer begins here
-        NAME         ocean
-        DATA         ocean
-        STATUS       ON
-        TYPE         POLYGON
-
-        CLASS
-            NAME 'ocean'
-
-            STYLE
-                COLOR      0 128 192
-                OUTLINECOLOR 0 128 192
-                WIDTH 2
-                ANTIALIAS TRUE
-            END
+    UNITS          DD
+ 
+    WEB
+        METADATA
+            "wms_title"    "Ocean Portal"
+            "wms_onlineresource"    "http://tuscany.bom.gov.au/sheng/cgi/map.py"
+            "wms_srs"   "EPSG:4326"
+            "wms_enable_request"    "*"
         END
-    END # States polygon layer ends here
+    END
 
     LAYER
         NAME         bathymetry_0
+        METADATA
+            "wms_title"    "bathymetry_0"
+        END
         DATA         bathymetry_0
         GROUP        bathymetry
         STATUS       ON
@@ -49,6 +46,9 @@ MAP
 
     LAYER
         NAME         bathymetry_200
+        METADATA
+            "wms_title"    "bathymetry_200"
+        END
         DATA         bathymetry_200
         GROUP        bathymetry
         STATUS       ON
@@ -68,6 +68,9 @@ MAP
 
     LAYER
         NAME         bathymetry_1000
+        METADATA
+            "wms_title"    "bathymetry_1000"
+        END
         DATA         bathymetry_1000
         GROUP        bathymetry
         STATUS       ON
@@ -87,6 +90,9 @@ MAP
 
     LAYER
         NAME         bathymetry_2000
+        METADATA
+            "wms_title"    "bathymetry_2000"
+        END
         DATA         bathymetry_2000
         GROUP        bathymetry
         STATUS       ON
@@ -106,6 +112,9 @@ MAP
 
     LAYER
         NAME         bathymetry_3000
+        METADATA
+            "wms_title"    "bathymetry_3000"
+        END
         DATA         bathymetry_3000
         GROUP        bathymetry
         STATUS       ON
@@ -125,6 +134,9 @@ MAP
 
     LAYER
         NAME         bathymetry_4000
+        METADATA
+            "wms_title"    "bathymetry_4000"
+        END
         DATA         bathymetry_4000
         GROUP        bathymetry
         STATUS       ON
@@ -144,6 +156,9 @@ MAP
 
     LAYER
         NAME         bathymetry_5000
+        METADATA
+            "wms_title"    "bathymetry_5000"
+        END
         DATA         bathymetry_5000
         GROUP        bathymetry
         STATUS       ON
@@ -163,6 +178,9 @@ MAP
 
     LAYER
         NAME         bathymetry_6000
+        METADATA
+            "wms_title"    "bathymetry_6000"
+        END
         DATA         bathymetry_6000
         GROUP        bathymetry
         STATUS       ON
@@ -182,6 +200,9 @@ MAP
 
     LAYER
         NAME         bathymetry_7000
+        METADATA
+            "wms_title"    "bathymetry_7000"
+        END
         DATA         bathymetry_7000
         GROUP        bathymetry
         STATUS       ON
@@ -201,6 +222,9 @@ MAP
 
     LAYER
         NAME         bathymetry_8000
+        METADATA
+            "wms_title"    "bathymetry_8000"
+        END
         DATA         bathymetry_8000
         GROUP        bathymetry
         STATUS       ON
@@ -220,6 +244,9 @@ MAP
 
     LAYER
         NAME         bathymetry_9000
+        METADATA
+            "wms_title"    "bathymetry_9000"
+        END
         DATA         bathymetry_9000
         GROUP        bathymetry
         STATUS       ON
@@ -239,6 +266,9 @@ MAP
 
     LAYER
         NAME         bathymetry_10000
+        METADATA
+            "wms_title"    "bathymetry_10000"
+        END
         DATA         bathymetry_10000
         GROUP        bathymetry
         STATUS       ON
@@ -256,27 +286,40 @@ MAP
         END
     END
 
+    SYMBOL
+        NAME "circle"
+        TYPE ellipse
+        POINTS
+            1 1
+        END
+    END
+
     LAYER
         NAME         reeflocations 
+         METADATA
+            "wms_title"    "reef_locations"
+        END
         DATA         ReefLocations
         GROUP        reef 
-        STATUS       OFF
+        STATUS       ON
         TYPE         POLYGON
 
         CLASS
             NAME 'reeflocations'
 
             STYLE
-                COLOR      229 222 201
-                OUTLINECOLOR 197 137 9
-                WIDTH 1
-                ANTIALIAS TRUE
+                SYMBOL     'circle'
+                COLOR      255 0 0
+                SIZE       1
             END
         END
     END
 
     LAYER # States polygon layer begins here
         NAME         southern_pac
+        METADATA
+            "wms_title"    "Southern_Pac"
+        END
         DATA         southern_pac
         GROUP        land
         STATUS       ON
@@ -296,6 +339,9 @@ MAP
 
     LAYER # States polygon layer begins here
         NAME         world
+        METADATA
+            "wms_title"    "World"
+        END
         DATA         land
         GROUP        land
         STATUS       ON
@@ -317,6 +363,9 @@ MAP
 
     LAYER
         NAME       maritime
+        METADATA
+            "wms_title"    "maritime"
+        END
         DATA         COSPPac_EEZs
         STATUS       ON
         TYPE         LINE
@@ -340,6 +389,9 @@ MAP
 
     LAYER
         NAME         countries
+        METADATA
+            "wms_title"    "countries"
+        END
         DATA         pacific_islands_capitals
         STATUS       ON
         TYPE         ANNOTATION
@@ -370,6 +422,9 @@ MAP
 
     LAYER
         NAME         capitals
+        METADATA
+            "wms_title"    "capitals"
+        END
         DATA         pacific_islands_capitals
         STATUS       ON
         TYPE         ANNOTATION

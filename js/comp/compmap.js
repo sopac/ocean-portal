@@ -76,8 +76,8 @@ $(function() {
                             'dialogClass': 'notitle',
                             'closeOnEscape': false,
                             'height': 55,
-                            'resizable': false })
-        .dialog('open');
+                            'resizable': false });
+//        .dialog('open');
 
     /* work out which region file to load */
     if (location.search == '')
@@ -113,10 +113,10 @@ $(function() {
 //            height: '100%'
         });
 
-        if (map) {
+//        if (map) {
             /* poke the map to resize */
-            map.updateSize();
-        }
+//            map.updateSize();
+//        }
     });
 
     $.when(
@@ -130,34 +130,36 @@ $(function() {
             }
 
             document.title = ocean.configProps.name + " Ocean Application";
-        }),
+//        }),
+        })
  
         /* load OpenLayers */
-        $.cachedScript($('#map').attr('src')).done(function () {
-            OpenLayers.ImgPath = "lib/OpenLayers/img/"
-            createMap();
-        }))
-
+//        $.cachedScript($('#map').attr('src')).done(function () {
+//            OpenLayers.ImgPath = "lib/OpenLayers/img/"
+//            createMap();
+//        }))
+)
     .done(function () {
-        var bounds = new OpenLayers.Bounds();
+    createMap();
+//        var bounds = new OpenLayers.Bounds();
 
         /* iterate the region bounds to calculate the * restricted extent */
-        $('#region option').each(function () {
-            var e = $(this);
-            var b = new OpenLayers.Bounds(e.data('extent'));
+ //       $('#region option').each(function () {
+//            var e = $(this);
+//            var b = new OpenLayers.Bounds(e.data('extent'));
 
-            e.data('bounds', b);
-            bounds.extend(b);
-        });
+//            e.data('bounds', b);
+//            bounds.extend(b);
+//        });
 
         /* compensate for the date line wrapping */
-        if (bounds.right > 180) {
-            bounds.left -= 360;
-            bounds.right -= 360;
-        }
+//        if (bounds.right > 180) {
+//            bounds.left -= 360;
+//            bounds.right -= 360;
+//        }
 
-        map.setOptions({ restrictedExtent: bounds });
-        setValue('region', ocean.config);
+//        map.setOptions({ restrictedExtent: bounds });
+//        setValue('region', ocean.config);
     })
     .fail(function () {
         maybe_close_loading_dialog();
@@ -171,114 +173,61 @@ $(function() {
  * Create the map component. Should only be called once.
  */
 function createMap () {
-    map = new OpenLayers.Map("map", {
-        minResolution: 0.001373291,
-        numZoomLevels: 8,
-        maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
-        theme: null,
-        controls: [
-            new OpenLayers.Control.PanZoomBar(),
-            new OpenLayers.Control.MousePosition(),
-            new OpenLayers.Control.LayerSwitcher({
-                div: document.getElementById('mapControlsLayers'),
-                ascending: false,
-                roundedCorner: false
-            }),
-            new OpenLayers.Control.ScaleLine({
-                bottomOutUnits: '',
-                bottomInUnits: ''
-            }),
-            new OpenLayers.Control.Navigation({
-                dragPanOptions: { enableKinetic: true },
-                documentDrag: true
-            })
-        ],
-        eventListeners: {
-            addlayer: _updateDisabled,
-            removelayer: _updateDisabled,
-            changelayer: _mapBaseLayerChanged
-        }
-    });
+    var southWest = L.latLng(-45, 110),
+        northEast = L.latLng(45, 300),
+        bounds =  L.latLngBounds(southWest, northEast);
 
-    /* add keyboard controls separately so we can disable them when required */
-    var keyboardControls = new OpenLayers.Control.KeyboardDefaults();
-    map.addControl(keyboardControls);
+    map = L.map('map', {
+        center: L.latLng(0, 205),
+        maxBounds: bounds,
+        minZoom: 3,
+        maxZoom: 8,
+        zoom: 3,
+        zoomAnimation: true,
+        crs: L.CRS.EPSG4326
+    });
+   
+    var bathymetry = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
+       layers: 'bathymetry',
+       format: 'image/png',
+       transparent: true
+    }).addTo(map);
 
-    $(':input').focusin(function () {
-        keyboardControls.deactivate();
-    });
-    $(':input').focusout(function () {
-        keyboardControls.activate();
-    });
+//    var reef  = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
+//       layers: 'reeflocations',
+ //      format: 'image/png',
+  //     transparent: true
+//    }).addTo(map);
+
+     var land = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
+       layers: 'land',
+       format: 'image/png',
+       transparent: true
+    }).addTo(map);
+  
+     var maritime = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
+       layers: 'maritime',
+       format: 'image/png',
+       transparent: true
+    }).addTo(map);
+
+     var capitals = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
+       layers: 'capitals',
+       format: 'image/png',
+       transparent: true
+    }).addTo(map);
+
+     var countries = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
+       layers: 'countries',
+       format: 'image/png',
+       transparent: true
+    }).addTo(map);
+
+    L.control.scale({imperial: false}).addTo(map);
+ 
 
     ocean.mapObj = map;
 
-    var bathymetryLayer = new OpenLayers.Layer.MapServer("Bathymetry",
-        'cgi/map.py', {
-            map: 'bathymetry',
-            layers: ['bathymetry', 'land', 'maritime', 'capitals', 'countries']
-        }, {
-            transitionEffect: 'resize',
-            wrapDateLine: true,
-            eventListeners: {
-                loadend: maybe_close_loading_dialog
-            }
-        });
-
-    var outputLayer = new OpenLayers.Layer.MapServer("Output",
-        'cgi/map.py', {
-        map: 'raster',
-        layers: ['raster', 'land', 'capitals', 'countries']
-    }, {
-        transitionEffect: 'resize',
-        wrapDateLine: true,
-        eventListeners: {
-            loadstart: function () {
-                ocean.mapLoading = true;
-            },
-            loadend: function () {
-                ocean.mapLoading = false;
-                maybe_close_loading_dialog();
-            }
-        }
-    });
-
-    map.addLayers([bathymetryLayer, outputLayer]);
-    map.setBaseLayer(bathymetryLayer);
-
-    function _mapBaseLayerChanged(evt) {
-        var layerName;
-        var legendDiv = $('#legendDiv');
-        var enableOL = false;
-        var barsrc = null;
-
-        if (evt) {
-            layerName = evt.layer.name;
-        }
-
-        legendDiv.children().remove();
-
-        if (layerName == null || layerName == 'Bathymetry') {
-            $('<b>', { text: "Bathymetry (m)" }).appendTo(legendDiv);
-            barsrc = 'images/bathymetry_ver.png';
-        }
-        else {
-            barsrc = ocean.map_scale;
-            enableOL = true;
-        }
-
-        if (barsrc) {
-            $('<img>', {
-                src: barsrc,
-                alt: "Scale bar"
-            }).appendTo(legendDiv);
-        }
-
-        $('.outputgroup input[type=radio]').attr('disabled', !enableOL);
-        _updateDisabled();
-    }
-
-    _mapBaseLayerChanged(null);
 }
 
 function _updateDisabled ()
@@ -299,9 +248,9 @@ function _updateDisabled ()
  */
 function selectMapLayer(name)
 {
-    var layer = map.getLayersByName(name)[0];
+//    var layer = map.getLayersByName(name)[0];
 
-    map.setBaseLayer(layer);
+//    map.setBaseLayer(layer);
     _updateDisabled();
 }
 
@@ -311,15 +260,21 @@ function selectMapLayer(name)
  * Updates the output layer of the map with @data.
  */
 function updateMap (data) {
-    var layer = map.getLayersByName("Output")[0];
+    var imageUrl = data.mapimg,
+        imageBounds = [[-90, 0], [90, 360]]
 
-    ocean.map_scale = data.scale;
+    var imageOverlay = L.imageOverlay(imageUrl, imageBounds).addTo(map);
 
-    map.setBaseLayer(layer);
+    
+//    var layer = map.getLayersByName("Output")[0];
+
+//    ocean.map_scale = data.scale;
+
+//    map.setBaseLayer(layer);
 //    layer.params['raster'] = [data.map];
-    layer.params['raster'] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw];
-    ocean.mapLoading = true;
-    layer.redraw(true);
+//    layer.params['raster'] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw];
+////    ocean.mapLoading = true;
+//    layer.redraw(true);
 }
 
 /**
@@ -351,7 +306,7 @@ function prependOutputSet()
                 $('.outputgroup input[type=radio]:first')
                     .attr('checked', true)
                     .change();
-                selectMapLayer("Bathymetry");
+//                selectMapLayer("Bathymetry");
             }
 
             div.fadeTo('fast', 0);

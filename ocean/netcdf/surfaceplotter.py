@@ -356,9 +356,9 @@ class SurfacePlotter(object):
         cb_labels, cb_label_pos = self.get_labels(params=args)
         extend = self.get_extend(params=args)
         contourLabels = self.get_contour_labels(params=args)
-	plotStyle = self.get_plotstyle(params=args)#GAS
+        plotStyle = self.get_plotstyle(params=args)#GAS
         contourLines = self.get_contourlines(params=args)#GAS
-	smoothFactor = self.get_smooth_fac(params=args)#GAS
+        smoothFactor = self.get_smooth_fac(params=args)#GAS
         
 
         plot = Plotter()

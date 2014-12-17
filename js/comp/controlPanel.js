@@ -708,32 +708,6 @@ function addPointLayer () {
  * Removes a point selection layer from the map.
  */
 function removePointLayer () {
-    var layers = map.getLayersByName("point-layer");
-
-    if (layers.length == 0)
-        return;
-
-    for (layer in layers) {
-        map.removeLayer(layers[layer]);
-    }
-
-    if (this.toolbar) {
-        map.removeControl(this.toolbar);
-        this.toolbar.deactivate();
-        this.toolbar.destroy();
-    }
-
-    for (control in this.panelControls) {
-        map.removeControl(this.panelControls[control]);
-        this.panelControls[control].deactivate();
-        this.panelControls[control].destroy();
-    }
-
-    /* remove event handlers */
-    $('#latitude, #longitude').unbind();
-
-    this.toolbar = null;
-    this.panelControls = null;
 }
 
 function _controlVarParent(control) {

@@ -44,10 +44,11 @@ from scipy import ndimage as nd
 
 COMMON_FILES = {
     'img': '.png',
-    'mapeast': '_east.png',
-    'mapeastw': '_east.pgw',
-    'mapwest': '_west.png',
-    'mapwestw': '_west.pgw',
+    'mapimg': '_map.png',
+#    'mapeast': '_east.png',
+#    'mapeastw': '_east.pgw',
+#    'mapwest': '_west.png',
+#    'mapwestw': '_west.pgw',
     'scale': '_scale.png',
 }
 
@@ -270,27 +271,24 @@ class Plotter(object):
 
     @logger.time_and_log
     def plot_basemaps_and_colorbar(self, *args, **kwargs):
+        #Plots the image for the map overlay.
 
         output_filename = kwargs.get('output_filename', 'noname.png')
         fileName, fileExtension = os.path.splitext(output_filename)
-        colorbar_filename = fileName + '_scale.png'
-        outputfile_east = fileName + '_east.png'
-        outputfile_west = fileName + '_west.png'
-        worldfile_east = util.get_resource('east.pgw')
-        worldfile_west = util.get_resource('west.pgw')
-        shutil.copyfile(worldfile_east, fileName + '_east.pgw')
-        shutil.copyfile(worldfile_west, fileName + '_west.pgw')
+        colorbar_filename = fileName + COMMON_FILES['scale']
+        outputfile_map = fileName + COMMON_FILES['mapimg']
+#        outputfile_east = fileName + '_east.png'
+#        outputfile_west = fileName + '_west.png'
+#        worldfile_east = util.get_resource('east.pgw')
+#        worldfile_west = util.get_resource('west.pgw')
+#        shutil.copyfile(worldfile_east, fileName + '_east.pgw')
+#        shutil.copyfile(worldfile_west, fileName + '_west.pgw')
 
         regions = [{'lat_min':-90,
                     'lat_max':90,
                     'lon_min':0,
-                    'lon_max':180.5,
-                    'output_filename':outputfile_east},
-                   {'lat_min':-90,
-                    'lat_max':90,
-                    'lon_min':180,
                     'lon_max':360,
-                    'output_filename':outputfile_west}
+                    'output_filename':outputfile_map}
                 ]
 
         # Create colormap
