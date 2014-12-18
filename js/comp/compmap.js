@@ -188,46 +188,14 @@ function createMap () {
     });
    
     var bathymetry = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
-       layers: 'bathymetry',
-       format: 'image/png',
-       transparent: true
-    }).addTo(map);
-
-//    var reef  = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
-//       layers: 'reeflocations',
- //      format: 'image/png',
-  //     transparent: true
-//    }).addTo(map);
-
-     var land = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
-       layers: 'land',
-       format: 'image/png',
-       transparent: true
-    }).addTo(map);
-  
-     var maritime = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
-       layers: 'maritime',
-       format: 'image/png',
-       transparent: true
-    }).addTo(map);
-
-     var capitals = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
-       layers: 'capitals',
-       format: 'image/png',
-       transparent: true
-    }).addTo(map);
-
-     var countries = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
-       layers: 'countries',
+       layers: 'bathymetry,land,maritime,capitals,countries',
        format: 'image/png',
        transparent: true
     }).addTo(map);
 
     L.control.scale({imperial: false}).addTo(map);
- 
 
     ocean.mapObj = map;
-
 }
 
 function _updateDisabled ()
