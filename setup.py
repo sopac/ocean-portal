@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#/usr/bin/env python
 #
 # (c) 2012 Commonwealth of Australia
 #     Australian Bureau of Meteorology, COSPPac COMP
@@ -85,6 +85,7 @@ map_layers = [
     'southern_pac',
     'land',
     'COSPPac_EEZs',
+    'ReefLocations'
 ]
 
 BASE_PATH = 'share/portal'
@@ -124,7 +125,8 @@ data = [
     'config/comp/vargroups.json',
     'config/comp/portals.json',
     'config/comp/app.json',
-    'config/comp/tidalGauges.txt',
+#    'config/comp/tidalGauges.txt',
+    'config/comp/tidegauges.geojson',
     'images/search.gif',
     'images/calendar-blue.gif',
     'images/blank.png',

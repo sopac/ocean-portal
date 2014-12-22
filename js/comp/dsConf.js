@@ -156,147 +156,59 @@ ocean.dsConf = {
             if (data.recimg)
                 appendOutput(data.recimg, data.rectxt, "Reconstruction");
         },
+        selectTideGauge: function(){
+            seaLevelModel.selectTideGuage(feature.properties.ID)
+        },
         onSelect: function() {
+            var seaLevelModel = new $.SeaLevelModel();
             if (ocean.variable != 'gauge') {
                 return;
             }
-
-            /* generate a list of filters for the configured tidal
-             * gauge regions */
-            var filter;
-            var filters = $.map(ocean.configProps.tidalGaugeRegions,
-                function (elem) {
-                    return new OpenLayers.Filter.Comparison({
-                        type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                        property: 'region',
-                        value: elem
-                    });
-                });
-
-            if (filters.length > 1)
-                filter = new OpenLayers.Filter.Logical({
-                    type: OpenLayers.Filter.Logical.OR,
-                    filters: filters
-                });
-            else if (filters.length == 1)
-                filter = filters[0];
-            else
-                console.error("Abort: should not be reached");
-
-            var gaugesLayer = new OpenLayers.Layer.Vector(
-                "Tidal gauges", {
-                wrapDateLine: true,
-                strategies: [
-                    new OpenLayers.Strategy.Fixed(),
-                    new OpenLayers.Strategy.Filter({ filter: filter })
-                ],
-                protocol: new OpenLayers.Protocol.HTTP({
-                    url: 'config/comp/tidalGauges.txt',
-                    format: new OpenLayers.Format.Text({
-                        extractStyles: false
-                    })
-                }),
-                style: {
-                    pointRadius: 5,
-                    strokeWidth: 1,
-                    strokeColor: 'white',
-                    fillColor: 'black',
-                    fillOpacity: 0.8
-                }
-            });
-
-            ocean.mapObj.addLayer(gaugesLayer);
-            gaugesLayer.redraw(true);
-
-            var gaugeControl = new OpenLayers.Control.SelectFeature(
-                gaugesLayer, {
-                clickout: true,
-                onSelect: function (gauge) {
-                    gauge.attributes.selected = true;
-
-                    geometry = gauge.geometry.getBounds().getCenterLonLat();
-                    $('#tidalgauge').val(gauge.attributes.title);
-                    $('#tgId').val(gauge.attributes.id);
-                    $('#latitude').val(Math.round(geometry.lat * 1000)/1000);
-                    $('#longitude').val(Math.round(geometry.lon * 1000)/1000);
-
-                    /* highlight the selected feature */
-                    gauge.style = {
-                        pointRadius: 6,
-                        strokeWidth: 2,
-                        strokeColor: 'red',
-                        fillColor: 'black',
-                        fillOpacity: 0.8
-                    };
-                    gaugesLayer.drawFeature(gauge);
-                },
-                onUnselect: function (gauge) {
-                    gauge.attributes.selected = false;
-
-                    $('#tidalgauge').val('');
-                    $('#tgId').val('');
-                    $('#latitude').val('');
-                    $('#longitude').val('');
-
-                    /* unhighlight the feature */
-                    gauge.style = null;
-                    gaugesLayer.drawFeature(gauge);
-                }
-            });
-
-            var gaugeHover = new OpenLayers.Control.SelectFeature(
-                gaugesLayer, {
-                hover: true,
-                highlightOnly: true,
-                eventListeners: {
-                    featurehighlighted: function (e) {
-                        var gauge = e.feature;
-                        var col = gauge.attributes.selected ? 'red' : 'white';
-
-                        gaugesLayer.drawFeature(gauge, {
-                            label: gauge.attributes.title,
-                            labelAlign: 'rb',
-                            labelXOffset: 15,
-                            labelYOffset: 10,
-                            fontColor: 'red',
-                            fontWeight: 'bold',
-                            pointRadius: 5,
-                            strokeWidth: 2,
-                            strokeColor: 'red',
-                            fillColor: 'black',
-                            fillOpacity: 0.9
+            $.when(
+                seaLevelModel.getData()
+            ).done(function(tideGauges) { 
+                ocean.dsConf.sealevel.overlay = L.geoJson(tideGauges.features, {
+                    style: function(feature) {
+                        return {color: '#000'};
+                    },
+                    onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<b>' + feature.properties.Description + ' (' + feature.properties.ID + ')</b> <br/><p>' + 'Latitude: ' + feature.geometry.coordinates[1] + ' Longitude: ' + feature.geometry.coordinates[0] + '</p>');
+                        layer.on('popupopen', function() {
+                            $("#tidalgauge").val(feature.properties.Description);
+                            $("#tgId").val(feature.properties.ID);
+                        });
+                        layer.on('popupclose', function() {
+                            $("#tidalgauge").val('');
+                            $("#tgId").val('');
                         });
                     },
-                    featureunhighlighted: function (e) {
-                        var gauge = e.feature;
-
-                        gaugesLayer.drawFeature(gauge);
+                    filter: function(feature, layer) {
+                        return feature.properties.Region == ocean.configProps.tidalGaugeRegions;
                     }
-                }
+                }).addTo(map)
+            }).fail(function() {
+                fatal_error("Failed to load tide gauges.");
             });
 
-            map.addControl(gaugeHover);
-            map.addControl(gaugeControl);
-
-            gaugeHover.activate();
-            gaugeControl.activate();
+//
+ //                   $('#tidalgauge').val('');
+  //                  $('#tgId').val('');
+   //                 $('#latitude').val('');
+    //                $('#longitude').val('');
         },
         onDeselect: function() {
             var control;
 
-            layers = map.getLayersByName("Tidal gauges");
-            for (layer in layers) {
-                map.removeLayer(layers[layer]);
-            }
+            map.removeLayer(this.overlay);
 
-            var controls = map.getControlsByClass(
-                'OpenLayers.Control.SelectFeature');
+//            var controls = map.getControlsByClass(
+//                'OpenLayers.Control.SelectFeature');
 
-            for (control in controls) {
-                map.removeControl(controls[control]);
-                controls[control].deactivate();
-                controls[control].destroy();
-            }
+//            for (control in controls) {
+//                map.removeControl(controls[control]);
+//                controls[control].deactivate();
+//                controls[control].destroy();
+//            }
         }
     }
 };

@@ -187,11 +187,21 @@ function createMap () {
         crs: L.CRS.EPSG4326
     });
    
-    var bathymetry = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
-       layers: 'bathymetry,land,maritime,capitals,countries',
+    ocean.bathymetryLayer = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
+       layers: 'bathymetry,land,maritime',
        format: 'image/png',
-       transparent: true
+       transparent: true,
+       attribution: '<a href="http://www.naturalearthdata.com/about/" title="About Natural Earth">Made with Natural Earth</a>, <a href="http://www.marineregions.org/disclaimer.php" title="EEZ boundaries">Marineregions</a>'
     }).addTo(map);
+
+    ocean.countriesLayer = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
+       layers: 'capitals,countries',
+       format: 'image/png',
+       transparent: true,
+       attribution: '<a href="http://www.naturalearthdata.com/about/" title="About Natural Earth">Made with Natural Earth</a>'
+    })
+
+    ocean.overlayGroup = L.layerGroup([ocean.countriesLayer]).addTo(map);
 
     L.control.scale({imperial: false}).addTo(map);
 
@@ -231,7 +241,9 @@ function updateMap (data) {
     var imageUrl = data.mapimg,
         imageBounds = [[-90, 0], [90, 360]]
 
-    var imageOverlay = L.imageOverlay(imageUrl, imageBounds).addTo(map);
+    ocean.imageOverlay = L.imageOverlay(imageUrl, imageBounds);
+    ocean.overlayGroup.addLayer(ocean.imageOverlay);
+    ocean.imageOverlay.setOpacity(0.5);
 
     
 //    var layer = map.getLayersByName("Output")[0];

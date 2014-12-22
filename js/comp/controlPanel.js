@@ -32,6 +32,15 @@ var variableModel = new $.VariableModel();
 var controller = new $.Controller(variableModel, variableDropdownView);
 **/
 
+var intersecIcon = L.icon({
+    iconUrl: 'lib/leaflet-0.7.3/images/marker-icon.png',
+    shadowUrl: 'lib/leaflet-0.7.3/images/cross.png',
+    iconSize: [25, 41],
+    shadowSize: [36, 36],
+    iconAnchor: [12, 41],
+    shadowAnchor: [17, 18]
+});
+
 /* set up JQuery UI elements */
 $(function() {
 
@@ -115,15 +124,15 @@ $(function() {
             case 'ts':
                 if (ocean.variable == 'gauge') {
                     /* really the default case */
-                    removePointLayer();
+                    disableIntersecMarker();
                     break;
                 }
 
-                addPointLayer();
+                enableIntersecMarker();
                 break;
 
             default:
-                removePointLayer();
+                disableIntersecMarker();
                 break;
         }
 
@@ -630,76 +639,28 @@ function selectFirstIfRequired(comboid) {
  *
  * Adds a point selection layer to the map.
  */
-function addPointLayer () {
-    var layer = new OpenLayers.Layer.Vector("point-layer",
-        {
-            wrapDateLine: true,
-            style: {
-                graphicName: 'cross',
-                pointRadius: 10,
-                stroke: false
-            },
-            preFeatureInsert: function(feature) {
-                this.removeAllFeatures();
-
-                /* correct for wrapping issues from OpenLayers */
-                if (feature.geometry.x < -180.) {
-                    feature.geometry.x += 360.;
-                } else if (feature.geometry.x > 180.) {
-                    feature.geometry.x -= 360.;
-                }
-            },
-            onFeatureInsert: function(feature) {
-                var geometry = feature.geometry;
-                var lon = geometry.x;
-                var lat = geometry.y;
-
-                lon = lon.toFixed(3);
-                lat = lat.toFixed(3);
-
-                $('#latitude').val(lat);
-                $('#longitude').val(lon);
-            }
-        });
-
-    ocean.mapObj.addLayer(layer);
-
-    this.panelControls = [
-        new OpenLayers.Control.DrawFeature(layer,
-            OpenLayers.Handler.Point, {
-                displayClass: 'olControlDrawFeaturePoint',
-                title: "Select a point on the map"
-            }),
-        new OpenLayers.Control.Navigation({
-                title: "Zoom and pan the map"
-            })
-    ];
-
-    this.toolbar = new OpenLayers.Control.Panel({
-        displayClass: 'olControlEditingToolbar',
-        defaultControl: this.panelControls[0],
-        div: document.getElementById('mapControlsToolbar')
-    });
-
-    this.toolbar.addControls(this.panelControls);
-    ocean.mapObj.addControl(this.toolbar);
+function enableIntersecMarker () {
+    map.on('click', setIntersection); 
+    if (map.intersecMarker) {
+        map.intersecMarker.setOpacity(1.0); 
+    }
 
     /* track changes to the lat/lon and move the feature */
-    $('#latitude, #longitude').change(function () {
-        var lat = $('#latitude').val();
-        var lon = $('#longitude').val();
+//    $('#latitude, #longitude').change(function () {
+//        var lat = $('#latitude').val();
+//        var lon = $('#longitude').val();
 
-        layer.removeAllFeatures();
+//        layer.removeAllFeatures();
 
-        if (lat != '' && lon != '')
-            layer.addFeatures([
-                new OpenLayers.Feature.Vector(
-                    new OpenLayers.Geometry.Point(lon, lat))
-            ]);
-    });
+//        if (lat != '' && lon != '')
+//            layer.addFeatures([
+//                new OpenLayers.Feature.Vector(
+//                    new OpenLayers.Geometry.Point(lon, lat))
+//            ]);
+//    });
 
     /* update the map with the initial lat/lon */
-    $('#latitude').change();
+//    $('#latitude').change();
 }
 
 /**
@@ -707,7 +668,21 @@ function addPointLayer () {
  *
  * Removes a point selection layer from the map.
  */
-function removePointLayer () {
+function disableIntersecMarker () {
+    map.off('click', setIntersection);
+    if (map.intersecMarker) {
+        map.intersecMarker.setOpacity(0); 
+    }
+}
+
+function setIntersection(e) {
+    if (!map.intersecMarker) {
+        map.intersecMarker = L.marker([90.0, 0], {icon: intersecIcon}).addTo(map);
+    }
+    map.intersecMarker.setLatLng(e.latlng);
+    $('#latitude').val(e.latlng.lat);
+    $('#longitude').val(e.latlng.lng);
+    
 }
 
 function _controlVarParent(control) {

@@ -1,7 +1,7 @@
 {
     "pac": {
         "name": "Pacific",
-        "tidalGaugeRegions": [ "pac" ]
+        "tidalGaugeRegions": [ "Pacific" ]
     },
     "aus": {
         "name": "Australian",
