@@ -46,22 +46,23 @@ packages = [
     'ocean.datasets.sealevel',
     'ocean.datasets.reynolds',
     'ocean.datasets.ww3',
+    'ocean.datasets.ww3forecast'
 ]
 
 scripts = [
     'replicate-portal-data',
     'cleanup-raster-cache',
-    'update-data',
+    'update-data'
 ]
 
 # run generate-manifest.py after editing these sections
 backend_resources = [
-    'east.pgw',
-    'subeast.pgw',
-    'west.pgw',
-    'subwest.pgw',
+#    'east.pgw',
+#    'subeast.pgw',
+#    'west.pgw',
+#    'subwest.pgw',
     'maps/bathymetry.map',
-    'maps/raster.map',
+#    'maps/raster.map',
     'fonts/fonts.list',
     'fonts/DejaVuSans.ttf',
 ]

@@ -22,5 +22,16 @@
   "currents": {
     "name": "Currents",
     "vars": [ "uvtemp", "uveta" ]
+  },
+
+  "crw": {
+    "name": "Coral Reef Watch",
+    "vars": ["CRW_BAA"]
+  },
+
+  "ww3forecast": {
+    "name": "Wave Forecast",
+    "vars": ["sig_wav_ht", "pk_wav_per", "wnd_spd"]
   }
+
 }

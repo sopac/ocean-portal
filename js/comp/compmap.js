@@ -67,8 +67,8 @@ $(function() {
         resizable: false
     });
 
-    $('button').button();
-    $('#enlargeDiv, #subregion').hide();
+/////    $('button').button();
+//    $('#enlargeDiv, #subregion').hide();
 
     /* initialise and show the loading dialog */
     $('#loading-dialog')
@@ -80,67 +80,67 @@ $(function() {
 //        .dialog('open');
 
     /* work out which region file to load */
-    if (location.search == '')
-        ocean.config = 'pac';
-    else
-        ocean.config = location.search.slice(1);
+////    if (location.search == '')
+////        ocean.config = 'pac';
+////    else
+////        ocean.config = location.search.slice(1);
 
     /* set up theme */
-    $('.panel h1').addClass('ui-widget-header ui-state-default');
+////    $('.panel h1').addClass('ui-widget-header ui-state-default');
 //    $('.panel').addClass('border');
 
     /* set up toolbar */
-    $('.toolbar a').addClass('ui-state-default ui-corner-all');
-    $('.toolbar a').hover(function () {
-        $(this).toggleClass('ui-state-active');
-    });
+////    $('.toolbar a').addClass('ui-state-default ui-corner-all');
+////    $('.toolbar a').hover(function () {
+////        $(this).toggleClass('ui-state-active');
+////    });
 
-    $(window).load(function () {
+////    $(window).load(function () {
         /* layout functions for window resize */
-        $(window).resize(function () {
+////        $(window).resize(function () {
             /* expand vertical */
-            $('.expand-v').each(function () {
-                var e = $(this);
+////            $('.expand-v').each(function () {
+////                var e = $(this);
 
-                e.height(e.parent().innerHeight() - e.position().top);
-            });
-        }).resize().resize(); /* IE8 can't work out the height first time! */
+////                e.height(e.parent().innerHeight() - e.position().top);
+////            });
+////        }).resize().resize(); /* IE8 can't work out the height first time! */
 
         /* position centre layout */
-        $('.layout-center').css({
-            left: $('.layout-west').outerWidth(),
-            right: $('.layout-east').outerWidth(),
+////        $('.layout-center').css({
+////            left: $('.layout-west').outerWidth(),
+////            right: $('.layout-east').outerWidth(),
 //            height: '100%'
-        });
+////        });
 
 //        if (map) {
             /* poke the map to resize */
 //            map.updateSize();
 //        }
-    });
+////    });
 
-    $.when(
+//    $.when(
         /* portals config */
-        $.getJSON('config/comp/portals.json', function(data, status_, xhr) {
-            ocean.configProps = data[ocean.config];
+//        $.getJSON('config/comp/portals.json', function(data, status_, xhr) {
+//            ocean.configProps = data[ocean.config];
 
-            if (!ocean.configProps) {
-                fatal_error("No portal called '" + ocean.config + "'.");
-                return;
-            }
+//            if (!ocean.configProps) {
+//                fatal_error("No portal called '" + ocean.config + "'.");
+//                return;
+//            }
 
-            document.title = ocean.configProps.name + " Ocean Application";
+//            document.title = ocean.configProps.name + " Ocean Application";
 //        }),
-        })
+//        })
  
         /* load OpenLayers */
 //        $.cachedScript($('#map').attr('src')).done(function () {
 //            OpenLayers.ImgPath = "lib/OpenLayers/img/"
 //            createMap();
 //        }))
-)
-    .done(function () {
-    createMap();
+//)
+//    .done(function () {
+        createMap();
 //        var bounds = new OpenLayers.Bounds();
 
         /* iterate the region bounds to calculate the * restricted extent */
@@ -159,12 +159,28 @@ $(function() {
 //        }
 
 //        map.setOptions({ restrictedExtent: bounds });
+//        var bounds;
+
+        /* iterate the region bounds to calculate the * restricted extent */
+//        $('#region option').each(function () {
+//            var e = $(this);
+//            var b = new OpenLayers.Bounds(e.data('extent'));
+
+//            e.data('bounds', b);
+//            if (!bounds) {
+//                bounds = b;
+//            }
+//            else {
+//                bounds.extend(b);
+//            }
+//        });
+//        map.fitBounds(bounds);        
 //        setValue('region', ocean.config);
-    })
-    .fail(function () {
-        maybe_close_loading_dialog();
-        fatal_error("Failed to load portal.");
-    });
+//    })
+//    .fail(function () {
+//        maybe_close_loading_dialog();
+//        fatal_error("Failed to load portal.");
+//    });
 });
 
 /**
@@ -173,13 +189,13 @@ $(function() {
  * Create the map component. Should only be called once.
  */
 function createMap () {
-    var southWest = L.latLng(-45, 110),
-        northEast = L.latLng(45, 300),
+    var southWest = L.latLng(-60, 90),
+        northEast = L.latLng(60, 320),
         bounds =  L.latLngBounds(southWest, northEast);
 
     map = L.map('map', {
         center: L.latLng(0, 205),
-        maxBounds: bounds,
+ //       maxBounds: bounds,
         minZoom: 3,
         maxZoom: 8,
         zoom: 3,

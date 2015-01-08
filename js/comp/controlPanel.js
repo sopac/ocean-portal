@@ -41,8 +41,14 @@ var intersecIcon = L.icon({
     shadowAnchor: [17, 18]
 });
 
+var slider;
 /* set up JQuery UI elements */
 $(function() {
+    /* work out which region file to load */
+    if (location.search == '')
+        ocean.config = 'pac';
+    else
+        ocean.config = location.search.slice(1);
 
     hideControls();
 
@@ -59,6 +65,11 @@ $(function() {
         todayText: 'dd M yy',
         commandsAsDateFormat: true,
         onSelect: dateSelection
+    });
+
+    slider = new Dragdealer('hour-slider', {
+        snap: true,
+        slide: false
     });
 
     /* UI handlers */
@@ -758,9 +769,13 @@ function updateVisibilities(controlvar, old, new_) {
     /* show any control groups that now need showing */
     $('.controlgroup .controlvar .field').each(function () {
         var field = $(this);
-
+        var id = this.id;
         if (field.css('display') != 'none') {
-            field.closest('.controlvar').show();
+            field.closest('.controlvar').show('fast', function() {
+                if (id == 'hour-slider') {
+                    slider.reflow();
+                }
+            });
             field.closest('.controlgroup').show();
         } else {
             field.closest('.controlvar').hide();

@@ -9,7 +9,13 @@
 
     <title>Ocean Application</title>
 
+    <link rel="stylesheet" type="text/css" href="lib/jquery/css/smoothness/jquery-ui-1.8.22.custom.css"/>  
+    <link rel="stylesheet" type="text/css" href="lib/jquery.datepick-5.0.0/ui-smoothness.datepick.css">
+    <link rel="stylesheet" type="text/css" href="css/comp/controlPanel.css?v=0.3.3-10-g16e0dfe" />
+    <link rel="stylesheet" type="text/css" href="css/comp/compmap.css?v=0.3.2-48-g53f7da3-modified" />
+    <link rel="stylesheet" type="text/css" href="css/comp/controlvars.css?v=0.3.2-48-g53f7da3-modified" />
 
+    <link rel="stylesheet" type="text/css" href="css/comp/dragdealer.css" />
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css"/>
     <link rel="stylesheet" type="text/css" href="lib/fotorama-4.5.1/fotorama.css"/>
@@ -47,29 +53,32 @@
         </div>
         <form>
         <div class="row" id="breaker">
+        <div class="col-sm-12">
+        <div class="row">
             <div class="col-sm-4 col-sm-offset-2" id="ctrl-container">
                 <div id="regionPanel">
-                    <div class="controlgroup">
-                        <div class="controlvar">
-                            <label for="region">Country/Region</label>
-                            <select id="region" class="widefield"></select>
-                            <label for="subregion">Subregion</label>
-                            <select id="subregion" class="widefield"></select>
-                        </div>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon" id="basic-addon1">Country/Region</span>
+                        <select class="form-control" id="region" aria-describedby="basic-addon1">
+                        </select>
+                    </div>
+                    <div class="input-group input-group-sm subregion">
+                        <span class="input-group-addon" id="basic-addon1">Subregion</span>
+                        <select class="form-control" id="subregion" aria-describedby="basic-addon1">
+                        </select>
                     </div>
                 </div>
                 <div id="controlPanel">
                     <div class="controlgroup">
-                        <div class="controlvar">
-                            <label for="variable">Variable</label>
-                            <select id="variable" class="field">
+                        <div class="input-group input-group-sm controlvar">
+                            <span class="input-group-addon" id="basic-addon1">Variable</span>
+                            <select class="form-control" id="variable" aria-describedby="basic-addon1">
                                 <option value="--">Select variable</option>
                             </select>
                         </div>
-
-                        <div class="controlvar">
-                            <label for="plottype">Plot Type</label>
-                            <select id="plottype" class="field">
+                        <div class="input-group input-group-sm controlvar">
+                            <span class="input-group-addon" id="basic-addon1">Plot Type</span>
+                            <select class="form-control" id="plottype" aria-describedby="basic-addon1">
                                 <optgroup label="Maps">
                                     <option value="map">Surface Map</option>
                                     <option value="xsections">Sub-surface Cross-section</option>
@@ -83,12 +92,13 @@
                                 </optgroup>
                             </select>
                         </div>
-               
+
                         <div class="controlgroup">
-                            <div class="controlvar">
-                                <label for="period">Period</label>
-                                <select id="period" class="field">
+                            <div class="input-group input-group-sm controlvar">
+                                <span class="input-group-addon" id="basic-addon1">Period</span>
+                                <select class="form-control" id="period" aria-describedby="basic-addon1">
                                     <option value="daily">Daily</option>
+                                    <option value="7days">7 days</option>
                                     <option value="weekly">Weekly</option>
                                     <option value="monthly">Monthly</option>
                                     <option value="3monthly">3 monthly</option>
@@ -100,53 +110,48 @@
                         </div>
 
                         <div class="controlgroup">
-                            <div class="controlvar">
-                                <label for="date">Date</label>
-                                <input type="text" id="date" class="field datepicker"
-                                    title="Click to open calendar"
-                                    readonly="readonly"/>
+                            <div class="input-group input-group-sm controlvar">
+                                <span class="input-group-addon" id="basic-addon1">Date</span>
+                                <input type="text" class="form-control datepicker field" id="date" readonly placeholder="Click to open calendar" aria-describedby="basic-addon1">
                             </div>
-
-                            <div class="controlvar">
-                                <label for="year">Year</label>
-                                <select id="year" class="field"></select>
+                            <div class="input-group input-group-sm controlvar">
+                                <span class="input-group-addon" id="basic-addon1">Year</span>
+                                <select class="form-control field" id="year" aria-describedby="basic-addon1">
+                                </select>
                             </div>
-
-                            <div class="controlvar">
-                                <label for="month">Month</label>
-                                <select id="month" class="field"></select>
+                            <div class="input-group input-group-sm controlvar">
+                                <span class="input-group-addon" id="basic-addon1">Month</span>
+                                <select class="form-control field" id="month" aria-describedby="basic-addon1">
+                                </select>
                             </div>
                         </div>
 
                         <div class="controlgroup">
-                            <span class="hint">Click a tidal gauge on the map to select.</span>
-                            <div class="controlvar">
-                                <label for="tidalgauge">Gauge</label>
-                                <input type="text" id="tidalgauge" class="field" readonly="readonly"/>
+                            <div class="input-group input-group-sm controlvar">
+                                <span class="input-group-addon" id="basic-addon1">Gauge</span>
+                                <input type="text" class="form-control datepicker field" id="tidalgauge" readonly placeholder="Select a tide gauge from the map" aria-describedby="basic-addon1">
                             </div>
                             <input type="hidden" id="tgId"/>
                         </div>
 
                         <div class="controlgroup">
                             <span class="hint">Click on the map to select a location.</span>
-                            <div class="controlvar">
-                                <label for="latitude">Latitude</label>
-                                <input type="text" id="latitude" class="field"/>
+                            <div class="input-group input-group-sm controlvar">
+                                <span class="input-group-addon" id="basic-addon1">Latitude</span>
+                                <input type="text" class="form-control field" id="latitude" aria-describedby="basic-addon1">
                             </div>
-                            <div class="controlvar">
-                                <label for="longitude">Longitude</label>
-                                <input type="text" id="longitude" class="field"/>
+                            <div class="input-group input-group-sm controlvar">
+                                <span class="input-group-addon" id="basic-addon1">Longitude</span>
+                                <input type="text" class="form-control field" id="longitude" aria-describedby="basic-addon1">
                             </div>
                         </div>
 
+
                         <div class="controlgroup">
-                            <div class="controlvar">
-                                <label for="dataset">Dataset</label>
-                                <select id="dataset" class="field"></select>
-                            </div>
-                            <div class="controlvar">
-                                <span class="label"></span>
-                                <a id="dshelp" target="_blank" href="#">About <span>Dataset</span></a>
+                            <div class="input-group input-group-sm controlvar">
+                                <span class="input-group-addon" id="basic-addon1">Dataset</span>
+                                <select class="form-control field" id="dataset" aria-describedby="basic-addon1">
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -155,11 +160,28 @@
             <div class="col-sm-3">
                 <div class="controlgroup">
                     <div class="controlvar">
-                        <span class="label"></span>
-                        <button id="submit" class="field">Submit</button>
+                        <button type="button" class="btn btn-default field" id="submit">Submit</button>
                     </div> 
+                            <div class="well well-sm controlvar">
+                                <a href="#" id="dshelp" target="_blank">About <span>Dataset</span></a>
+                            </div>
                 </div>
             </div>
+        </div>
+        <div class="row">
+        <div class="col-sm-7 col-sm-offset-2">
+                        <div class="controlgroup">
+                            <span class="hint">22-Dec-2014 to 29-Dec-2014</span>
+                            <div class="input-group input-group-sm controlvar">
+                                <div id="hour-slider" class="dragdealer field">
+                                    <div class="handle red-bar"><span class="handle-text">Loading...</span></div>
+                                </div>
+                            </div>
+                        </div>
+        
+        </div>
+        </div>
+        </div>
         </div>
         </form>
         <div class="row reactive">
@@ -209,6 +231,8 @@
     <script type="text/javascript" src="lib/jquery.datepick-5.0.0/jquery.datepick.js"></script>
     <script type="text/javascript" src="lib/jquery.datepick-5.0.0/jquery.datepick.ext.min.js"></script>
     
+    <script type="text/javascript" src="js/comp/dragdealer.js"></script>
+
     <!--Load the content of the page-->
     <!--Load the map component-->
     <script type="text/javascript" src="lib/jquery/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.js"></script>
@@ -234,11 +258,6 @@
 
 <!--    <link rel="stylesheet" type="text/css" href="lib/OpenLayers/theme/default/style.css"/>-->
 <!--    <link rel="stylesheet" type="text/css" href="lib/jquery/jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css"/>  -->
-    <link rel="stylesheet" type="text/css" href="lib/jquery/css/smoothness/jquery-ui-1.8.22.custom.css"/>  
-    <link rel="stylesheet" type="text/css" href="lib/jquery.datepick-5.0.0/ui-smoothness.datepick.css">
-    <link rel="stylesheet" type="text/css" href="css/comp/controlPanel.css?v=0.3.3-10-g16e0dfe" />
-    <link rel="stylesheet" type="text/css" href="css/comp/compmap.css?v=0.3.2-48-g53f7da3-modified" />
-    <link rel="stylesheet" type="text/css" href="css/comp/controlvars.css?v=0.3.2-48-g53f7da3-modified" />
   </body>
 </html>
 

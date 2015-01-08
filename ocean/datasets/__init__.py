@@ -4,6 +4,7 @@ __all__ = [
     'reynolds',
     'sealevel',
     'ww3',
+    'ww3forecast'
 ]
 
 from datasets import *

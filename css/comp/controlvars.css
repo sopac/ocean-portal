@@ -10,7 +10,8 @@
 #year,
 #tidalgauge,
 #latitude,
-#longitude
+#longitude,
+#hour-slider
 {
   display: none;
 }
@@ -69,4 +70,34 @@
 .variable-gauge #tidalgauge
 {
   display: inline;
+}
+
+.variable-sig_wav_ht #year,
+.variable-sig_wav_ht #month,
+.variable-sig_wav_ht #date,
+.variable-sig_wav_ht #latitude,
+.variable-sig_wav_ht #logitude,
+.variable-sig_wav_ht #submit,
+.variable-pk_wav_per #year,
+.variable-pk_wav_per #month, 
+.variable-pk_wav_per #date,
+.variable-pk_wav_per #latitude,
+.variable-pk_wav_per #logitude,
+.variable-pk_wav_per #submit,
+.variable-wnd_spd #year,
+.variable-wnd_spd #month,
+.variable-wnd_spd #date,
+.variable-wnd_spd #latitude,
+.variable-wnd_spd #logitude,
+.variable-wnd_spd #submit
+{
+  display: none;
+}
+
+
+.variable-sig_wav_ht #hour-slider,
+.variable-pk_wav_per #hour-slider,
+.variable-wnd_spd #hour-slider
+{
+  display: block;
 }

@@ -53,7 +53,8 @@ class tuscany(default):
         'poama':'/data/poama/',
         'oceanmaps':'/data/oceanmaps/',
         'chloro':'/data/chloro/',
-        'currents':'/data/currents/'
+        'currents':'/data/currents/',
+        'ww3forecast':'/data/wavewatch3/forecast/'
     }
 
 class tunceli(default):

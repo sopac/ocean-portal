@@ -156,4 +156,38 @@
         "periods": ["monthly"],
         "plottypes": ["ts"]
     }]
-}]
+}, {
+    "id": "crw",
+    "bid": "crw",
+    "name": "Coral Reef Watch",
+    "title": "NOAA Coral Reef Watch",
+    "help": "/cosppac/comp/ocean-portal/about_coralreefwatch.pdf",
+    "variables": [{
+        "id":"CRW_BAA",
+        "name":"Coral Bleaching Alert",
+        "periods": ["daily"],
+        "plottypes": ["map"]
+    }]
+}, {
+    "id":"ww3forecast",
+    "name":"WaveWatch III Forecast",
+    "title": "WaveWatch III Forecast",
+    "help": "/cosppac/comp/ocean-portal/about_ww3forecasts.pdf",
+    "variables": [{
+        "id": "sig_wav_ht",
+        "name": "Combined Sea and Swell Wave Height",
+        "periods": ["7days"],
+        "plottypes": ["map"]
+    }, {
+        "id": "pk_wav_per",
+        "name": "Peak Wave Period",
+        "periods": ["7days"],
+        "plottypes": ["map"]
+    }, {
+        "id": "wnd_spd",
+        "name": "Wind Speed",
+        "periods": ["7days"],
+        "plottypes": ["map"]
+    }]
+}
+]

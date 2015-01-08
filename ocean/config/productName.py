@@ -50,6 +50,8 @@ products = {"reynolds": {"daily":     "REY00001",
                    },
             "sealevel": {"point": "SEA00001",
                          "monthly": "SEA00002"
-                        }
+                        },
+            "ww3forecast": {"7d":  "WFC00001"
+                           }
 }
 

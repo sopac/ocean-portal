@@ -5,7 +5,6 @@
  */
 
 #regionPanel {
-  margin: -3px;
   margin-top: 2px;
 }
 
@@ -59,7 +58,6 @@ optgroup option {
   width: 100%;
   margin-top: 5px;
   margin-bottom: 5px;
-  padding: 2px;
   padding-bottom: 0;
 }
 
@@ -70,8 +68,6 @@ optgroup option {
 
 .controlvar {
   width: 100%;
-  padding: 1px;
-  padding-left: 0;
 }
 
 .controlvar .label,
@@ -83,14 +79,14 @@ optgroup option {
   padding-right: 3px;
   color: #222222;
 }
-
+/*
 .controlvar .field {
   width: 131px;
 }
 
 .controlvar .widefield {
   width: 192px; /* .label + .field */
-  margin-top: 3px;
+/*  margin-top: 3px;
 }
 
 .controlvar select,
@@ -101,7 +97,7 @@ optgroup option {
 .controlvar .field:focus,
 .controlvar .widefield:focus {
   box-shadow: 0 0 2px 1px orange;
-}
+}*/
 
 .datepicker {
   cursor: pointer;

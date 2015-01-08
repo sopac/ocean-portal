@@ -133,6 +133,32 @@ ocean.dsConf = {
         onSelect: null,
         onDeselect: null
     },
+    ww3forecast: {
+        params: override(function (dataset) { return {
+            };
+        }),
+        callback: function(data) {
+            if(data.forecast) {
+                var forecast = $.parseJSON(data.forecast);
+                slider.options.steps = forecast.length;
+                slider.stepRatios = slider.calculateStepRatios();
+                slider.options.animationCallback = function(x, y) {
+                    $('.handle-text').text(forecast[this.getStep()[0] - 1].datetime);
+                };
+                slider.value.prev = [-1, -1];
+                slider.animate(false, true);
+            }
+            prependOutputSet();
+
+            if(data.ext != null) {
+                appendOutput(data.img, data.ext);
+            }
+        },
+        onSelect: function() {
+            updatePage();
+        },
+        onDeselect: null
+    },
     sealevel: {
         params: override(function (dataset) { return {
             lat: $('#latitude').val(),
