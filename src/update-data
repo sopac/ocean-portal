@@ -32,10 +32,10 @@ case $DATASET in
         MIRROR_FLAGS='-I *uv3z.nc'
         ;;
     coral)
-        SERVER=http://data.nodc.noaa.gov/
-        SERVER_PATH=/crw/tsps50km/baa/
+        SERVER=ftp://ftp.star.nesdis.noaa.gov
+        SERVER_PATH=/pub/sod/mecb/gliu/crw_5km_for_bom
         DATA_SUBDIR=data
-	MIRROR_FLAGS='-I *.hdf'
+	MIRROR_FLAGS='-I baa_max*.nc'
         ;;
     poama)
         SERVER=http://opendap.bom.gov.au:8080
