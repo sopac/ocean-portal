@@ -1,14 +1,16 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 
+#RSYNC_COMMAND = "rsync --rsync-path='sudo rsync' -ruvxm %(flags)s --include='*/' %(args)s --exclude='*' %(source)s %(dest)s"
 RSYNC_COMMAND = "rsync -ruvxm %(flags)s --include='*/' %(args)s --exclude='*' %(source)s %(dest)s"
 
 # file globs to transfer
 INCLUDE_LIST = [ '*.nc',
                  '*.nc4',
                  '*.txt',
+                 '*_preliminary.nc'
                ]
 # file globs to exclude from above
-EXCLUDE_LIST = [ '*_preliminary.nc',
+EXCLUDE_LIST = [
                  'new/*',
                  'archive/*',
                ]

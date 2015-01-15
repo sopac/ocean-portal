@@ -21,9 +21,14 @@ import tempfile
 import datetime
 import dateutil.relativedelta
 
+from ocean.config import get_server_config
+
+
 class Calculate_MultiMonth_Averages():
 
     def __init__(self):
+       
+        sys_config = get_server_config()
 
         reynolds_end_date = self.get_date_for_last_complete_month()
 
@@ -34,9 +39,9 @@ class Calculate_MultiMonth_Averages():
                 'start_month': 1,
                 'end_year': reynolds_end_date.year,
                 'end_month': reynolds_end_date.month,
-                'input_dir': '/data/sst/ersst/data/monthly_processed/',
+                'input_dir': os.path.join(sys_config.dataDir['ersst'], 'monthly_processed/'),
                 'input_filename': 'ersst.%(year)04d%(month)02d.nc',
-                'output_dir': '/data/sst/ersst/data/averages/%(avg_period)dmonthly/',
+                'output_dir': os.path.join(sys_config.dataDir['ersst'], 'averages/%(avg_period)dmonthly/'),
                 'output_filename': '%(product_str)s_%(avg_period)dmthavg_%(date_str1)s_%(date_str2)s.nc',
                 'avg_periods': [3, 6, 12]},
              'reynolds':{
@@ -45,10 +50,10 @@ class Calculate_MultiMonth_Averages():
                 'start_month': 9,
                 'end_year': reynolds_end_date.year,
                 'end_month': reynolds_end_date.month,
-                'input_dir': '/data/sst/reynolds/averages/monthly/',
+                'input_dir': os.path.join(sys_config.dataDir['reynolds'], 'averages/monthly/'),
                 'input_filename': '%(product_str)s_avhrr-only-v2_%(year)04d%(month)02d.nc',
                 'input_filename_preliminary': '%(product_str)s_avhrr-only-v2_%(year)04d%(month)02d_preliminary.nc',
-                'output_dir': '/data/sst/reynolds/averages/%(avg_period)dmonthly/',
+                'output_dir': os.path.join(sys_config.dataDir['reynolds'], 'averages/%(avg_period)dmonthly/'),
                 'output_filename': '%(product_str)s_avhrr-only-v2_%(avg_period)dmthavg_%(date_str1)s_%(date_str2)s.nc',
                 'output_filename_preliminary': '%(product_str)s_avhrr-only-v2_%(avg_period)dmthavg_%(date_str1)s_%(date_str2)s_preliminary.nc',
                 'avg_periods': [3, 6, 12]},

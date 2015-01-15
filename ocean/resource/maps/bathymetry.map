@@ -256,6 +256,25 @@ MAP
         END
     END
 
+    LAYER
+        NAME         reeflocations 
+        DATA         ReefLocations
+        GROUP        reef 
+        STATUS       OFF
+        TYPE         POLYGON
+
+        CLASS
+            NAME 'reeflocations'
+
+            STYLE
+                COLOR      229 222 201
+                OUTLINECOLOR 197 137 9
+                WIDTH 1
+                ANTIALIAS TRUE
+            END
+        END
+    END
+
     LAYER # States polygon layer begins here
         NAME         southern_pac
         DATA         southern_pac

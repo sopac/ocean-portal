@@ -23,18 +23,33 @@ ocean.compare = { limit: 24 };
 ocean.processing = false;
 ocean.date = new Date();
 
+//Set up the view, model and controller instances
+/**$.DropdownView.prototype = new $.View();
+$.VariableModel.prototype = new $.Model();
+
+var variableDropdownView = new $.DropdownView("variable");
+var variableModel = new $.VariableModel();
+var controller = new $.Controller(variableModel, variableDropdownView);
+**/
+
 /* set up JQuery UI elements */
-$(document).ready(function() {
+$(function() {
 
     hideControls();
 
     /* set up the date picker */
-    $(".datepicker").datepicker({
-        dateFormat: 'd MM yy',
+    $("#date").datepick({
+        dateFormat: 'd MM yyyy',
+        renderer: $.datepick.themeRollerRenderer,
         changeMonth: true,
-        changeYear: true
-    }).mousedown(function() {
-        $(this).datepicker('show');
+       // alignment: 'bottom'
+        showAnim: 'clip',
+        showSpeed: 'fast',
+        nextText: 'M >',
+        prevText: '< M',
+        todayText: 'dd M yy',
+        commandsAsDateFormat: true,
+        onSelect: dateSelection
     });
 
     /* UI handlers */
@@ -166,14 +181,14 @@ $(document).ready(function() {
             var date_ = $('#date');
 
             /* set range on datepicker */
-            date_.datepicker('option', {
+            date_.datepick('option', {
                 minDate: range.min,
                 maxDate: range.max,
                 yearRange: range.min.getFullYear() + ':' + range.max.getFullYear()
             });
 
             /* automatically clamps the date to the available range */
-            date_.datepicker('setDate', ocean.date).change();
+            date_.datepick('setDate', ocean.date).change();
         } else {
             /* datasets are not date dependent */
             updateDatasets();
@@ -200,6 +215,7 @@ $(document).ready(function() {
     });
 
     /* Date range is changed */
+//    $('#date, #month, #year').change(function () {
     $('#date, #month, #year').change(function () {
 
         if (!(ocean.variable in ocean.variables) ||
@@ -208,13 +224,13 @@ $(document).ready(function() {
             return;
         }
 
-        /* determine the chosen date */
+        // determine the chosen date 
         var date_;
 
         switch (ocean.period) {
             case 'daily':
             case 'weekly':
-                date_ = $('#date').datepicker('getDate');
+                date_ = $('#date').datepick('getDate')[0];
                 break;
 
             case 'monthly':
@@ -247,9 +263,10 @@ $(document).ready(function() {
                 var range = getDateRange(dataset, ocean.variable, ocean.period);
 
                 if (!range)
-                    return true; /* no date range defined */
+                    return true; // no date range defined 
 
-                return (ocean.date >= range.min) && (ocean.date <= range.max);
+//                return (ocean.date >= range.min) && (ocean.date <= range.max);
+                return true;//(ocean.date >= range.min) && (ocean.date <= range.max);
             };
         }
 
@@ -297,85 +314,17 @@ $(document).ready(function() {
     var groupings = {};
 
     /* load JSON configuration */
-    $.when(
-        /* Load and parse vargroups.json */
-        $.getJSON('config/comp/vargroups.json').success(function(data) {
-            $.each(data, function(k, v) {
-                $('<optgroup>', {
-                    id: k,
-                    label: v.name
-                }).appendTo('#variable');
-
-                $.each(v.vars, function(i, var_) {
-                    groupings[var_] = k;
-                });
-            });
-        }),
-
-        /* Load and parse datasets.json */
-        $.getJSON('config/comp/datasets.json').success(function(data) {
-            ocean.datasets = {};
-            ocean.variables = {};
-
-            $.each(data, function(i, dataset) {
-                ocean.datasets[dataset.id] = dataset;
-
-                $.each(dataset.variables, function(k, variable) {
-                    if (!ocean.variables[variable.id]) {
-                        ocean.variables[variable.id] = {
-                            name: variable.name,
-                            plots: {},
-                            variable: variable
-                        };
-                    }
-
-                    $.each(variable.plottypes, function(k, plottype) {
-                        if (!ocean.variables[variable.id].plots[plottype]) {
-                            ocean.variables[variable.id].plots[plottype] = {};
-                        }
-
-                        $.each(variable.periods, function(k, period) {
-                            if (!ocean.variables[variable.id].plots[plottype][period]) {
-                                ocean.variables[variable.id].plots[plottype][period] = [];
-                            }
-
-                            ocean.variables[variable.id].plots[plottype][period].push(dataset.id);
-                        });
-                    });
-                });
-
-            });
-        })
-    )
-    /* Successfully fetched all JSON */
-    .done(function() {
-        $.each(ocean.variables, function (k, v) {
-            var parent_;
-
-            if (k in groupings) {
-                parent_ = $('#variable optgroup#' + groupings[k]);
-
-                if (parent_.length == 0) {
-                    parent_ = $('#variable');
-                }
-            } else {
-                parent_ = $('#variable');
-            }
-
-            $('<option>', {
-                text: v.name,
-                value: k
-            }).appendTo(parent_);
-        });
-    })
-
-    /* Failed to load some JSON */
-    .fail(function() {
-        fatal_error("Failed to load portal configuration.");
-    });
-
+    variableModel.getData();
+    regionCountryModel.getData(); 
 });
 
+    /**
+     *
+     */ 
+    function dateSelection () {
+        /* determine the chosen date */
+        $('#date').change();
+    };
 /**
  * getBackendId:
  * @datasetid: a dataset frontend id
@@ -447,8 +396,8 @@ function getDateRange(datasetid, varid, period)
 
     /* 'yy' is correct, believe it or not, see
      * http://docs.jquery.com/UI/Datepicker/parseDate */
-    var mindate = $.datepicker.parseDate('yymmdd', range.minDate);
-    var maxdate = $.datepicker.parseDate('yymmdd', range.maxDate);
+    var mindate = $.datepick.determineDate(range.minDate, null, 'yyyymmdd');
+    var maxdate = $.datepick.determineDate(range.maxDate, null, 'yyyymmdd');
 
     mindate.setMonth(mindate.getMonth() + month_delta);
 
@@ -476,8 +425,8 @@ function getCombinedDateRange() {
         minDate = Math.min(minDate, range.min);
         maxDate = Math.max(maxDate, range.max);
     });
+
     return { min: new Date(minDate), max: new Date(maxDate) };
-/* return { min: new Date(minDate), max: new Date() };*/
 }
 
 /**
@@ -502,16 +451,16 @@ function updateMonths(minMonth, maxMonth) {
 
         if ($('#year').is(':visible')) {
             return function (m) {
-                return $.datepicker.formatDate('M y',
+                return $.datepick.formatDate('M y',
                         new Date(selectedyear, m - range)) + ' &ndash; ' +
-                    $.datepicker.formatDate('M y',
+                    $.datepick.formatDate('M y',
                         new Date(selectedyear, m));
             }
         } else {
             return function (m) {
-                return $.datepicker.formatDate('M',
+                return $.datepick.formatDate('M',
                         new Date(selectedyear, m - range)) + ' &ndash; ' +
-                    $.datepicker.formatDate('M',
+                    $.datepick.formatDate('M',
                         new Date(selectedyear, m));
             }
         }
@@ -520,7 +469,7 @@ function updateMonths(minMonth, maxMonth) {
     switch (ocean.period) {
         case 'monthly':
             fmt = function (m) {
-                return $.datepicker.formatDate('MM',
+                return $.datepick.formatDate('MM',
                     new Date(selectedyear, m));
             };
             break;

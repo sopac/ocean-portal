@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta http-equiv="x-ua-compatible" content="IE=8">
+
+    <title>Ocean Portal</title>
+
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css"/>
+
+    <!-- Custom styles for this template -->
+    <link href="css/comp/jumbotron.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="lib/html5shiv.js"></script>
+      <script src="lib/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Ocean Portal</h1>
+        <!--<p>in conjuction with Climate and Oceans Support Program in the Pacific (COSPPac)</p>-->
+        <p><a class="btn btn-primary btn-lg" href="http://www.bom.gov.au/cosppac/">Learn more about COSPPac&raquo;</a></p>
+      </div>
+    </div>
+
+    <div class="container">
+        <div class="info">
+        </div>
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-lg-4 col-md-2 app dev" id="tour">
+          <h2>Tourism</h2>
+          <a class="btn btn-primary" href="#about_tour" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span></a>
+        </div>
+        <div class="col-lg-4 col-md-2 app" id="climate">
+          <h2>Ocean Monitoring</h2>
+          <a class="btn btn-primary" href="#about_climate" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span></a>
+        </div>
+        <div class="col-lg-4 col-md-2 app" id="coral">
+          <h2>Coral Reefs</h2>
+          <a class="btn btn-primary" href="#about_coral" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span></a>
+        </div>
+        <div class="col-lg-4 col-md-2 app" id="sealevel">
+          <h2>Sea Level</h2>
+          <a class="btn btn-primary" href="#about_sealevel" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span></a>
+          <a href="'cgi/portal.py?app=sealevel"></a>
+        </div>
+        <div class="col-lg-4 col-md-2 app dev" id="fishery">
+          <h2>Fisheries</h2>
+          <a class="btn btn-primary " href="#about_fishery" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span></a>
+        </div>
+        <div class="col-lg-4 col-md-2 app dev" id="shipping">
+          <h2>Shipping</h2>
+          <a class="btn btn-primary" href="#about_shipping" data-toggle="modal"><span class="glyphicon glyphicon-plus"></span></a>
+        </div>
+      </div>
+
+      <div class="modal" id="about_coral">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+              <h3 class="modal-title">About Coral Reefs - coming soon</h3>
+            </div>
+            <div class="modal-body">
+                <p>Coral bleaching can occur during periods of elevated temperatures in the ocean. Near-real time and forecasted coral bleaching alert levels are used to anticipate bleaching events. Chlorophyll data is also available here and can identify coral spawning events.</p>
+                <h4>Coral Bleaching</h4>
+                <ul>
+                    <li>Coral Bleaching Alert Status - Today</li>
+                    <li>Coral Bleaching Alert Status - Forecasted</li>
+                </ul>
+                <h4>Recent Chlorophyll Concentrations - Daily and Monthly</h4>
+                <h4>Seasonal Sea Level Forecast</h4>
+                <h4>Wind and Wave Forecasts</h4>
+                <h4>Coral Reef Locations</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" id="about_fishery">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+              <h3 class="modal-title">About Fisheries - coming soon</h3>
+            </div>
+            <div class="modal-body">
+                <p>The information provided here can inform fishery departments on the state of the upcoming tuna fishing season for the purpose of licensing and implementing sustainable fishing practices. Local fishermen can use the front detection maps to identify areas of possible upwellings that have high levels of biological activity.</p>
+                <h4>Seasonal Fishery Forecasts (9-months lead time)</h4>
+                <h4>Front Detection with SST and Chlorophyll a - Today</h4>
+                <h4>Seasonal Sea Surface Temperature - Forecast</h4>
+                <h4>Marine Park Locations</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" id="about_tour">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+              <h3 class="modal-title">About Tourism - coming soon</h3>
+            </div>
+            <div class="modal-body">
+                <p>Ocean information is available here that can be useful for surfing, diving, wind and kite surfing, and boating.</p>
+
+                <h4>Forecasted Waves Information (7-day lead time)</h4>
+                <ul>
+                    <li>Significant wave height</li>
+                    <li>Peak wave period</li>
+                    <li>Peak wave direction</li>
+                    <li>Wind Speed and direction</li>
+                </ul>
+                <h4>Sea Surface Temperature - Today</h4>
+                <h4>Visibility - Today</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" id="about_sealevel">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+              <h3 class="modal-title">About Sea Level</h3>
+            </div>
+            <div class="modal-body">
+                <p>Maps for sea level changes across the Pacific are available from 1950 to present in a relatively low resolution, and a higher resolution from 1993 to present.</p>
+                <h4>Historical Sea Level</h4>
+                <ul>
+                    <li> Reconstruction - low resolution (1950 to present) </li>
+                    <li> Altimetry - high resolution (1993 to present) </li>
+                    <li> Tide Gauges - Monthly Statistics </li>
+                </ul>
+                <h4>Forecasted Sea Level - coming soon</h4>
+                <ul>
+                    <li> Seasonal Sea Level - Forecast </li>
+                    <li> Tide Prediction - Forecast </li>
+                    <li> Tide Gauges - Monthly Statistics </li>
+                </ul>
+                <a class="btn btn-primary app" id="sealevel">Go&raquo;</a>
+                <p/>
+                <p>The Real Time Data Display shows sea level information, air and water temperature, humidity, wind speed and wind direction. Data is shown in real-time, going back as far as four days.</p>
+                <a class="btn btn-primary" href="http://www.bom.gov.au/cosppac/rtdd/q1c7o0hj48yu/" target="rtdd">Go&raquo;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" id="about_climate">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+              <h3 class="modal-title">About Ocean Monitoring</h3>
+            </div>
+            <div class="modal-body">
+              <p>Historical ocean data for temperature, waves, currents and water quality. Monthly, 3-monthly, 6-monthly, and 12-monthly averages are available for ocean temperature.</p>
+              <h4>Ocean Temperature</h4>
+              <ul>
+                  <li>Sea Surface Temperature</li>
+                  <li>Sub Surface Temperature</li>
+              </ul>
+              <h4>Waves</h4>
+              <ul>
+                  <li>Significant wave height</li>
+                  <li>Peak wave period</li>
+                  <li>Peak wave direction</li>
+              </ul>
+              <h4>Currents</h4>
+              <ul>
+                  <li>Currents and SST</li>
+                  <li>Currents and Sea Level</li>
+              </ul>
+              <h4>Water Quality</h4>
+              <ul>
+                  <li>Salinity</li>
+                  <li>Chlorophyll - coming soon</li>
+              </ul>
+               <a class="btn btn-primary app" id="climate">Go&raquo;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" id="about_shipping">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+              <h3 class="modal-title">About Shipping - coming soon</h3>
+            </div>
+            <div class="modal-body">
+                <p>Forecast information for seagoing stakeholders that include the shipping industry, ferry operators, and commercial/recreational boating.</p>
+                <h4>Forecasted Waves (7-day lead time)</h4>
+                <ul>
+                    <li>Significant wave height</li>
+                    <li>Peak wave period</li>
+                    <li>Peak wave direction</li>
+                    <li>Wind Speed and direction</li>
+                </ul>
+                <h4>Wind Speed and Direction (7-day lead time)</h4>
+                <h4>Ocean Currents (7-day lead time)</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="footer">
+        <p>&copy; Commonwealth of Australia , Bureau of Meteorology (ABN 92 637 533 532) 2014</p>
+      </div>
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="lib/jquery/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="lib/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/comp/app.js"></script>
+  </body>
+</html>
+

@@ -49,11 +49,19 @@ class tuscany(default):
         'reynolds': '/data/sst/reynolds/',
         'sealevel': '/data/sea_level/',
         'ww3': '/data/wavewatch3/',
+<<<<<<< HEAD
 	'coral':'/data/sst/coral/',
 	'poama':'/data/poama/',
 	'oceanmaps':'/data/oceanmaps/',
 	'chloro':'/data/chloro/',
 	'currents':'/data/currents/',
+=======
+        'coral':'/data/sst/coral/',
+        'poama':'/data/poama/',
+        'oceanmaps':'/data/oceanmaps/',
+        'chloro':'/data/chloro/',
+        'currents':'/data/currents/'
+>>>>>>> 86d0971a53d2a7ea01a90e768c1f39b96c2dd90b
     }
 
 class tunceli(default):
@@ -66,11 +74,19 @@ class tunceli(default):
         'reynolds': '/www4/data/cosppac/reynolds/',
         'sealevel': '/www4/data/cosppac/sea_level/',
         'ww3': '/www4/data/cosppac/wavewatch3/',
+<<<<<<< HEAD
 	'coral':'/www4/data/cosppac/coral/',
 	'poama':'/www4/data/cosppac/poama/',
 	'oceanmaps':'/www4/data/cosppac/oceanmaps/',
         'chloro':'/data/chloro/',
 	'currents':'/data/currents/',
+=======
+        'coral':'/www4/data/cosppac/coral/',
+        'poama':'/www4/data/cosppac/poama/',
+        'oceanmaps':'/www4/data/cosppac/oceanmaps/',
+        'chloro':'/www4/data/cosppac/chloro/',
+        'currents':'/www4/data/cosppac/currents/'
+>>>>>>> 86d0971a53d2a7ea01a90e768c1f39b96c2dd90b
     }
 
 class www4(default):
@@ -84,11 +100,19 @@ class www4(default):
         'reynolds': '/web/data/cosppac/reynolds/',
         'sealevel': '/web/data/cosppac/sea_level/',
         'ww3': '/web/data/cosppac/wavewatch3/',
+<<<<<<< HEAD
 	'coral': '/web/data/cosppac/coral/',
 	'poama': '/web/data/cosppac/poama/',
 	'oceanmaps': 'web/data/cosppac/oceanmaps/',
         'chloro':'/data/chloro/',
 	'currents':'/data/currents/',
+=======
+        'coral': '/web/data/cosppac/coral/',
+        'poama': '/web/data/cosppac/poama/',
+        'oceanmaps': '/web/data/cosppac/oceanmaps/',
+        'chloro':'/web/data/cosppac/chloro/',
+        'currents':'/web/data/cosppac/currents/'
+>>>>>>> 86d0971a53d2a7ea01a90e768c1f39b96c2dd90b
     }
 
 class hoapp2(www4):

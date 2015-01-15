@@ -25,7 +25,7 @@
     }],
     "dateRange" : {
         "minDate": "19810901",
-        "maxDate": "20200101"
+        "maxDate": "-2"
     }
 },{
     "id":"ersst",

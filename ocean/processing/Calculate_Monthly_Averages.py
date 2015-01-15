@@ -16,9 +16,13 @@ import calendar
 import datetime
 import dateutil.relativedelta
 
+from ocean.config import get_server_config
+
 class Calculate_Monthly_Averages():
 
     def __init__(self):
+
+        sys_config = get_server_config()
 
         reynolds_end_date = self.get_date_for_last_complete_month()
 
@@ -30,9 +34,9 @@ class Calculate_Monthly_Averages():
                 'start_month': 9,
                 'end_year': reynolds_end_date.year,
                 'end_month': reynolds_end_date.month,
-                'input_dir': '/data/sst/reynolds/daily-new-uncompressed/',
+                'input_dir': os.path.join(sys_config.dataDir['reynolds'], 'daily-new-uncompressed/'),
                 'input_filename': 'avhrr-only-v2.%(year)04d%(month)02d%(day)02d.nc',
-                'output_dir': '/data/sst/reynolds/averages/monthly/',
+                'output_dir': os.path.join(sys_config.dataDir['reynolds'], 'averages/monthly/'),
                 'output_filename': '%(product_str)s_avhrr-only-v2_%(year)04d%(month)02d.nc',
                 'input_filename_preliminary': 'avhrr-only-v2.%(year)04d%(month)02d%(day)02d_preliminary.nc',
                 'output_filename_preliminary': '%(product_str)s_avhrr-only-v2_%(year)04d%(month)02d_preliminary.nc',

@@ -2,9 +2,8 @@
 
 DATASET=$1
 
-#export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/
+export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/
 
-export PYTHONPATH=${PYTHONPATH}:/srv/gsmith/usr/lib/python2.6/site-packages/
 # configuration
 
 case $DATASET in
@@ -28,6 +27,11 @@ case $DATASET in
     currents)
         SERVER=ftp://ftp.hycom.org
 	SERVER_PATH=/datasets/GLBu0.08/expt_91.1/forecasts
+        MIRROR_FLAGS='-I *GLOB_4*.nc.gz' 
+        ;;
+    currents)
+        SERVER=ftp://ftp.hycom.org
+        SERVER_PATH=/datasets/GLBu0.08/expt_91.1/forecasts
         DATA_SUBDIR=data
         MIRROR_FLAGS='-I *uv3z.nc'
         ;;
@@ -89,7 +93,7 @@ case $DATASET in
     reynolds|ersst|coral|currents)
         lftp $SERVER << EOF
 cd $SERVER_PATH || exit 1
-mirror -ve $MIRROR_FLAGS
+mirror --only-missing -n $MIRROR_FLAGS
 chmod -R 666
 EOF
     ;;
@@ -105,7 +109,11 @@ EOF
     chloro)
         lftp -u globcolour_data,fgh678 $SERVER << EOF
 cd $SERVER_PATH || exit 1
+<<<<<<< HEAD
 mirror -ve $MIRROR_FLAGS
+=======
+mirror --only-missing -n $MIRROR_FLAGS
+>>>>>>> 86d0971a53d2a7ea01a90e768c1f39b96c2dd90b
 EOF
     ;;
     sealevel)

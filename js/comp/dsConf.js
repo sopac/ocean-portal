@@ -16,7 +16,7 @@ function override(paramsfunc) {
             dataset: getBackendId(ocean.datasetid),
             variable: getBackendId(ocean.datasetid, ocean.variable),
             plot: ocean.plottype,
-            date: $.datepicker.formatDate('yymmdd', ocean.date),
+            date: $.datepick.formatDate('yyyymmdd', ocean.date),
             period: ocean.period,
             area: ocean.area,
             timestamp: $.now()
@@ -300,3 +300,30 @@ ocean.dsConf = {
         }
     }
 };
+
+function appendOutput(image, dataURL, name, extras, data)
+{
+    var captionText = ""
+    if (dataURL) {
+        captionText = "<a class='download-data' href=" + dataURL+ " target='_blank'><span class='ui-icon ui-icon-arrowreturnthick-1-s'></span>Download Data</a>"
+    }
+    if (extras) {
+        captionText = captionText + extras
+    }
+    fotorama.push({img: image, caption: captionText});
+    if (fotorama.size > 20) {//TODO extract 20 to the config
+        fotorama.shift();
+    }
+    fotorama.show(fotorama.size - 1);
+
+    if (name) {
+        $('<h2>', {
+            text: name
+        }).appendTo(captionText);
+    }
+
+    if (data) {
+        updateMap(data);
+    }
+}
+

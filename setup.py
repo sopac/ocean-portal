@@ -90,7 +90,9 @@ map_layers = [
 BASE_PATH = 'share/portal'
 html = [
 #   'sst.html',
-    'compmap.html',
+#    'compmap.html',
+    'ocean.html',
+    'app.html'
 ]
 
 script_substitutions = {
@@ -108,9 +110,12 @@ web_files = [
     'css/comp/controlPanel.css',
     'css/comp/compmap.css',
     'css/comp/controlvars.css',
+    'css/comp/jumbotron.css',
     'js/comp/controlPanel.js',
     'js/comp/compmap.js',
     'js/comp/dsConf.js',
+    'js/comp/app.js',
+    'js/comp/Ocean.js'
 #   'js/sst.js',
 ]
 
@@ -118,6 +123,7 @@ data = [
     'config/comp/datasets.json',
     'config/comp/vargroups.json',
     'config/comp/portals.json',
+    'config/comp/app.json',
     'config/comp/tidalGauges.txt',
     'images/search.gif',
     'images/calendar-blue.gif',
@@ -128,6 +134,12 @@ data = [
     'images/bom_logo.gif',
     'images/bathymetry_ver.png',
     'images/email.png',
+    'images/climate.png',
+    'images/coral.png',
+    'images/fishing.png',
+    'images/sealevel.png',
+    'images/shipping.png',
+    'images/surfer.png',
 ]
 
 # CODE BEGINS
