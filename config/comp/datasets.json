@@ -170,7 +170,7 @@
     }]
 }, {
     "id":"ww3forecast",
-    "name":"WaveWatch III Forecast",
+    "name":"Global AUSWAVE Forecast",
     "title": "WaveWatch III Forecast",
     "help": "/cosppac/comp/ocean-portal/about_ww3forecasts.pdf",
     "variables": [{
