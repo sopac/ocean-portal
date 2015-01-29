@@ -144,6 +144,17 @@ ocean.dsConf = {
                 slider.stepRatios = slider.calculateStepRatios();
                 slider.options.animationCallback = function(x, y) {
                     $('.handle-text').text(forecast[this.getStep()[0] - 1].datetime);
+                    if (data.mapimg) {
+                        data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
+                        console.log(data.mapimg);
+                        updateMap(data);
+                    }
+                };
+                slider.options.callback = function(x, y) {
+                    if (data.img) {
+                        data.img = data.img.replace('00', pad(this.getStep()[0], 2));
+                        updateMap(data);
+                    }
                 };
                 slider.value.prev = [-1, -1];
                 slider.animate(false, true);
@@ -265,3 +276,10 @@ function appendOutput(image, dataURL, name, extras, data)
     }
 }
 
+/**
+ * Pad number with leading zeros
+ * https://gist.github.com/aemkei/1180489
+ */
+function pad(a,b){
+    return([1e15]+a).slice(-b)
+}

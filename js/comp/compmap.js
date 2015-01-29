@@ -257,9 +257,14 @@ function updateMap (data) {
     var imageUrl = data.mapimg,
         imageBounds = [[-90, 0], [90, 360]]
 
-    ocean.imageOverlay = L.imageOverlay(imageUrl, imageBounds);
-    ocean.overlayGroup.addLayer(ocean.imageOverlay);
-    ocean.imageOverlay.setOpacity(0.5);
+    if(ocean.imageOverlay) {
+        ocean.imageOverlay.setUrl(imageUrl);
+    }
+    else {
+        ocean.imageOverlay = L.imageOverlay(imageUrl, imageBounds);
+        ocean.overlayGroup.addLayer(ocean.imageOverlay);
+        ocean.imageOverlay.setOpacity(1.0);
+    }
 
     
 //    var layer = map.getLayersByName("Output")[0];

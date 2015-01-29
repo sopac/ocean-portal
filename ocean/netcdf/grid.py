@@ -56,6 +56,9 @@ class Grid(object):
 
     # a list of possible variables for longitude
     LONS_VARIABLE = ['lon']
+
+    #time variable name
+    TIME_VARIABLE = []
     GRID_SPACING = 1
 
     @logger.time_and_log('load-grid')
@@ -74,6 +77,9 @@ class Grid(object):
         with Dataset(filename) as nc:
 
             logger.log("Dataset", filename)
+
+            self.time = self.get_time(nc.variables)
+
             lats = self.get_lats(nc.variables)
             lons = self.get_lons(nc.variables)
             depths = self.get_depths(nc.variables)
@@ -106,6 +112,15 @@ class Grid(object):
                 pass
 
         raise GridWrongFormat("No variable in choices: %s" % options)
+
+    def get_time(self, variables):
+        """
+        Retrieve time array from the dataset
+        """
+        if len(self.TIME_VARIABLE):
+            return self._get_variable(variables, self.TIME_VARIABLE)
+        else:
+            return [0.]
 
     @logger.time_and_log
     def get_lats(self, variables):
