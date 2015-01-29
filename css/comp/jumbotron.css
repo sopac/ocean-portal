@@ -1,6 +1,6 @@
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
-  padding-top: 50px;
+  padding-top: 30px;
   padding-bottom: 20px;
   background-color: #165C7D;
 }
@@ -114,3 +114,7 @@ h5 {
     background-color: #EEEEEE;
 }
 
+.jumbotron {
+   padding: 0px;
+   margin-bottom: 20px;
+}
