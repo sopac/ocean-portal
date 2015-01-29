@@ -141,6 +141,7 @@ $(function() {
 //)
 //    .done(function () {
         createMap();
+        resetLegend();
 //        var bounds = new OpenLayers.Bounds();
 
         /* iterate the region bounds to calculate the * restricted extent */
@@ -204,12 +205,12 @@ function createMap () {
     });
    
     ocean.bathymetryLayer = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
-       layers: 'bathymetry,land,maritime',
+       layers: 'bathymetry,land,maritime,capitals,countries',
        format: 'image/png',
        transparent: true,
        attribution: '<a href="http://www.naturalearthdata.com/about/" title="About Natural Earth">Made with Natural Earth</a>, <a href="http://www.marineregions.org/disclaimer.php" title="EEZ boundaries">Marineregions</a>'
     }).addTo(map);
-
+/**
     ocean.countriesLayer = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
        layers: 'capitals,countries',
        format: 'image/png',
@@ -218,10 +219,11 @@ function createMap () {
     })
 
     ocean.overlayGroup = L.layerGroup([ocean.countriesLayer]).addTo(map);
-
+*/
     L.control.scale({imperial: false}).addTo(map);
 
     ocean.mapObj = map;
+    ocean.overlayGroup = L.layerGroup().addTo(map);
 }
 
 function _updateDisabled ()
@@ -253,7 +255,7 @@ function selectMapLayer(name)
  *
  * Updates the output layer of the map with @data.
  */
-function updateMap (data) {
+function updateMap(data) {
     var imageUrl = data.mapimg,
         imageBounds = [[-90, 0], [90, 360]]
 
@@ -265,17 +267,27 @@ function updateMap (data) {
         ocean.overlayGroup.addLayer(ocean.imageOverlay);
         ocean.imageOverlay.setOpacity(1.0);
     }
+}
 
-    
-//    var layer = map.getLayersByName("Output")[0];
+/**
+ * Reset map to bathymetry basemap.
+ */
+function resetMap() {
+  ocean.overlayGroup.clearLayers();
 
-//    ocean.map_scale = data.scale;
+}
 
-//    map.setBaseLayer(layer);
-//    layer.params['raster'] = [data.map];
-//    layer.params['raster'] = [data.mapeast, data.mapeastw, data.mapwest, data.mapwestw];
-////    ocean.mapLoading = true;
-//    layer.redraw(true);
+/**
+ * Reset legend to the bathymetry.
+ */
+function resetLegend() {
+    //set legend
+    ocean.map_scale = 'images/bathymetry_ver.png';
+    $('#legendDiv').empty().append($('<img>', {src: ocean.map_scale, alt: 'Legend'}));
+}
+
+function setLegend(legendUrl) {
+     $('#legendDiv img').attr('src', legendUrl);
 }
 
 /**

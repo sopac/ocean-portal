@@ -50,14 +50,18 @@ ocean.dsConf = {
                              Math.round(data.mean*100)/100 + '\u00B0C',
                              data);
             }
-            else if (data.img != null) {
+            else if (data.img != null && data.scale != null) {
                 prependOutputSet();
                 appendOutput(data.img, null, null, null, data);
                 updateMap(data);
+                setLegend(data.scale);
             }
         },
         onSelect: null,
-        onDeselect: null
+        onDeselect: function() {
+            resetMap();
+            resetLegend();
+        } 
     },
     ersst: {
         params: override(function (dataset) { return {
@@ -158,6 +162,7 @@ ocean.dsConf = {
                 };
                 slider.value.prev = [-1, -1];
                 slider.animate(false, true);
+                setLegend(data.scale);
             }
             prependOutputSet();
 
@@ -168,7 +173,10 @@ ocean.dsConf = {
         onSelect: function() {
             updatePage();
         },
-        onDeselect: null
+        onDeselect: function() {
+            resetMap();
+            resetLegend();
+        }
     },
     sealevel: {
         params: override(function (dataset) { return {
