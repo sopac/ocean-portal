@@ -286,8 +286,10 @@ class Plotter(object):
 
         regions = [{'lat_min':-90,
                     'lat_max':90,
-                    'lon_min':0,
-                    'lon_max':360,
+#                    'lon_min':0,
+#                    'lon_max':360,
+                    'lon_min':110,
+                    'lon_max':290,
                     'output_filename':outputfile_map}
                 ]
 

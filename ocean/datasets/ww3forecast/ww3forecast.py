@@ -144,14 +144,14 @@ class ww3forecast(Dataset):
         elif varName == 'sig_wav_ht':
             cm = 'wav_cm'
             cb_ticks = 'sig'
-            unitStr = 'Meters'
+            unitStr = 'Metres'
             cb_tick_fmt = '%.1f'
             plot_filename_fullpath = self.getPlotFileName(varName, timeIndex, regionName)[0]
             pass
         elif varName == 'sig_ht_wnd_sea':
             cm = 'wav_cm'
             cb_ticks = 'sig'
-            unitStr = 'Meters'
+            unitStr = 'Metres'
             cb_tick_fmt = '%.1f'
             plot_filename_fullpath = self.getPlotFileName(varName, timeIndex, regionName)[0]
 

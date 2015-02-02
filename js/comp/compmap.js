@@ -257,7 +257,8 @@ function selectMapLayer(name)
  */
 function updateMap(data) {
     var imageUrl = data.mapimg,
-        imageBounds = [[-90, 0], [90, 360]]
+//        imageBounds = [[-90, 0], [90, 360]]
+        imageBounds = [[-90, 110], [90, 290]]
 
     if(ocean.imageOverlay) {
         ocean.imageOverlay.setUrl(imageUrl);
