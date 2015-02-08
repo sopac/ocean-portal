@@ -27,39 +27,40 @@ case $DATASET in
     currents)
         SERVER=ftp://ftp.hycom.org
         SERVER_PATH=/datasets/GLBu0.08/expt_91.1/forecasts
+        MIRROR_FLAGS='-I *GLOB_4*.nc.gz' 
+        ;;
+    currents)
+        SERVER=ftp://ftp.hycom.org
+        SERVER_PATH=/datasets/GLBu0.08/expt_91.1/forecasts
         DATA_SUBDIR=data
         MIRROR_FLAGS='-I *uv3z.nc'
         ;;
     coral)
-        SERVER=http://data.nodc.noaa.gov/
-        SERVER_PATH=/crw/tsps50km/baa/
+        SERVER=ftp://ftp.star.nesdis.noaa.gov
+        SERVER_PATH=/pub/sod/mecb/gliu/crw_5km_for_bom
         DATA_SUBDIR=data
-        MIRROR_FLAGS='-I *.hdf'
+        MIRROR_FLAGS='-I baa_max*.nc'
         ;;
     poama)
         SERVER=http://opendap.bom.gov.au:8080
         SERVER_PATH=thredds/fileServer/paccsap/sea_surface_temperature_seasonal/grid/
         DATA_SUBDIR=data
         ;;
-
     ersst)
         SERVER=ftp.ncdc.noaa.gov
         SERVER_PATH=/pub/data/cmb/ersst/v3b/netcdf/
         DATA_SUBDIR=monthly
         ;;
-
     reynolds)
         SERVER=eclipse.ncdc.noaa.gov
         SERVER_PATH=/pub/oisst/NetCDF/
         DATA_SUBDIR=daily-new
         MIRROR_FLAGS='-I *.nc.gz'
         ;;
-
     sealevel)
         BASE_URL=http://www.bom.gov.au/ntc
         DATA_SUBDIR=gauges-new
         ;;
-
     *)
         echo "Unknown dataset $DATASET" >&2
         exit 1

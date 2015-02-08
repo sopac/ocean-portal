@@ -72,6 +72,7 @@ class tunceli(default):
         'oceanmaps':'/www4/data/cosppac/oceanmaps/',
         'chloro':'/www4/data/cosppac/chloro/',
         'currents':'/www4/data/cosppac/currents/'
+        'ww3forecast':'/www4/data/cosppac/wavewatch3/forecast/'
     }
 
 class www4(default):
@@ -90,6 +91,7 @@ class www4(default):
         'oceanmaps': '/web/data/cosppac/oceanmaps/',
         'chloro':'/web/data/cosppac/chloro/',
         'currents':'/web/data/cosppac/currents/'
+        'ww3forecast':'/web/data/cosppac/wavewatch3/forecast/'
     }
 
 class hoapp2(www4):
