@@ -152,7 +152,7 @@
     "help": "/cosppac/comp/ocean-portal/about_sealevel.pdf",
     "variables": [{
         "id":"gauge",
-        "name":"Tidal Gauge",
+        "name":"Tide Gauge",
         "periods": ["monthly"],
         "plottypes": ["ts"]
     }]

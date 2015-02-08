@@ -30,6 +30,9 @@ serverCfg = config.get_server_config()
 #get dataset dependant production information
 ww3Product = productName.products['ww3forecast']
 
+#number of forecast steps
+FORECAST_STEPS = 25
+
 class ww3forecast(Dataset):
 
     __form_params__ = {
@@ -100,9 +103,22 @@ class ww3forecast(Dataset):
             response['scale'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['scale']
             os.utime(os.path.join(serverCfg['outputDir'], filename), None)
 
+        if ('mode' in params) and (params['mode'] == 'preprocess'):
+            self.plotSurfaceData(varStr, regionStr)
+
         return response
 
+    def preprocess(self, varName, region):
+        '''
+            Allows the map images to be produced via the URL.
+        '''
+        for step in range(FORECAST_STEPS):
+            self.plotSurfaceData(varName, step, region) 
+
     def generateConfig(self, latestFilePath, gridTime):
+        '''
+            Generate the configuration file
+        '''
         baseFileName = os.path.basename(latestFilePath)
         dateTimeValue = baseFileName[4:15]
         baseDateTime = datetime.strptime(dateTimeValue, '%Y%m%d_%H')  
@@ -118,6 +134,9 @@ class ww3forecast(Dataset):
         return dateTimeStrArray
    
     def getPlotFileName(self, varName, timeIndex, regionName):
+        '''
+            A helper method to put together the plot file name.
+        '''
         plot_filename = '%s_%s_%s_%02d' % (ww3Product['7d'], varName, regionName, timeIndex)
         plot_filename_fullpath = os.path.join(serverCfg['outputDir'],
                                                   plot_filename)
@@ -128,13 +147,13 @@ class ww3forecast(Dataset):
         
 
     def plotSurfaceData(self, varName, timeIndex, regionName):
-        """
+        '''
             Plot wind and wave forecasts dataset, including the following three variables:
             sig_wav_ht, together with the pk_wave_dir vector overlay;
             pk_wav_per, with pk_wav_dir vector overlay;
             and
             wnd_spd, with wnd_dir vector overlay.
-        """
+        ''' 
         if varName == 'sig_wav_per':
             pass
         elif varName == 'pk_wav_per':

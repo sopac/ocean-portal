@@ -201,7 +201,7 @@ ocean.dsConf = {
             }
 
             if (data.tidimg)
-                appendOutput(data.tidimg, data.tidtxt, "Tidal Gauge");
+                appendOutput(data.tidimg, data.tidtxt, "Tide Gauge");
 
             if (data.altimg)
                 appendOutput(data.altimg, data.alttxt, "Altimetry");
