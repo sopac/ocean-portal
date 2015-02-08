@@ -113,10 +113,12 @@ web_files = [
     'css/comp/compmap.css',
     'css/comp/controlvars.css',
     'css/comp/jumbotron.css',
+    'css/comp/dragdealer.css',
     'js/comp/controlPanel.js',
     'js/comp/compmap.js',
     'js/comp/dsConf.js',
     'js/comp/app.js',
+    'js/comp/dragdealer.js',
     'js/comp/Ocean.js'
 #   'js/sst.js',
 ]
