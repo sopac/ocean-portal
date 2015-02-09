@@ -121,7 +121,7 @@
 }, {
     "id": "church",
     "bid": "sealevel",
-    "name":"Church & White",
+    "name":"Sea Level Data",
     "title": "Church & White",
     "rank": 100,
     "help": "/cosppac/comp/ocean-portal/about_sealevel.pdf",
@@ -147,7 +147,7 @@
 }, {
     "id": "ntc",
     "bid": "sealevel",
-    "name": "NTC",
+    "name": "Sea Level Data",
     "title": "National Tidal Centre",
     "help": "/cosppac/comp/ocean-portal/about_sealevel.pdf",
     "variables": [{
