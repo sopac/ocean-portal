@@ -71,7 +71,7 @@ class tunceli(default):
         'poama':'/www4/data/cosppac/poama/',
         'oceanmaps':'/www4/data/cosppac/oceanmaps/',
         'chloro':'/www4/data/cosppac/chloro/',
-        'currents':'/www4/data/cosppac/currents/'
+        'currents':'/www4/data/cosppac/currents/',
         'ww3forecast':'/www4/data/cosppac/wavewatch3/forecast/'
     }
 
@@ -90,7 +90,7 @@ class www4(default):
         'poama': '/web/data/cosppac/poama/',
         'oceanmaps': '/web/data/cosppac/oceanmaps/',
         'chloro':'/web/data/cosppac/chloro/',
-        'currents':'/web/data/cosppac/currents/'
+        'currents':'/web/data/cosppac/currents/',
         'ww3forecast':'/web/data/cosppac/wavewatch3/forecast/'
     }
 
