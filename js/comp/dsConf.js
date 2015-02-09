@@ -250,9 +250,10 @@ ocean.dsConf = {
     //                $('#longitude').val('');
         },
         onDeselect: function() {
-            var control;
-
-            map.removeLayer(this.overlay);
+//            var control;
+            if (map.hasLayer(ocean.dsConf.sealevel.overlay)) {
+                map.removeLayer(ocean.dsConf.sealevel.overlay);
+            }
 
 //            var controls = map.getControlsByClass(
 //                'OpenLayers.Control.SelectFeature');
