@@ -145,6 +145,7 @@ ocean.dsConf = {
             if(data.forecast) {
                 var forecast = $.parseJSON(data.forecast);
                 slider.options.steps = forecast.length;
+                slider.options.snap = true;
                 slider.stepRatios = slider.calculateStepRatios();
                 slider.options.animationCallback = function(x, y) {
                     $('.handle-text').text(forecast[this.getStep()[0] - 1].datetime + 'UTC');

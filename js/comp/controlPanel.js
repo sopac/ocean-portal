@@ -68,7 +68,6 @@ $(function() {
     });
 
     slider = new Dragdealer('hour-slider', {
-        snap: true,
         slide: false
     });
 
