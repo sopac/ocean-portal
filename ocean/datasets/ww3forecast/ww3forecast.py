@@ -36,6 +36,7 @@ FORECAST_STEPS = 25
 class ww3forecast(Dataset):
 
     __form_params__ = {
+        'mode': str
     }
     __form_params__.update(Dataset.__form_params__)
 
@@ -95,16 +96,17 @@ class ww3forecast(Dataset):
         config = self.generateConfig(latestFilePath, self.grid.time)
         configStr = json.dumps(config) 
 
-        if not os.path.exists(configFileName):
-            response['error'] = "Error occured during the wave forecast data processing."
-        else:
-            response['forecast'] = configStr 
-            response['mapimg'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['mapimg']
-            response['scale'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['scale']
-            os.utime(os.path.join(serverCfg['outputDir'], filename), None)
+#        if not os.path.exists(configFileName):
+#            response['error'] = "Error occured during the wave forecast data processing."
+#        else:
+        response['forecast'] = configStr 
+        response['mapimg'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['mapimg']
+        response['scale'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['scale']
+#        os.utime(os.path.join(serverCfg['outputDir'], filename), None)
 
         if ('mode' in params) and (params['mode'] == 'preprocess'):
-            self.plotSurfaceData(varStr, regionStr)
+            response['preproc'] = 'inside'
+            self.preprocess(varStr, regionStr)
 
         return response
 

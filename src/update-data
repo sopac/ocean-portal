@@ -96,11 +96,55 @@ EOF
     poama)
             FILE=PACCSAP_oa_latest.nc
             URL=$SERVER/$SERVER_PATH/$FILE
-            wget -O $FILE "$URL" || echo -n "error ($?)"
+            wget - $FILE "$URL" || echo -n "error ($?)"
             echo
     ;;
     ww3)
-	    wget --no-clobber -i ./AUSWAVE_File_List.txt
+        dates=("$(date +"%Y%m%d")" "$(date --date="yesterday" +"%Y%m%d")")
+        hours=("12" "00")
+        for date in "${dates[@]}"
+        do
+            for hour in "${hours[@]}"
+            do
+                FILE="$(printf "ww3_%s_%s.nc" "$date" "$hour")"
+                URL=$SERVER/$SERVER_PATH/$FILE
+                if [[ -e $FILE ]];
+                then
+                    break 2;
+                else
+                    wget -nc "$URL";
+                    if [[ $? -eq 0 ]];
+                    then
+                        break 2;
+                    else
+                        continue; 
+                    fi
+                fi
+            done
+        done
+        response=`python << EOF
+import urllib
+import urllib2
+import time
+url = "http://tunceli/portal/cgi/portal.py"
+values = {"dataset": "ww3forecast",
+          "variable": "sig_wav_ht",
+          "plot": "map",
+          "period": "7days",
+          "area": "pac",
+          "mode": "preprocess"
+           }
+data = urllib.urlencode(values)
+full_url = url + '?' + data
+response = urllib2.urlopen(full_url)
+print response.read()
+
+url = "http://www.bom.gov.au/cosppac/apps/portal/cgi/portal.py"
+full_url = url + '?' + data
+response = urllib2.urlopen(full_url)
+print response.read()
+EOF`
+        echo -n $response
     ;;
     chloro)
         lftp -u globcolour_data,fgh678 $SERVER << EOF
