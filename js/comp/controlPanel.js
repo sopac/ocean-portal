@@ -103,6 +103,7 @@ $(function() {
         selectFirstIfRequired('plottype');
 
         selectMapLayer("Bathymetry");
+        ocean.dataset.onVariableChange();
     });
 
     /* Plot Type */

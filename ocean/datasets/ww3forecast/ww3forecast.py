@@ -49,7 +49,9 @@ class ww3forecast(Dataset):
 
     __variables__ = [
         'sig_wav_ht',
-        'pk_wav_dir',
+        'sig_ht_wnd_sea',
+        'sig_ht_sw1',
+        'pk_wav_per',
         'wnd_spd',
     ]
 
@@ -76,16 +78,6 @@ class ww3forecast(Dataset):
         filename = svnDayForecast % (ww3Product['7d'], '7days')
         configFileName = serverCfg['outputDir'] + filename
 
-#        if not os.path.exists(configFileName):
-            #Generate the config file
-#            config = self.generateConfig()
-#            with open(configFileName, 'w') as f:
-#                json.dump(config, f)
-            # and associated images. 
-#        else:
-#            with open(configFileName, 'r') as f:
-#                config = json.load(f)
-   
         fileName = serverCfg['dataDir']['ww3forecast'] + 'ww3_????????_??.nc'
         latestFilePath = max(glob.iglob(fileName), key=os.path.getctime)
 
@@ -96,9 +88,6 @@ class ww3forecast(Dataset):
         config = self.generateConfig(latestFilePath, self.grid.time)
         configStr = json.dumps(config) 
 
-#        if not os.path.exists(configFileName):
-#            response['error'] = "Error occured during the wave forecast data processing."
-#        else:
         response['forecast'] = configStr 
         response['mapimg'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['mapimg']
         response['scale'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['scale']
@@ -125,9 +114,6 @@ class ww3forecast(Dataset):
         dateTimeValue = baseFileName[4:15]
         baseDateTime = datetime.strptime(dateTimeValue, '%Y%m%d_%H')  
         
-#        nc = DS(latestFilePath, 'r')
-
- #       timeArray = nc.variables['time'][:]
         timeArray = gridTime
         timeObjArray = map(timedelta, timeArray)
 
@@ -156,25 +142,47 @@ class ww3forecast(Dataset):
             and
             wnd_spd, with wnd_dir vector overlay.
         ''' 
-        if varName == 'sig_wav_per':
-            pass
+        if varName == 'sig_ht_sw1':
+            cm = 'wav_cm'
+            cb_ticks = 'sig'
+            unitStr = 'Metres'
+            cb_tick_fmt = '%.1f'
+            plot_filename_fullpath = self.getPlotFileName(varName, timeIndex, regionName)[0]
+            clabel = False
+            vector = True
         elif varName == 'pk_wav_per':
-            pass
+            cm = 'wav_cm'
+            cb_ticks = 'pk'
+            unitStr = 'Seconds'
+            cb_tick_fmt = '%2d'
+            plot_filename_fullpath = self.getPlotFileName(varName, timeIndex, regionName)[0]
+            clabel = True 
+            vector = False
         elif varName == 'wnd_spd':
-            pass
+            cm = 'wnd_cm'
+            cb_ticks = 'wnd'
+            unitStr = 'Speed(kts)'
+            cb_tick_fmt = '%3d'
+            plot_filename_fullpath = self.getPlotFileName(varName, timeIndex, regionName)[0]
+            clabel = False 
+            vector = True
+            self.grid.data = self.grid.data * 1.94384449
         elif varName == 'sig_wav_ht':
             cm = 'wav_cm'
             cb_ticks = 'sig'
             unitStr = 'Metres'
             cb_tick_fmt = '%.1f'
             plot_filename_fullpath = self.getPlotFileName(varName, timeIndex, regionName)[0]
-            pass
+            clabel = False
+            vector = True
         elif varName == 'sig_ht_wnd_sea':
             cm = 'wav_cm'
             cb_ticks = 'sig'
             unitStr = 'Metres'
             cb_tick_fmt = '%.1f'
             plot_filename_fullpath = self.getPlotFileName(varName, timeIndex, regionName)[0]
+            clabel = False
+            vector = True
 
         print plot_filename_fullpath
         plot = Ww3ForecastPlotter()
@@ -184,7 +192,7 @@ class ww3forecast(Dataset):
                                         units=unitStr, cm_edge_values=cb_ticks,
                                         cb_tick_fmt=cb_tick_fmt,
                                         cb_labels=None, cb_label_pos=None,
-                                        cmp_name=cm, extend='neither')
+                                        cmp_name=cm, extend='neither', clabel=clabel, vector=vector)
 
 
         plot.wait()
@@ -192,7 +200,7 @@ class ww3forecast(Dataset):
     def get_overlay_variable(self, variable):
         if variable in ['sig_wav_ht', 'sig_ht_wnd_sea', 'sig_ht_sw1',  'pk_wav_per']:
             return 'mn_wav_dir'
-        elif varaible in ['wnd_spd']:
+        elif variable in ['wnd_spd']:
             return 'wnd_dir'
         return ''
 

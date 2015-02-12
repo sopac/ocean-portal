@@ -179,6 +179,16 @@
         "periods": ["7days"],
         "plottypes": ["map"]
     }, {
+        "id": "sig_ht_wnd_sea",
+        "name": "Sea Wave Height",
+        "periods": ["7days"],
+        "plottypes": ["map"]
+    }, {
+        "id": "sig_ht_sw1",
+        "name": "Swell Wave Height",
+        "periods": ["7days"],
+        "plottypes": ["map"]
+    }, {
         "id": "pk_wav_per",
         "name": "Peak Wave Period",
         "periods": ["7days"],

@@ -61,7 +61,8 @@ ocean.dsConf = {
         onDeselect: function() {
             resetMap();
             resetLegend();
-        } 
+        }, 
+        onVariableChange: null
     },
     ersst: {
         params: override(function (dataset) { return {
@@ -93,7 +94,9 @@ ocean.dsConf = {
             }
         },
         onSelect: null,
-        onDeselect: null
+        onDeselect: null, 
+        onVariableChange: null
+
     },
     bran: {
         params: override(function (dataset) {
@@ -118,7 +121,9 @@ ocean.dsConf = {
             }
         },
         onSelect: null,
-        onDeselect: null
+        onDeselect: null, 
+        onVariableChange: null
+
     },
     ww3: {
         params: override(function (dataset) { return {
@@ -135,7 +140,9 @@ ocean.dsConf = {
             }
         },
         onSelect: null,
-        onDeselect: null
+        onDeselect: null, 
+        onVariableChange: null
+
     },
     ww3forecast: {
         params: override(function (dataset) { return {
@@ -185,6 +192,9 @@ ocean.dsConf = {
         onDeselect: function() {
             resetMap();
             resetLegend();
+        },
+        onVariableChange: function() {
+            updatePage();
         }
     },
     sealevel: {
@@ -264,7 +274,9 @@ ocean.dsConf = {
 //                controls[control].deactivate();
 //                controls[control].destroy();
 //            }
-        }
+        }, 
+        onVariableChange: null
+
     }
 };
 

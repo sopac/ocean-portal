@@ -78,6 +78,18 @@
 .variable-sig_wav_ht #latitude,
 .variable-sig_wav_ht #logitude,
 .variable-sig_wav_ht #submit,
+.variable-sig_ht_wnd_sea #year,
+.variable-sig_ht_wnd_sea #month,
+.variable-sig_ht_wnd_sea #date,
+.variable-sig_ht_wnd_sea #latitude,
+.variable-sig_ht_wnd_sea #logitude,
+.variable-sig_ht_wnd_sea #submit,
+.variable-sig_ht_sw1 #year,
+.variable-sig_ht_sw1 #month,
+.variable-sig_ht_sw1 #date,
+.variable-sig_ht_sw1 #latitude,
+.variable-sig_ht_sw1 #logitude,
+.variable-sig_ht_sw1 #submit,
 .variable-pk_wav_per #year,
 .variable-pk_wav_per #month, 
 .variable-pk_wav_per #date,
@@ -96,6 +108,8 @@
 
 
 .variable-sig_wav_ht #hour-slider,
+.variable-sig_ht_wnd_sea #hour-slider,
+.variable-sig_ht_sw1 #hour-slider,
 .variable-pk_wav_per #hour-slider,
 .variable-wnd_spd #hour-slider
 {
