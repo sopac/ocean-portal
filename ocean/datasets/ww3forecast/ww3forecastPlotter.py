@@ -99,14 +99,14 @@ class Ww3ForecastPlotter(Plotter):
             # Plot data
             x2, y2 = m(*np.meshgrid(lons, lats))
 #            img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap, norm=norm)
-            img = m.contourf(x2, y2, data, levels=cm_edge_values, cmap=d_cmap, norm=norm, antialiased=True)
+            img = m.contourf(x2, y2, data, levels=cm_edge_values, cmap=d_cmap, norm=norm, antialiased=True, zorder=0)
             img.set_clim(cm_edge_values.min(), cm_edge_values.max())
             
-            img = plt.contour(x2, y2, data, levels=cm_edge_values, colors='w', norm=norm, linewidths=0.5)
+            img = plt.contour(x2, y2, data, levels=cm_edge_values, colors='w', norm=norm, linewidths=0.5, zorder=1)
 
             #plot contouring labels
             if clabel:
-                labels = plt.clabel(img, cm_edge_values[::4], inline=True, fmt='%.0f', colors='k', fontsize=5)
+                labels = plt.clabel(img, cm_edge_values[::4], inline=True, fmt='%.0f', colors='k', fontsize=5, zorder=2)
                 bbox_props = dict(boxstyle="round", fc="w", ec="w", alpha=0.9)
                 for text in labels:
                     text.set_linespacing(1)
@@ -123,10 +123,7 @@ class Ww3ForecastPlotter(Plotter):
                     radians_array = np.radians(overlay_grid.data)
                     radians_array = np.pi + radians_array
                     radians_array = radians_array[::every, ::every]
-#            m.quiver(x2, y2, np.sin(radians_array),np.cos(radians_array),  pivot='middle', color='r', headwidth=0.1, headlength=0.1 )
-#            m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), pivot='middle', color='k', units='width', width=1, minshaft=4, headlength=3, headwidth=3)
-                m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=50)
-#            m.drawlsmask(land_color='black',ocean_color='black',lakes=True)
+                m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=50, zorder=3)
             m.drawmapboundary(linewidth=0.0)
 
             m.drawcoastlines(linewidth=0.5, color='#505050', zorder=8)
