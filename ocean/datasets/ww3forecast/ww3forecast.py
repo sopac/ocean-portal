@@ -89,8 +89,10 @@ class ww3forecast(Dataset):
         configStr = json.dumps(config) 
 
         response['forecast'] = configStr 
-        response['mapimg'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['mapimg']
-        response['scale'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['scale']
+#        response['mapimg'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['mapimg']
+#        response['scale'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['scale']
+        response['mapimg'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['mapimg']
+        response['scale'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['scale']
 #        os.utime(os.path.join(serverCfg['outputDir'], filename), None)
 
         if ('mode' in params) and (params['mode'] == 'preprocess'):
