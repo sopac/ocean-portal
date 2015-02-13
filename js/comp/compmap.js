@@ -195,7 +195,7 @@ function createMap () {
         bounds =  L.latLngBounds(southWest, northEast);
 
     map = L.map('map', {
-        center: L.latLng(0, 205),
+/*        center: L.latLng(0, 205),*/
         maxBounds: bounds,
         minZoom: 3,
         maxZoom: 8,
@@ -221,6 +221,23 @@ function createMap () {
     ocean.overlayGroup = L.layerGroup([ocean.countriesLayer]).addTo(map);
 */
     L.control.scale({imperial: false}).addTo(map);
+
+    var cursorLocation = L.Control.extend({
+        options: {
+            position: 'topright'
+        },
+
+        onAdd: function (map) {
+            // create the control container with a particular class name
+            var container = L.DomUtil.create('div', 'cursorLocation');
+            return container;
+        }
+    });
+    map.addControl(new cursorLocation());
+
+    map.on('mousemove', function(e) {
+        $('.cursorLocation').html(e.latlng.lat + ', ' + e.latlng.lng);
+    });
 
     ocean.mapObj = map;
     ocean.overlayGroup = L.layerGroup().addTo(map);

@@ -286,3 +286,16 @@ a span.ui-icon {
 .dialog {
   display: none;
 }
+
+.cursorLocation {
+    line-height: 1.1;
+    padding: 2px 5px 1px;
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    -moz-box-sizing: content-box;
+         box-sizing: content-box;
+
+    background: #fff;
+    background: rgba(255, 255, 255, 0.5);
+    }
