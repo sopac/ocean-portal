@@ -190,13 +190,13 @@ $(function() {
  * Create the map component. Should only be called once.
  */
 function createMap () {
-    var southWest = L.latLng(-60, 90),
-        northEast = L.latLng(60, 320),
+    var southWest = L.latLng(-100, 110),
+        northEast = L.latLng(90, 290),
         bounds =  L.latLngBounds(southWest, northEast);
 
     map = L.map('map', {
         center: L.latLng(0, 205),
- //       maxBounds: bounds,
+        maxBounds: bounds,
         minZoom: 3,
         maxZoom: 8,
         zoom: 3,
