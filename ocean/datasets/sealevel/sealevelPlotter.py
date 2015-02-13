@@ -116,9 +116,20 @@ class SeaLevelSeries(SeaLevelGrid):
 
 class SeaLevelSurfacePlotter(SurfacePlotter):
     DATASET = 'sealevel'
-    PRODUCT_NAME = """
-IB not removed; seasonal not removed; global trend not removed; GIA removed
-Data from CSIRO CMAR, Church and White 2009"""
+#    PRODUCT_NAME = """
+#IB not removed; seasonal not removed; global trend not removed; GIA removed
+#Data from CSIRO CMAR"""
+
+    def __init__(self, variable):
+        super(SeaLevelSurfacePlotter, self).__init__()
+        if variable == "rec":
+            self.PRODUCT_NAME = """
+            IB removed; seasonal cycle removed; global trend not removed; GIA removed
+            Data from CSIRO CMAR, Church and White 2009"""
+        else:
+            self.PRODUCT_NAME = """
+            IB not removed; seasonal not removed; global trend not removed; GIA removed
+            Data from CSIRO CMAR"""
 
     def get_grid(self, params={}, **kwargs):
         return SeaLevelGrid(params['variable'], date=params['date'])
@@ -206,8 +217,12 @@ def plotTimeseries(outputFilename, saveData=True, **args):
             writer = csv.writer(file, delimiter='\t')
             writer.writerow(('# Sea Level %s for %s' % (
                              titlePrefix, tidalGaugeName),))
-            writer.writerow(['# Corrections: IB not removed; seasonal not removed; global trend not removed; GIA removed'])
-            writer.writerow(['# Data from CSIRO CMAR, Church and White 2009'])
+            if variable == 'alt':
+                writer.writerow(['# Corrections: IB not removed; seasonal not removed; global trend not removed; GIA removed'])
+                writer.writerow(['# Data from CSIRO CMAR'])
+            else:
+                writer.writerow(['# Corrections: IB removed; seasonal cycle removed; global trend not removed; GIA removed'])
+                writer.writerow(['# Data from CSIRO CMAR, Church and White 2009'])
             writer.writerow(['Date (YYYY-MM)', '%s (mm)' % titlePrefix])
 
             for date, height in zip(grid.time, grid.data):
@@ -224,10 +239,17 @@ def plotTimeseries(outputFilename, saveData=True, **args):
     ax.plot(grid.time, grid.data, 'b-')
     plt.axhline(y=0, color='k')
 
-    PRODUCT_NAME = """
-Data from CSIRO CMAR, Church and White 2009
-IB not removed; seasonal not removed; global trend not removed; GIA removed
-"""
+    
+    if variable == 'alt':
+        PRODUCT_NAME = """
+        Data from CSIRO CMAR
+        IB not removed; seasonal not removed; global trend not removed; GIA removed
+        """
+    else:
+        PRODUCT_NAME = """
+        Data from CSIRO CMAR
+        IB removed; seasonal cycle removed; global trend not removed; GIA removed
+        """
 
     plt.figtext(0.02, 0.02, getCopyright(), fontsize=6)
     plt.figtext(0.90, 0.02, PRODUCT_NAME.strip(),

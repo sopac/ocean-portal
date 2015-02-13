@@ -166,7 +166,7 @@ class ww3forecast(Dataset):
             plot_filename_fullpath = self.getPlotFileName(varName, timeIndex, regionName)[0]
             clabel = False 
             vector = True
-            self.grid.data = self.grid.data * 1.94384449
+            self.grid.data = self.grid.data[timeIndex] * 1.94384449
         elif varName == 'sig_wav_ht':
             cm = 'wav_cm'
             cb_ticks = 'sig'

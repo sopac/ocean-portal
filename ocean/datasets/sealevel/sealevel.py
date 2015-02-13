@@ -61,7 +61,6 @@ class sealevel(Dataset):
         assert p in tidalGaugeConfig.tidalGauge
 
     def plot_surface(self, params):
-        plotter = SeaLevelSurfacePlotter()
         response = {}
 
         if 'date' not in params:
@@ -74,6 +73,7 @@ class sealevel(Dataset):
         areaStr = params['area']
         periodStr = params['period']
 
+        plotter = SeaLevelSurfacePlotter(variableStr)
         if periodStr == 'monthly':
             fileName = seaGraph % (seaLevelProduct['monthly'],
                                    variableStr, areaStr,

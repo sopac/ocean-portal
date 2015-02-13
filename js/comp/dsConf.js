@@ -62,7 +62,7 @@ ocean.dsConf = {
             resetMap();
             resetLegend();
         }, 
-        onVariableChange: null
+        onVariableChange: function(){}
     },
     ersst: {
         params: override(function (dataset) { return {
@@ -95,7 +95,7 @@ ocean.dsConf = {
         },
         onSelect: null,
         onDeselect: null, 
-        onVariableChange: null
+        onVariableChange: function(){} 
 
     },
     bran: {
@@ -122,7 +122,7 @@ ocean.dsConf = {
         },
         onSelect: null,
         onDeselect: null, 
-        onVariableChange: null
+        onVariableChange: function(){} 
 
     },
     ww3: {
@@ -141,7 +141,7 @@ ocean.dsConf = {
         },
         onSelect: null,
         onDeselect: null, 
-        onVariableChange: null
+        onVariableChange: function(){}
 
     },
     ww3forecast: {
@@ -275,7 +275,7 @@ ocean.dsConf = {
 //                controls[control].destroy();
 //            }
         }, 
-        onVariableChange: null
+        onVariableChange: function(){} 
 
     }
 };
