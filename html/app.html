@@ -15,13 +15,13 @@
     <link rel="stylesheet" type="text/css" href="css/comp/compmap.css?v=0.3.2-48-g53f7da3-modified" />
     <link rel="stylesheet" type="text/css" href="css/comp/controlvars.css?v=0.3.2-48-g53f7da3-modified" />
 
-    <link rel="stylesheet" type="text/css" href="css/comp/dragdealer.css" />
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css"/>
     <link rel="stylesheet" type="text/css" href="lib/fotorama-4.5.1/fotorama.css"/>
     <link rel="stylesheet" type="text/css" href="lib/leaflet-0.7.3/leaflet.css"/>
     <!-- Custom styles for this template -->
     <link rel="stylesheet" type="text/css" href="css/comp/jumbotron.css" >
+    <link rel="stylesheet" type="text/css" href="css/comp/dragdealer.css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -173,23 +173,24 @@
                     <div class="controlvar">
                         <button type="button" class="btn btn-default field" id="submit">Submit</button>
                     </div> 
-                            <div class="well well-sm controlvar">
-                                <a href="#" id="dshelp" target="_blank">About <span>Dataset</span></a>
-                            </div>
+                    <div class="well well-sm controlvar">
+                        <a href="#" id="dshelp" target="_blank">About <span>Dataset</span></a>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="row">
         <div class="col-sm-7 col-sm-offset-2">
-                        <div class="controlgroup">
-                            <span class="hint slider-hint"></span>
-                            <div class="input-group input-group-sm controlvar">
-                                <div id="hour-slider" class="dragdealer field">
-                                    <div class="handle red-bar"><span class="handle-text">Loading...</span></div>
-                                </div>
-                            </div>
-                        </div>
-        
+            <div class="controlgroup">
+                <span class="glyphicon glyphicon-step-backward" aria-hidden="true" onclick="stepBackward()"></span>
+                <span class="glyphicon glyphicon-step-forward" aria-hidden="true" onclick="stepForward()"></span>
+                <span class="hint slider-hint"></span>
+                <div class="input-group input-group-sm controlvar">
+                    <div id="hour-slider" class="dragdealer field">
+                        <div class="handle red-bar"><span class="handle-text">Loading...</span></div>
+                    </div>
+                </div>
+            </div>
         </div>
         </div>
         </div>

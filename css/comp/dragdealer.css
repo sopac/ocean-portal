@@ -36,3 +36,10 @@
 .dragdealer .disabled {
   background: #898989;
 }
+
+.glyphicon {
+margin-top: 5px;
+margin-right: 10px;
+font-size: 18px;
+cursor:pointer;
+}

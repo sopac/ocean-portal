@@ -16,7 +16,8 @@ ocean.controls = [
     'latitude',
     'longitude',
     'dataset',
-    'dshelp'
+    'dshelp',
+    'hour-slider'
 ];
 
 ocean.compare = { limit: 24 };
@@ -852,4 +853,12 @@ function updatePage() {
             }
         });
     }
+}
+
+function stepForward() {
+    slider.setStep(slider.getStep()[0] + 1);
+}
+
+function stepBackward() {
+    slider.setStep(slider.getStep()[0] - 1);
 }
