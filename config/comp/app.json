@@ -10,5 +10,13 @@
     "coral": {
         "datasets": [],
         "vargroups": ["crw"]
+    },
+    "tour": {
+        "datasets": [],
+        "vargroups": ["ww3forecast"]
+    },
+    "shipping": {
+        "datasets": [],
+        "vargroups": ["ww3forecast"]
     }
 }

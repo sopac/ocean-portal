@@ -236,7 +236,7 @@ function createMap () {
     map.addControl(new cursorLocation());
 
     map.on('mousemove', function(e) {
-        $('.cursorLocation').html(e.latlng.lat + ', ' + e.latlng.lng);
+        $('.cursorLocation').html(e.latlng.lat.toPrecision(6) + ', ' + e.latlng.lng.toPrecision(6));
     });
 
     ocean.mapObj = map;
