@@ -56,3 +56,4 @@ class reynolds(SST):
         'averages',
         'decile',
     ]
+

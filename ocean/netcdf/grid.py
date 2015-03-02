@@ -11,6 +11,7 @@ import bisect
 
 import numpy as np
 from netCDF4 import Dataset
+from mpl_toolkits.basemap import shiftgrid 
 
 from ocean import util, logger
 from ocean.config import get_server_config
@@ -85,19 +86,40 @@ class Grid(object):
             depths = self.get_depths(nc.variables)
 
             var = self.get_variable(nc.variables, variable)
-            indexes = self.get_indexes(var,
+            var = self.load_data(var)
+
+            if lons[0] < 0:
+                var, lons = shiftgrid(0, var, lons)
+
+            if lats[0] > lats[-1]:
+                flippedlats = np.flipud(lats)
+                indexes = self.get_indexes(var,
+                                       (flippedlats, latrange),
+                                       (lons, lonrange),
+                                       (depths, depthrange))
+
+            else:
+                indexes = self.get_indexes(var,
                                        (lats, latrange),
                                        (lons, lonrange),
                                        (depths, depthrange))
             (lat_idx1, lat_idx2), (lon_idx1, lon_idx2), \
                                   (depth_idx1, depth_idx2) = indexes
+            if lats[0] > lats[-1]:
+                lat_idx1r = lat_idx1
+                lat_idx2r = lat_idx2
+                lat_idx1 = lats.size - lat_idx2r
+                lat_idx2 = lats.size - lat_idx1r
 
             # subset the dimension arrays
             self.lats = lats[lat_idx1:lat_idx2:self.GRID_SPACING]
             self.lons = lons[lon_idx1:lon_idx2:self.GRID_SPACING]
             self.depths = depths[depth_idx1:depth_idx2]
 
-            data = self.load_data(var, *indexes)
+            data = self.clip_data(var, (lat_idx1, lat_idx2), \
+                                       (lon_idx1, lon_idx2), \
+                                       (depth_idx1, depth_idx2))
+
             self.data = np.squeeze(data)
 
     def _get_variable(self, variables, options):
@@ -169,11 +191,23 @@ class Grid(object):
             return variables[variable]
         except KeyError as e:
             raise GridWrongFormat(e)
-
-    @logger.time_and_log
-    def load_data(self, variable, (lat_idx1, lat_idx2),
+ 
+    def clip_data(self, data, (lat_idx1, lat_idx2),
                                   (lon_idx1, lon_idx2),
                                   (depth_idx1, depth_idx2)):
+        ndim = len(data.shape)
+        if ndim == 3:
+            return data[depth_idx1:depth_idx2,
+                            lat_idx1:lat_idx2:self.GRID_SPACING,
+                            lon_idx1:lon_idx2:self.GRID_SPACING]
+        elif ndim == 2: 
+            return data[lat_idx1:lat_idx2:self.GRID_SPACING,
+                        lon_idx1:lon_idx2:self.GRID_SPACING]
+        else:
+            raise GridWrongFormat()
+
+    @logger.time_and_log
+    def load_data(self, variable):
         """
         Load the subset of @variable. Assumes spatial data with layout:
         (time, (depth)), lat, lon
@@ -188,19 +222,13 @@ class Grid(object):
 
         if ndim == 4:
             # data arranged time, depth, lat, lon
-            return variable[0,
-                            depth_idx1:depth_idx2,
-                            lat_idx1:lat_idx2:self.GRID_SPACING,
-                            lon_idx1:lon_idx2:self.GRID_SPACING,]
+            return variable[0]
         elif ndim == 3:
             # data arranged time, lat, lon
-            return variable[0,
-                            lat_idx1:lat_idx2:self.GRID_SPACING,
-                            lon_idx1:lon_idx2:self.GRID_SPACING,]
+            return variable[0]
         elif ndim == 2:
             # data arranged lat, lon
-            return variable[lat_idx1:lat_idx2:self.GRID_SPACING,
-                            lon_idx1:lon_idx2:self.GRID_SPACING,]
+            return variable
         else:
             raise GridWrongFormat()
 

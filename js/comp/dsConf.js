@@ -166,7 +166,6 @@ ocean.dsConf = {
                     $('.slider-hint').text(local.toString());
                     if (data.mapimg) {
                         data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
-                        console.log(data.mapimg);
                         updateMap(data);
                     }
                 };
@@ -277,11 +276,32 @@ ocean.dsConf = {
         }, 
         onVariableChange: function(){} 
 
+    },
+    coral: {
+        params: override(function (dataset) { return {
+            };
+        }),
+        callback: function(data) {
+            if (data.img != null && data.scale != null) {
+                prependOutputSet();
+                appendOutput(data.img, null, null, null, data);
+                updateMap(data);
+                setLegend(data.scale);
+            }
+            updateInfo(data.dial, 'Alert level');
+
+        },
+        onSelect: null,
+        onDeselect: function() {
+            resetMap();
+            resetLegend();
+        }, 
+        onVariableChange: function(){}
     }
+
 };
 
-function appendOutput(image, dataURL, name, extras, data)
-{
+function appendOutput(image, dataURL, name, extras, data){
     var captionText = ""
     if (dataURL) {
         captionText = "<a class='download-data' href=" + dataURL+ " target='_blank'><span class='ui-icon ui-icon-arrowreturnthick-1-s'></span>Download Data</a>"
@@ -312,4 +332,13 @@ function appendOutput(image, dataURL, name, extras, data)
  */
 function pad(a,b){
     return([1e15]+a).slice(-b)
+}
+
+function updateInfo(image, altText){
+    if (image != null) {
+        $('#additionalInfoDiv').empty().append($('<img>', {src: image, alt: altText}));
+    }
+    else {
+        $('#additionalInfoDiv').empty();
+    }
 }

@@ -64,6 +64,7 @@ def main():
     print 'X-Portal-Version: %s' % util.__version__
     print
 
+
     json.dump(response, sys.stdout)
     logger.log('-DONE-')
 

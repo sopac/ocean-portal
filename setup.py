@@ -46,7 +46,8 @@ packages = [
     'ocean.datasets.sealevel',
     'ocean.datasets.reynolds',
     'ocean.datasets.ww3',
-    'ocean.datasets.ww3forecast'
+    'ocean.datasets.ww3forecast',
+    'ocean.datasets.coral'
 ]
 
 scripts = [
@@ -86,7 +87,8 @@ map_layers = [
     'southern_pac',
     'land',
     'COSPPac_EEZs',
-    'ReefLocations'
+    'ReefLocations',
+    'CRW_Outlines'
 ]
 
 BASE_PATH = 'share/portal'
@@ -145,6 +147,16 @@ data = [
     'images/sealevel.png',
     'images/shipping.png',
     'images/surfer.png',
+    'images/daily_0.png',
+    'images/daily_1.png',
+    'images/daily_2.png',
+    'images/daily_3.png',
+    'images/daily_4.png',
+    'images/outlook_0.png',
+    'images/outlook_1.png',
+    'images/outlook_2.png',
+    'images/outlook_3.png',
+    'images/outlook_4.png'
 ]
 
 # CODE BEGINS

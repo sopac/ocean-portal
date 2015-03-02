@@ -6,6 +6,10 @@
 # Authors: Danielle Madeley <d.madeley@bom.gov.au>
 
 from functools import wraps
+from ocean.core import ReportableException
+
+class ParameteriseError(ReportableException):
+    pass
 
 class Parameterise(object):
     """
@@ -38,6 +42,7 @@ class Parameterise(object):
             funcs = self._registry[name]
         except KeyError:
             funcs = self._registry[name] = []
+#            raise ParameteriseError
 
         return funcs
 
@@ -76,6 +81,8 @@ class Parameterise(object):
                     del kwargs['_ignore']
                 except KeyError:
                     ignore = []
+#                    raise ParameteriseError
+#                    raise Exception('inner')
 
                 def find_registry(cls):
                     try:
@@ -83,6 +90,8 @@ class Parameterise(object):
                             if isinstance(v, Parameterise):
                                 return v
                     except AttributeError:
+#                        raise ParameteriseError
+                        raise Exception('find')
                         pass
 
                     return None
@@ -97,8 +106,13 @@ class Parameterise(object):
                     return funcs
 
                 funcs = walk_back(self.registry(name), self._supercls)
+                from ocean import util, logger
+                logger.log('funcs')
+                logger.log(str(funcs))
 
                 candidates = filter(matches(params, ignore), funcs)
+                logger.log('candidates')
+                logger.log(str(candidates))
                 candidates.sort(key=lambda f: len(f._methodparams),
                                 reverse=True)
 
@@ -107,14 +121,14 @@ class Parameterise(object):
                 elif len(candidates) > 1:
                     if len(candidates[0]._methodparams) == \
                        len(candidates[1]._methodparams):
-                        for c in candidates:
-                            print name, c._methodparams
+                        logger.log('too many candidates')
                         raise AttributeError("Ambiguous. Too many matches")
                     else:
+                        logger.log('return the first candidate')
                         return candidates[0](*args, **kwargs)
                 else:
                     for f in funcs:
-                        print name, f._methodparams
+                        logger.log(name, f._methodparams)
                     raise AttributeError("No function matches parameters")
 
             return inner

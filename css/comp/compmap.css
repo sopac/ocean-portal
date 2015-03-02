@@ -120,7 +120,7 @@ a img {
 
 #loading-dialog b {
   position: relative;
-  top: -12px;
+  top: 1px;
 }
 
 /*#legendDiv {
@@ -138,6 +138,18 @@ a img {
   max-height: 200px;
   max-width: auto;
 }
+
+#additionalInfoDiv {
+  padding-bottom: 100%;
+}
+
+#additionalInfoDiv img {
+  width: 50%;
+  position: absolute;
+  bottom: 5px;
+  left: 25px;
+}
+
 #enlargeDiv {
     position: absolute;
     z-index: 1021;

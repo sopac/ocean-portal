@@ -157,16 +157,19 @@
         "plottypes": ["ts"]
     }]
 }, {
-    "id": "crw",
-    "bid": "crw",
+    "id": "coral",
     "name": "Coral Reef Watch",
     "title": "NOAA Coral Reef Watch",
     "help": "/cosppac/comp/ocean-portal/about_coralreefwatch.pdf",
     "variables": [{
-        "id":"CRW_BAA",
+        "id":"daily",
         "name":"Coral Bleaching Alert",
         "periods": ["daily"],
-        "plottypes": ["map"]
+        "plottypes": ["map"],
+        "dateRange" : {
+            "minDate": "20150101",
+            "maxDate": "20150213"
+        }
     }]
 }, {
     "id":"ww3forecast",

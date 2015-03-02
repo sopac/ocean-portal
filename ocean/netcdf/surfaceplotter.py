@@ -197,7 +197,7 @@ class SurfacePlotter(object):
         return False
 
     # --- get_title ---
-    @apply_to()
+#    @apply_to()
     def get_title(self, params={}):
         d = {
             'mean': "Average Sea Surface Temperature",
@@ -240,6 +240,10 @@ class SurfacePlotter(object):
 
     # --- get_colormap ---
     @apply_to()
+    def get_colormap_strategy(self, params={}):
+        return 'discrete'
+
+    @apply_to()
     def get_colormap(self, params={}):
         return 'RdBu_r'
 
@@ -247,10 +251,16 @@ class SurfacePlotter(object):
     def get_colormap(self, params={}):
         return 'jet'
 
+    # --- get_colors ---
+    @apply_to()
+    def get_colors(self, params={}):
+        return None
+
     #GAS ---- get_plotstyle ---
     @apply_to()
     def get_plotstyle(self, params={}):
-        return 'contourf'
+#        return 'contourf'
+        return 'pcolormesh'
 
     @apply_to(variable='anom')
     def get_plotstyle(self, params={}):
@@ -330,6 +340,9 @@ class SurfacePlotter(object):
         except KeyError:
             return var
 
+    def getPlotter(self):
+        return Plotter()
+
     def plot(self, outputFilename, **args):
         """
         Plot the thumbnail image and also the east and west map images.
@@ -359,9 +372,11 @@ class SurfacePlotter(object):
         plotStyle = self.get_plotstyle(params=args)#GAS
         contourLines = self.get_contourlines(params=args)#GAS
         smoothFactor = self.get_smooth_fac(params=args)#GAS
+        colors = self.get_colors(params=args)
+        colormap_strategy = self.get_colormap_strategy(params=args)
         
 
-        plot = Plotter()
+        plot = self.getPlotter()
 
         lat_min = regionConfig.regions[area][1]['llcrnrlat']
         lat_max = regionConfig.regions[area][1]['urcrnrlat']
@@ -381,7 +396,9 @@ class SurfacePlotter(object):
                                cb_tick_fmt=cb_tick_fmt,
                                cb_labels=cb_labels,
                                cb_label_pos=cb_label_pos,
+                               colormap_strategy = colormap_strategy,
                                cmp_name=cmap_name,
+                               colors = colors,
                                extend=extend,
                                plotStyle=plotStyle,
                                contourLines=contourLines,
@@ -389,7 +406,6 @@ class SurfacePlotter(object):
                                smoothFactor=smoothFactor,
                                product_label_str=self.PRODUCT_NAME,
                                area=area)
-
         grid = self.get_grid(params=args)
 
         if variable == 'dec':
@@ -405,6 +421,8 @@ class SurfacePlotter(object):
                                         cb_tick_fmt=cb_tick_fmt,
                                         cb_labels=cb_labels,
                                         cb_label_pos=cb_label_pos,
-                                        cmp_name=cmap_name, extend=extend)
+                                        cmp_name=cmap_name, extend=extend,
+                                        colormap_strategy = colormap_strategy,
+                                        colors = colors)
 
         plot.wait()

@@ -104,6 +104,8 @@ $(function() {
         selectFirstIfRequired('plottype');
 
         selectMapLayer("Bathymetry");
+
+        updateDatasets();
         ocean.dataset.onVariableChange();
     });
 
@@ -572,6 +574,9 @@ function updateDatasets(filter) {
     });
 
     /* select first */
+//    if (dataset is null) {
+ //       $("#dataset").val($("#dataset option:first").val());
+//    }
     setValue('dataset', dataset);
     selectFirstIfRequired('dataset');
 }

@@ -52,6 +52,9 @@ products = {"reynolds": {"daily":     "REY00001",
                          "monthly": "SEA00002"
                         },
             "ww3forecast": {"7d":  "WFC00001"
-                           }
+                           },
+            "coral": {"daily": "CRW00001",
+                      "forecast": "CRW00002"
+            }
 }
 

@@ -104,6 +104,9 @@ class SST(Dataset):
         else:
             return params['date'].strftime('%m')
 
+    def process_stats(self, params):
+        return {} 
+
     def process(self, params):
         response = {}
 
@@ -135,4 +138,5 @@ class SST(Dataset):
                                           fileName),
                              COMMON_FILES.values())
 
+        response.update(self.process_stats(params))
         return response

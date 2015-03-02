@@ -109,7 +109,8 @@ class Plotter(object):
                                output_filename='noname.png', title='', units='',
                                cm_edge_values=None, cb_tick_fmt="%.0f",
                                cb_labels=None, cb_label_pos=None,
-                               cmp_name='jet', extend='both',
+                               colormap_strategy='discrete',
+                               cmp_name='jet', colors=None, extend='both',
                                plotStyle='contourf', contourLines=True,
                                contourLabels=True, smoothFactor=1,
                                proj=self._DEFAULT_PROJ, product_label_str=None,
@@ -117,6 +118,22 @@ class Plotter(object):
                                draw_every=1, arrow_scale=10,
                                resolution=None, area=None):
 
+            '''
+            TODO
+            color map needs to be consilidated into one method. The existing discrete_colormap method is
+            less flexible. Actually, the overall plot method needs to be more flexible.
+            1. Introduce the colormap strategy
+                discrete: discrete_cmap
+                levels: from_levels_and_colors 
+            2. Depending on the strategy, various combination of the arguments should be passed in.
+                discrete: cmp_name
+                          extend
+                          cm_edge_values
+                levels: color_array
+                        extend
+                        cm_edge_values 
+            '''
+            
             if resolution is None and area is not None:
                 # try and get a resolution from the area default
                 resolution = regions[area][3].get('resolution', None)
@@ -135,7 +152,11 @@ class Plotter(object):
             #if cm_edge_values is None:
             #    cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
             n_colours = cm_edge_values.size - 1
-            d_cmap = discrete_cmap(cmp_name, n_colours, extend=extend)
+            if colormap_strategy == 'discrete':
+                d_cmap = discrete_cmap(cmp_name, n_colours, extend=extend)
+                norm = None
+            elif colormap_strategy == 'levels':
+                d_cmap, norm = from_levels_and_colors(cm_edge_values, np.array(colors) / 255.0, extend=extend)
 
             #GAS Smoothing section based on smoothFactor
             if smoothFactor > 1:
@@ -155,7 +176,7 @@ class Plotter(object):
             x, y = None, None
             if plotStyle == 'contourf':
                 x, y = m(*np.meshgrid(lons, lats))
-                img = plt.contourf(x, y, data, levels=cm_edge_values,
+                img = plt.contourf(x, y, data, levels=cm_edge_values, norm=norm,
                                   shading='flat', cmap=d_cmap, extend=extend)
             elif plotStyle == 'pcolormesh':
                 # Convert centre lat/lons to corner values required for
@@ -163,15 +184,14 @@ class Plotter(object):
                 lons2 = get_grid_edges(lons)
                 lats2 = get_grid_edges(lats)
                 x2, y2 = m(*np.meshgrid(lons2, lats2))
-                img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap)
-
+                img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap, norm=norm)
             # Draw contours
             if contourLines:
                 if x is None:
                     x, y = m(*np.meshgrid(lons, lats))
                 #GAS negative contour not to be dashed
                 plt.rcParams['contour.negative_linestyle'] = 'solid'
-                cnt = plt.contour(x, y, data, levels=cm_edge_values,
+                cnt = plt.contour(x, y, data, levels=cm_edge_values, norm=norm,
                                  colors = 'k', linewidths = 0.4, hold='on')
                 if contourLabels:
                     plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8)
@@ -214,7 +234,8 @@ class Plotter(object):
                              drawedges='True',
                              orientation='vertical',
                              extend=extend,
-                             ticks=tick_pos)
+                             ticks=tick_pos,
+                             boundaries=cm_edge_values)
             if cb_labels is None:
                 cb.set_ticklabels([cb_tick_fmt % k for k in cm_edge_values])
             else:
@@ -277,12 +298,6 @@ class Plotter(object):
         fileName, fileExtension = os.path.splitext(output_filename)
         colorbar_filename = fileName + COMMON_FILES['scale']
         outputfile_map = fileName + COMMON_FILES['mapimg']
-#        outputfile_east = fileName + '_east.png'
-#        outputfile_west = fileName + '_west.png'
-#        worldfile_east = util.get_resource('east.pgw')
-#        worldfile_west = util.get_resource('west.pgw')
-#        shutil.copyfile(worldfile_east, fileName + '_east.pgw')
-#        shutil.copyfile(worldfile_west, fileName + '_west.pgw')
 
         regions = [{'lat_min':-90,
                     'lat_max':90,
@@ -293,17 +308,23 @@ class Plotter(object):
                     'output_filename':outputfile_map}
                 ]
 
-        # Create colormap
+        # Create colormap        
         cm_edge_values = kwargs.get('cm_edge_values', None)
         cmp_name = kwargs.get('cmp_name', 'jet')
         extend = kwargs.get('extend', 'both')
         cb_label_pos = kwargs.get('cb_label_pos', None)
-
-        if cm_edge_values is None:
-            cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
+        colormap_strategy = kwargs.get('colormap_strategy', 'discrete')
+        colors = kwargs.get('colors', None)
 
         n_colours = cm_edge_values.size - 1
-        d_cmap = discrete_cmap(cmp_name, n_colours, extend=extend)
+        if colormap_strategy == 'discrete':
+            d_cmap = discrete_cmap(cmp_name, n_colours, extend=extend)
+            norm = None
+        elif colormap_strategy == 'levels':
+            d_cmap, norm = from_levels_and_colors(cm_edge_values, np.array(colors) / 255.0, extend=extend)
+  
+        if cm_edge_values is None:
+            cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
 
         if cb_label_pos is None:
             tick_pos = cm_edge_values
@@ -328,10 +349,10 @@ class Plotter(object):
 
             # Plot data
             x2, y2 = m(*np.meshgrid(lons2, lats2))
-            img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap)
+            img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap, norm=norm)
             img.set_clim(cm_edge_values.min(), cm_edge_values.max())
 
-            m.drawmapboundary(linewidth=0.0)
+            m.drawmapboundary(linewidth=0.0, fill_color='0.59')
 
             # Save figure
             plt.savefig(region['output_filename'], dpi=150,
@@ -347,8 +368,6 @@ class Plotter(object):
             fig = plt.figure(figsize=(1.5,2))
             ax1 = fig.add_axes([0.05, 0.01, 0.125, 0.98])
 
-            norm = mpl.colors.Normalize(*[cm_edge_values[0],
-                                        cm_edge_values[-1]])
             cb = mpl.colorbar.ColorbarBase(
                     ax1,
                     cmap=d_cmap,
@@ -461,6 +480,72 @@ def discrete_cmap(cmap_name, intervals, extend='both'):
     if max_colour is not None:
         cmap.set_over(max_colour)
     return cmap
+def from_levels_and_colors(levels, colors, extend='neither'):
+    """
+    A helper routine to generate a cmap and a norm instance which
+    behave similar to contourf's levels and colors arguments.
+
+    Parameters
+    ----------
+    levels : sequence of numbers
+        The quantization levels used to construct the :class:`BoundaryNorm`.
+        Values ``v`` are quantizized to level ``i`` if
+        ``lev[i] <= v < lev[i+1]``.
+    colors : sequence of colors
+        The fill color to use for each level. If `extend` is "neither" there
+        must be ``n_level - 1`` colors. For an `extend` of "min" or "max" add
+        one extra color, and for an `extend` of "both" add two colors.
+    extend : {'neither', 'min', 'max', 'both'}, optional
+        The behaviour when a value falls out of range of the given levels.
+        See :func:`~matplotlib.pyplot.contourf` for details.
+
+    Returns
+    -------
+    (cmap, norm) : tuple containing a :class:`Colormap` and a \
+                   :class:`Normalize` instance
+    """
+    colors_i0 = 0
+    colors_i1 = None
+
+    if extend == 'both':
+        colors_i0 = 1
+        colors_i1 = -1
+        extra_colors = 2
+    elif extend == 'min':
+        colors_i0 = 1
+        extra_colors = 1
+    elif extend == 'max':
+        colors_i1 = -1
+        extra_colors = 1
+    elif extend == 'neither':
+        extra_colors = 0
+    else:
+        raise ValueError('Unexpected value for extend: {0!r}'.format(extend))
+
+    n_data_colors = len(levels) - 1
+    n_expected_colors = n_data_colors + extra_colors
+    if len(colors) != n_expected_colors:
+        raise ValueError('With extend == {0!r} and n_levels == {1!r} expected'
+                         ' n_colors == {2!r}. Got {3!r}.'
+                         ''.format(extend, len(levels), n_expected_colors,
+                                   len(colors)))
+
+    cmap = mpl.colors.ListedColormap(colors[colors_i0:colors_i1], N=n_data_colors)
+
+    if extend in ['min', 'both']:
+        cmap.set_under(colors[0])
+    else:
+        cmap.set_under('none')
+
+    if extend in ['max', 'both']:
+        cmap.set_over(colors[-1])
+    else:
+        cmap.set_over('none')
+
+    cmap.colorbar_extend = extend
+
+    norm = mpl.colors.BoundaryNorm(levels, ncolors=n_data_colors)
+    return cmap, norm
 
 def get_grid_edges(x):
     x = np.array(x)
