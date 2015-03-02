@@ -168,8 +168,13 @@
         "plottypes": ["map"],
         "dateRange" : {
             "minDate": "20150101",
-            "maxDate": "20150213"
+            "maxDate": "-3"
         }
+    },{
+        "id":"outlook",
+        "name":"Coral Bleaching Forecast",
+        "periods": ["4weeks", "8weeks", "12weeks"],
+        "plottypes": ["map"]
     }]
 }, {
     "id":"ww3forecast",
