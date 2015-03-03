@@ -17,7 +17,8 @@ ocean.controls = [
     'longitude',
     'dataset',
     'dshelp',
-    'hour-slider'
+    'hour-slider',
+    'reef'
 ];
 
 ocean.compare = { limit: 24 };
@@ -332,6 +333,20 @@ $(function() {
     $('#tidalgauge').hover(function () {
         /* copy the value into the title */
         this.title = this.value;
+    });
+
+    $('#reef').change(function() {
+        if(this.checked) {
+            ocean.reefLayer = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
+               layers: 'reeflocations',
+               format: 'image/png',
+               transparent: true,
+               attribution: '<a href="http://www.reefbase.org/gis_maps/datasets.aspx" title="Reef Base">Reef Base</a>'
+            }).addTo(ocean.mapObj);
+        }
+        else {
+            ocean.mapObj.removeLayer(ocean.reefLayer);
+        }
     });
 
     var groupings = {};

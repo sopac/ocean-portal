@@ -88,6 +88,9 @@ class SST(Dataset):
         format = {
             'daily': '%Y%m%d',
             'weekly': '%Y%m%d',
+            '4weeks': '%Y%m%d',
+            '8weeks': '%Y%m%d',
+            '12weeks': '%Y%m%d',
             'monthly': '%Y%m',
             '3monthly': '%Y%m',
             '6monthly': '%Y%m',

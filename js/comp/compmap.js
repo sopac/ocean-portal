@@ -67,121 +67,15 @@ $(function() {
         resizable: false
     });
 
-/////    $('button').button();
-//    $('#enlargeDiv, #subregion').hide();
-
     /* initialise and show the loading dialog */
     $('#loading-dialog')
         .dialog('option', { 'modal': true,
                             'dialogClass': 'notitle',
                             'closeOnEscape': false,
-                            'height': 55,
+                            'height': 60,
                             'resizable': false });
-//        .dialog('open');
-
-    /* work out which region file to load */
-////    if (location.search == '')
-////        ocean.config = 'pac';
-////    else
-////        ocean.config = location.search.slice(1);
-
-    /* set up theme */
-////    $('.panel h1').addClass('ui-widget-header ui-state-default');
-//    $('.panel').addClass('border');
-
-    /* set up toolbar */
-////    $('.toolbar a').addClass('ui-state-default ui-corner-all');
-////    $('.toolbar a').hover(function () {
-////        $(this).toggleClass('ui-state-active');
-////    });
-
-////    $(window).load(function () {
-        /* layout functions for window resize */
-////        $(window).resize(function () {
-            /* expand vertical */
-////            $('.expand-v').each(function () {
-////                var e = $(this);
-
-////                e.height(e.parent().innerHeight() - e.position().top);
-////            });
-////        }).resize().resize(); /* IE8 can't work out the height first time! */
-
-        /* position centre layout */
-////        $('.layout-center').css({
-////            left: $('.layout-west').outerWidth(),
-////            right: $('.layout-east').outerWidth(),
-//            height: '100%'
-////        });
-
-//        if (map) {
-            /* poke the map to resize */
-//            map.updateSize();
-//        }
-////    });
-
-//    $.when(
-        /* portals config */
-//        $.getJSON('config/comp/portals.json', function(data, status_, xhr) {
-//            ocean.configProps = data[ocean.config];
-
-//            if (!ocean.configProps) {
-//                fatal_error("No portal called '" + ocean.config + "'.");
-//                return;
-//            }
-
-//            document.title = ocean.configProps.name + " Ocean Application";
-//        }),
-//        })
- 
-        /* load OpenLayers */
-//        $.cachedScript($('#map').attr('src')).done(function () {
-//            OpenLayers.ImgPath = "lib/OpenLayers/img/"
-//            createMap();
-//        }))
-//)
-//    .done(function () {
         createMap();
         resetLegend();
-//        var bounds = new OpenLayers.Bounds();
-
-        /* iterate the region bounds to calculate the * restricted extent */
- //       $('#region option').each(function () {
-//            var e = $(this);
-//            var b = new OpenLayers.Bounds(e.data('extent'));
-
-//            e.data('bounds', b);
-//            bounds.extend(b);
-//        });
-
-        /* compensate for the date line wrapping */
-//        if (bounds.right > 180) {
-//            bounds.left -= 360;
-//            bounds.right -= 360;
-//        }
-
-//        map.setOptions({ restrictedExtent: bounds });
-//        var bounds;
-
-        /* iterate the region bounds to calculate the * restricted extent */
-//        $('#region option').each(function () {
-//            var e = $(this);
-//            var b = new OpenLayers.Bounds(e.data('extent'));
-
-//            e.data('bounds', b);
-//            if (!bounds) {
-//                bounds = b;
-//            }
-//            else {
-//                bounds.extend(b);
-//            }
-//        });
-//        map.fitBounds(bounds);        
-//        setValue('region', ocean.config);
-//    })
-//    .fail(function () {
-//        maybe_close_loading_dialog();
-//        fatal_error("Failed to load portal.");
-//    });
 });
 
 /**
@@ -285,6 +179,7 @@ function updateMap(data) {
         ocean.overlayGroup.addLayer(ocean.imageOverlay);
         ocean.imageOverlay.setOpacity(1.0);
     }
+    ocean.bathymetryLayer.setOpacity(0.0);
 }
 
 /**
@@ -292,7 +187,7 @@ function updateMap(data) {
  */
 function resetMap() {
   ocean.overlayGroup.clearLayers();
-
+  ocean.bathymetryLayer.setOpacity(1.0);
 }
 
 /**

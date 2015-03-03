@@ -11,7 +11,8 @@
 #tidalgauge,
 #latitude,
 #longitude,
-#hour-slider
+#hour-slider,
+#reef
 {
   display: none;
 }
@@ -114,4 +115,11 @@
 .variable-wnd_spd #hour-slider
 {
   display: block;
+}
+
+
+.variable-daily #reef,
+.variable-outlook #reef
+{
+  display: inline;
 }

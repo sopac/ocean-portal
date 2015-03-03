@@ -349,6 +349,9 @@ class Plotter(object):
 
             # Plot data
             x2, y2 = m(*np.meshgrid(lons2, lats2))
+            #print x2
+            #print y2
+            #print data
             img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap, norm=norm)
             img.set_clim(cm_edge_values.min(), cm_edge_values.max())
 

@@ -67,6 +67,18 @@ class SurfacePlotter(object):
     def get_formatted_date(self, params={}):
         return params['date'].strftime('%d %B %Y')
 
+    @apply_to(period='4weeks')
+    def get_formatted_date(self, params={}):
+        return params['date'].strftime('%d %B %Y')
+
+    @apply_to(period='8weeks')
+    def get_formatted_date(self, params={}):
+        return params['date'].strftime('%d %B %Y')
+
+    @apply_to(period='12weeks')
+    def get_formatted_date(self, params={}):
+        return params['date'].strftime('%d %B %Y')
+
     @apply_to(period='monthly')
     def get_formatted_date(self, params={}):
         return params['date'].strftime('%B %Y')
@@ -176,11 +188,16 @@ class SurfacePlotter(object):
     # --- get_extend ---
     @apply_to()
     def get_extend(self, params={}):
-        return 'both'
+        extend = 'both'
+        if params['variable'] == 'dec':
+            extend = 'neither'
+        else:
+            extend = 'both'
+        return extend
 
-    @apply_to(variable='dec')
-    def get_extend(self, params={}):
-        return 'neither'
+#    @apply_to(variable='dec')
+#    def get_extend(self, params={}):
+#        return 'neither'
 
     # --- get_contour_labels ---
     @apply_to()
@@ -216,6 +233,9 @@ class SurfacePlotter(object):
         d = {
             'daily': "Daily",
             'weekly': "Weekly",
+            '4weeks': "4 Weeks",
+            '8weeks': "8 Weeks",
+            '12weeks': "12 Weeks",
             'monthly': "Monthly",
             '3monthly': "3 monthly",
             '6monthly': "6 monthly",
@@ -239,7 +259,6 @@ class SurfacePlotter(object):
         return ur'\u00b0' + 'C/decade' # degrees C/decade
 
     # --- get_colormap ---
-    @apply_to()
     def get_colormap_strategy(self, params={}):
         return 'discrete'
 
@@ -259,12 +278,16 @@ class SurfacePlotter(object):
     #GAS ---- get_plotstyle ---
     @apply_to()
     def get_plotstyle(self, params={}):
-#        return 'contourf'
-        return 'pcolormesh'
+        style = 'pcolormesh'
+        if params['variable'] == 'anom':
+            style = 'contourf'
+        else:
+            style = 'contourf'
+        return style
 
-    @apply_to(variable='anom')
-    def get_plotstyle(self, params={}):
-        return 'contourf'
+#    @apply_to(variable='anom')
+#    def get_plotstyle(self, params={}):
+#        return 'contourf'
 
     #GAS ---- get_contourlines ---
     @apply_to()

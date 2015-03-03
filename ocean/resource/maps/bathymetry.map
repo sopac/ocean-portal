@@ -302,14 +302,14 @@ MAP
         DATA         ReefLocations
         GROUP        reef 
         STATUS       ON
-        TYPE         POLYGON
+        TYPE         POINT
 
         CLASS
             NAME 'reeflocations'
 
             STYLE
                 SYMBOL     'circle'
-                COLOR      255 0 0
+                COLOR      0 0 0
                 SIZE       1
             END
         END
