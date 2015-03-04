@@ -9,7 +9,7 @@
     },
     "coral": {
         "datasets": [],
-        "vargroups": ["crw"]
+        "vargroups": ["crw", "chlodaily"]
     },
     "tour": {
         "datasets": [],

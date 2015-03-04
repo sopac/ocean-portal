@@ -207,5 +207,21 @@
         "periods": ["7days"],
         "plottypes": ["map"]
     }]
+}, {
+    "id":"chlorophyll",
+    "name":"Chlorophyll Mass Concentration",
+    "title": "Chlorophyll Mass Concentration",
+    "help": "/cosppac/comp/ocean-portal/about_chlorophyll.pdf",
+    "variables": [{
+        "id": "chldaily",
+        "name": "Daily",
+        "periods": ["daily"],
+        "plottypes": ["map"]
+    }, {
+        "id": "chlmonthly",
+        "name": "Monthly",
+        "periods": ["monthly"],
+        "plottypes": ["map"]
+    }]
 }
 ]
