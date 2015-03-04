@@ -3,6 +3,7 @@
 DATASET=$1
 
 export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/
+export PATH=${PATH}:/srv/map-portal/usr/bin/
 
 # configuration
 
@@ -19,10 +20,9 @@ case $DATASET in
         DATA_SUBDIR=data
 	;;
     chloro)
-        SERVER=ftp://ftp.acri.fr
-        SERVER_PATH=/GLOB_4KM/RAN/CHL1/MERGED/GSM
-        DATA_SUBDIR=data
-        MIRROR_FLAGS='-I *GLOB_4*.nc.gz' 
+        SERVER=http://opendap.jpl.nasa.gov/
+        SERVER_PATH=opendap/allData/modis/L3/aqua/chlA/4km/
+        DATA_SUBDIR=
         ;;
     currents)
         SERVER=ftp://ftp.hycom.org
@@ -112,7 +112,7 @@ EOF
                 then
                     break 2;
                 else
-                    wget -nc "$URL";
+                    wget -nc -nv "$URL";
                     if [[ $? -eq 0 ]];
                     then
                         break 2;
@@ -136,21 +136,59 @@ values = {"dataset": "ww3forecast",
            }
 data = urllib.urlencode(values)
 full_url = url + '?' + data
-response = urllib2.urlopen(full_url)
-print response.read()
+try:
+    response = urllib2.urlopen(full_url)
+    print response.read()
+except urllib2.HTTPError as e:
+    print e.read()
 
 url = "http://www.bom.gov.au/cosppac/apps/portal/cgi/portal.py"
 full_url = url + '?' + data
-response = urllib2.urlopen(full_url)
-print response.read()
+try:
+    response = urllib2.urlopen(full_url)
+    print response.read()
+except urllib2.HTTPError as e:
+    print e.read()
 EOF`
         echo -n $response
     ;;
     chloro)
-        lftp -u globcolour_data,fgh678 $SERVER << EOF
-cd $SERVER_PATH || exit 1
-mirror --only-missing -n $MIRROR_FLAGS
-EOF
+        response=`python << EOF
+import os
+import urllib
+import urllib2
+from datetime import datetime, timedelta
+from subprocess import check_call, CalledProcessError
+
+url = '$SERVER/$SERVER_PATH'
+OneM = 1000000
+#daily
+today = datetime.now()
+for delta in range(4):
+    date = today + timedelta(-delta)
+    date = date.timetuple()
+    file_name = 'A%4d%03d.L3m_DAY_CHL_chlor_a_4km.bz2' % (date.tm_year, date.tm_yday)
+    file_path = 'daily/' + file_name
+    full_url = '%sdaily/%4d/%03d/%s' % (url, date.tm_year, date.tm_yday, file_name)
+    if os.path.exists(file_path):
+        continue
+    else:
+        try:
+           mega = urllib2.urlopen(full_url)
+           file, msg = urllib.urlretrieve(full_url, file_path)
+           urllib.urlcleanup()
+           print file
+           check_call(['h4tonccf_nc4', file_path])
+           os.remove(file_path)
+        except urllib2.HTTPError as e:
+            print e.read()
+            print '\n'
+            continue
+        except CalledProcessError as cpe:
+            print cpe.read()
+#monthly
+EOF`
+        echo -n $response
     ;;
     sealevel)
         python << EOF | while read PRODUCT GAUGE
