@@ -212,9 +212,7 @@ class ww3forecastGrid(Grid):
     """ 
     TIME_VARIABLE = ['time']
  
-    def load_data(self, variable, (lat_idx1, lat_idx2),
-                                  (lon_idx1, lon_idx2),
-                                  (depth_idx1, depth_idx2)):
+    def load_data(self, variable):
         """
         Load the subset of @variable. Assumes spatial data with layout:
         (time, (depth)), lat, lon
@@ -229,19 +227,13 @@ class ww3forecastGrid(Grid):
 
         if ndim == 4:
             # data arranged time, depth, lat, lon
-            return variable[0,
-                            depth_idx1:depth_idx2,
-                            lat_idx1:lat_idx2:self.GRID_SPACING,
-                            lon_idx1:lon_idx2:self.GRID_SPACING,]
+            return variable[0]
         elif ndim == 3:
             # data arranged time, lat, lon
-            return variable[:,
-                            lat_idx1:lat_idx2:self.GRID_SPACING,
-                            lon_idx1:lon_idx2:self.GRID_SPACING,]
+            return variable[:]
         elif ndim == 2:
             # data arranged lat, lon
-            return variable[lat_idx1:lat_idx2:self.GRID_SPACING,
-                            lon_idx1:lon_idx2:self.GRID_SPACING,]
+            return variable
         else:
             raise GridWrongFormat()
  

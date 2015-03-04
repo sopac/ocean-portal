@@ -3,7 +3,7 @@
     "name":"Reynolds",
     "title": "Sea Surface Temperature - Reynolds",
     "rank": 100,
-    "help": "/cosppac/comp/ocean-portal/about_reynolds.pdf",
+    "help": "help/about_reynolds.pdf",
     "variables": [{
         "id":"meansst",
         "bid": "mean",
@@ -31,7 +31,7 @@
     "id":"ersst",
     "name":"ERSST",
     "title": "Sea Surface Temperature - ERSST",
-    "help": "/cosppac/comp/ocean-portal/about_ersst.pdf",
+    "help": "help/about_ersst.pdf",
     "variables": [{
         "id":"meansst",
         "bid": "mean",
@@ -65,7 +65,7 @@
     "id":"ww3",
     "name":"WaveWatch III",
     "title": "WaveWatch III",
-    "help": "/cosppac/comp/ocean-portal/about_ww3.pdf",
+    "help": "help/about_ww3.pdf",
     "variables": [{
         "id": "Hs",
         "name": "Significant Wave Height",
@@ -91,7 +91,7 @@
     "name":"BRAN",
     "title": "BRAN 2.1",
     "rank": 50,
-    "help": "/cosppac/comp/ocean-portal/about_bran.pdf",
+    "help": "help/about_bran.pdf",
     "variables": [{
         "id":"meansst",
         "bid": "temp",
@@ -124,7 +124,7 @@
     "name":"Sea Level Data",
     "title": "Church & White",
     "rank": 100,
-    "help": "/cosppac/comp/ocean-portal/about_sealevel.pdf",
+    "help": "help/about_sealevel.pdf",
     "variables": [{
         "id":"alt",
         "name":"Altimetry",
@@ -149,7 +149,7 @@
     "bid": "sealevel",
     "name": "Sea Level Data",
     "title": "National Tidal Centre",
-    "help": "/cosppac/comp/ocean-portal/about_sealevel.pdf",
+    "help": "help/about_sealevel.pdf",
     "variables": [{
         "id":"gauge",
         "name":"Tide Gauge",
@@ -160,7 +160,7 @@
     "id": "coral",
     "name": "Coral Reef Watch",
     "title": "NOAA Coral Reef Watch",
-    "help": "/cosppac/comp/ocean-portal/about_coralreefwatch.pdf",
+    "help": "help/about_coralreefwatch.pdf",
     "variables": [{
         "id":"daily",
         "name":"Coral Bleaching Alert",
@@ -180,7 +180,7 @@
     "id":"ww3forecast",
     "name":"Global AUSWAVE Forecast",
     "title": "WaveWatch III Forecast",
-    "help": "/cosppac/comp/ocean-portal/about_ww3forecasts.pdf",
+    "help": "help/about_ww3forecasts.pdf",
     "variables": [{
         "id": "sig_wav_ht",
         "name": "Combined Sea and Swell Wave Height",
@@ -211,7 +211,7 @@
     "id":"chlorophyll",
     "name":"Chlorophyll Mass Concentration",
     "title": "Chlorophyll Mass Concentration",
-    "help": "/cosppac/comp/ocean-portal/about_chlorophyll.pdf",
+    "help": "help/about_chlorophyll.pdf",
     "variables": [{
         "id": "chldaily",
         "name": "Daily",
