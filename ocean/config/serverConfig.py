@@ -50,9 +50,11 @@ class tuscany(default):
         'sealevel': '/data/sea_level/',
         'ww3': '/data/wavewatch3/',
         'coral':'/data/sst/coral/',
+        'coral_ol':'/data/sst/coral/',
         'poama':'/data/poama/',
         'oceanmaps':'/data/oceanmaps/',
-        'chloro':'/data/chloro/',
+        'chloro_d':'/data/chloro/',
+        'chloro_m':'/data/chloro/',
         'currents':'/data/currents/',
         'ww3forecast':'/data/wavewatch3/forecast/'
     }
@@ -68,9 +70,11 @@ class tunceli(default):
         'sealevel': '/www4/data/cosppac/sea_level/',
         'ww3': '/www4/data/cosppac/wavewatch3/',
         'coral':'/www4/data/cosppac/coral/',
+        'coral_ol':'/www4/data/cosppac/coral/',
         'poama':'/www4/data/cosppac/poama/',
         'oceanmaps':'/www4/data/cosppac/oceanmaps/',
-        'chloro':'/www4/data/cosppac/chloro/',
+        'chloro_d':'/data/chloro/',
+        'chloro_m':'/data/chloro/',
         'currents':'/www4/data/cosppac/currents/',
         'ww3forecast':'/www4/data/cosppac/wavewatch3/forecast/'
     }
@@ -87,9 +91,11 @@ class www4(default):
         'sealevel': '/web/data/cosppac/sea_level/',
         'ww3': '/web/data/cosppac/wavewatch3/',
         'coral': '/web/data/cosppac/coral/',
+        'coral_ol': '/web/data/cosppac/coral/',
         'poama': '/web/data/cosppac/poama/',
         'oceanmaps': '/web/data/cosppac/oceanmaps/',
-        'chloro':'/web/data/cosppac/chloro/',
+        'chloro_d':'/data/chloro/',
+        'chloro_m':'/data/chloro/',
         'currents':'/web/data/cosppac/currents/',
         'ww3forecast':'/web/data/cosppac/wavewatch3/forecast/'
     }

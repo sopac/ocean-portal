@@ -18,18 +18,18 @@ case $DATASET in
         SERVER_PATH=thredds/fileServer/nmoc/oceanmaps_ofam_fc/ops/latest/
         DATA_SUBDIR=data
 	;;
-    chloro)
-        SERVER=ftp://ftp.acri.fr
-        SERVER_PATH=/GLOB_4KM/RAN/CHL1/MERGED/GSM
-        DATA_SUBDIR=data
-        MIRROR_FLAGS='-I *GLOB_4*.nc.gz' 
+    chloro_m)
+        SERVER=http://opendap.jpl.nasa.gov/
+        SERVER_PATH=/opendap/allData/modis/L3/aqua/chlA/4km/monthly/
+        DATA_SUBDIR=monthly
+        ;;
+    chloro_d)
+        SERVER=http://opendap.jpl.nasa.gov/
+        SERVER_PATH=/opendap/allData/modis/L3/aqua/chlA/4km/daily/
+        DATA_SUBDIR=daily
         ;;
     currents)
-        SERVER=ftp://ftp.hycom.org
-        SERVER_PATH=/datasets/GLBu0.08/expt_91.1/forecasts
-        MIRROR_FLAGS='-I *GLOB_4*.nc.gz' 
         ;;
-    currents)
         SERVER=ftp://ftp.hycom.org
         SERVER_PATH=/datasets/GLBu0.08/expt_91.1/forecasts
         DATA_SUBDIR=data
@@ -40,6 +40,12 @@ case $DATASET in
         SERVER_PATH=/pub/sod/mecb/gliu/crw_5km_for_bom
         DATA_SUBDIR=data
         MIRROR_FLAGS='-I baa_max*.nc'
+        ;;
+    coral_ol)
+        SERVER=ftp://ftp.star.nesdis.noaa.gov
+        SERVER_PATH=/pub/sod/mecb/gliu/outlook_for_bom_v3
+        DATA_SUBDIR=outlook
+        MIRROR_FLAGS='-I outlook*.dat'
         ;;
     poama)
         SERVER=http://opendap.bom.gov.au:8080
@@ -86,7 +92,7 @@ fi
 cd $DATA_DIR/$DATA_SUBDIR || exit 1
 
 case $DATASET in
-    reynolds|ersst|coral|currents)
+    reynolds|ersst|coral|coral_ol|currents|chloro_d|chloro_m)
         lftp $SERVER << EOF
 cd $SERVER_PATH || exit 1
 mirror --only-missing -n $MIRROR_FLAGS
@@ -101,12 +107,6 @@ EOF
     ;;
     ww3)
 	    wget --no-clobber -i ./AUSWAVE_File_List.txt
-    ;;
-    chloro)
-        lftp -u globcolour_data,fgh678 $SERVER << EOF
-cd $SERVER_PATH || exit 1
-mirror --only-missing -n $MIRROR_FLAGS
-EOF
     ;;
     sealevel)
         python << EOF | while read PRODUCT GAUGE
@@ -163,8 +163,15 @@ Calculate_MultiMonth_Averages().process("$DATASET")
 # FIXME: calculate deciles
 EOF
     ;;
-    coral)
-find ./ -name "*.hdf" -exec h4toh5 {} \;
-find ./ -name "*.*" -exec chmod 777 {} \;
+
+    coral_ol)
+        python << EOF
+print "Convert CRW Outlook V3 to NETCDF..."
+
+from ocean.processing.Convert_Coral_Outlook import Convert_Outlook
+
+Convert_Outlook("$DATA_SUBDIR")
+
+EOF
     ;;
 esac
