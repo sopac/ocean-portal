@@ -29,7 +29,6 @@ case $DATASET in
         DATA_SUBDIR=daily
         ;;
     currents)
-        ;;
         SERVER=ftp://ftp.hycom.org
         SERVER_PATH=/datasets/GLBu0.08/expt_91.1/forecasts
         DATA_SUBDIR=data
@@ -49,7 +48,8 @@ case $DATASET in
         ;;
     poama)
         SERVER=http://opendap.bom.gov.au:8080
-        SERVER_PATH=thredds/fileServer/paccsap/sea_surface_temperature_seasonal/grid/
+        SERVER_PATH1=thredds/fileServer/paccsap/sea_surface_temperature_seasonal/grid/
+	SERVER_PATH2=thredds/fileServer/paccsap/sea_level_seasonal/grid/
         DATA_SUBDIR=data
         ;;
     ersst)
@@ -101,7 +101,11 @@ EOF
     ;;
     poama)
             FILE=PACCSAP_oa_latest.nc
-            URL=$SERVER/$SERVER_PATH/$FILE
+            URL=$SERVER/$SERVER_PATH1/$FILE
+            wget -O $FILE "$URL" || echo -n "error ($?)"
+            echo
+            FILE=sla_grid_latest.nc
+            URL=$SERVER/$SERVER_PATH2/$FILE
             wget -O $FILE "$URL" || echo -n "error ($?)"
             echo
     ;;
