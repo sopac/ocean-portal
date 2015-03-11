@@ -231,7 +231,8 @@ $(function() {
 
         if (selectedyear == range.min.getFullYear()) {
             minMonth = range.min.getMonth();
-        } else if (selectedyear == range.max.getFullYear()) {
+        } 
+        if (selectedyear == range.max.getFullYear()) {
             maxMonth = range.max.getMonth();
         }
 

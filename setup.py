@@ -47,7 +47,8 @@ packages = [
     'ocean.datasets.reynolds',
     'ocean.datasets.ww3',
     'ocean.datasets.ww3forecast',
-    'ocean.datasets.coral'
+    'ocean.datasets.coral',
+    'ocean.datasets.chlorophyll'
 ]
 
 scripts = [

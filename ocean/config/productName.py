@@ -57,6 +57,9 @@ products = {"reynolds": {"daily":     "REY00001",
                       "4weeks": "CRW00002",
                       "8weeks": "CRW00003",
                       "12weeks": "CRW00004"
+            },
+            "chloro": {"daily": "CRL00001",
+                       "monthly": "CRL00002"
             }
 }
 

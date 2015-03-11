@@ -1,8 +1,10 @@
 #!/usr/bin/env sh
 
 DATASET=$1
+PERIOD=$2
 
-export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/
+#export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/
+export PYTHONPATH=${PYTHONPATH}:/home/sguo/sheng/usr/lib/python2.6/site-packages/
 export PATH=${PATH}:/srv/map-portal/usr/bin/
 
 # configuration
@@ -40,6 +42,11 @@ case $DATASET in
         SERVER_PATH=/pub/sod/mecb/gliu/crw_5km_for_bom
         DATA_SUBDIR=data
         MIRROR_FLAGS='-I baa_max*.nc'
+        ;;
+    poamasla)
+        SERVER=http://opendap.bom.gov.au:8080
+        SERVER_PATH=/thredds/fileServer/paccsap/sea_level_seasonal/grid/
+        DATA_SUBDIR=sla
         ;;
     poama)
         SERVER=http://opendap.bom.gov.au:8080
@@ -83,7 +90,7 @@ fi
 
 # download data
 
-cd $DATA_DIR/$DATA_SUBDIR || exit 1
+cd $DATA_DIR$DATA_SUBDIR || exit 1
 
 case $DATASET in
     reynolds|ersst|coral|currents)
@@ -93,7 +100,23 @@ mirror --only-missing -n $MIRROR_FLAGS
 chmod -R 666
 EOF
     ;;
-    poama)
+    poamasla)
+            FILE='sla_grid_latest.nc'
+            URL=$SERVER/$SERVER_PATH/$FILE
+            wget -nc -q "$URL" || echo -n "error ($?)"
+            echo '<<<'
+            response=`python << EOF
+import os
+from subprocess import check_call, CalledProcessError
+try:
+    check_call(['ncatted', '-a', '_FillValue,HEIGHT,c,f,NaN', '$FILE'])
+except CalledProcessError as cpe:
+    print cpe.read()
+    print '\n'
+EOF`
+            echo -n $response
+    ;;
+     poama)
             FILE=PACCSAP_oa_latest.nc
             URL=$SERVER/$SERVER_PATH/$FILE
             wget - $FILE "$URL" || echo -n "error ($?)"
@@ -157,36 +180,76 @@ EOF`
 import os
 import urllib
 import urllib2
-from datetime import datetime, timedelta
+from datetime import timedelta, date
 from subprocess import check_call, CalledProcessError
+import calendar
 
 url = '$SERVER/$SERVER_PATH'
 OneM = 1000000
+today = date.today()
 #daily
-today = datetime.now()
-for delta in range(4):
-    date = today + timedelta(-delta)
-    date = date.timetuple()
-    file_name = 'A%4d%03d.L3m_DAY_CHL_chlor_a_4km.bz2' % (date.tm_year, date.tm_yday)
-    file_path = 'daily/' + file_name
-    full_url = '%sdaily/%4d/%03d/%s' % (url, date.tm_year, date.tm_yday, file_name)
-    if os.path.exists(file_path):
-        continue
-    else:
-        try:
-           mega = urllib2.urlopen(full_url)
-           file, msg = urllib.urlretrieve(full_url, file_path)
-           urllib.urlcleanup()
-           print file
-           check_call(['h4tonccf_nc4', file_path])
-           os.remove(file_path)
-        except urllib2.HTTPError as e:
-            print e.read()
-            print '\n'
+if '$PERIOD' == 'daily':
+    for delta in range(4):
+        date = today + timedelta(-delta)
+        date = date.timetuple()
+        file_name = 'A%4d%03d.L3m_DAY_CHL_chlor_a_4km.bz2' % (date.tm_year, date.tm_yday)
+        nc_file_name = 'A%4d%03d.L3m_DAY_CHL_chlor_a_4km.nc' % (date.tm_year, date.tm_yday)
+        file_path = 'daily/' + file_name
+        nc_file_path = 'daily/' + nc_file_name
+        full_url = '%sdaily/%4d/%03d/%s' % (url, date.tm_year, date.tm_yday, file_name)
+        if os.path.exists(nc_file_path):
             continue
-        except CalledProcessError as cpe:
-            print cpe.read()
+        else:
+            try:
+               mega = urllib2.urlopen(full_url)
+               file, msg = urllib.urlretrieve(full_url, file_path)
+               urllib.urlcleanup()
+               print file
+               check_call(['h4tonccf_nc4', file_path])
+               check_call(['ncatted', '-a', 'units,l3m_data,c,c,mg m^-3', '-a', '_FillValue,l3m_data,c,f,-32767', nc_file_path])
+               os.remove(file_path)
+            except urllib2.HTTPError as e:
+                print e.read()
+                print '\n'
+                continue
+            except CalledProcessError as cpe:
+                print cpe.read()
+                print '\n'
 #monthly
+elif '$PERIOD' == 'monthly':
+    date = today.replace(day=1)
+    for delta in range(2):
+        date = date + timedelta(-1)
+        first_day_month = date.replace(day=1)
+        last_day_month = date.replace(day=calendar.monthrange(date.year, date.month)[1])
+        date = first_day_month
+
+        first_date = first_day_month.timetuple()
+        last_date = last_day_month.timetuple() 
+        file_name = 'A%4d%03d%4d%03d.L3m_MO_CHL_chlor_a_4km.bz2' % (first_date.tm_year, first_date.tm_yday, last_date.tm_year, last_date.tm_yday)
+        print file_name
+        nc_file_name = 'A%4d%03d%4d%03d.L3m_MO_CHL_chlor_a_4km.nc' % (first_date.tm_year, first_date.tm_yday, last_date.tm_year, last_date.tm_yday)
+        file_path = 'monthly/' + file_name
+        nc_file_path = 'monthly/' + nc_file_name
+        full_url = '%smonthly/%4d/%s' % (url, first_date.tm_year, file_name)
+        if os.path.exists(nc_file_path):
+            continue
+        else:
+            try:
+               mega = urllib2.urlopen(full_url)
+               file, msg = urllib.urlretrieve(full_url, file_path)
+               urllib.urlcleanup()
+               print file
+               check_call(['h4tonccf_nc4', file_path])
+               check_call(['ncatted', '-a', 'units,l3m_data,c,c,mg m^-3', '-a', '_FillValue,l3m_data,c,f,-32767', nc_file_path])
+               os.remove(file_path)
+            except urllib2.HTTPError as e:
+                print e.read()
+                print '\n'
+                continue
+            except CalledProcessError as cpe:
+                print cpe.read()
+                print '\n'
 EOF`
         echo -n $response
     ;;

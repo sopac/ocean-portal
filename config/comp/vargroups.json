@@ -37,5 +37,15 @@
   "chlodaily": {
     "name": "Chlorophyll-A",
     "vars": ["chldaily"]
+  },
+
+  "poamasla": {
+    "name": "Seasonal Sea Level Forcast",
+    "vars": ["height"]
+  },
+
+  "chlomonthly": {
+    "name": "Chlorophyll-A",
+    "vars": ["chlmonthly"]
   }
 }

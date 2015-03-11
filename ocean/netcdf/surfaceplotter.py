@@ -258,22 +258,28 @@ class SurfacePlotter(object):
     def get_units(self, params={}):
         return ur'\u00b0' + 'C/decade' # degrees C/decade
 
-    # --- get_colormap ---
+    # --- get_colormap_strategy---
     def get_colormap_strategy(self, params={}):
         return 'discrete'
 
-    @apply_to()
+#    @apply_to()
     def get_colormap(self, params={}):
-        return 'RdBu_r'
+        cm_name = 'RdBu_r'
+        if params.get('variable') == 'mean':
+            cm_name = 'jet'
+        return cm_name
 
-    @apply_to(variable='mean')
-    def get_colormap(self, params={}):
-        return 'jet'
+#    @apply_to(variable='mean')
+#    def get_colormap(self, params={}):
+#        return 'jet'
 
     # --- get_colors ---
     @apply_to()
     def get_colors(self, params={}):
         return None
+
+    def get_fill_color(self, params={}):
+        return '1.0'
 
     #GAS ---- get_plotstyle ---
     @apply_to()
@@ -396,6 +402,7 @@ class SurfacePlotter(object):
         contourLines = self.get_contourlines(params=args)#GAS
         smoothFactor = self.get_smooth_fac(params=args)#GAS
         colors = self.get_colors(params=args)
+        fill_color = self.get_fill_color(params=args)
         colormap_strategy = self.get_colormap_strategy(params=args)
         
 
@@ -422,6 +429,7 @@ class SurfacePlotter(object):
                                colormap_strategy = colormap_strategy,
                                cmp_name=cmap_name,
                                colors = colors,
+                               fill_color = fill_color,
                                extend=extend,
                                plotStyle=plotStyle,
                                contourLines=contourLines,
@@ -446,6 +454,7 @@ class SurfacePlotter(object):
                                         cb_label_pos=cb_label_pos,
                                         cmp_name=cmap_name, extend=extend,
                                         colormap_strategy = colormap_strategy,
-                                        colors = colors)
+                                        colors = colors,
+                                        fill_color = fill_color)
 
         plot.wait()
