@@ -262,7 +262,6 @@ class Gridset(Grid):
         Returns the filename for a grid file given the specified @path,
         @prefix, @date and @period of the file.
         """
-
         return os.path.join(path,
                             '%s%s%s' % (
                             prefix,
@@ -270,13 +269,25 @@ class Gridset(Grid):
                                                    params=dict(period=period)),
                             suffix))
 
-    @apply_to(period='daily')
+#    @apply_to(period='daily')
     def get_filename_date(self, date, **kwargs):
-        return date.strftime('%Y%m%d')
+        date_string = ''
+        period =  kwargs.get('params')['period']
+        if period == 'daily':
+            date_string = date.strftime('%Y%m%d')
+        elif period == 'monthly':
+            date_string =  date.strftime('%Y%m')
+        elif period == '3monthly':
+            date_string = self._get_filename_date(date, 3)
+        elif period == '6monthly':
+            date_string = self._get_filename_date(date, 6)
+        elif period == '12monthly':
+            date_string = self._get_filename_date(date, 12)
+        return date_string
 
-    @apply_to(period='monthly')
-    def get_filename_date(self, date, **kwargs):
-        return date.strftime('%Y%m')
+
+#    @apply_to(period='monthly')
+    #def get_filename_date(self, date, **kwargs):
 
     def _get_filename_date(self, date, nmonths):
         months = getMonths(date, nmonths)
@@ -284,14 +295,14 @@ class Gridset(Grid):
                                    months[0].strftime('%Y%m'),
                                    months[-1].strftime('%Y%m'))
 
-    @apply_to(period='3monthly')
-    def get_filename_date(self, date, **kwargs):
-        return self._get_filename_date(date, 3)
-
-    @apply_to(period='6monthly')
-    def get_filename_date(self, date, **kwargs):
-        return self._get_filename_date(date, 6)
-
-    @apply_to(period='12monthly')
-    def get_filename_date(self, date, **kwargs):
-        return self._get_filename_date(date, 12)
+#    @apply_to(period='3monthly')
+#    def get_filename_date(self, date, **kwargs):
+#        return self._get_filename_date(date, 3)
+#
+#    @apply_to(period='6monthly')
+#    def get_filename_date(self, date, **kwargs):
+#        return self._get_filename_date(date, 6)
+#
+#    @apply_to(period='12monthly')
+#    def get_filename_date(self, date, **kwargs):
+#        return self._get_filename_date(date, 12)

@@ -111,6 +111,7 @@ class Plotter(object):
                                cb_labels=None, cb_label_pos=None,
                                colormap_strategy='discrete',
                                cmp_name='jet', colors=None, extend='both',
+                               fill_color='1.0',
                                plotStyle='contourf', contourLines=True,
                                contourLabels=True, smoothFactor=1,
                                proj=self._DEFAULT_PROJ, product_label_str=None,
@@ -156,7 +157,9 @@ class Plotter(object):
                 d_cmap = discrete_cmap(cmp_name, n_colours, extend=extend)
                 norm = None
             elif colormap_strategy == 'levels':
-                d_cmap, norm = from_levels_and_colors(cm_edge_values, np.array(colors) / 255.0, extend=extend)
+                d_cmap, norm = from_levels_and_colors(cm_edge_values, np.array(colors) / 255.0, None, extend=extend)
+            elif colormap_strategy == 'nonlinear':
+                d_cmap, norm = from_levels_and_colors(cm_edge_values, None, cmp_name, extend=extend)
 
             #GAS Smoothing section based on smoothFactor
             if smoothFactor > 1:
@@ -208,8 +211,10 @@ class Plotter(object):
                                      arrow_scale=arrow_scale)
 
             # Draw land, coastlines, parallels, meridians and add title
+            m.drawmapboundary(linewidth=0.0, fill_color=fill_color)
             m.drawcoastlines(linewidth=0.5, color='#505050', zorder=8)
-            m.fillcontinents(color='#F1EBB7', zorder=7)
+#            m.fillcontinents(color='#F1EBB7', zorder=7)
+            m.fillcontinents(color='0.58', zorder=7)
 
             parallels, p_dec_places = get_tick_values(lat_min, lat_max)
             meridians, m_dec_places = get_tick_values(lon_min, lon_max)
@@ -230,8 +235,9 @@ class Plotter(object):
             else:
                 tick_pos = cb_label_pos
             cb = plt.colorbar(img, cax=cax,
-                             spacing='proportional',
-                             drawedges='True',
+#                             spacing='proportional',
+                             spacing='uniform',
+                             drawedges='False',
                              orientation='vertical',
                              extend=extend,
                              ticks=tick_pos,
@@ -315,13 +321,16 @@ class Plotter(object):
         cb_label_pos = kwargs.get('cb_label_pos', None)
         colormap_strategy = kwargs.get('colormap_strategy', 'discrete')
         colors = kwargs.get('colors', None)
+        fill_color = kwargs.get('fill_color', '0.0')
 
         n_colours = cm_edge_values.size - 1
         if colormap_strategy == 'discrete':
             d_cmap = discrete_cmap(cmp_name, n_colours, extend=extend)
             norm = None
         elif colormap_strategy == 'levels':
-            d_cmap, norm = from_levels_and_colors(cm_edge_values, np.array(colors) / 255.0, extend=extend)
+            d_cmap, norm = from_levels_and_colors(cm_edge_values, np.array(colors) / 255.0, None, extend=extend)
+        elif colormap_strategy == 'nonlinear':
+            d_cmap, norm = from_levels_and_colors(cm_edge_values, None, cmp_name, extend=extend)
   
         if cm_edge_values is None:
             cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
@@ -341,7 +350,7 @@ class Plotter(object):
                         llcrnrlon=region['lon_min'],
                         urcrnrlat=region['lat_max'],
                         urcrnrlon=region['lon_max'],
-                        resolution=None)
+                        resolution='c')
 
             # Convert centre lat/lons to corner values required for pcolormesh
             lons2 = get_grid_edges(lons)
@@ -349,13 +358,11 @@ class Plotter(object):
 
             # Plot data
             x2, y2 = m(*np.meshgrid(lons2, lats2))
-            #print x2
-            #print y2
-            #print data
             img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap, norm=norm)
             img.set_clim(cm_edge_values.min(), cm_edge_values.max())
 
-            m.drawmapboundary(linewidth=0.0, fill_color='0.59')
+            m.drawmapboundary(linewidth=0.0, fill_color=fill_color)
+            m.fillcontinents(color='0.58', zorder=7)
 
             # Save figure
             plt.savefig(region['output_filename'], dpi=150,
@@ -369,7 +376,7 @@ class Plotter(object):
                            proj=self._DEFAULT_PROJ, **kwargs):
             # Draw colorbar
             fig = plt.figure(figsize=(1.5,2))
-            ax1 = fig.add_axes([0.05, 0.01, 0.125, 0.98])
+            ax1 = fig.add_axes([0.05, 0.05, 0.125, 0.85])
 
             cb = mpl.colorbar.ColorbarBase(
                     ax1,
@@ -483,7 +490,8 @@ def discrete_cmap(cmap_name, intervals, extend='both'):
     if max_colour is not None:
         cmap.set_over(max_colour)
     return cmap
-def from_levels_and_colors(levels, colors, extend='neither'):
+
+def from_levels_and_colors(levels, colors, cm_name, extend='neither'):
     """
     A helper routine to generate a cmap and a norm instance which
     behave similar to contourf's levels and colors arguments.
@@ -527,6 +535,11 @@ def from_levels_and_colors(levels, colors, extend='neither'):
 
     n_data_colors = len(levels) - 1
     n_expected_colors = n_data_colors + extra_colors
+
+    if colors == None and cm_name != None:
+        cmap = mpl.cm.get_cmap(cm_name, n_expected_colors)
+        colors = cmap(range(n_expected_colors))
+
     if len(colors) != n_expected_colors:
         raise ValueError('With extend == {0!r} and n_levels == {1!r} expected'
                          ' n_colors == {2!r}. Got {3!r}.'
