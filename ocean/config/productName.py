@@ -60,6 +60,10 @@ products = {"reynolds": {"daily":     "REY00001",
             },
             "chloro": {"daily": "CRL00001",
                        "monthly": "CRL00002"
+            },
+            "poama": {"sla": "POA00001",
+                      "ssta": "POA00002"
             }
+
 }
 

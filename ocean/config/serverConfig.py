@@ -50,7 +50,7 @@ class tuscany(default):
         'sealevel': '/data/sea_level/',
         'ww3': '/data/wavewatch3/',
         'coral':'/data/sst/coral/',
-        'poamasla':'/data/poama/',
+        'poama':'/data/poama/',
         'oceanmaps':'/data/oceanmaps/',
         'chloro':'/data/chloro/',
         'currents':'/data/currents/',

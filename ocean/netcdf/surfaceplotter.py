@@ -238,6 +238,7 @@ class SurfacePlotter(object):
             '12weeks': "12 Weeks",
             'monthly': "Monthly",
             '3monthly': "3 monthly",
+            'seasonal': "Seasonal",
             '6monthly': "6 monthly",
             '12monthly': "12 monthly",
             'yearly': "Yearly",
