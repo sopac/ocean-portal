@@ -48,10 +48,10 @@ case $DATASET in
         SERVER_PATH=/thredds/fileServer/paccsap/sea_level_seasonal/grid/
         DATA_SUBDIR=sla
         ;;
-    poama)
+    poamassta)
         SERVER=http://opendap.bom.gov.au:8080
-        SERVER_PATH=thredds/fileServer/paccsap/sea_surface_temperature_seasonal/grid/
-        DATA_SUBDIR=data
+        SERVER_PATH=/thredds/fileServer/paccsap/sea_surface_temperature_seasonal/grid/
+        DATA_SUBDIR=ssta
         ;;
     ersst)
         SERVER=ftp.ncdc.noaa.gov
@@ -104,7 +104,6 @@ EOF
             FILE='sla_grid_latest.nc'
             URL=$SERVER/$SERVER_PATH/$FILE
             wget -nc -q "$URL" || echo -n "error ($?)"
-            echo '<<<'
             response=`python << EOF
 import os
 from subprocess import check_call, CalledProcessError
@@ -116,11 +115,20 @@ except CalledProcessError as cpe:
 EOF`
             echo -n $response
     ;;
-     poama)
-            FILE=PACCSAP_oa_latest.nc
+    poamassta)
+            FILE='PACCSAP_oa_latest.nc'
             URL=$SERVER/$SERVER_PATH/$FILE
-            wget - $FILE "$URL" || echo -n "error ($?)"
-            echo
+            wget -nc -q "$URL" || echo -n "error ($?)"
+            response=`python << EOF
+import os
+from subprocess import check_call, CalledProcessError
+try:
+    check_call(['ncatted', '-a', '_FillValue,SSTA,c,f,-999', '$FILE'])
+except CalledProcessError as cpe:
+    print cpe.read()
+    print '\n'
+EOF`
+            echo -n $response
     ;;
     ww3)
         dates=("$(date +"%Y%m%d")" "$(date --date="yesterday" +"%Y%m%d")")
