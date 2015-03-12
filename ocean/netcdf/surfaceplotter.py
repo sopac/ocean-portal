@@ -45,6 +45,9 @@ class SurfacePlotter(object):
         return os.path.join(serverCfg['dataDir'][self.DATASET],
                             'decile', self.BASE_YEAR, params['period'])
 
+    def get_prefix(self, params={}):
+        return ''
+
     # --- get_suffix ---
     @apply_to(variable='dec')
     def get_suffix(self, params={}):

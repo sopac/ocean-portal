@@ -28,13 +28,19 @@ class ERSSTPlotter(SurfacePlotter):
 
     apply_to = Parameterise(SurfacePlotter)
 
-    @apply_to()
-    def get_prefix(self, params={}):
-        return 'ersst_v3b_'
+#    @apply_to()
+#    def get_prefix(self, params={}):
+#        return 'ersst_v3b_'
+#
+#    @apply_to(period='monthly')
+#    def get_prefix(self, params={}):
+#        return 'ersst.'
 
-    @apply_to(period='monthly')
     def get_prefix(self, params={}):
-        return 'ersst.'
+        prefix = 'ersst_v3b_'
+        if params['period'] == 'monthly' 
+            prefix = 'ersst.'
+        return prefix
 
     @apply_to(period='monthly')
     def get_path(self, params={}):

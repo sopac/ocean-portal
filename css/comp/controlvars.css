@@ -103,7 +103,8 @@
 .variable-wnd_spd #latitude,
 .variable-wnd_spd #logitude,
 .variable-wnd_spd #submit,
-.variable-height #submit
+.variable-height #submit,
+.variable-ssta #submit
 {
   display: none;
 }
@@ -114,7 +115,8 @@
 .variable-sig_ht_sw1 #hour-slider,
 .variable-pk_wav_per #hour-slider,
 .variable-wnd_spd #hour-slider,
-.variable-height #hour-slider
+.variable-height #hour-slider,
+.variable-ssta #hour-slider
 {
   display: block;
 }

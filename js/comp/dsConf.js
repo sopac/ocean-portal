@@ -241,6 +241,51 @@ ocean.dsConf = {
             updatePage();
         }
     },
+    poamassta: {
+        params: override(function (dataset) { return {
+            };
+        }),
+        callback: function(data) {
+            if(data.forecast) {
+                var forecast = $.parseJSON(data.forecast);
+                slider.options.steps = forecast.length;
+                slider.options.snap = true;
+                slider.stepRatios = slider.calculateStepRatios();
+                slider.options.animationCallback = function(x, y) {
+                    $('.handle-text').text(forecast[this.getStep()[0] - 1].datetime);
+                    $('.slider-hint').text('');
+                    if (data.mapimg) {
+                        data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
+                        updateMap(data);
+                    }
+                };
+                slider.options.callback = function(x, y) {
+                    if (data.mapimg) {
+                        data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
+                        updateMap(data);
+                    }
+                };
+                slider.value.prev = [-1, -1];
+                slider.animate(false, true);
+                setLegend(data.scale);
+            }
+            prependOutputSet();
+
+            if(data.ext != null) {
+                appendOutput(data.img, data.ext);
+            }
+        },
+        onSelect: function() {
+            updatePage();
+        },
+        onDeselect: function() {
+            resetMap();
+            resetLegend();
+        },
+        onVariableChange: function() {
+            updatePage();
+        }
+    },
     sealevel: {
         params: override(function (dataset) { return {
             lat: $('#latitude').val(),

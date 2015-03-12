@@ -31,13 +31,19 @@ class ReynoldsPlotter(SurfacePlotter):
                             'daily-new-uncompressed')
 
     # --- get_prefix ---
-    @apply_to(period='daily')
-    def get_prefix(self, params={}):
-        return 'avhrr-only-v2.'
+#    @apply_to(period='daily')
+#    def get_prefix(self, params={}):
+#        return 'avhrr-only-v2.'
+#
+#    @apply_to()
+#    def get_prefix(self, params={}):
+#        return 'reynolds_sst_avhrr-only-v2_'
 
-    @apply_to()
     def get_prefix(self, params={}):
-        return 'reynolds_sst_avhrr-only-v2_'
+        prefix = 'reynolds_sst_avhrr-only-v2_'
+        if params['period'] == 'daily':
+            prefix = 'avhrr-only-v2.'
+        return prefix
 
 class reynolds(SST):
     DATASET = 'reynolds'

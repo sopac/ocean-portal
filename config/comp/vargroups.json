@@ -40,12 +40,12 @@
   },
 
   "poamasla": {
-    "name": "Seasonal Sea Level Forcast",
+    "name": "Seasonal Sea Level Forecast",
     "vars": ["height"]
   },
 
   "poamassta": {
-    "name": "Seasonal Sea Surface Temperature Forcast",
+    "name": "Seasonal Sea Surface Temperature Forecast",
     "vars": ["ssta"]
   },
 

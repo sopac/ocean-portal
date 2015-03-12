@@ -49,7 +49,8 @@ packages = [
     'ocean.datasets.ww3forecast',
     'ocean.datasets.coral',
     'ocean.datasets.chlorophyll',
-    'ocean.datasets.poamasla'
+    'ocean.datasets.poamasla',
+    'ocean.datasets.poamassta'
 ]
 
 scripts = [
