@@ -9,7 +9,7 @@
     },
     "coral": {
         "datasets": [],
-        "vargroups": ["crw", "chlodaily"]
+        "vargroups": ["crw", "chlodaily", "poamassta"]
     },
     "tour": {
         "datasets": [],
@@ -18,5 +18,9 @@
     "shipping": {
         "datasets": [],
         "vargroups": ["ww3forecast"]
+    },
+    "fishery": {
+        "datasets": [],
+        "vargroups": ["poamassta"]
     }
 }

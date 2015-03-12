@@ -44,6 +44,11 @@
     "vars": ["height"]
   },
 
+  "poamassta": {
+    "name": "Seasonal Sea Surface Temperature Forcast",
+    "vars": ["ssta"]
+  },
+
   "chlomonthly": {
     "name": "Chlorophyll-A",
     "vars": ["chlmonthly"]

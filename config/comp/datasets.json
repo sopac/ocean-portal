@@ -219,6 +219,17 @@
         "plottypes": ["map"]
     }]
 }, {
+    "id":"poamassta",
+    "name":"Seasonal Sea Surface Temperature Forecast",
+    "title": "Seasonal Sea Surface temperature Forecast",
+    "help": "http://poama.bom.gov.au/experimental/pasap/sst.shtml",
+    "variables": [{
+        "id": "ssta",
+        "name": "Sea Surface Temperature Anomaly",
+        "periods": ["seasonal"],
+        "plottypes": ["map"]
+    }]
+}, {
     "id":"chlorophyll",
     "name":"Chlorophyll Mass Concentration",
     "title": "Chlorophyll Mass Concentration",
