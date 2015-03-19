@@ -3,6 +3,8 @@
 DATASET=$1
 
 export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/
+#export PYTHONPATH=${PYTHONPATH}:/srv/gsmith/usr/lib/python2.6/site-packages/
+
 
 # configuration
 
@@ -29,10 +31,9 @@ case $DATASET in
         DATA_SUBDIR=daily
         ;;
     currents)
-        SERVER=ftp://ftp.hycom.org
-        SERVER_PATH=/datasets/GLBu0.08/expt_91.1/forecasts
+        SERVER=http://tds.hycom.org/
+        SERVER_PATH=/thredds/dodsC/GLBu0.08/expt_91.1/forecasts
         DATA_SUBDIR=data
-        MIRROR_FLAGS='-I *uv3z.nc'
         ;;
     coral)
         SERVER=ftp://ftp.star.nesdis.noaa.gov
@@ -92,7 +93,7 @@ fi
 cd $DATA_DIR/$DATA_SUBDIR || exit 1
 
 case $DATASET in
-    reynolds|ersst|coral|coral_ol|currents|chloro_d|chloro_m)
+    reynolds|ersst|coral|coral_ol|chloro_d|chloro_m)
         lftp $SERVER << EOF
 cd $SERVER_PATH || exit 1
 mirror --only-missing -n $MIRROR_FLAGS
@@ -174,7 +175,18 @@ print "Convert CRW Outlook V3 to NETCDF..."
 
 from ocean.processing.Convert_Coral_Outlook import Convert_Outlook
 
-Convert_Outlook("$DATA_SUBDIR")
+Convert_Outlook("$DATA_DIR","$DATA_SUBDIR")
+
+EOF
+    ;;
+
+    currents)
+        python << EOF
+print "Download and Convert HYCOM Currents..."
+
+from ocean.processing.Download_Compile_HYCOM_Currents import Download_Compile_HYCOM_Currents
+
+Download_Compile_HYCOM_Currents("$DATA_DIR","$DATA_SUBDIR","$SERVER","$SERVER_PATH")
 
 EOF
     ;;
