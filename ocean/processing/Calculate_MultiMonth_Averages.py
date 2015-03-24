@@ -119,8 +119,8 @@ class Calculate_MultiMonth_Averages():
         Calculate multi-month averages for the dataset specified by the input argument.
         """
 
-        self.ncea_path = 'ncea'
-        self.ncflint_path = 'ncflint'
+        self.ncea_path = '/srv/map-portal/usr/bin/ncea'
+        self.ncflint_path = '/srv/map-portal/usr/bin/ncflint'
 
         # Settings for each dataset
         settings = self.config[dataset]
@@ -137,6 +137,7 @@ class Calculate_MultiMonth_Averages():
                     continue
                 if (year == end_year) and (month > end_month):
                     break
+
                 k += 1
                 for avg_period in settings['avg_periods']:
                     if k >= avg_period:
