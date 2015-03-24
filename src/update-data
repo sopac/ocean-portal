@@ -38,7 +38,7 @@ case $DATASET in
     coral)
         SERVER=ftp://ftp.star.nesdis.noaa.gov
         SERVER_PATH=/pub/sod/mecb/gliu/crw_5km_for_bom
-        DATA_SUBDIR=data
+        DATA_SUBDIR=daily
         MIRROR_FLAGS='-I baa_max*.nc'
         ;;
     coral_ol)
