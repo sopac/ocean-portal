@@ -17,7 +17,7 @@
     },
     "shipping": {
         "datasets": [],
-        "vargroups": ["ww3forecast"]
+        "vargroups": ["ww3forecast", "currentforecast"]
     },
     "fishery": {
         "datasets": [],

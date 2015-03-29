@@ -49,6 +49,11 @@
     "vars": ["ssta"]
   },
 
+  "currentforecast": {
+    "name": "Ocean Currents",
+    "vars": ["current"]
+  },
+
   "chlomonthly": {
     "name": "Chlorophyll-A",
     "vars": ["chlmonthly"]

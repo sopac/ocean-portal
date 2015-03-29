@@ -230,6 +230,17 @@
         "plottypes": ["map"]
     }]
 }, {
+    "id":"currentforecast",
+    "name":"Ocean Currents",
+    "title": "Ocean Currents",
+    "help": "help/about_current.pdf",
+    "variables": [{
+        "id": "current",
+        "name": "Current Speed",
+        "periods": ["7days"],
+        "plottypes": ["map"]
+    }]
+}, {
     "id":"chlorophyll",
     "name":"Chlorophyll Mass Concentration",
     "title": "Chlorophyll Mass Concentration",

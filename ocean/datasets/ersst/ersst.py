@@ -38,7 +38,7 @@ class ERSSTPlotter(SurfacePlotter):
 
     def get_prefix(self, params={}):
         prefix = 'ersst_v3b_'
-        if params['period'] == 'monthly' 
+        if params['period'] == 'monthly': 
             prefix = 'ersst.'
         return prefix
 
