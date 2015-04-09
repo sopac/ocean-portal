@@ -123,7 +123,7 @@ class Ww3ForecastPlotter(Plotter):
                     radians_array = np.radians(overlay_grid.data)
                     radians_array = np.pi + radians_array
                     radians_array = radians_array[::every, ::every]
-                m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=50, zorder=3)
+                m.quiver(x2, y2, np.cos(radians_array), np.sin(radians_array), scale=50, zorder=3)
             m.drawmapboundary(linewidth=0.0)
 
             m.drawcoastlines(linewidth=0.5, color='#505050', zorder=8)

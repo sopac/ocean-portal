@@ -63,7 +63,10 @@ products = {"reynolds": {"daily":     "REY00001",
             },
             "poama": {"sla": "POA00001",
                       "ssta": "POA00002"
+            },
+            "currentfc": {"7d":  "CFC00001"
             }
+
 
 }
 

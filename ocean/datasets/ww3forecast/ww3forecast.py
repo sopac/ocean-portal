@@ -186,7 +186,6 @@ class ww3forecast(Dataset):
             clabel = False
             vector = True
 
-        print plot_filename_fullpath
         plot = Ww3ForecastPlotter()
         plot.plot_basemaps_and_colorbar(self.grid.lats, self.grid.lons, self.grid.data[timeIndex],
                                         overlay_grid = self.overlayGrid.data[timeIndex],

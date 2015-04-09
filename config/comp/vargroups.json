@@ -51,7 +51,7 @@
 
   "currentforecast": {
     "name": "Ocean Currents",
-    "vars": ["current"]
+    "vars": ["currents"]
   },
 
   "chlomonthly": {

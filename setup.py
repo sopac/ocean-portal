@@ -50,7 +50,8 @@ packages = [
     'ocean.datasets.coral',
     'ocean.datasets.chlorophyll',
     'ocean.datasets.poamasla',
-    'ocean.datasets.poamassta'
+    'ocean.datasets.poamassta',
+    'ocean.datasets.currentforecast'
 ]
 
 scripts = [

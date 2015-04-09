@@ -235,7 +235,7 @@
     "title": "Ocean Currents",
     "help": "help/about_current.pdf",
     "variables": [{
-        "id": "current",
+        "id": "currents",
         "name": "Current Speed",
         "periods": ["7days"],
         "plottypes": ["map"]

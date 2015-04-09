@@ -166,10 +166,14 @@ function selectMapLayer(name)
  *
  * Updates the output layer of the map with @data.
  */
-function updateMap(data) {
+function updateMap(data, bounds) {
     var imageUrl = data.mapimg,
 //        imageBounds = [[-90, 0], [90, 360]]
-        imageBounds = [[-90, 110], [90, 290]]
+        imageBounds = [[-90, 110], [90, 290]] //[lllat, lllon], [urlat, urlon]
+
+    if (bounds) {
+        imageBounds = bounds
+    }
 
     if(ocean.imageOverlay) {
         ocean.imageOverlay.setUrl(imageUrl);
