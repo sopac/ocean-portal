@@ -53,7 +53,7 @@ ocean.dsConf = {
             else if (data.img != null && data.scale != null) {
                 prependOutputSet();
                 appendOutput(data.img, null, null, null, data);
-                updateMap(data);
+                updateMap(data.mapimg);
                 setLegend(data.scale);
             }
         },
@@ -62,7 +62,8 @@ ocean.dsConf = {
             resetMap();
             resetLegend();
         }, 
-        onVariableChange: function(){}
+        onVariableChange: function(){},
+        onRegionChange: function() {}
     },
     ersst: {
         params: override(function (dataset) { return {
@@ -90,12 +91,14 @@ ocean.dsConf = {
             }
             else if (data.img != null) {
                 appendOutput(data.img, null, null, null, data);
-                updateMap(data);
+                updateMap(data.mapimg);
             }
         },
         onSelect: null,
         onDeselect: null, 
-        onVariableChange: function(){} 
+        onVariableChange: function(){},
+        onRegionChange: function() {}
+
 
     },
     bran: {
@@ -117,13 +120,13 @@ ocean.dsConf = {
 
             if (data.img != null) {
                 appendOutput(data.img, null, null, null, data);
-                updateMap(data);
+                updateMap(data.mapimg);
             }
         },
         onSelect: null,
         onDeselect: null, 
-        onVariableChange: function(){} 
-
+        onVariableChange: function(){},
+        onRegionChange: function() {}
     },
     ww3: {
         params: override(function (dataset) { return {
@@ -141,7 +144,8 @@ ocean.dsConf = {
         },
         onSelect: null,
         onDeselect: null, 
-        onVariableChange: function(){}
+        onVariableChange: function(){},
+        onRegionChange: function() {}
 
     },
     ww3forecast: {
@@ -166,13 +170,13 @@ ocean.dsConf = {
                     $('.slider-hint').text(local.toString());
                     if (data.mapimg) {
                         data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
-                        updateMap(data);
+                        updateMap(data.mapimg);
                     }
                 };
                 slider.options.callback = function(x, y) {
-                    if (data.img) {
-                        data.img = data.img.replace('00', pad(this.getStep()[0], 2));
-                        updateMap(data);
+                    if (data.mapimg) {
+                        data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
+                        updateMap(data.mapimg);
                     }
                 };
                 slider.value.prev = [-1, -1];
@@ -194,7 +198,8 @@ ocean.dsConf = {
         },
         onVariableChange: function() {
             updatePage();
-        }
+        },
+        onRegionChange: function() {}
     },
     poamasla: {
         params: override(function (dataset) { return {
@@ -211,13 +216,13 @@ ocean.dsConf = {
                     $('.slider-hint').text('');
                     if (data.mapimg) {
                         data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
-                        updateMap(data);
+                        updateMap(data.mapimg);
                     }
                 };
                 slider.options.callback = function(x, y) {
                     if (data.mapimg) {
                         data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
-                        updateMap(data);
+                        updateMap(data.mapimg);
                     }
                 };
                 slider.value.prev = [-1, -1];
@@ -239,7 +244,8 @@ ocean.dsConf = {
         },
         onVariableChange: function() {
             updatePage();
-        }
+        },
+        onRegionChange: function() {}
     },
     poamassta: {
         params: override(function (dataset) { return {
@@ -256,13 +262,13 @@ ocean.dsConf = {
                     $('.slider-hint').text('');
                     if (data.mapimg) {
                         data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
-                        updateMap(data);
+                        updateMap(data.mapimg);
                     }
                 };
                 slider.options.callback = function(x, y) {
                     if (data.mapimg) {
                         data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
-                        updateMap(data);
+                        updateMap(data.mapimg);
                     }
                 };
                 slider.value.prev = [-1, -1];
@@ -284,7 +290,8 @@ ocean.dsConf = {
         },
         onVariableChange: function() {
             updatePage();
-        }
+        },
+        onRegionChange: function() {}
     },
     currentforecast: {
         params: override(function (dataset) { return {
@@ -293,22 +300,27 @@ ocean.dsConf = {
         callback: function(data) {
             if(data.forecast) {
                 var forecast = $.parseJSON(data.forecast);
+                this.mapimg = data.mapimg;
                 slider.options.steps = forecast.length;
                 slider.options.snap = true;
                 slider.stepRatios = slider.calculateStepRatios();
                 slider.options.animationCallback = function(x, y) {
                     $('.handle-text').text(forecast[Math.round(this.getStep()[0]) - 1].datetime);//Math.round is to fix a problem found when getStep returns somthing like 30.000000000000004.
                     $('.slider-hint').text('');
-                    if (data.mapimg) {
-                        data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
-                        bounds = $('#region option:selected').data('extent');
-                        updateMap(data, bounds);
-                    }
+//                    if (data.mapimg) {
+//                        ocean.dataset.mapimg = data.mapimg;
+                        ocean.dataset.updateMapImg();
+//                        data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
+//                        if self.selectedRegion !== ocean.area
+//                        bounds = $('#subregion option:selected').data('bounds');
+//                        updateMap(data.mapimg, bounds);
+//                    }
                 };
                 slider.options.callback = function(x, y) {
                     if (data.mapimg) {
-                        data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
-                        updateMap(data);
+                        ocean.dataset.updateMapImg();
+//                        data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
+//                        updateMap(data.mapimg);
                     }
                 };
                 slider.value.prev = [-1, -1];
@@ -330,7 +342,25 @@ ocean.dsConf = {
         },
         onVariableChange: function() {
             updatePage();
-        }
+        },
+        updateMapImg: function() {
+            mapimg = this.mapimg.replace(/_\d\d/, '_' + pad(slider.getStep()[0] - 1, 2));
+            if (!this.selectedRegion) {
+                this.selectedRegion = ocean.area;
+            }
+            if (this.selectedRegion !== ocean.area) {
+                mapimg = mapimg.replace(this.selectedRegion, ocean.area);
+                this.mapimg = mapimg;
+                this.selectedRegion = ocean.area;
+            }
+            bounds = $('#subregion option:selected').data('bounds');
+            updateMap(mapimg, bounds);
+        },
+        onRegionChange: function() {
+            this.updateMapImg(this.mapimg);
+        },
+        selectedRegion: ocean.area,
+        mapimg: ''
     },
     sealevel: {
         params: override(function (dataset) { return {
@@ -410,7 +440,8 @@ ocean.dsConf = {
 //                controls[control].destroy();
 //            }
         }, 
-        onVariableChange: function(){} 
+        onVariableChange: function(){},
+        onRegionChange: function() {}
 
     },
     coral: {
@@ -432,7 +463,8 @@ ocean.dsConf = {
             resetMap();
             resetLegend();
         }, 
-        onVariableChange: function(){}
+        onVariableChange: function(){},
+        onRegionChange: function() {}
     },
     chlorophyll: {
         params: override(function (dataset) { return {
@@ -453,7 +485,8 @@ ocean.dsConf = {
             resetMap();
             resetLegend();
         }, 
-        onVariableChange: function(){}
+        onVariableChange: function(){},
+        onRegionChange: function() {}
     }
 
 };

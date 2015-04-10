@@ -103,6 +103,7 @@ class Grid(object):
                                        (lats, latrange),
                                        (lons, lonrange),
                                        (depths, depthrange))
+
             (lat_idx1, lat_idx2), (lon_idx1, lon_idx2), \
                                   (depth_idx1, depth_idx2) = indexes
             if lats[0] > lats[-1]:
@@ -121,6 +122,7 @@ class Grid(object):
                                        (depth_idx1, depth_idx2))
 
             self.data = np.squeeze(data)
+#            nc.close()
 
     def _get_variable(self, variables, options):
         """
