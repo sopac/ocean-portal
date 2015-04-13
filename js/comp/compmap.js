@@ -167,7 +167,7 @@ function selectMapLayer(name)
  * Updates the output layer of the map with @data.
  */
 function updateMap(data, bounds) {
-    var imageUrl = data.mapimg,
+    var imageUrl = data,
 //        imageBounds = [[-90, 0], [90, 360]]
         imageBounds = [[-90, 110], [90, 290]] //[lllat, lllon], [urlat, urlon]
 

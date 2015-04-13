@@ -354,6 +354,9 @@ ocean.dsConf = {
                 this.selectedRegion = ocean.area;
             }
             bounds = $('#subregion option:selected').data('bounds');
+            if ($('#subregion option:selected').val() === 'pac') {
+                bounds = null;
+            }
             updateMap(mapimg, bounds);
         },
         onRegionChange: function() {
