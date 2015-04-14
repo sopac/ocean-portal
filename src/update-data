@@ -27,20 +27,14 @@ case $DATASET in
         DATA_SUBDIR=
         ;;
     currents)
-        SERVER=ftp://ftp.hycom.org
-        SERVER_PATH=/datasets/GLBu0.08/expt_91.1/forecasts
-        MIRROR_FLAGS='-I *GLOB_4*.nc.gz' 
-        ;;
-    currents)
-        SERVER=ftp://ftp.hycom.org
-        SERVER_PATH=/datasets/GLBu0.08/expt_91.1/forecasts
+        SERVER=http://tds.hycom.org/
+        SERVER_PATH=/thredds/dodsC/GLBu0.08/expt_91.1/forecasts
         DATA_SUBDIR=data
-        MIRROR_FLAGS='-I *uv3z.nc'
         ;;
     coral)
         SERVER=ftp://ftp.star.nesdis.noaa.gov
         SERVER_PATH=/pub/sod/mecb/gliu/crw_5km_for_bom
-        DATA_SUBDIR=data
+        DATA_SUBDIR=daily
         MIRROR_FLAGS='-I baa_max*.nc'
         ;;
     poamasla)
@@ -93,7 +87,7 @@ fi
 cd $DATA_DIR$DATA_SUBDIR || exit 1
 
 case $DATASET in
-    reynolds|ersst|coral|currents)
+    reynolds|ersst|coral|coral_ol|chloro_d|chloro_m)
         lftp $SERVER << EOF
 cd $SERVER_PATH || exit 1
 mirror --only-missing -n $MIRROR_FLAGS
@@ -316,8 +310,27 @@ Calculate_MultiMonth_Averages().process("$DATASET")
 # FIXME: calculate deciles
 EOF
     ;;
-    coral)
-find ./ -name "*.hdf" -exec h4toh5 {} \;
-find ./ -name "*.*" -exec chmod 777 {} \;
+
+    coral_ol)
+        python << EOF
+print "Convert CRW Outlook V3 to NETCDF..."
+
+from ocean.processing.Convert_Coral_Outlook import Convert_Outlook
+
+Convert_Outlook("$DATA_DIR","$DATA_SUBDIR")
+
+EOF
     ;;
+
+    currents)
+        python << EOF
+print "Download and Convert HYCOM Currents..."
+
+from ocean.processing.Download_Compile_HYCOM_Currents import Download_Compile_HYCOM_Currents
+
+Download_Compile_HYCOM_Currents("$DATA_DIR","$DATA_SUBDIR","$SERVER","$SERVER_PATH")
+EOF
+cp latest_HYCOM_currents.nc portal_HYCOM_currents.nc
+    ;;
+
 esac
