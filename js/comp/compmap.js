@@ -183,13 +183,13 @@ function updateMap(data, bounds) {
     }
 
     if(ocean.imageOverlay) {
-        ocean.imageOverlay.setUrl(imageUrl);
+        ocean.overlayGroup.removeLayer(ocean.imageOverlay);
     }
-    else {
-        ocean.imageOverlay = L.imageOverlay(imageUrl, imageBounds);
-        ocean.overlayGroup.addLayer(ocean.imageOverlay);
-        ocean.imageOverlay.setOpacity(1.0);
-    }
+    
+    ocean.imageOverlay = L.imageOverlay(imageUrl, imageBounds);
+    ocean.overlayGroup.addLayer(ocean.imageOverlay);
+    ocean.imageOverlay.setOpacity(1.0);
+
     ocean.bathymetryLayer.setOpacity(0.0);
 }
 
