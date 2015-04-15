@@ -118,3 +118,7 @@ h5 {
    padding: 0px;
    margin-bottom: 20px;
 }
+
+.datepicker[readonly] {
+   cursor: pointer;
+}

@@ -99,9 +99,6 @@ optgroup option {
   box-shadow: 0 0 2px 1px orange;
 }*/
 
-.datepicker {
-  cursor: pointer;
-}
 
 .datepick-popup {
   /* this is important because else the style overrides it*/ 
