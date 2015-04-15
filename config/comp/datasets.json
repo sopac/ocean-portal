@@ -236,12 +236,12 @@
     }]
 }, {
     "id":"currentforecast",
-    "name":"Ocean Currents",
+    "name":"Forecast Surface Currents",
     "title": "Ocean Currents",
     "help": "help/about_current.pdf",
     "variables": [{
         "id": "currents",
-        "name": "Current Speed",
+        "name": "Current Speed and Direction",
         "periods": ["7days"],
         "plottypes": ["map"]
     }]

@@ -55,7 +55,7 @@
   },
 
   "currentforecast": {
-    "name": "Ocean Currents",
+    "name": "Forecast Surface Currents",
     "vars": ["currents"]
   },
 
