@@ -376,7 +376,7 @@ ocean.dsConf = {
 
             if (data.img) {
                 appendOutput(data.img, null, null, null, data);
-                updateMap(data);
+                updateMap(data.mapimg);
             }
 
             if (data.tidimg)
@@ -387,6 +387,8 @@ ocean.dsConf = {
 
             if (data.recimg)
                 appendOutput(data.recimg, data.rectxt, "Reconstruction");
+
+            setLegend(data.scale);
         },
         selectTideGauge: function(){
             seaLevelModel.selectTideGuage(feature.properties.ID)
@@ -433,7 +435,7 @@ ocean.dsConf = {
             if (map.hasLayer(ocean.dsConf.sealevel.overlay)) {
                 map.removeLayer(ocean.dsConf.sealevel.overlay);
             }
-
+            resetLegend();
 //            var controls = map.getControlsByClass(
 //                'OpenLayers.Control.SelectFeature');
 
@@ -443,7 +445,10 @@ ocean.dsConf = {
 //                controls[control].destroy();
 //            }
         }, 
-        onVariableChange: function(){},
+        onVariableChange: function(){
+            resetMap();
+            resetLegend();
+        },
         onRegionChange: function() {}
 
     },
