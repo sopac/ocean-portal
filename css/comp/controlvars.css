@@ -106,6 +106,7 @@
 .variable-wnd_spd #submit,
 .variable-height #submit,
 .variable-ssta #submit,
+.variable-sst #submit,
 .variable-currents #submit
 {
   display: none;
@@ -118,6 +119,7 @@
 .variable-wnd_spd #hour-slider,
 .variable-height #hour-slider,
 .variable-ssta #hour-slider,
+.variable-sst #hour-slider,
 .variable-currents #hour-slider
 {
   display: block;
@@ -129,7 +131,7 @@
   display: inline;
 }
 
-.variable-ssta #marine,
+.variable-sst #marine,
 .variable-chlodaily #marine
 {
   display: inline;

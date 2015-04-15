@@ -27,7 +27,8 @@ class POAMA(Dataset):
 
     __variables__ = [
         'height',
-        'ssta'
+        'ssta',
+        'sst'
     ]
 
     __plots__ = [

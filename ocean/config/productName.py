@@ -62,7 +62,8 @@ products = {"reynolds": {"daily":     "REY00001",
                        "monthly": "CRL00002"
             },
             "poama": {"sla": "POA00001",
-                      "ssta": "POA00002"
+                      "ssta": "POA00002",
+                      "sst": "POA00003"
             },
             "currentfc": {"7d":  "CFC00001"
             }

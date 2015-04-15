@@ -34,7 +34,8 @@ class PoamaPlotterWrapper(SurfacePlotter):
     PRODUCT_NAME = "Seasonal Sea Surface Temperature Forecast"
 
     VARIABLE_MAP = {
-        'ssta': 'SSTA_emn'
+        'ssta': 'SSTA_emn',
+        'sst': 'SST_emn'
     }
 
     apply_to = util.Parameterise(SurfacePlotter)
@@ -44,8 +45,15 @@ class PoamaPlotterWrapper(SurfacePlotter):
         return os.path.join(serverCfg['dataDir'][self.DATASET],
                             'ssta')
 
+    @apply_to(variable='sst')
+    def get_path(self, params={}):
+        return os.path.join(serverCfg['dataDir'][self.DATASET],
+                            'ssta')
+
     def get_colormap(self, params={}):
         cm_name = 'RdBu_r'
+        if params['variable'] == 'sst':
+            cm_name = 'jet'
         return cm_name
 
 #    @apply_to(variable='ssta')
@@ -56,7 +64,15 @@ class PoamaPlotterWrapper(SurfacePlotter):
     def get_ticks(self, params={}):
         return np.arange(-3, 4)
 
+    @apply_to(variable='sst')
+    def get_ticks(self, params={}):
+        return np.arange(0, 33, 2)
+
     @apply_to(variable='ssta', period='seasonal')
+    def get_formatted_date(self, params={}):
+        return ''
+
+    @apply_to(variable='sst', period='seasonal')
     def get_formatted_date(self, params={}):
         return ''
 
@@ -83,7 +99,29 @@ class PoamaPlotterWrapper(SurfacePlotter):
     def get_contourlines(self, params={}):
         return False
 
+    @apply_to(variable='sst')
+    def get_contourlines(self, params={}):
+        return False
+
     @apply_to(variable='ssta')
+    def get_grid(self, params={}, **kwargs):
+        """
+        Request a Grid object for this dataset.
+
+        Override this method to access grids in a different way.
+        """
+
+        gridvar = self.get_variable_mapping(params=params)
+        kwargs.update({'depthrange':(0, 7)})
+        grid =  PoamaGridset(self.get_path(params=params), gridvar, params['period'],
+                       prefix=self.get_prefix(params=params),
+                       suffix=self.get_suffix(params=params),
+                       suffix2=self.get_suffix_prelim(params=params),
+                       date=params['date'],
+                       **kwargs)
+        return grid
+
+    @apply_to(variable='sst')
     def get_grid(self, params={}, **kwargs):
         """
         Request a Grid object for this dataset.
@@ -185,7 +223,7 @@ class poamassta(POAMA):
         '''
         for step in range(FORECAST_STEPS):
    #         self.plotter.plot_basemaps_and_colorbar(self.getPlotFileName(var, step, region)[1], step,  args)
-            plot_filename = '%s_%s_%s_%02d' % (poamaProduct['ssta'], var, region, step)
+            plot_filename = '%s_%s_%s_%02d' % (poamaProduct[var], var, region, step)
             self.plotter.plot_basemaps_and_colorbar(plot_filename, step,  args)
 
     def generateConfig(self, params):
@@ -205,7 +243,7 @@ class poamassta(POAMA):
         '''
             A helper method to put together the plot file name.
         '''
-        plot_filename = '%s_%s_%s_%02d' % (poamaProduct['ssta'], varName, regionName, timeIndex)
+        plot_filename = '%s_%s_%s_%02d' % (poamaProduct[varName], varName, regionName, timeIndex)
         plot_filename_fullpath = os.path.join(serverCfg['outputDir'],
                                                   plot_filename)
         raster_filename_fullpath = os.path.join(serverCfg['baseURL'],

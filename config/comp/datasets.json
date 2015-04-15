@@ -228,6 +228,11 @@
         "name": "Sea Surface Temperature Anomaly",
         "periods": ["seasonal"],
         "plottypes": ["map"]
+    }, {
+        "id": "sst",
+        "name": "Sea Surface Temperature",
+        "periods": ["seasonal"],
+        "plottypes": ["map"]
     }]
 }, {
     "id":"currentforecast",

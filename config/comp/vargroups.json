@@ -49,6 +49,11 @@
     "vars": ["ssta"]
   },
 
+  "poamasst": {
+    "name": "Seasonal Sea Surface Temperature Forecast",
+    "vars": ["sst"]
+  },
+
   "currentforecast": {
     "name": "Ocean Currents",
     "vars": ["currents"]

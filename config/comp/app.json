@@ -21,6 +21,6 @@
     },
     "fishery": {
         "datasets": [],
-        "vargroups": ["poamassta", "chlodaily"]
+        "vargroups": ["poamasst", "chlodaily"]
     }
 }
