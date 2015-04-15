@@ -12,7 +12,8 @@
 #latitude,
 #longitude,
 #hour-slider,
-#reef
+#reef,
+#marine
 {
   display: none;
 }
@@ -110,7 +111,6 @@
   display: none;
 }
 
-
 .variable-sig_wav_ht #hour-slider,
 .variable-sig_ht_wnd_sea #hour-slider,
 .variable-sig_ht_sw1 #hour-slider,
@@ -123,9 +123,14 @@
   display: block;
 }
 
-
 .variable-daily #reef,
 .variable-outlook #reef
+{
+  display: inline;
+}
+
+.variable-ssta #marine,
+.variable-chlodaily #marine
 {
   display: inline;
 }

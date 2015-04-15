@@ -18,7 +18,8 @@ ocean.controls = [
     'dataset',
     'dshelp',
     'hour-slider',
-    'reef'
+    'reef',
+    'marine'
 ];
 
 ocean.compare = { limit: 24 };
@@ -347,6 +348,20 @@ $(function() {
         }
         else {
             ocean.mapObj.removeLayer(ocean.reefLayer);
+        }
+    });
+
+    $('#marine').change(function() {
+        if(this.checked) {
+            ocean.marineLayer = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
+               layers: 'marineparks',
+               format: 'image/png',
+               transparent: true,
+               attribution: '<a href="http://www.sprep.org/" title="Marine Park Areas">Marine Park Areas</a>'
+            }).addTo(ocean.mapObj);
+        }
+        else {
+            ocean.mapObj.removeLayer(ocean.marineLayer);
         }
     });
 

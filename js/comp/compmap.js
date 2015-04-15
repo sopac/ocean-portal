@@ -99,7 +99,14 @@ function createMap () {
     });
    
     ocean.bathymetryLayer = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
-       layers: 'bathymetry,land,maritime,capitals,countries',
+       layers: 'bathymetry,land',
+       format: 'image/png',
+       transparent: true,
+       attribution: '<a href="http://www.naturalearthdata.com/about/" title="About Natural Earth">Made with Natural Earth</a>, <a href="http://www.marineregions.org/disclaimer.php" title="EEZ boundaries">Marineregions</a>'
+    }).addTo(map);
+
+    ocean.eezLayer = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
+       layers: 'maritime,capitals,countries',
        format: 'image/png',
        transparent: true,
        attribution: '<a href="http://www.naturalearthdata.com/about/" title="About Natural Earth">Made with Natural Earth</a>, <a href="http://www.marineregions.org/disclaimer.php" title="EEZ boundaries">Marineregions</a>'

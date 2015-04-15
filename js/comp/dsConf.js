@@ -455,7 +455,7 @@ ocean.dsConf = {
             if (data.img != null && data.scale != null) {
                 prependOutputSet();
                 appendOutput(data.img, null, null, null, data);
-                updateMap(data);
+                updateMap(data.mapimg);
                 setLegend(data.scale);
             }
             updateInfo(data.dial, 'Alert level');
@@ -477,7 +477,7 @@ ocean.dsConf = {
             if (data.img != null && data.scale != null) {
                 prependOutputSet();
                 appendOutput(data.img, null, null, null, data);
-                updateMap(data);
+                updateMap(data.mapimg);
                 setLegend(data.scale);
             }
             updateInfo(data.dial, 'Alert level');

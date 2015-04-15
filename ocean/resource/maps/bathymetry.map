@@ -315,6 +315,27 @@ MAP
         END
     END
 
+    LAYER
+        NAME         marineparks 
+         METADATA
+            "wms_title"    "marine_parks"
+        END
+        DATA         MP_FINAL 
+        GROUP        marineparks 
+        STATUS       ON
+        TYPE         POLYGON
+
+        CLASS
+            NAME 'bathymetry_10000'
+
+            STYLE
+                OUTLINECOLOR 0 0 0
+                WIDTH 2
+                ANTIALIAS TRUE
+            END
+        END
+    END
+
     LAYER # States polygon layer begins here
         NAME         southern_pac
         METADATA
