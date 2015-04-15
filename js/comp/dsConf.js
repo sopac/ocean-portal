@@ -490,6 +490,25 @@ ocean.dsConf = {
         }, 
         onVariableChange: function(){},
         onRegionChange: function() {}
+    },
+    convergence: {
+        params: override(function (dataset) { return {
+        };}),
+        callback: function(data) {
+            if (data.img != null && data.scale != null) {
+                prependOutputSet();
+                appendOutput(data.img, null, null, null, data);
+                updateMap(data.mapimg);
+                setLegend(data.scale);
+            }
+        },
+        onSelect: null,
+        onDeselect: function() {
+            resetMap();
+            resetLegend();
+        }, 
+        onVariableChange: function(){},
+        onRegionChange: function() {}
     }
 
 };

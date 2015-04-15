@@ -269,5 +269,20 @@
             "maxDate": "20150131"
         }
     }]
+}, {
+    "id":"convergence",
+    "name":"Reynolds",
+    "title": "Sea Surface Temperature - Reynolds",
+    "help": "help/about_convergence.pdf",
+    "variables": [{
+        "id":"mean",
+        "name":"Mean Temperature",
+        "periods": ["daily"],
+        "plottypes": ["map"]
+    }],
+    "dateRange" : {
+        "minDate": "19810901",
+        "maxDate": "-2"
+    }
 }
 ]

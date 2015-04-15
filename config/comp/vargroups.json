@@ -62,5 +62,10 @@
   "chlomonthly": {
     "name": "Chlorophyll-A",
     "vars": ["chlmonthly"]
+  },
+
+  "convergence": {
+    "name": "Ocean Temperature",
+    "vars": ["mean"]
   }
 }

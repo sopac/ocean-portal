@@ -51,7 +51,8 @@ packages = [
     'ocean.datasets.chlorophyll',
     'ocean.datasets.poamasla',
     'ocean.datasets.poamassta',
-    'ocean.datasets.currentforecast'
+    'ocean.datasets.currentforecast',
+    'ocean.datasets.convergence'
 ]
 
 scripts = [
