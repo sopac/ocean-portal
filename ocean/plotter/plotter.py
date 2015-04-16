@@ -211,7 +211,7 @@ class Plotter(object):
                                      arrow_scale=arrow_scale)
 
             # Draw land, coastlines, parallels, meridians and add title
-            m.drawmapboundary(linewidth=0.0, fill_color=fill_color)
+            m.drawmapboundary(linewidth=1.0, fill_color=fill_color)
             m.drawcoastlines(linewidth=0.5, color='#505050', zorder=8)
 #            m.fillcontinents(color='#F1EBB7', zorder=7)
             m.fillcontinents(color='0.58', zorder=7)
