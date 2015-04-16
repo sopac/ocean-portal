@@ -19,7 +19,7 @@ country = {
     'fiji': 'FIJI',
     'kiribati': 'KIRIBATI',
     'marshall': 'MARSHALL1',
-    'nauru': 'NARUU',
+    'nauru': 'NAURU',
     'niue': 'NIUE',
     'palau': 'PALAU',
     'png': 'PNG',
