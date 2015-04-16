@@ -67,6 +67,8 @@ class Ww3ForecastPlotter(Plotter):
         clabel = kwargs.get('clabel', False)
         vector = kwargs.get('vector', False)
 
+        overlay_grid = kwargs.get('overlay_grid', None)
+
         cmArray = customColorMap[cmp_name]
 #        d_cmap = mpl.colors.ListedColormap(np.array(cmArray) / 255.0)
         d_cmap, norm = from_levels_and_colors(customTicks[cm_edge_values], np.array(cmArray) / 255.0)
@@ -88,7 +90,6 @@ class Ww3ForecastPlotter(Plotter):
         def _plot_basemap(region, lats, lons, data, 
                           units='', cb_tick_fmt="%.0f", cb_labels=None,
                           proj=self._DEFAULT_PROJ, **kwargs):
-
             m = Basemap(projection=proj,
                         llcrnrlat=region['lat_min'],
                         llcrnrlon=region['lon_min'],
@@ -114,16 +115,16 @@ class Ww3ForecastPlotter(Plotter):
  
             #extract the overlay grid
             if vector:
-                overlay_grid = kwargs.get('overlay_grid', None)
+#                overlay_grid = kwargs.get('overlay_grid', None)
                 every = 10 
                 lons = lons[::every]
                 lats = lats[::every]
                 x2, y2 = m(*np.meshgrid(lons, lats))
                 if overlay_grid is not None:
-                    radians_array = np.radians(overlay_grid.data)
+                    radians_array = np.radians(overlay_grid)
                     radians_array = np.pi + radians_array
                     radians_array = radians_array[::every, ::every]
-                m.quiver(x2, y2, np.cos(radians_array), np.sin(radians_array), scale=50, zorder=3)
+                m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, zorder=3)
             m.drawmapboundary(linewidth=0.0)
 
             m.drawcoastlines(linewidth=0.5, color='#505050', zorder=8)

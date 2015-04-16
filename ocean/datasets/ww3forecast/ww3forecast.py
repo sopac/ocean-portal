@@ -13,6 +13,8 @@ import glob
 import json
 from datetime import datetime, timedelta
 
+import numpy as np
+
 from ocean import util, config
 from ocean.config import productName
 #from ocean.netcdf.extractor import Extractor
@@ -81,9 +83,9 @@ class ww3forecast(Dataset):
         fileName = serverCfg['dataDir']['ww3forecast'] + 'ww3_????????_??.nc'
         latestFilePath = max(glob.iglob(fileName), key=os.path.getctime)
 
-        self.grid = ww3forecastGrid(latestFilePath, latestFilePath, varStr, (-90, 90), (0, 360))
- 
-        self.overlayGrid = ww3forecastGrid(latestFilePath, latestFilePath, self.get_overlay_variable(varStr), (-90, 90), (0, 360))
+        self.grid = ww3forecastGrid(latestFilePath, latestFilePath, varStr, (-90, 90), (0, 360), (0, FORECAST_STEPS))
+        
+        self.overlayGrid = ww3forecastGrid(latestFilePath, latestFilePath, self.get_overlay_variable(varStr), (-90, 90), (0, 360), (0, FORECAST_STEPS))
 
         config = self.generateConfig(latestFilePath, self.grid.time)
         configStr = json.dumps(config) 
@@ -105,6 +107,8 @@ class ww3forecast(Dataset):
         '''
             Allows the map images to be produced via the URL.
         '''
+        if varName == 'wnd_spd':
+            self.grid.data = self.grid.data * 1.94384449
         for step in range(FORECAST_STEPS):
             self.plotSurfaceData(varName, step, region) 
 
@@ -168,7 +172,8 @@ class ww3forecast(Dataset):
             plot_filename_fullpath = self.getPlotFileName(varName, timeIndex, regionName)[0]
             clabel = False 
             vector = True
-            self.grid.data = self.grid.data[timeIndex] * 1.94384449
+#            self.grid.data = self.grid.data[timeIndex] * 1.94384449
+#            self.grid.data = self.grid.data * 1.94384449
         elif varName == 'sig_wav_ht':
             cm = 'wav_cm'
             cb_ticks = 'sig'
@@ -199,8 +204,12 @@ class ww3forecast(Dataset):
         plot.wait()
 
     def get_overlay_variable(self, variable):
-        if variable in ['sig_wav_ht', 'sig_ht_wnd_sea', 'sig_ht_sw1',  'pk_wav_per']:
+        if variable in ['sig_wav_ht', 'pk_wav_per']:
             return 'mn_wav_dir'
+        elif variable in ['sig_ht_wnd_sea']:
+            return 'mn_dir_wnd_sea'
+        elif variable in ['sig_ht_sw1']:
+            return 'mn_dir_sw1'
         elif variable in ['wnd_spd']:
             return 'wnd_dir'
         return ''
@@ -237,3 +246,5 @@ class ww3forecastGrid(Grid):
             raise GridWrongFormat()
  
         
+    def get_depths(self, variables):
+        return np.arange(FORECAST_STEPS)

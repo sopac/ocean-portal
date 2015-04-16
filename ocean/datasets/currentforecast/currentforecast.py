@@ -243,5 +243,5 @@ class currentforecastGrid(Grid):
             raise GridWrongFormat()
 
     def get_depths(self, variables):
-#        return np.arange(FORECAST_STEPS)
-        return [0]
+        return np.arange(FORECAST_STEPS)
+#        return [0]
