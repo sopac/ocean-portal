@@ -98,7 +98,7 @@ class ChlorophyllPlotterWrapper(SurfacePlotter):
         return 'neither'
 
     def get_fill_color(self, params={}):
-        return '0.0'
+        return '1.0'
 
     @apply_to(variable='chldaily')
     def get_units(self, params={}):
