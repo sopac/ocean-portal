@@ -25,6 +25,9 @@ class ReynoldsPlotter(SurfacePlotter):
 
     apply_to = util.Parameterise(SurfacePlotter)
 
+    def get_colormap_strategy(self, params={}):
+        return 'nonlinear'
+
     @apply_to(period='daily')
     def get_path(self, params={}):
         return os.path.join(serverCfg['dataDir'][self.DATASET],

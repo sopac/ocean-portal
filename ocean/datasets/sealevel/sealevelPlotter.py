@@ -131,6 +131,9 @@ class SeaLevelSurfacePlotter(SurfacePlotter):
             IB not removed; seasonal not removed; global trend not removed; GIA removed
             Data from CSIRO CMAR"""
 
+    def get_colormap_strategy(self, params={}):
+        return 'nonlinear'
+
     def get_grid(self, params={}, **kwargs):
         return SeaLevelGrid(params['variable'], date=params['date'])
 

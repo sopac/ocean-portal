@@ -30,6 +30,8 @@ class ReynoldsPlotter(SurfacePlotter):
         return os.path.join(serverCfg['dataDir'][self.DATASET],
                             'daily-new-uncompressed')
 
+    def get_colormap_strategy(self, params={}):
+        return 'nonlinear'
     # --- get_prefix ---
 #    @apply_to(period='daily')
 #    def get_prefix(self, params={}):

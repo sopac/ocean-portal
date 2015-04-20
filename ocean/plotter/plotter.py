@@ -377,7 +377,6 @@ class Plotter(object):
             # Draw colorbar
             fig = plt.figure(figsize=(1.5,2))
             ax1 = fig.add_axes([0.05, 0.05, 0.125, 0.85])
-
             cb = mpl.colorbar.ColorbarBase(
                     ax1,
                     cmap=d_cmap,
@@ -386,6 +385,7 @@ class Plotter(object):
                     drawedges='True',
                     extend=extend,
                     ticks=tick_pos)
+
             if cb_labels is None:
                 cb.set_ticklabels([cb_tick_fmt % k for k in cm_edge_values])
             else:
@@ -395,6 +395,7 @@ class Plotter(object):
                     fontsize=6,
                     fontweight='bold')
 
+            cb.set_ticks(tick_pos)
             for tick in cb.ax.get_yticklabels():
                 tick.set_fontsize(6)
                 tick.set_fontweight('bold')
