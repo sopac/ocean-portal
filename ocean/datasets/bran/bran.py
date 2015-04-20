@@ -379,7 +379,7 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
     plot.wait()
 
 def check_basemap_exists(filename_fullpath):
-    return util.check_files_exist(filename_fullpath, [COMMON_FILES[k] for k in ['mapeast', 'mapeastw', 'mapwest', 'mapwestw', 'scale']])
+    return util.check_files_exist(filename_fullpath, [COMMON_FILES[k] for k in ['mapimg', 'scale']])
 
 def check_plot_exists(filename_fullpath):
     return os.path.exists(filename_fullpath + COMMON_FILES['img'])

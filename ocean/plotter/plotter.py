@@ -109,7 +109,7 @@ class Plotter(object):
                                output_filename='noname.png', title='', units='',
                                cm_edge_values=None, cb_tick_fmt="%.0f",
                                cb_labels=None, cb_label_pos=None,
-                               colormap_strategy='discrete',
+                               colormap_strategy='nonlinear',
                                cmp_name='jet', colors=None, extend='both',
                                fill_color='1.0',
                                plotStyle='contourf', contourLines=True,
@@ -319,7 +319,7 @@ class Plotter(object):
         cmp_name = kwargs.get('cmp_name', 'jet')
         extend = kwargs.get('extend', 'both')
         cb_label_pos = kwargs.get('cb_label_pos', None)
-        colormap_strategy = kwargs.get('colormap_strategy', 'discrete')
+        colormap_strategy = kwargs.get('colormap_strategy', 'nonlinear')
         colors = kwargs.get('colors', None)
         fill_color = kwargs.get('fill_color', '0.0')
 
