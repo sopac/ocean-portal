@@ -13,13 +13,13 @@ $("div.app").click(function(e) {
         return;
     }
     window.location = "app.html#" + this.id;
-    ocean.app = this.id;
+    ocean.app = {"new": this.id, "old": ocean.app};
     return false;
 });
 
 $('a.app').click(function(e) {
     window.location = "app.html";
     window.location = "app.html#" + this.id;
-    ocean.app = this.id;
+    ocean.app = {"new": this.id, "old": ocean.app};
     return false;
 });

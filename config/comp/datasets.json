@@ -3,7 +3,7 @@
     "name":"Reynolds",
     "title": "Sea Surface Temperature - Reynolds",
     "rank": 100,
-    "help": "help/about_reynolds.pdf",
+    "help": "help/about_OceanTemperature.pdf",
     "variables": [{
         "id":"meansst",
         "bid": "mean",
@@ -31,7 +31,7 @@
     "id":"ersst",
     "name":"ERSST",
     "title": "Sea Surface Temperature - ERSST",
-    "help": "help/about_ersst.pdf",
+    "help": "help/about_OceanTemperature.pdf",
     "variables": [{
         "id":"meansst",
         "bid": "mean",
@@ -160,7 +160,7 @@
     "id": "coral",
     "name": "Coral Reef Watch",
     "title": "NOAA Coral Reef Watch",
-    "help": "help/about_coralreefwatch.pdf",
+    "help": "help/about_coralbleaching.pdf",
     "variables": [{
         "id":"daily",
         "name":"Coral Bleaching Alert",
@@ -211,7 +211,7 @@
     "id":"poamasla",
     "name":"Seasonal Sea Level Forecast",
     "title": "Seasonal Sea Level Forecast",
-    "help": "help/about_sealevel.pdf",
+    "help": "help/about_POAMA_Sea_Level.pdf",
     "variables": [{
         "id": "height",
         "name": "Sea Level Anomaly",
@@ -222,7 +222,7 @@
     "id":"poamassta",
     "name":"Seasonal Sea Surface Temperature Forecast",
     "title": "Seasonal Sea Surface temperature Forecast",
-    "help": "http://poama.bom.gov.au/experimental/pasap/sst.shtml",
+    "help": "help/about_POAMA_SST.pdf",
     "variables": [{
         "id": "ssta",
         "name": "Sea Surface Temperature Anomaly",
@@ -238,7 +238,7 @@
     "id":"currentforecast",
     "name":"Forecast Surface Currents",
     "title": "Ocean Currents",
-    "help": "help/about_current.pdf",
+    "help": "help/about_currents.pdf",
     "variables": [{
         "id": "currents",
         "name": "Current Speed and Direction",
@@ -273,7 +273,7 @@
     "id":"convergence",
     "name":"Reynolds",
     "title": "Sea Surface Temperature - Reynolds",
-    "help": "help/about_convergence.pdf",
+    "help": "help/about_OceanTemperature.pdf",
     "variables": [{
         "id":"mean",
         "name":"Mean Temperature",

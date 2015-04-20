@@ -54,6 +54,7 @@ $(function() {
         ocean.config = location.search.slice(1);
 
     hideControls();
+    assignAppClass();
 
     /* set up the date picker */
     $("#date").datepick({
@@ -790,6 +791,21 @@ function hideControls() {
             group.hide();
         }
     });
+}
+
+function assignAppClass() {
+    if (ocean.app) {
+        if (ocean.app.old) {
+            $('.controlvar').removeClass(ocean.app.old);
+        }
+        if (ocean.app.new) {
+            $('.controlvar').addClass(ocean.app.new);
+        }
+    }
+    else {
+        ocean.app = {"new": window.location.hash.split('#')[1]};
+    }
+    $('.controlvar').addClass(ocean.app.new);
 }
 
 /**
