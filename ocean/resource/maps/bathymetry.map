@@ -329,8 +329,9 @@ MAP
             NAME 'bathymetry_10000'
 
             STYLE
+                COLOR 0 153 0 
                 OUTLINECOLOR 0 0 0
-                WIDTH 2
+                WIDTH 1
                 ANTIALIAS TRUE
             END
         END
