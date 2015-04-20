@@ -164,11 +164,15 @@ data = [
     'images/outlook_3.png',
     'images/outlook_4.png',
     'help/about_bran.pdf',
-    'help/about_ersst.pdf',
-    'help/about_reynolds.pdf',
     'help/about_sealevel.pdf',
     'help/about_ww3forecasts.pdf',
     'help/about_ww3.pdf',
+    'help/about_chlorophyll.pdf',
+    'help/about_coralbleaching.pdf',
+    'help/about_currents.pdf',
+    'help/about_OceanTemperature.pdf',
+    'help/about_POAMA_Sea_Level.pdf',
+    'help/about_POAMA_SST.pdf',
 ]
 
 # CODE BEGINS
