@@ -330,7 +330,6 @@ from ocean.processing.Download_Compile_HYCOM_Currents import Download_Compile_HY
 
 Download_Compile_HYCOM_Currents("$DATA_DIR","$DATA_SUBDIR","$SERVER","$SERVER_PATH")
 EOF
-cp latest_HYCOM_currents.nc portal_HYCOM_currents.nc
     ;;
 
 esac
