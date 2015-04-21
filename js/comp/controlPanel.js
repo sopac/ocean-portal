@@ -19,7 +19,8 @@ ocean.controls = [
     'dshelp',
     'hour-slider',
     'reef',
-    'marine'
+    'marine',
+    'tunafishing'
 ];
 
 ocean.compare = { limit: 24 };

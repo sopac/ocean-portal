@@ -92,10 +92,14 @@ ocean.dsConf = {
             else if (data.img != null) {
                 appendOutput(data.img, null, null, null, data);
                 updateMap(data.mapimg);
+                setLegend(data.scale);
             }
         },
         onSelect: null,
-        onDeselect: null, 
+        onDeselect: function() {
+            resetMap();
+            resetLegend();
+        }, 
         onVariableChange: function(){},
         onRegionChange: function() {}
 
@@ -121,10 +125,14 @@ ocean.dsConf = {
             if (data.img != null) {
                 appendOutput(data.img, null, null, null, data);
                 updateMap(data.mapimg);
+                setLegend(data.scale);
             }
         },
         onSelect: null,
-        onDeselect: null, 
+        onDeselect: function() {
+            resetMap();
+            resetLegend();
+        }, 
         onVariableChange: function(){},
         onRegionChange: function() {}
     },
@@ -488,10 +496,17 @@ ocean.dsConf = {
             updateInfo(data.dial, 'Alert level');
 
         },
-        onSelect: null,
+        onSelect: function() {
+            if ($('#tunafishing').parent('.fishery').size() == 1) {
+                showControls('tunafishing');
+            }
+        },
         onDeselect: function() {
             resetMap();
             resetLegend();
+            if ($('#tunafishing').parent('.fishery').size() == 1) {
+                hideControls('tunafishing');
+            }
         }, 
         onVariableChange: function(){},
         onRegionChange: function() {}
@@ -507,10 +522,13 @@ ocean.dsConf = {
                 setLegend(data.scale);
             }
         },
-        onSelect: null,
+        onSelect: function() {
+            showControls('tunafishing');
+        },
         onDeselect: function() {
             resetMap();
             resetLegend();
+            hideControls('tunafishing');
         }, 
         onVariableChange: function(){},
         onRegionChange: function() {}
