@@ -338,6 +338,27 @@ MAP
     END
 
     LAYER # States polygon layer begins here
+        NAME        greyland 
+        METADATA
+            "wms_title"    "greyland"
+        END
+        DATA         southern_pac
+        STATUS       ON
+        TYPE         POLYGON
+
+        CLASS
+            NAME 'greyland'
+
+            STYLE
+                COLOR     150 150 150 
+                OUTLINECOLOR 50 50 50 
+                WIDTH 1
+                ANTIALIAS TRUE
+            END
+        END
+    END # States polygon layer ends here
+
+    LAYER # States polygon layer begins here
         NAME         southern_pac
         METADATA
             "wms_title"    "Southern_Pac"
@@ -421,7 +442,7 @@ MAP
         PROCESSING "LABEL_NO_CLIP=True"
         LABELITEM    "NAME"
         CLASSITEM    "SCALERANK"
-        SYMBOLSCALEDENOM 200
+        SYMBOLSCALEDENOM 50 
         CLASS
             EXPRESSION ([SCALERANK]==1)
             LABEL
@@ -453,9 +474,10 @@ MAP
 
         LABELITEM    "NAME"
         CLASSITEM    "SCALERANK"
-        MINSCALEDENOM    1
-        MAXSCALEDENOM    200
-        SYMBOLSCALEDENOM 200
+#        MINSCALEDENOM    50 
+#        MAXSCALEDENOM    1000
+#        SYMBOLSCALEDENOM 1000
+#        SYMBOLSCALEDENOM 50 
 
         CLASS
             EXPRESSION ([SCALERANK]==2)
@@ -464,18 +486,18 @@ MAP
                 SHADOWSIZE 1 1
                 TYPE TRUETYPE
                 FONT sans
-                SIZE 8
-                MAXSIZE 8
+                SIZE 8 
+                MAXSIZE 10 
                 ANTIALIAS TRUE
                 POSITION AUTO
-                PARTIALS FALSE
+                PARTIALS FALSE 
             END # end of label
 
             STYLE
                 SYMBOL "natcap"
                 COLOR 0 0 0
-                SIZE 8
-                MAXSIZE 12
+                SIZE 6 
+                MAXSIZE 6
             END
         END
     END
