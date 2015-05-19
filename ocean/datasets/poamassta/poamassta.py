@@ -27,7 +27,7 @@ serverCfg = config.get_server_config()
 poamaProduct = productName.products['poama']
 
 #number of forecast steps
-FORECAST_STEPS = 8
+FORECAST_STEPS = 9
 
 class PoamaPlotterWrapper(SurfacePlotter):
     DATASET = 'poamassta'
@@ -112,7 +112,7 @@ class PoamaPlotterWrapper(SurfacePlotter):
         """
 
         gridvar = self.get_variable_mapping(params=params)
-        kwargs.update({'depthrange':(0, 7)})
+        kwargs.update({'depthrange':(0, FORECAST_STEPS)})
         grid =  PoamaGridset(self.get_path(params=params), gridvar, params['period'],
                        prefix=self.get_prefix(params=params),
                        suffix=self.get_suffix(params=params),
@@ -130,7 +130,7 @@ class PoamaPlotterWrapper(SurfacePlotter):
         """
 
         gridvar = self.get_variable_mapping(params=params)
-        kwargs.update({'depthrange':(0, 7)})
+        kwargs.update({'depthrange':(0, FORECAST_STEPS)})
         grid =  PoamaGridset(self.get_path(params=params), gridvar, params['period'],
                        prefix=self.get_prefix(params=params),
                        suffix=self.get_suffix(params=params),
@@ -164,7 +164,7 @@ class PoamaPlotterWrapper(SurfacePlotter):
 
         plot = self.getPlotter()
         grid = self.get_grid(params=args)
-
+ 
         plot.plot_basemaps_and_colorbar(grid.lats, grid.lons, grid.data[step],
                                         output_filename=output_filename,
                                         units=units,
@@ -210,7 +210,7 @@ class PoamaGridset(Gridset):
         """
         Implement to retrieve the depths for a dataset.
         """
-        return np.arange(8)
+        return np.arange(FORECAST_STEPS)
 
 class poamassta(POAMA):
         

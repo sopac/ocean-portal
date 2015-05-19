@@ -3,9 +3,9 @@
 DATASET=$1
 PERIOD=$2
 
-#export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/
-export PYTHONPATH=${PYTHONPATH}:/home/sguo/sheng/usr/lib/python2.6/site-packages/
+export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/:/srv/map-portal/usr/lib64/python2.6/site-packages
 export PATH=${PATH}:/srv/map-portal/usr/bin/
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/srv/map-portal/usr/lib/
 
 # configuration
 
@@ -22,14 +22,14 @@ case $DATASET in
         DATA_SUBDIR=data
 	;;
     chloro)
-        SERVER=http://opendap.jpl.nasa.gov/
-        SERVER_PATH=opendap/allData/modis/L3/aqua/chlA/4km/
+        SERVER=ftp://podaac-ftp.jpl.nasa.gov
+        SERVER_PATH=allData/modis/L3/aqua/chlA/4km/
         DATA_SUBDIR=
         ;;
     currents)
         SERVER=http://tds.hycom.org/
         SERVER_PATH=/thredds/dodsC/GLBu0.08/expt_91.1/forecasts
-        DATA_SUBDIR=data
+        DATA_SUBDIR=daily
         ;;
     coral)
         SERVER=ftp://ftp.star.nesdis.noaa.gov
@@ -37,6 +37,13 @@ case $DATASET in
         DATA_SUBDIR=daily
         MIRROR_FLAGS='-I baa_max*.nc'
         ;;
+    coral_ol)
+        SERVER=ftp://ftp.star.nesdis.noaa.gov
+        SERVER_PATH=/pub/sod/mecb/gliu/outlook_for_bom_v3
+        DATA_SUBDIR=outlook
+        MIRROR_FLAGS='-I outlook*.dat'
+        ;;
+
     poamasla)
         SERVER=http://opendap.bom.gov.au:8080
         SERVER_PATH=/thredds/fileServer/paccsap/sea_level_seasonal/grid/
@@ -106,6 +113,37 @@ try:
 except CalledProcessError as cpe:
     print cpe.read()
     print '\n'
+"""
+pre-generate configuration file and images.
+"""
+import urllib
+import urllib2
+#----------preprocess on tunceli--------
+url = "http://tunceli/portal/cgi/portal.py"
+values = {"dataset": "poamasla",
+          "variable": "height",
+          "plot": "map",
+          "period": "seasonal",
+          "area": "pac",
+          "date": "20120701",
+          "mode": "preprocess"
+           }
+data = urllib.urlencode(values)
+full_url = url + '?' + data
+try:
+    response = urllib2.urlopen(full_url)
+    print response.read()
+except urllib2.HTTPError as e:
+    print e.read()
+#----------preprocess on www--------
+url = "http://www.bom.gov.au/cosppac/apps/portal/cgi/portal.py"
+full_url = url + '?' + data
+try:
+    response = urllib2.urlopen(full_url)
+    print response.read()
+except urllib2.HTTPError as e:
+    print e.read()
+
 EOF`
             echo -n $response
     ;;
@@ -121,6 +159,80 @@ try:
 except CalledProcessError as cpe:
     print cpe.read()
     print '\n'
+"""
+pre-generate configuration file and images.
+"""
+import urllib
+import urllib2
+
+#----------preprocess on tunceli--------
+url = "http://tunceli/portal/cgi/portal.py"
+values = {"dataset": "poamassta",
+          "variable": "ssta",
+          "plot": "map",
+          "period": "seasonal",
+          "area": "pac",
+          "date": "20120701",
+          "mode": "preprocess"
+           }
+data = urllib.urlencode(values)
+full_url = url + '?' + data
+try:
+    response = urllib2.urlopen(full_url)
+    print response.read()
+except urllib2.HTTPError as e:
+    print e.read()
+
+values = {"dataset": "poamassta",
+          "variable": "sst",
+          "plot": "map",
+          "period": "seasonal",
+          "area": "pac",
+          "date": "20120701",
+          "mode": "preprocess"
+           }
+data = urllib.urlencode(values)
+full_url = url + '?' + data
+try:
+    response = urllib2.urlopen(full_url)
+    print response.read()
+except urllib2.HTTPError as e:
+    print e.read()
+
+#----------preprocess on www--------
+url = "http://www.bom.gov.au/cosppac/apps/portal/cgi/portal.py"
+values = {"dataset": "poamassta",
+          "variable": "ssta",
+          "plot": "map",
+          "period": "seasonal",
+          "area": "pac",
+          "date": "20120701",
+          "mode": "preprocess"
+           }
+data = urllib.urlencode(values)
+full_url = url + '?' + data
+try:
+    response = urllib2.urlopen(full_url)
+    print response.read()
+except urllib2.HTTPError as e:
+    print e.read()
+
+values = {"dataset": "poamassta",
+          "variable": "sst",
+          "plot": "map",
+          "period": "seasonal",
+          "area": "pac",
+          "date": "20120701",
+          "mode": "preprocess"
+           }
+data = urllib.urlencode(values)
+full_url = url + '?' + data
+try:
+    response = urllib2.urlopen(full_url)
+    print response.read()
+except urllib2.HTTPError as e:
+    print e.read()
+
 EOF`
             echo -n $response
     ;;
@@ -151,6 +263,7 @@ EOF`
 import urllib
 import urllib2
 import time
+#-------batch process on tunceli-----
 url = "http://tunceli/portal/cgi/portal.py"
 values = {"dataset": "ww3forecast",
           "variable": "sig_wav_ht",
@@ -167,6 +280,7 @@ try:
 except urllib2.HTTPError as e:
     print e.read()
 
+#-------batch process on www-----
 url = "http://www.bom.gov.au/cosppac/apps/portal/cgi/portal.py"
 full_url = url + '?' + data
 try:
@@ -174,6 +288,7 @@ try:
     print response.read()
 except urllib2.HTTPError as e:
     print e.read()
+
 EOF`
         echo -n $response
     ;;
@@ -194,28 +309,35 @@ if '$PERIOD' == 'daily':
     for delta in range(4):
         date = today + timedelta(-delta)
         date = date.timetuple()
-        file_name = 'A%4d%03d.L3m_DAY_CHL_chlor_a_4km.bz2' % (date.tm_year, date.tm_yday)
-        nc_file_name = 'A%4d%03d.L3m_DAY_CHL_chlor_a_4km.nc' % (date.tm_year, date.tm_yday)
+        file_name = 'A%4d%03d.L3m_DAY_CHL_chlor_a_4km' % (date.tm_year, date.tm_yday)
+        bz_file_name = file_name + '.bz2'
+        nc_file_name = file_name + '.nc'
         file_path = 'daily/' + file_name
+        bz_file_path = 'daily/' + bz_file_name
         nc_file_path = 'daily/' + nc_file_name
-        full_url = '%sdaily/%4d/%03d/%s' % (url, date.tm_year, date.tm_yday, file_name)
+        full_url = '%sdaily/%4d/%03d/%s' % (url, date.tm_year, date.tm_yday, bz_file_name)
         if os.path.exists(nc_file_path):
             continue
         else:
             try:
                mega = urllib2.urlopen(full_url)
-               file, msg = urllib.urlretrieve(full_url, file_path)
+               file, msg = urllib.urlretrieve(full_url, bz_file_path)
                urllib.urlcleanup()
                print file
-               check_call(['h4tonccf_nc4', file_path])
+               check_call(['bzip2', '-d', bz_file_path])
+               check_call(['h4tonccf_nc4', file_path, nc_file_path])
                check_call(['ncatted', '-a', 'units,l3m_data,c,c,mg m^-3', '-a', '_FillValue,l3m_data,c,f,-32767', nc_file_path])
                os.remove(file_path)
+            except urllib2.URLError as e:
+                print e.strerror
+                print '\n'
+                continue
             except urllib2.HTTPError as e:
                 print e.read()
                 print '\n'
                 continue
             except CalledProcessError as cpe:
-                print cpe.read()
+                print cpe.returncode
                 print '\n'
 #monthly
 elif '$PERIOD' == 'monthly':
@@ -228,29 +350,35 @@ elif '$PERIOD' == 'monthly':
 
         first_date = first_day_month.timetuple()
         last_date = last_day_month.timetuple() 
-        file_name = 'A%4d%03d%4d%03d.L3m_MO_CHL_chlor_a_4km.bz2' % (first_date.tm_year, first_date.tm_yday, last_date.tm_year, last_date.tm_yday)
-        print file_name
-        nc_file_name = 'A%4d%03d%4d%03d.L3m_MO_CHL_chlor_a_4km.nc' % (first_date.tm_year, first_date.tm_yday, last_date.tm_year, last_date.tm_yday)
+        file_name = 'A%4d%03d%4d%03d.L3m_MO_CHL_chlor_a_4km' % (first_date.tm_year, first_date.tm_yday, last_date.tm_year, last_date.tm_yday)
+        bz_file_name = file_name + '.bz2'
+        nc_file_name = file_name + '.nc'
         file_path = 'monthly/' + file_name
+        bz_file_path = 'monthly/' + bz_file_name
         nc_file_path = 'monthly/' + nc_file_name
-        full_url = '%smonthly/%4d/%s' % (url, first_date.tm_year, file_name)
+        full_url = '%smonthly/%4d/%s' % (url, first_date.tm_year, bz_file_name)
         if os.path.exists(nc_file_path):
             continue
         else:
             try:
                mega = urllib2.urlopen(full_url)
-               file, msg = urllib.urlretrieve(full_url, file_path)
+               file, msg = urllib.urlretrieve(full_url, bz_file_path)
                urllib.urlcleanup()
                print file
-               check_call(['h4tonccf_nc4', file_path])
+               check_call(['bzip2', '-d', bz_file_path])
+               check_call(['h4tonccf_nc4', file_path, nc_file_path])
                check_call(['ncatted', '-a', 'units,l3m_data,c,c,mg m^-3', '-a', '_FillValue,l3m_data,c,f,-32767', nc_file_path])
                os.remove(file_path)
+            except urllib2.URLError as e:
+                print e.strerror
+                print '\n'
+                continue
             except urllib2.HTTPError as e:
                 print e.read()
                 print '\n'
                 continue
             except CalledProcessError as cpe:
-                print cpe.read()
+                print cpe.returncode
                 print '\n'
 EOF`
         echo -n $response
@@ -329,6 +457,37 @@ print "Download and Convert HYCOM Currents..."
 from ocean.processing.Download_Compile_HYCOM_Currents import Download_Compile_HYCOM_Currents
 
 Download_Compile_HYCOM_Currents("$DATA_DIR","$DATA_SUBDIR","$SERVER","$SERVER_PATH")
+
+import urllib
+import urllib2
+from ocean.config import regionConfig
+#-------------preprocess on tunceli--------
+url = "http://tunceli/portal/cgi/portal.py"
+values = {"dataset": "currentforecast",
+          "variable": "currents",
+          "plot": "map",
+          "period": "7days",
+          "area": "fsm_chuuk",
+          "date": "20120701",
+          "mode": "preprocess"
+         }
+data = urllib.urlencode(values)
+full_url = url + '?' + data
+try:
+    response = urllib2.urlopen(full_url, None, 60000)
+    print response.read()
+except urllib2.HTTPError as e:
+    print e.read()
+
+#-------------preprocess on www--------
+url = "http://www.bom.gov.au/cosppac/apps/portal/cgi/portal.py"
+full_url = url + '?' + data
+try:
+    response = urllib2.urlopen(full_url, None, 60000)
+    print response.read()
+except urllib2.HTTPError as e:
+    print e.read()
+
 EOF
     ;;
 

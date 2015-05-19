@@ -65,7 +65,7 @@
   },
 
   "convergence": {
-    "name": "Ocean Temperature",
+    "name": "Daily Sea Surface Temperature",
     "vars": ["mean"]
   }
 }

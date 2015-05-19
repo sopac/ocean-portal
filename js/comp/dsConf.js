@@ -352,7 +352,7 @@ ocean.dsConf = {
             updatePage();
         },
         updateMapImg: function() {
-            mapimg = this.mapimg.replace(/_\d\d/, '_' + pad(slider.getStep()[0] - 1, 2));
+            mapimg = this.mapimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
             if (!this.selectedRegion) {
                 this.selectedRegion = ocean.area;
             }

@@ -207,7 +207,7 @@ class poamasla(POAMA):
 
         dateTimeObjArray = [baseDateTime + x for x in timeObjArray]
         seasonalObjArray = [x + relativedelta(months=+2) for x in dateTimeObjArray]
-        dateTimeStrArray = [{"datetime": x.strftime('%b') + ' - ' + y.strftime('%b') + ' ' + str(x.year) if x.year == y.year else str(x.year) + ' ' + str(y.year)} for x, y in zip(dateTimeObjArray, seasonalObjArray)]
+        dateTimeStrArray = [{"datetime": x.strftime('%b') + ' - ' + y.strftime('%b') + ' ' + str(x.year) if x.year == y.year else x.strftime('%b') + ' ' + str(x.year) + ' - ' + y.strftime('%b') + ' ' + str(y.year)} for x, y in zip(dateTimeObjArray, seasonalObjArray)]
         return dateTimeStrArray
    
     def getPlotFileName(self, varName, timeIndex, regionName):

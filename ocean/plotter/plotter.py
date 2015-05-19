@@ -33,7 +33,7 @@ except ImportError:
     # support older matplotlib
     from mpl_toolkits.axes_grid import make_axes_locatable
 
-from ocean import util, logger
+from ocean import util
 from ocean.util.pngcrush import pngcrush
 from ocean.config import get_server_config
 from ocean.config.regionConfig import regions
@@ -74,7 +74,6 @@ class Plotter(object):
         self.serverConfig = get_server_config()
         self._processes = []
 
-    @logger.time_and_log('waiting-for-plotter-subprocesses')
     def wait(self):
         """Wait for the completion of all plotting threads"""
 
@@ -100,10 +99,8 @@ class Plotter(object):
         self._processes.append(p)
         p.start()
 
-    @logger.time_and_log
     def plot_surface_data(self, *args, **kwargs):
 
-        @logger.time_and_log('subprocess-plot-surface-data')
         def _plot_surface_data(lats, lons, data,
                                lat_min, lat_max, lon_min, lon_max,
                                output_filename='noname.png', title='', units='',
@@ -296,7 +293,6 @@ class Plotter(object):
 
         self.queue_plot(_plot_surface_data, *args, **kwargs)
 
-    @logger.time_and_log
     def plot_basemaps_and_colorbar(self, *args, **kwargs):
         #Plots the image for the map overlay.
 
@@ -340,7 +336,6 @@ class Plotter(object):
         else:
             tick_pos = cb_label_pos
 
-        @logger.time_and_log('subprocess-plot-basemap')
         def _plot_basemap(region, lats, lons, data,
                           units='', cb_tick_fmt="%.0f", cb_labels=None,
                           proj=self._DEFAULT_PROJ, **kwargs):
@@ -369,7 +364,6 @@ class Plotter(object):
                         bbox_inches='tight', pad_inches=0.0)
             plt.close()
 
-        @logger.time_and_log('subprocess-plot-colorbar')
         def _plot_colorbar(lats, lons, data,
                            units='', cb_tick_fmt="%.0f",
                            cb_labels=None, extend='both',
@@ -573,7 +567,6 @@ def get_grid_edges(x):
     edges = np.append(edges, edges_end)
     return edges
 
-@logger.time_and_log
 def draw_vector_plot(m, x, y, u, v, draw_every=1, arrow_scale=10, quiverkey_value=0.5, units='ms^{-1}',
                      quiverkey_xpos=0.25, quiverkey_ypos=0.28):
     # Draw vector plot

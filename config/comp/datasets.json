@@ -256,8 +256,8 @@
         "periods": ["daily"],
         "plottypes": ["map"],
         "dateRange" : {
-            "minDate": "-1",
-            "maxDate": "-1"
+            "minDate": "-2",
+            "maxDate": "-2"
         }
     }, {
         "id": "chlmonthly",

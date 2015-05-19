@@ -16,6 +16,7 @@ from datetime import datetime, timedelta
 import numpy as np
 from ocean import util, config
 from ocean.config import productName
+from ocean.config import regionConfig 
 #from ocean.netcdf.extractor import Extractor
 from ocean.datasets import Dataset
 from currentforecastPlotter import CurrentForecastPlotter, COMMON_FILES
@@ -30,7 +31,7 @@ serverCfg = config.get_server_config()
 currentProduct = productName.products['currentfc']
 
 #number of forecast steps
-FORECAST_STEPS = 57 
+FORECAST_STEPS = 8 
 
 class currentforecast(Dataset):
 
@@ -72,7 +73,7 @@ class currentforecast(Dataset):
         filename = svnDayForecast % (currentProduct['7d'], '7days')
         configFileName = serverCfg['outputDir'] + filename
 
-        latestFilePath = serverCfg['dataDir']['currents'] + 'data/latest_HYCOM_currents.nc'
+        latestFilePath = serverCfg['dataDir']['currents'] + 'daily/latest_HYCOM_currents.nc'
 
         #The grid where u and v have been converted to magnitude
 #        self.grid = currentforecastGrid(latestFilePath, latestFilePath, ('u', 'v'), (-90, 90), (105, 295))
@@ -105,20 +106,40 @@ class currentforecast(Dataset):
 #        os.utime(os.path.join(serverCfg['outputDir'], filename), None)
 
         if ('mode' in params) and (params['mode'] == 'preprocess'):
-            if not hasattr(self, 'grid'):
-                self.grid = currentforecastGrid(latestFilePath, latestFilePath, ('u', 'v'), (-90, 90), (105, 295), (0, FORECAST_STEPS))
-            response['preproc'] = 'inside'
+            response['preproc'] = 'being processed...'
             self.preprocess(varStr, regionStr)
 
         return response
+
+    def batchprocess(self):
+        filename = svnDayForecast % (currentProduct['7d'], '7days')
+        configFileName = serverCfg['outputDir'] + filename
+        latestFilePath = serverCfg['dataDir']['currents'] + 'daily/latest_HYCOM_currents.nc'
+
+        self.grid = currentforecastGrid(latestFilePath, latestFilePath, ('u', 'v'), (-90, 90), (105, 295), (0, FORECAST_STEPS))
+        
+        #Generate configuration file
+        config = self.generateConfig(latestFilePath, self.grid.time)
+        with open(configFileName, 'w') as f:
+            json.dump(config, f)
+
+        varName = "currents"
+
+        for key, value in regionConfig.regions.iteritems():
+            if value[0] == 'pac' or value[0] == None:
+                for step in range(FORECAST_STEPS):
+                    self.plotSurfaceData(varName, step, key)
 
     def preprocess(self, varName, region):
         '''
             Allows the map images to be produced via the URL.
         '''
+        cmd = "python " + os.path.dirname(os.path.realpath(__file__)) + "/currentPreprocess.py"
+        os.system(cmd)
+#        os.system("python /srv/map-portal/usr/lib/python2.6/site-packages/ocean/datasets/currentforecast/currentPreprocess.py")
 #        for step in range(FORECAST_STEPS):
 #            self.plotSurfaceData(varName, step, region) 
-        self.plotSurfaceData(varName, 0, region) 
+#        self.plotSurfaceData(varName, 0, region) 
 
     def generateConfig(self, latestFilePath, gridTime):
         '''

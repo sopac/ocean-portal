@@ -13,7 +13,7 @@ import numpy as np
 from netCDF4 import Dataset
 from mpl_toolkits.basemap import shiftgrid 
 
-from ocean import util, logger
+from ocean import util
 from ocean.config import get_server_config
 from ocean.util.dateRange import getMonths
 from ocean.core import ReportableException
@@ -62,7 +62,6 @@ class Grid(object):
     TIME_VARIABLE = []
     GRID_SPACING = 1
 
-    @logger.time_and_log('load-grid')
     #def __init__(self, filename, variable,
     def __init__(self, filename, filename2, variable,
                  latrange=(-90, 90),
@@ -77,7 +76,6 @@ class Grid(object):
 
         with Dataset(filename) as nc:
 
-            logger.log("Dataset", filename)
 
             self.time = self.get_time(nc.variables)
 
@@ -146,7 +144,6 @@ class Grid(object):
         else:
             return [0.]
 
-    @logger.time_and_log
     def get_lats(self, variables):
         """
         Retrieve the latitudes for a dataset.
@@ -154,7 +151,6 @@ class Grid(object):
 
         return self._get_variable(variables, self.LATS_VARIABLE)
 
-    @logger.time_and_log
     def get_lons(self, variables):
         """
         Retrieve the longitudes for a dataset.
@@ -169,7 +165,6 @@ class Grid(object):
 
         return [0.]
 
-    @logger.time_and_log
     def get_indexes(self, variable, *args):
         """
         Get the subsetting indexes for any number of datasets, passed as an
@@ -208,7 +203,6 @@ class Grid(object):
         else:
             raise GridWrongFormat()
 
-    @logger.time_and_log
     def load_data(self, variable):
         """
         Load the subset of @variable. Assumes spatial data with layout:

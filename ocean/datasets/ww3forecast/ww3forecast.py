@@ -103,14 +103,31 @@ class ww3forecast(Dataset):
 
         return response
 
+    def batchprocess(self):
+        fileName = serverCfg['dataDir']['ww3forecast'] + 'ww3_????????_??.nc'
+        latestFilePath = max(glob.iglob(fileName), key=os.path.getctime)
+        region = 'pac'
+
+        for varStr in self.__variables__:
+            self.grid = ww3forecastGrid(latestFilePath, latestFilePath, varStr, (-90, 90), (0, 360), (0, FORECAST_STEPS))
+            self.overlayGrid = ww3forecastGrid(latestFilePath, latestFilePath, self.get_overlay_variable(varStr), (-90, 90), (0, 360), (0, FORECAST_STEPS))
+
+            if varStr == 'wnd_spd':
+                self.grid.data = self.grid.data * 1.94384449
+            for step in range(FORECAST_STEPS):
+                self.plotSurfaceData(varStr, step, region) 
+
     def preprocess(self, varName, region):
         '''
             Allows the map images to be produced via the URL.
         '''
-        if varName == 'wnd_spd':
-            self.grid.data = self.grid.data * 1.94384449
-        for step in range(FORECAST_STEPS):
-            self.plotSurfaceData(varName, step, region) 
+        cmd = "python " + os.path.dirname(os.path.realpath(__file__)) + "/ww3forecastPreprocess.py"
+        os.system(cmd)
+#        os.system("python /srv/map-portal/usr/lib/python2.6/site-packages/ocean/datasets/ww3forecast/ww3forecastPreprocess.py")
+#        if varName == 'wnd_spd':
+#            self.grid.data = self.grid.data * 1.94384449
+#        for step in range(FORECAST_STEPS):
+#            self.plotSurfaceData(varName, step, region) 
 
     def generateConfig(self, latestFilePath, gridTime):
         '''

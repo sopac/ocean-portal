@@ -11,7 +11,6 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 
-from ocean import logger
 from ocean.plotter import Plotter, COMMON_FILES, from_levels_and_colors
 from ocean.config import regionConfig
 from ocean.util.pngcrush import pngcrush
@@ -54,7 +53,6 @@ class CurrentForecastPlotter(Plotter):
                     'output_filename':outputfile_map}
                 ]
 
-        @logger.time_and_log('subprocess-plot-basemap')
         def _plot_basemap(region, lats, lons, data, time, 
                           units='', cb_tick_fmt="%.0f", cb_labels=None,
                           proj=self._DEFAULT_PROJ, **kwargs):
@@ -69,8 +67,8 @@ class CurrentForecastPlotter(Plotter):
             # Plot data
             x2, y2 = m(*np.meshgrid(lons, lats))
 
-            u = data[0]
-            v = data[1]
+            u = data[0][time]
+            v = data[1][time]
             mag = np.sqrt(u**2 + v**2)
 
             img = m.pcolormesh(x2, y2, mag, shading='flat', cmap=d_cmap, norm=norm)
@@ -85,17 +83,21 @@ class CurrentForecastPlotter(Plotter):
                     text.set_bbox(bbox_props)
  
             #plot vectors
-            every = 10 
+            if regionName == 'pac':
+                every = 50 
+                scale = 10
+            else: 
+                every = 10 
+                scale = 10
             lons = lons[::every]
             lats = lats[::every]
             x2, y2 = m(*np.meshgrid(lons, lats))
-            print time
-#            u2 = u[time, ::every, ::every]
-#            v2 = v[time, ::every, ::every]
             u2 = u[::every, ::every]
             v2 = v[::every, ::every]
+#            u2 = u[::every, ::every]
+#            v2 = v[::every, ::every]
             rad = np.arctan2(v2, u2)
-            m.quiver(x2, y2, np.cos(rad), np.sin(rad), scale=10, zorder=3, scale_units='inches', pivot='middle')
+            m.quiver(x2, y2, np.cos(rad), np.sin(rad), scale=scale, zorder=3, scale_units='inches', pivot='middle')
             m.drawmapboundary(linewidth=0.0)
 
             m.drawcoastlines(linewidth=0.5, color='#505050', zorder=8)
@@ -108,7 +110,6 @@ class CurrentForecastPlotter(Plotter):
             plt.close()
             pngcrush(region['output_filename'])
 
-        @logger.time_and_log('subprocess-plot-colorbar')
         def _plot_colorbar(lats, lons, data, time,
                            units='', cb_tick_fmt="%.0f",
                            cb_labels=None, extend='both',
@@ -144,7 +145,7 @@ class CurrentForecastPlotter(Plotter):
             plt.close()
             pngcrush(colorbar_filename)
  
-        if regionName is not None:
+        if regionName is not None and regionName is not 'pac':
             regions = [convertRegionBounds(regionConfig.regions[regionName], outputfile_map)]
         for region in regions:
             self.queue_plot(_plot_basemap, region, *args, **kwargs)
