@@ -856,7 +856,7 @@ function updatePage() {
         if (!ocean.dataset)
             return;
 
-        if (!ocean.variable){
+        if ((typeof (ocean.variable) == 'undefined') || (!ocean.variable)){
             show_feedback("Please select a variable.");
             return;
         }    
