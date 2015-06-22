@@ -7,7 +7,7 @@ body {
 
 .col-lg-4 {
   width: 350px;
-  height: 350px;
+  height: 200px;
   padding: 20px;
   margin: 20px;
 }
@@ -23,6 +23,8 @@ body {
 div#coral {
   background-color: #008EAA;
   background-image: url(../../images/coral.png);
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 div#coral:hover {
@@ -32,6 +34,8 @@ div#coral:hover {
 div#fishery {
   background-color: #7BAFD4;
   background-image: url(../../images/fishing.png);
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 div#fishery:hover {
@@ -41,6 +45,8 @@ div#fishery:hover {
 div#tour {
   background-color: #00AFD7;
   background-image: url(../../images/surfer.png);
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 div#tour:hover {
@@ -50,6 +56,8 @@ div#tour:hover {
 div#sealevel {
   background-color: #ABC7CA;
   background-image: url(../../images/sealevel.png);
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 div#sealevel:hover {
@@ -59,6 +67,8 @@ div#sealevel:hover {
 div#climate {
   background-color: #00B388;
   background-image: url(../../images/climate.png);
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 div#climate:hover {
@@ -68,6 +78,8 @@ div#climate:hover {
 div#shipping {
   background-color: #00965E;
   background-image: url(../../images/shipping.png);
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 div#shipping:hover {
