@@ -866,12 +866,19 @@ function updatePage() {
             return;
         }
         
+        function show_feedback(text){
+             $('#error-dialog-content').html(text);
+             $('#error-dialog-report-back').hide();
+             $('#error-dialog').dialog('open');
+        }  
+        
         function show_error(params, text)
         {
             var url = 'cgi/portal.py?' + $.param(params);
 
             $('#error-dialog-content').html(text);
             $('#error-dialog-request').prop('href', url);
+            $('#error-dialog-report-back').show();
             $('#error-dialog').dialog('open');
         }
 
@@ -920,9 +927,4 @@ function stepForward() {
 
 function stepBackward() {
     slider.setStep(slider.getStep()[0] - 1);
-}
-
-function show_feedback(text){
-     $('#error-dialog').html(text);
-     $('#error-dialog').dialog('open');
 }
