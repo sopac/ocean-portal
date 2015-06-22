@@ -869,7 +869,8 @@ function updatePage() {
         function show_error(params, text)
         {
             var url = 'cgi/portal.py?' + $.param(params);
-
+    
+            $('#error-dialog-status').html("<b>Error:</b>");
             $('#error-dialog-content').html(text);
             $('#error-dialog-request').prop('href', url);
             $('#error-dialog-report-back').show();
@@ -924,6 +925,7 @@ function stepBackward() {
 }
 
 function show_feedback(text){
+     $('#error-dialog-status').html("<b>Missing Input:</b>");
      $('#error-dialog-content').html(text);
      $('#error-dialog-report-back').hide();
      $('#error-dialog').dialog('open');
