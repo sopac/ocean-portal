@@ -861,7 +861,7 @@ function updatePage() {
             return;
         }    
         
-        if (!$('#date').val().trim().length){
+        if ((ocean.dataset.params().period == "daily") && (!$('#date').val().trim().length)){
             show_feedback("Please select a valid date.");
             return;
         }
