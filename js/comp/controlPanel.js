@@ -206,7 +206,6 @@ $(function() {
             updateMonths();
         } else if ($('#date').is(':visible')) {
             var date_ = $('#date');
-
             /* set range on datepicker */
             date_.datepick('option', {
                 minDate: range.min,
@@ -857,9 +856,16 @@ function updatePage() {
         if (!ocean.dataset)
             return;
 
-        if (!ocean.variable)
+        if (!ocean.variable){
+            show_feedback("Please select a variable.");
             return;
-
+        }    
+        
+        if (!$('#date').val().trim().length){
+            show_feedback("Please select a valid date.");
+            return;
+        }
+        
         function show_error(params, text)
         {
             var url = 'cgi/portal.py?' + $.param(params);
@@ -914,4 +920,9 @@ function stepForward() {
 
 function stepBackward() {
     slider.setStep(slider.getStep()[0] - 1);
+}
+
+function show_feedback(text){
+     $('#error-dialog').html(text);
+     $('#error-dialog').dialog('open');
 }
