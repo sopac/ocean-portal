@@ -28,7 +28,7 @@ regions = {
             'urcrnrlat': -15.583,
             'urcrnrlon': 205.194
            },
-           "Northern Group",
+           "Southern Group",
            {'parent': 'cook'}),
     'fsm': ('pac',
            {'llcrnrlat': 5,
