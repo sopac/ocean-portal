@@ -863,21 +863,23 @@ function updatePage() {
         }    
         
         /*Show feedback for empty date.*/
-        if ((ocean.dataset.params().period == "daily") && (!$('#date').val().trim().length)){
+        if ((ocean.dataset.params().period.trim().toLowerCase() == "daily") && (!$('#date').val().trim().length)){
             show_feedback("Please select a valid date.");
             return;
         }
         
         /*Show feedback for empty lat/lon and/or gauge in case of timeseries plot*/
-        if (ocean.dataset.params().plot === "ts"){
+        if (ocean.dataset.params().plot.trim().toLowerCase() === "ts"){
             var text = "";
             
-            if ((ocean.variable.trim() === "gauge") && (ocean.dataset.params().tidalGaugeId.trim() === "")){
-                text = "Please select a tide gauge from the map.";
-            } else {
+            if (["rec", "alt"].indexOf(ocean.variable.trim().toLowerCase()) !== -1){
                 if ((ocean.dataset.params().lat.trim() === "") || (ocean.dataset.params().lon.trim() === "")){
                     text = "Please click on the map to select a location.";
                 }
+            }
+            
+            if ((ocean.variable.trim() === "gauge") && (ocean.dataset.params().tidalGaugeId.trim() === "")){
+                text = "Please select a tide gauge from the map.";
             }
             
             if (text != ""){
