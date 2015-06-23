@@ -867,7 +867,11 @@ function updatePage() {
         }
         
         if ((ocean.dataset.params().plot == "ts") && ((ocean.dataset.params().lat.trim() === "") || (ocean.dataset.params().lon.trim() === ""))){
-            show_feedback("Please click on the map to select a location.");
+            text = "Please click on the map to select a location.";
+            if (ocean.variable.trim() == "gauge"){
+                text = "Please select a tide gauge from the map.";
+            }
+            show_feedback(text);
             return;
         }
         
