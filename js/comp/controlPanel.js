@@ -866,7 +866,7 @@ function updatePage() {
             return;
         }
         
-        if ((ocean.dataset.params().plot == "ts") && ((ocean.dataset.params().lat.trim() === "") || (ocean.dataset.params().lon.trim() === "")){
+        if ((ocean.dataset.params().plot == "ts") && ((ocean.dataset.params().lat.trim() === "") || (ocean.dataset.params().lon.trim() === ""))){
             show_feedback("Please click on the map to select a location.");
             return;
         }
