@@ -869,19 +869,21 @@ function updatePage() {
         }
         
         /*Show feedback for empty lat/lon and/or gauge in case of timeseries plot*/
-        if (ocean.dataset.params().plot == "ts"){
+        if (ocean.dataset.params().plot === "ts"){
             var text = "";
             
-            if (ocean.variable.trim() == "gauge"){
+            if ((ocean.variable.trim() === "gauge") && (ocean.dataset.params().tidalGaugeId.trim() === "")){
                 text = "Please select a tide gauge from the map.";
             } else {
                 if ((ocean.dataset.params().lat.trim() === "") || (ocean.dataset.params().lon.trim() === "")){
                     text = "Please click on the map to select a location.";
                 }
             }
-
-            show_feedback(text);
-            return;
+            
+            if (text != ""){
+                show_feedback(text);
+                return;
+            }
         }
         
         function show_error(params, text)
