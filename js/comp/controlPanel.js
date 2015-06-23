@@ -866,6 +866,11 @@ function updatePage() {
             return;
         }
         
+        if ((ocean.dataset.params().plot == "ts") && ((ocean.dataset.params().lat.trim() === "") || (ocean.dataset.params().lon.trim() === "")){
+            show_feedback("Please click on the map to select a location.");
+            return;
+        }
+        
         function show_error(params, text)
         {
             var url = 'cgi/portal.py?' + $.param(params);
