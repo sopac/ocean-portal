@@ -83,6 +83,16 @@ $(function() {
         return false; /* don't propagate event */
     });
 
+     /* Country/Region */
+    $('#region').change(function () {
+        var currentApp = ocean.app.new;
+        var variableId = getValue('variable');
+        //Update Coral Bleaching alert arrow upon country select
+        if (currentApp == 'coral' && variableId == 'daily'){
+            updatePage();
+        }
+     });
+    
     /* Variable */
     $('#variable').change(function () {
         var varid = getValue('variable');
