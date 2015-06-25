@@ -256,7 +256,7 @@
         "periods": ["daily"],
         "plottypes": ["map"],
         "dateRange" : {
-            "minDate": "-2",
+            "minDate": "-8",
             "maxDate": "-2"
         }
     }, {
