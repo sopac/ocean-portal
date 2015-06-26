@@ -122,13 +122,6 @@ $(function() {
 
         updateDatasets();
         ocean.dataset.onVariableChange();
-
-        if (currentApp == 'coral' && varid !== 'daily'){
-            //Hide the Alert dial for other variables except coral bleaching alert
-            var element = $('#additionalInfoDiv img');
-            element.attr('src', '');
-            element.attr('alt', '');
-        }
     });
 
     /* Plot Type */

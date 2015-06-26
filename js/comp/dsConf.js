@@ -478,6 +478,7 @@ ocean.dsConf = {
         onDeselect: function() {
             resetMap();
             resetLegend();
+            updateInfo(null, '');
         }, 
         onVariableChange: function(){},
         onRegionChange: function() {}
@@ -507,6 +508,7 @@ ocean.dsConf = {
             if ($('#tunafishing').parent('.fishery').size() == 1) {
                 hideControls('tunafishing');
             }
+            updateInfo(null, '');
         }, 
         onVariableChange: function(){},
         onRegionChange: function() {}
