@@ -80,7 +80,10 @@ ocean.dsConf = {
             runningAve: dataset.aveCheck.runningAve,
             runningInterval: dataset.runningInterval
         };}),
-        beforeSend: function() {},
+        beforeSend: function() {
+            valid = true;
+            return valid; 
+        },
         aveCheck: {},
         mainCheck: 'average',
         runningInterval: 2,
@@ -127,7 +130,10 @@ ocean.dsConf = {
 
             return params;
         }),
-        beforeSend: function() {},
+        beforeSend: function() {
+            valid = true;
+            return valid; 
+        },
         callback: function(data) {
             prependOutputSet();
 
@@ -152,7 +158,10 @@ ocean.dsConf = {
             urlat: $('#latitude').val(),
             urlon: $('#longitude').val()
         };}),
-        beforeSend: function() {},
+        beforeSend: function() {
+            valid = true;
+            return valid; 
+        },
         callback: function(data) {
             prependOutputSet();
 
@@ -170,7 +179,10 @@ ocean.dsConf = {
         params: override(function (dataset) { return {
             };
         }),
-        beforeSend: function() {},
+        beforeSend: function() {
+            valid = true;
+            return valid; 
+        },
         callback: function(data) {
             if(data.forecast) {
                 var forecast = $.parseJSON(data.forecast);
@@ -224,7 +236,10 @@ ocean.dsConf = {
         params: override(function (dataset) { return {
             };
         }),
-        beforeSend: function() {},
+        beforeSend: function() {
+            valid = true;
+            return valid; 
+        },
         callback: function(data) {
             if(data.forecast) {
                 var forecast = $.parseJSON(data.forecast);
@@ -271,7 +286,10 @@ ocean.dsConf = {
         params: override(function (dataset) { return {
             };
         }),
-        beforeSend: function() {},
+        beforeSend: function() {
+            valid = true;
+            return valid; 
+        },
         callback: function(data) {
             if(data.forecast) {
                 var forecast = $.parseJSON(data.forecast);
@@ -318,7 +336,10 @@ ocean.dsConf = {
         params: override(function (dataset) { return {
             };
         }),
-        beforeSend: function() {},
+        beforeSend: function() {
+            valid = true;
+            return valid; 
+        },
         callback: function(data) {
             if(data.forecast) {
                 var forecast = $.parseJSON(data.forecast);
@@ -501,7 +522,10 @@ ocean.dsConf = {
         params: override(function (dataset) { return {
             };
         }),
-        beforeSend: function() {},
+        beforeSend: function() {
+            valid = true;
+            return valid; 
+        },
         callback: function(data) {
             if (data.img != null && data.scale != null) {
                 prependOutputSet();
@@ -519,13 +543,19 @@ ocean.dsConf = {
             updateInfo(null, '');
         }, 
         onVariableChange: function(){},
-        onRegionChange: function() {}
+        onRegionChange: function() {
+            resetMap();
+            updateInfo(null, '');
+        }
     },
     chlorophyll: {
         params: override(function (dataset) { return {
             };
         }),
-        beforeSend: function() {},
+        beforeSend: function() {
+            valid = true;
+            return valid; 
+        },
         callback: function(data) {
             if (data.img != null && data.scale != null) {
                 prependOutputSet();
@@ -555,7 +585,10 @@ ocean.dsConf = {
     convergence: {
         params: override(function (dataset) { return {
         };}),
-        beforeSend: function() {},
+        beforeSend: function() {
+            valid = true;
+            return valid; 
+        },
         callback: function(data) {
             if (data.img != null && data.scale != null) {
                 prependOutputSet();
