@@ -542,7 +542,11 @@ ocean.dsConf = {
             resetLegend();
             updateInfo(null, '');
         }, 
-        onVariableChange: function(){},
+        onVariableChange: function(){
+            resetMap();
+            resetLegend();
+            updateInfo(null, '');
+        },
         onRegionChange: function() {
             resetMap();
             updateInfo(null, '');
@@ -563,7 +567,6 @@ ocean.dsConf = {
                 updateMap(data.mapimg);
                 setLegend(data.scale);
             }
-            updateInfo(data.dial, 'Alert level');
 
         },
         onSelect: function() {
@@ -577,7 +580,6 @@ ocean.dsConf = {
             if ($('#tunafishing').parent('.fishery').size() == 1) {
                 hideControls('tunafishing');
             }
-            updateInfo(null, '');
         }, 
         onVariableChange: function(){},
         onRegionChange: function() {}
