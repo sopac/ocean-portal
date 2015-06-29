@@ -38,6 +38,13 @@ ocean.dsConf = {
             runningAve: dataset.aveCheck.runningAve,
             runningInterval: dataset.runningInterval
         };}),
+        beforeSend: function() {
+            valid = true;
+            if (!ocean.date) {
+                valid = false;
+            }
+            return valid; 
+        },
         aveCheck: {},
         mainCheck: 'average',
         runningInterval: 2,
@@ -73,6 +80,7 @@ ocean.dsConf = {
             runningAve: dataset.aveCheck.runningAve,
             runningInterval: dataset.runningInterval
         };}),
+        beforeSend: function() {},
         aveCheck: {},
         mainCheck: 'average',
         runningInterval: 2,
@@ -119,6 +127,7 @@ ocean.dsConf = {
 
             return params;
         }),
+        beforeSend: function() {},
         callback: function(data) {
             prependOutputSet();
 
@@ -143,6 +152,7 @@ ocean.dsConf = {
             urlat: $('#latitude').val(),
             urlon: $('#longitude').val()
         };}),
+        beforeSend: function() {},
         callback: function(data) {
             prependOutputSet();
 
@@ -160,6 +170,7 @@ ocean.dsConf = {
         params: override(function (dataset) { return {
             };
         }),
+        beforeSend: function() {},
         callback: function(data) {
             if(data.forecast) {
                 var forecast = $.parseJSON(data.forecast);
@@ -213,6 +224,7 @@ ocean.dsConf = {
         params: override(function (dataset) { return {
             };
         }),
+        beforeSend: function() {},
         callback: function(data) {
             if(data.forecast) {
                 var forecast = $.parseJSON(data.forecast);
@@ -259,6 +271,7 @@ ocean.dsConf = {
         params: override(function (dataset) { return {
             };
         }),
+        beforeSend: function() {},
         callback: function(data) {
             if(data.forecast) {
                 var forecast = $.parseJSON(data.forecast);
@@ -305,6 +318,7 @@ ocean.dsConf = {
         params: override(function (dataset) { return {
             };
         }),
+        beforeSend: function() {},
         callback: function(data) {
             if(data.forecast) {
                 var forecast = $.parseJSON(data.forecast);
@@ -379,6 +393,29 @@ ocean.dsConf = {
             lon: $('#longitude').val(),
             tidalGaugeId: $('#tgId').val()
         };}),
+        beforeSend: function() {
+            valid = true;
+            var text = "";
+            var variable = getBackendId(ocean.datasetid, ocean.variable);
+            if (ocean.plottype === "ts") {
+                if (["rec", "alt"].indexOf(variable) >= 0) {
+                    if (($('#latitude').val().trim() === "") || ($('#longitude').val().trim() === "")){
+                        text = "Please click on the map to select a location.";
+                        valid = false;
+                    }
+                }
+                else if (ocean.variable === "gauge" && $('#tgId').val().trim() === "") {
+                    text = "Please select a tide gauge from the map.";
+                    valid = false;
+                }
+            }
+            if (text != ""){
+                show_feedback(text);
+                return valid;
+            }
+
+            return valid; 
+        },
         callback: function(data) {
             prependOutputSet();
 
@@ -464,6 +501,7 @@ ocean.dsConf = {
         params: override(function (dataset) { return {
             };
         }),
+        beforeSend: function() {},
         callback: function(data) {
             if (data.img != null && data.scale != null) {
                 prependOutputSet();
@@ -487,6 +525,7 @@ ocean.dsConf = {
         params: override(function (dataset) { return {
             };
         }),
+        beforeSend: function() {},
         callback: function(data) {
             if (data.img != null && data.scale != null) {
                 prependOutputSet();
@@ -516,6 +555,7 @@ ocean.dsConf = {
     convergence: {
         params: override(function (dataset) { return {
         };}),
+        beforeSend: function() {},
         callback: function(data) {
             if (data.img != null && data.scale != null) {
                 prependOutputSet();

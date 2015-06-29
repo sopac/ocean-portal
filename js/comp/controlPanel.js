@@ -224,6 +224,11 @@ $(function() {
                 yearRange: range.min.getFullYear() + ':' + range.max.getFullYear()
             });
 
+
+            /*Bug#790, initialise date*/
+            if (range.max.getTime() < ocean.date.getTime()) {
+                ocean.date = range.max;
+            }
             /* automatically clamps the date to the available range */
             date_.datepick('setDate', ocean.date).change();
         } else {
@@ -873,32 +878,6 @@ function updatePage() {
             return;
         }    
         
-        /*Show feedback for empty date.*/
-        if ((ocean.dataset.params().period.trim().toLowerCase() == "daily") && (!$('#date').val().trim().length)){
-            show_feedback("Please select a valid date.");
-            return;
-        }
-        
-        /*Show feedback for empty lat/lon and/or gauge in case of timeseries plot*/
-        if (ocean.dataset.params().plot.trim().toLowerCase() === "ts"){
-            var text = "";
-            
-            if (["rec", "alt"].indexOf(ocean.variable.trim().toLowerCase()) !== -1){
-                if ((ocean.dataset.params().lat.trim() === "") || (ocean.dataset.params().lon.trim() === "")){
-                    text = "Please click on the map to select a location.";
-                }
-            }
-            
-            if ((ocean.variable.trim() === "gauge") && (ocean.dataset.params().tidalGaugeId.trim() === "")){
-                text = "Please select a tide gauge from the map.";
-            }
-            
-            if (text != ""){
-                show_feedback(text);
-                return;
-            }
-        }
-        
         function show_error(params, text)
         {
             var url = 'cgi/portal.py?' + $.param(params);
@@ -918,6 +897,13 @@ function updatePage() {
                 ocean.processing = true;
                 $('#loading-dialog').dialog('open');
                 $('#error-dialog').dialog('close');
+
+                paramscheck = ocean.dataset.beforeSend();
+                if (!paramscheck) {
+                    ocean.processing = false;
+                    $('#loading-dialog').dialog('close');
+                }
+                return paramscheck;
             },
             success: function(data, textStatus, jqXHR) {
                 if (data == null || $.isEmptyObject(data))
