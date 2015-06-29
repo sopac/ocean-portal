@@ -392,7 +392,7 @@ ocean.dsConf = {
                 this.selectedRegion = ocean.area;
             }
             if (this.selectedRegion !== ocean.area) {
-                mapimg = mapimg.replace(this.selectedRegion, ocean.area);
+                mapimg = mapimg.replace('_' + this.selectedRegion, '_' + ocean.area);
                 this.mapimg = mapimg;
                 this.selectedRegion = ocean.area;
             }
