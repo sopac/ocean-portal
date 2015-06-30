@@ -8,6 +8,7 @@
 import os
 import os.path
 import glob
+from datetime import datetime, timedelta
 
 import numpy as np
 
@@ -60,6 +61,24 @@ class CoralPlotterWrapper(SurfacePlotter):
         else:
             prefix = 'outlook_srt_v3_wk_among28_cfsv2_icwk'
         return prefix 
+
+    def get_formatted_date(self, params={}):
+        formatted_date = ''
+        path = getLastestFile(self.get_path(params = params))
+        refDate = datetime.strptime(path[-11:-3], '%Y%m%d')         
+        startDate = refDate + timedelta(7)
+        
+        if params['period'] == 'daily':
+                formatted_date = params['date'].strftime('%d %B %Y')
+        if params['period'] == '4weeks':
+            formatted_date = startDate.strftime('%d %B %Y')
+        elif params['period'] == '8weeks':
+            incDate = startDate + timedelta(weeks=4)
+            formatted_date = incDate.strftime('%d %B %Y')
+        elif params['period'] == '12weeks':
+            incDate = startDate + timedelta(weeks=8)
+            formatted_date = incDate.strftime('%d %B %Y')
+        return formatted_date
 
     # --- get_title ---
 #    @apply_to(variable='daily')
@@ -174,9 +193,10 @@ class CoralGridset(Gridset):
         """
         Get the latest outlook
         """
-        fileName = os.path.join(path, '*.nc')
-        latestFilePath = max(glob.iglob(fileName), key=os.path.getctime)
-        return latestFilePath
+#        fileName = os.path.join(path, '*.nc')
+#        latestFilePath = max(glob.iglob(fileName), key=os.path.getctime)
+#        return latestFilePath
+        return getLastestFile(path)
 
     def load_data(self, variable):
         """
@@ -236,3 +256,12 @@ class coral(SST):
             alertLevel = filter_alert(params, grid)
             return {'dial': os.path.join('images', params['variable'] + '_' + str(alertLevel) + '.png')}
 
+
+def getLastestFile(path):
+    """
+        Get the latest outlook
+    """
+    fileName = os.path.join(path, '*.nc')
+    #latestFilePath = max(glob.iglob(fileName), key=os.path.getctime)
+    latestFilePath = sorted(glob.iglob(fileName), cmp=cmp, key=lambda x: x[-11:-3])
+    return latestFilePath[-1] 

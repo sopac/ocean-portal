@@ -65,60 +65,93 @@ class SurfacePlotter(object):
     def get_suffix_prelim(self, params={}):
         return '_preliminary' + self.FILE_EXTENSION
 
+    def get_formatted_date(self, params={}):
+        formatted_date = ''
+        if params['variable'] == 'trend':
+            if params['period'] == 'monthly':
+                formatted_date = "%s, %s to present" % (params['date'].strftime('%B'),
+                                      params['baseYear'])
+            if params['period'] == '3monthly':
+                formatted_date = self._get_formatted_date_trend(params, 3)
+            if params['period'] == '6monthly':
+                formatted_date = self._get_formatted_date_trend(params, 6)
+            if params['period'] == 'yearly':
+                formatted_date = '%s to present' % (params['baseYear'])
+        else:
+            if params['period'] == 'daily':
+                formatted_date = params['date'].strftime('%d %B %Y')
+            if params['period'] == '4weeks':
+                formatted_date = params['date'].strftime('%d %B %Y')
+            elif params['period'] == '8weeks':
+                formatted_date = params['date'].strftime('%d %B %Y')
+            elif params['period'] == '12weeks':
+                formatted_date = params['date'].strftime('%d %B %Y')
+            if params['period'] == 'monthly':
+                formatted_date = params['date'].strftime('%B %Y')
+            if params['period'] == '3monthly':
+                formatted_date = self._get_formatted_date(params, 3)
+            if params['period'] == '6monthly':
+                formatted_date = self._get_formatted_date(params, 6)
+            if params['period'] == '12monthly':
+                formatted_date = self._get_formatted_date(params, 12)
+            if params['period'] == 'yearly':
+                formatted_date = params['date'].strftime('%Y')
+        return formatted_date 
+
     # --- get_formatted_date ---
-    @apply_to(period='daily')
-    def get_formatted_date(self, params={}):
-        return params['date'].strftime('%d %B %Y')
+#    @apply_to(period='daily')
+#    def get_formatted_date(self, params={}):
+#        return params['date'].strftime('%d %B %Y')
 
-    @apply_to(period='4weeks')
-    def get_formatted_date(self, params={}):
-        return params['date'].strftime('%d %B %Y')
+#    @apply_to(period='4weeks')
+#    def get_formatted_date(self, params={}):
+#        return params['date'].strftime('%d %B %Y')
 
-    @apply_to(period='8weeks')
-    def get_formatted_date(self, params={}):
-        return params['date'].strftime('%d %B %Y')
+#    @apply_to(period='8weeks')
+#    def get_formatted_date(self, params={}):
+#        return params['date'].strftime('%d %B %Y')
 
-    @apply_to(period='12weeks')
-    def get_formatted_date(self, params={}):
-        return params['date'].strftime('%d %B %Y')
+#    @apply_to(period='12weeks')
+#    def get_formatted_date(self, params={}):
+#        return params['date'].strftime('%d %B %Y')
 
-    @apply_to(period='monthly')
-    def get_formatted_date(self, params={}):
-        return params['date'].strftime('%B %Y')
+#    @apply_to(period='monthly')
+#    def get_formatted_date(self, params={}):
+#        return params['date'].strftime('%B %Y')
 
-    @apply_to(period='3monthly')
-    def get_formatted_date(self, params={}):
-        return self._get_formatted_date(params, 3)
+#    @apply_to(period='3monthly')
+#    def get_formatted_date(self, params={}):
+#        return self._get_formatted_date(params, 3)
 
-    @apply_to(period='6monthly')
-    def get_formatted_date(self, params={}):
-        return self._get_formatted_date(params, 6)
+#    @apply_to(period='6monthly')
+#    def get_formatted_date(self, params={}):
+#        return self._get_formatted_date(params, 6)
 
-    @apply_to(period='12monthly')
-    def get_formatted_date(self, params={}):
-        return self._get_formatted_date(params, 12)
+#    @apply_to(period='12monthly')
+#    def get_formatted_date(self, params={}):
+#        return self._get_formatted_date(params, 12)
 
-    @apply_to(period='yearly')
-    def get_formatted_date(self, params={}):
-        return params['date'].strftime('%Y')
+#    @apply_to(period='yearly')
+#    def get_formatted_date(self, params={}):
+#        return params['date'].strftime('%Y')
 
     def _get_formatted_date(self, params, range):
         months = util.getMonths(params['date'], range)
         return "%s to %s" % (months[0].strftime('%B %Y'),
                              months[-1].strftime('%B %Y'))
 
-    @apply_to(variable='trend', period='monthly')
-    def get_formatted_date(self, params={}):
-        return "%s, %s to present" % (params['date'].strftime('%B'),
-                                      params['baseYear'])
+#    @apply_to(variable='trend', period='monthly')
+#    def get_formatted_date(self, params={}):
+#        return "%s, %s to present" % (params['date'].strftime('%B'),
+#                                      params['baseYear'])
 
-    @apply_to(variable='trend', period='3monthly')
-    def get_formatted_date(self, params={}):
-        return self._get_formatted_date_trend(params, 3)
+#    @apply_to(variable='trend', period='3monthly')
+#    def get_formatted_date(self, params={}):
+#        return self._get_formatted_date_trend(params, 3)
 
-    @apply_to(variable='trend', period='6monthly')
-    def get_formatted_date(self, params={}):
-        return self._get_formatted_date_trend(params, 6)
+#    @apply_to(variable='trend', period='6monthly')
+#    def get_formatted_date(self, params={}):
+#        return self._get_formatted_date_trend(params, 6)
 
     def _get_formatted_date_trend(self, params, range):
         months = util.getMonths(params['date'], range)
@@ -126,9 +159,9 @@ class SurfacePlotter(object):
                                             months[-1].strftime('%B'),
                                             params['baseYear'])
 
-    @apply_to(variable='trend', period='yearly')
-    def get_formatted_date(self, params={}):
-        return '%s to present' % (params['baseYear'])
+#    @apply_to(variable='trend', period='yearly')
+#    def get_formatted_date(self, params={}):
+#        return '%s to present' % (params['baseYear'])
 
     # --- get_ticks_format ---
     @apply_to()

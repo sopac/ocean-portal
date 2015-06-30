@@ -27,7 +27,7 @@ def Convert_Outlook(data_dir,data_subdir):
 
 	var_name='BAA'
 	gridcell=0.5
-        time_unit = 'hours since 0001-01-01 00:00:00.0'
+        time_unit = 'hours since 1900-01-01 00:00:00.0'
         time_calendar = 'gregorian'
 	num_weeks=37
 	num_ens=28
