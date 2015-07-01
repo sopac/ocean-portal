@@ -22,8 +22,8 @@ case $DATASET in
         DATA_SUBDIR=data
 	;;
     chloro)
-        SERVER=ftp://podaac-ftp.jpl.nasa.gov
-        SERVER_PATH=allData/modis/L3/aqua/chlA/4km/
+        SERVER=http://oceandata.sci.gsfc.nasa.gov
+        SERVER_PATH=cgi/getfile/
         DATA_SUBDIR=
         ;;
     currents)
@@ -94,7 +94,7 @@ fi
 cd $DATA_DIR$DATA_SUBDIR || exit 1
 
 case $DATASET in
-    reynolds|ersst|coral|coral_ol|chloro_d|chloro_m)
+    reynolds|ersst|coral|coral_ol)
         lftp $SERVER << EOF
 cd $SERVER_PATH || exit 1
 mirror --only-missing -n $MIRROR_FLAGS
@@ -302,7 +302,6 @@ from subprocess import check_call, CalledProcessError
 import calendar
 
 url = '$SERVER/$SERVER_PATH'
-OneM = 1000000
 today = date.today()
 #daily
 if '$PERIOD' == 'daily':
@@ -315,7 +314,8 @@ if '$PERIOD' == 'daily':
         file_path = 'daily/' + file_name
         bz_file_path = 'daily/' + bz_file_name
         nc_file_path = 'daily/' + nc_file_name
-        full_url = '%sdaily/%4d/%03d/%s' % (url, date.tm_year, date.tm_yday, bz_file_name)
+#        full_url = '%sdaily/%4d/%03d/%s' % (url, date.tm_year, date.tm_yday, bz_file_name)
+        full_url = url + bz_file_name
         if os.path.exists(nc_file_path):
             continue
         else:
@@ -356,7 +356,8 @@ elif '$PERIOD' == 'monthly':
         file_path = 'monthly/' + file_name
         bz_file_path = 'monthly/' + bz_file_name
         nc_file_path = 'monthly/' + nc_file_name
-        full_url = '%smonthly/%4d/%s' % (url, first_date.tm_year, bz_file_name)
+#        full_url = '%smonthly/%4d/%s' % (url, first_date.tm_year, bz_file_name)
+        full_url = url + bz_file_name
         if os.path.exists(nc_file_path):
             continue
         else:
