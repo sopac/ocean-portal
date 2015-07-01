@@ -242,7 +242,7 @@
     "variables": [{
         "id": "currents",
         "name": "Current Speed and Direction",
-        "periods": ["7days"],
+        "periods": ["2days"],
         "plottypes": ["map"]
     }]
 }, {
