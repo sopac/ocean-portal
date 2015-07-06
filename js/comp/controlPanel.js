@@ -19,6 +19,7 @@ ocean.controls = [
     'dshelp',
     'hour-slider',
     'reef',
+    'alertdial',
     'marine',
     'tunafishing'
 ];
@@ -355,6 +356,21 @@ $(function() {
         }
         else {
             ocean.mapObj.removeLayer(ocean.reefLayer);
+        }
+    });
+
+    $('#alertdial').change(function() {
+        if(this.checked) {
+            ocean.alertDialLayer = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
+               layers: 'alertdial',
+               format: 'image/png',
+               transparent: true,
+               attribution: '',
+               continuousWorld: true
+            }).addTo(ocean.mapObj);
+        }
+        else {
+            ocean.mapObj.removeLayer(ocean.alertDialLayer);
         }
     });
 

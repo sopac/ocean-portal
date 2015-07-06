@@ -316,6 +316,28 @@ MAP
     END
 
     LAYER
+        NAME         alertdial 
+         METADATA
+            "wms_title"    "alertdial"
+        END
+        DATA         CRW_Outlines
+        GROUP        reef 
+        STATUS       ON
+        TYPE         POLYGON 
+
+        CLASS
+            NAME 'alerdial'
+
+            STYLE
+                STYLE
+                OUTLINECOLOR 0 0 0
+                WIDTH 1
+                ANTIALIAS TRUE
+            END
+        END
+    END
+
+    LAYER
         NAME         marineparks 
          METADATA
             "wms_title"    "marine_parks"

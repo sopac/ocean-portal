@@ -13,7 +13,8 @@
 #longitude,
 #hour-slider,
 #reef,
-#marine
+#marine,
+#alertdial
 {
   display: none;
 }
@@ -130,6 +131,12 @@
 {
   display: inline;
 }
+
+.variable-daily #alertdial
+{
+  display: inline;
+}
+
 
 .fishery #marine
 {
