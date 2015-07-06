@@ -15,7 +15,7 @@
   },
 
   "sealevel": {
-    "name": "Sea Level",
+    "name": "Historical Sea Level",
     "vars": [ "alt", "rec", "gauge", "eta" ]
   },
 
