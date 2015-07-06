@@ -28,9 +28,10 @@ def Download_Compile_HYCOM_Currents(data_dir,data_subdir,server,server_path):
     lonStart = 110
     lonEnd = 290
 #    num_of_time_steps=57
-    num_of_time_steps=16
+#    num_of_time_steps=24
     start_timestamp=8
-    end_timestamp=24
+    end_timestamp=32
+    num_of_time_steps=end_timestamp - start_timestamp
 
     output_filename=path+'/'+'latest_HYCOM_currents.nc'           
 
