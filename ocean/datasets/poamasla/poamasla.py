@@ -54,14 +54,18 @@ class PoamaPlotterWrapper(SurfacePlotter):
 
     @apply_to(variable='height')
     def get_ticks(self, params={}):
-        return np.arange(-25, 26, 5)
+        return np.arange(-30, 31, 6)
 
     @apply_to(period='seasonal')
     def get_formatted_date(self, params={}):
         return ''
 
     def get_ticks_format(self, params={}):
-        return '%.1f'
+        return '%d'
+
+    @apply_to(variable='height')
+    def get_labels(self, params={}):
+        return (self.get_ticks(params=params) * 10, None)
 
     def get_colormap_strategy(self, params={}):
         return 'nonlinear'
@@ -70,14 +74,14 @@ class PoamaPlotterWrapper(SurfacePlotter):
         return 'pcolormesh'
 
     def get_extend(self, params={}):
-        return 'neither'
+        return 'both'
 
     def get_fill_color(self, params={}):
         return '0.0'
 
     @apply_to(variable='height')
     def get_units(self, params={}):
-        return 'cm'
+        return 'mm'
 
     @apply_to(variable='height')
     def get_contourlines(self, params={}):
