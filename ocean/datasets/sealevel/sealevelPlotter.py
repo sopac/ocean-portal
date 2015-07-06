@@ -103,7 +103,11 @@ class SeaLevelSeries(SeaLevelGrid):
 
         return (latidx, latidx + 1), (lonidx, lonidx + 1), (0, 0)
 
-    def load_data(self, variable, (lat_idx1, lat_idx2),
+    def load_data(self, variable):
+        print variable
+        return variable 
+
+    def clip_data(self, variable, (lat_idx1, lat_idx2),
                                   (lon_idx1, lon_idx2),
                                   (depth_idx1, depth_idx2)):
 
@@ -113,6 +117,7 @@ class SeaLevelSeries(SeaLevelGrid):
             raise LandError()
 
         return data
+
 
 class SeaLevelSurfacePlotter(SurfacePlotter):
     DATASET = 'sealevel'
