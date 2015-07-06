@@ -15,20 +15,17 @@ from ocean import util, config
 
 country = {
     'cook': 'COOKS',
-    'cook_nor': 'COOKS',
-    'cook_sou': 'COOKS',
+    'cook_nor': 'COOKS_NORTH',
+    'cook_sou': 'COOKS_SOUTH',
     'fsm': 'FSM',
-    'fsm_yap': 'FSM',
-    'fsm_chuuk': 'FSM',
-    'fsm_pohnpei': 'FSM',
-    'fsm_kosrae': 'FSM',
+    'fsm_east': 'FSM_EAST',
+    'fsm_west': 'FSM_WEST',
     'fiji': 'FIJI',
     'kiribati': 'KIRIBATI',
-    'kiribati_gilbert': 'KIRIBATI',
-    'kiribati_phoenix': 'KIRIBATI',
-    'kiribati_nor_line': 'KIRIBATI',
-    'kiribati_cen_line': 'KIRIBATI',
-    'kiribati_sou_line': 'KIRIBATI',
+    'kiribati_gilbert': 'KIRIBATI_GILBERT',
+    'kiribati_phoenix': 'KIRIBATI_PHOENIX',
+    'kiribati_nor_line': 'KIRIBATI_LINE_NORTH',
+    'kiribati_sou_line': 'KIRIBATI_LINE_SOUTH',
     'marshall': 'MARSHALL1',
     'nauru': 'NAURU',
     'niue': 'NIUE',
@@ -57,13 +54,11 @@ def filter_alert(params, grid):
     crw = map.readshapefile(util.get_resource('maps', 'layers', 'CRW_Outlines'),
                             'crw')
 
-    #country = 'FIJI'
-#    country = 'PNG'
     collection = []
     max = None
 
-    shape_area = country[params['area']]
-    
+#    shape_area = country[params['area']]
+    shape_area = country[params['area'].lower()]
     for info, shape in zip(map.crw_info, map.crw):
         if info['ID'] == shape_area or info['SUBREGION'] == shape_area:
             collection.append(np.array(shape))
@@ -95,7 +90,7 @@ def filter_alert(params, grid):
         end_lon = bisect.bisect_right(lons, lon_max)
 
         lat_clip = lats[start_lat: end_lat]
-        lon_clip = lons[start_lon:end_lon]
+        lon_clip = lons[start_lon: end_lon]
 
         x, y = np.meshgrid(lon_clip, lat_clip)
         shape_2d = x.shape
@@ -117,4 +112,4 @@ def filter_alert(params, grid):
         if local_max > max:
             max = local_max
 
-        return max
+    return max
