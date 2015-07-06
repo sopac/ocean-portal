@@ -32,7 +32,7 @@ regions = {
            {'parent': 'cook'}),
     'fsm': ('pac',
            {'llcrnrlat': 5,
-            'llcrnrlon': 150,
+            'llcrnrlon': 135.275,
             'urcrnrlat': 11,
             'urcrnrlon': 164
            },
@@ -185,7 +185,7 @@ regions = {
     'tuvalu': ('pac',
            {'llcrnrlat': -11,
             'llcrnrlon': 177,
-            'urcrnrlat': -7,
+            'urcrnrlat': -4,
             'urcrnrlon': 180
            },
            "Tuvalu",
