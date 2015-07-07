@@ -83,29 +83,28 @@ class SST(Dataset):
         key = '%s%s' % (params['period'], suffix.get(params['variable'], ''))
         return self.product[key]
 
-    @apply_to()
     def get_date_format(self, params={}):
+        formatted_date = ''
         format = {
-            'daily': '%Y%m%d',
-            'weekly': '%Y%m%d',
-            '4weeks': '%Y%m%d',
-            '8weeks': '%Y%m%d',
-            '12weeks': '%Y%m%d',
-            'monthly': '%Y%m',
-            '3monthly': '%Y%m',
-            '6monthly': '%Y%m',
-            '12monthly': '%Y%m',
-            'yearly': '%Y',
+            'daily': '{0.year:4d}{0.month:02d}{0.day:02d}',
+            'weekly': '{0.year:4d}{0.month:02d}{0.day:02d}',
+            '4weeks': '{0.year:4d}{0.month:02d}{0.day:02d}',
+            '8weeks': '{0.year:4d}{0.month:02d}{0.day:02d}',
+            '12weeks': '{0.year:4d}{0.month:02d}{0.day:02d}',
+            'monthly': '{0.year:4d}{0.month:02d}',
+            '3monthly': '{0.year:4d}{0.month:02d}',
+            '6monthly': '{0.year:4d}{0.month:02d}',
+            '12monthly': '{0.year:4d}{0.month:02d}',
+            'yearly': '{0.year:4d}',
         }
-
-        return params['date'].strftime(format[params['period']])
-
-    @apply_to(variable='trend')
-    def get_date_format(self, params={}):
-        if params['period'] == 'yearly':
-            return 'annual'
+        if params['variable'] == 'trend':
+            if params['period'] == 'yearly':
+                formatted_date = 'annual'
+            else:
+                formatted_date = '{0.month:02d}'.format(params['date'])
         else:
-            return params['date'].strftime('%m')
+            formatted_date = format[params['period']].format(params['date'])
+        return formatted_date
 
     def process_stats(self, params):
         return {} 
