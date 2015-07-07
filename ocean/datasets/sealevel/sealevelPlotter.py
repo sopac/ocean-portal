@@ -104,7 +104,6 @@ class SeaLevelSeries(SeaLevelGrid):
         return (latidx, latidx + 1), (lonidx, lonidx + 1), (0, 0)
 
     def load_data(self, variable):
-        print variable
         return variable 
 
     def clip_data(self, variable, (lat_idx1, lat_idx2),
