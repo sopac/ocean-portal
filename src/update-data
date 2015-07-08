@@ -468,7 +468,7 @@ values = {"dataset": "currentforecast",
           "variable": "currents",
           "plot": "map",
           "period": "7days",
-          "area": "fsm_chuuk",
+          "area": "fiji",
           "date": "20120701",
           "mode": "preprocess"
          }
