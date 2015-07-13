@@ -175,7 +175,7 @@ def plotTidalGauge(outputFilename, saveData=True, **args):
     minPlot, = ax.plot(data.date, data.minimum, 'b-')
 
     # add legend
-    ax.legend([maxPlot, meanPlot, minPlot], ['Max', 'Mean', 'Min'])
+    ax.legend([maxPlot, meanPlot, minPlot], ['Max', 'Mean', 'Min'], ncol=3, loc='lower right')
 
     plt.axhline(y=0, color='k')
     plt.figtext(0.02, 0.02, getCopyright(), fontsize=6)
