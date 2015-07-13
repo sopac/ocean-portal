@@ -62,7 +62,7 @@ class PoamaPlotterWrapper(SurfacePlotter):
 
     @apply_to(variable='ssta')
     def get_ticks(self, params={}):
-        return np.arange(-3, 4)
+        return np.arange(-2, 2.5, 0.5)
 
     @apply_to(variable='sst')
     def get_ticks(self, params={}):
@@ -88,6 +88,10 @@ class PoamaPlotterWrapper(SurfacePlotter):
     def get_extend(self, params={}):
         return 'neither'
 
+    @apply_to(variable='ssta', period='seasonal')
+    def get_extend(self, params={}):
+        return 'both'
+        
     def get_fill_color(self, params={}):
         return '0.0'
 
