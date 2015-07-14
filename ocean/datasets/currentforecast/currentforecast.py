@@ -31,7 +31,7 @@ serverCfg = config.get_server_config()
 currentProduct = productName.products['currentfc']
 
 #number of forecast steps
-FORECAST_STEPS = 8 
+FORECAST_STEPS = 12 
 
 class currentforecast(Dataset):
 
