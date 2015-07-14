@@ -104,7 +104,7 @@ EOF
     poamasla)
             FILE='sla_grid_latest.nc'
             URL=$SERVER/$SERVER_PATH/$FILE
-            wget -nc -q "$URL" || echo -n "error ($?)"
+            wget -q "$URL" -O "$FILE"|| echo -n "error ($?)"
             response=`python << EOF
 import os
 from subprocess import check_call, CalledProcessError
@@ -150,7 +150,7 @@ EOF`
     poamassta)
             FILE='PACCSAP_oa_latest.nc'
             URL=$SERVER/$SERVER_PATH/$FILE
-            wget -nc -q "$URL" || echo -n "error ($?)"
+            wget -q "$URL" -O "$FILE" || echo -n "error ($?)"
             response=`python << EOF
 import os
 from subprocess import check_call, CalledProcessError

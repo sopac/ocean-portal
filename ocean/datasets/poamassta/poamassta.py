@@ -27,7 +27,7 @@ serverCfg = config.get_server_config()
 poamaProduct = productName.products['poama']
 
 #number of forecast steps
-FORECAST_STEPS = 9
+FORECAST_STEPS = 8
 
 class PoamaPlotterWrapper(SurfacePlotter):
     DATASET = 'poamassta'
@@ -116,7 +116,7 @@ class PoamaPlotterWrapper(SurfacePlotter):
         """
 
         gridvar = self.get_variable_mapping(params=params)
-        kwargs.update({'depthrange':(0, FORECAST_STEPS)})
+        kwargs.update({'depthrange':(0, FORECAST_STEPS - 1)})
         grid =  PoamaGridset(self.get_path(params=params), gridvar, params['period'],
                        prefix=self.get_prefix(params=params),
                        suffix=self.get_suffix(params=params),
@@ -134,7 +134,7 @@ class PoamaPlotterWrapper(SurfacePlotter):
         """
 
         gridvar = self.get_variable_mapping(params=params)
-        kwargs.update({'depthrange':(0, FORECAST_STEPS)})
+        kwargs.update({'depthrange':(0, FORECAST_STEPS - 1)})
         grid =  PoamaGridset(self.get_path(params=params), gridvar, params['period'],
                        prefix=self.get_prefix(params=params),
                        suffix=self.get_suffix(params=params),
@@ -236,7 +236,7 @@ class poamassta(POAMA):
         '''
         baseDateTime = datetime(1800, 1, 1, 0, 0, 0)  
         
-        timeArray = self.plotter.get_grid(params=params).time
+        timeArray = self.plotter.get_grid(params=params).time[:8]
         timeObjArray = map(timedelta, timeArray.astype(float))
 
         dateTimeObjArray = [baseDateTime + x for x in timeObjArray]

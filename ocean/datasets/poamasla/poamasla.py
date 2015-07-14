@@ -96,7 +96,7 @@ class PoamaPlotterWrapper(SurfacePlotter):
         """
 
         gridvar = self.get_variable_mapping(params=params)
-        kwargs.update({'depthrange':(0, 5)})
+        kwargs.update({'depthrange':(0, FORECAST_STEPS - 1)})
         grid =  PoamaGridset(self.get_path(params=params), gridvar, params['period'],
                        prefix=self.get_prefix(params=params),
                        suffix=self.get_suffix(params=params),
@@ -184,7 +184,7 @@ class PoamaGridset(Gridset):
         """
         Implement to retrieve the depths for a dataset.
         """
-        return np.arange(6)
+        return np.arange(FORECAST_STEPS)
 
 class poamasla(POAMA):
         
@@ -210,8 +210,9 @@ class poamasla(POAMA):
         timeObjArray = map(timedelta, timeArray.astype(float))
 
         dateTimeObjArray = [baseDateTime + x for x in timeObjArray]
-        seasonalObjArray = [x + relativedelta(months=+2) for x in dateTimeObjArray]
-        dateTimeStrArray = [{"datetime": x.strftime('%b') + ' - ' + y.strftime('%b') + ' ' + str(x.year) if x.year == y.year else x.strftime('%b') + ' ' + str(x.year) + ' - ' + y.strftime('%b') + ' ' + str(y.year)} for x, y in zip(dateTimeObjArray, seasonalObjArray)]
+        seasonalStartObjArray = [x + relativedelta(months=-1) for x in dateTimeObjArray]
+        seasonalEndObjArray = [x + relativedelta(months=+1) for x in dateTimeObjArray]
+        dateTimeStrArray = [{"datetime": x.strftime('%b') + ' - ' + y.strftime('%b') + ' ' + str(x.year) if x.year == y.year else x.strftime('%b') + ' ' + str(x.year) + ' - ' + y.strftime('%b') + ' ' + str(y.year)} for x, y in zip(seasonalStartObjArray, seasonalEndObjArray)]
         return dateTimeStrArray
    
     def getPlotFileName(self, varName, timeIndex, regionName):
