@@ -44,7 +44,7 @@ class currentforecast(Dataset):
     ]
 
     __periods__ = [
-        '3days',
+        '3days'
     ]
 
     __variables__ = [
