@@ -154,10 +154,10 @@ class ChlorophyllPlotterWrapper(SurfacePlotter):
 class ChlorophyllGridset(Gridset):
  
     # a list of possible variables for latitudes
-    LATS_VARIABLE = ['Number_of_Lines']
+    LATS_VARIABLE = ['lat']
 
     # a list of possible variables for longitude
-    LONS_VARIABLE = ['Number_of_Columns']
+    LONS_VARIABLE = ['lon']
 
     def get_filename_date(self, date, **kwargs):
         date = date.timetuple()
