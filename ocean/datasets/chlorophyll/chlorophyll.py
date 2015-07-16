@@ -27,8 +27,8 @@ class ChlorophyllPlotterWrapper(SurfacePlotter):
     PRODUCT_NAME = "Chlorophyll-A"
 
     VARIABLE_MAP = {
-        'chldaily': 'l3m_data',
-        'chlmonthly': 'l3m_data',
+        'chldaily': 'chlor_a',
+        'chlmonthly': 'chlor_a',
     }
 
     apply_to = util.Parameterise(SurfacePlotter)

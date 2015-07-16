@@ -309,25 +309,17 @@ if '$PERIOD' == 'daily':
         date = today + timedelta(-delta)
         date = date.timetuple()
         file_name = 'A%4d%03d.L3m_DAY_CHL_chlor_a_4km' % (date.tm_year, date.tm_yday)
-        bz_file_name = file_name + '.bz2'
         nc_file_name = file_name + '.nc'
-        file_path = 'daily/' + file_name
-        bz_file_path = 'daily/' + bz_file_name
         nc_file_path = 'daily/' + nc_file_name
-#        full_url = '%sdaily/%4d/%03d/%s' % (url, date.tm_year, date.tm_yday, bz_file_name)
-        full_url = url + bz_file_name
+        full_url = url + nc_file_name
         if os.path.exists(nc_file_path):
             continue
         else:
             try:
                mega = urllib2.urlopen(full_url)
-               file, msg = urllib.urlretrieve(full_url, bz_file_path)
+               file, msg = urllib.urlretrieve(full_url, nc_file_path)
                urllib.urlcleanup()
                print file
-               check_call(['bzip2', '-d', bz_file_path])
-               check_call(['h4tonccf_nc4', file_path, nc_file_path])
-               check_call(['ncatted', '-a', 'units,l3m_data,c,c,mg m^-3', '-a', '_FillValue,l3m_data,c,f,-32767', nc_file_path])
-               os.remove(file_path)
             except urllib2.URLError as e:
                 print e.strerror
                 print '\n'
@@ -336,9 +328,6 @@ if '$PERIOD' == 'daily':
                 print e.read()
                 print '\n'
                 continue
-            except CalledProcessError as cpe:
-                print cpe.returncode
-                print '\n'
 #monthly
 elif '$PERIOD' == 'monthly':
     date = today.replace(day=1)
@@ -351,25 +340,17 @@ elif '$PERIOD' == 'monthly':
         first_date = first_day_month.timetuple()
         last_date = last_day_month.timetuple() 
         file_name = 'A%4d%03d%4d%03d.L3m_MO_CHL_chlor_a_4km' % (first_date.tm_year, first_date.tm_yday, last_date.tm_year, last_date.tm_yday)
-        bz_file_name = file_name + '.bz2'
         nc_file_name = file_name + '.nc'
-        file_path = 'monthly/' + file_name
-        bz_file_path = 'monthly/' + bz_file_name
         nc_file_path = 'monthly/' + nc_file_name
-#        full_url = '%smonthly/%4d/%s' % (url, first_date.tm_year, bz_file_name)
-        full_url = url + bz_file_name
+        full_url = url + nc_file_name
         if os.path.exists(nc_file_path):
             continue
         else:
             try:
                mega = urllib2.urlopen(full_url)
-               file, msg = urllib.urlretrieve(full_url, bz_file_path)
+               file, msg = urllib.urlretrieve(full_url, nc_file_path)
                urllib.urlcleanup()
                print file
-               check_call(['bzip2', '-d', bz_file_path])
-               check_call(['h4tonccf_nc4', file_path, nc_file_path])
-               check_call(['ncatted', '-a', 'units,l3m_data,c,c,mg m^-3', '-a', '_FillValue,l3m_data,c,f,-32767', nc_file_path])
-               os.remove(file_path)
             except urllib2.URLError as e:
                 print e.strerror
                 print '\n'
@@ -378,9 +359,6 @@ elif '$PERIOD' == 'monthly':
                 print e.read()
                 print '\n'
                 continue
-            except CalledProcessError as cpe:
-                print cpe.returncode
-                print '\n'
 EOF`
         echo -n $response
     ;;
