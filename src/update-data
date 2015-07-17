@@ -84,21 +84,21 @@ esac
 
 if [ "$DATASET" != "decile" ]; then
 
-    DATA_DIR=`python << EOF
-    from ocean.config import get_server_config
+DATA_DIR=`python << EOF
+from ocean.config import get_server_config
 
-    config = get_server_config()
-    print config['dataDir']["$DATASET"]
-    EOF`
+config = get_server_config()
+print config['dataDir']["$DATASET"]
+EOF`
 
-    if [ "x$DATA_DIR" = "x" ]; then
-        echo "DATA_DIR empty, very bad! Is PYTHONPATH set?" >&2
-        exit 1
-    fi
+if [ "x$DATA_DIR" = "x" ]; then
+    echo "DATA_DIR empty, very bad! Is PYTHONPATH set?" >&2
+    exit 1
+fi
 
-    # download data
+# download data
 
-    cd $DATA_DIR$DATA_SUBDIR || exit 1
+cd $DATA_DIR$DATA_SUBDIR || exit 1
 fi
 
 case $DATASET in
