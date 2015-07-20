@@ -208,6 +208,21 @@
         "plottypes": ["map"]
     }]
 }, {
+    "id":"msla",
+    "name": "Near Real Time Sea Level",
+    "title": "Near Real Time Sea Level",
+    "help": "help/about_POAMA_Sea_Level.pdf",
+    "variables": [{
+        "id": "sla",
+        "name": "Sea Level Anomaly",
+        "periods": ["daily"],
+        "plottypes": ["map"],
+        "dateRange" : {
+            "minDate": "20150706",
+            "maxDate": "-1"
+        }
+    }]    
+}, {
     "id":"poamasla",
     "name":"Seasonal Sea Level Forecast",
     "title": "Seasonal Sea Level Forecast",

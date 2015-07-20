@@ -5,7 +5,7 @@
     },
     "sealevel": {
         "datasets": ["reynolds", "ersst", "ww3", "bran"],
-        "vargroups": ["sealevel", "ww3forecast", "poamasla"]
+        "vargroups": ["sealevel", "ww3forecast", "poamasla", "msla"]
     },
     "coral": {
         "datasets": [],

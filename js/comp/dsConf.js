@@ -232,6 +232,32 @@ ocean.dsConf = {
         },
         onRegionChange: function() {}
     },
+    msla: {
+        params: override(function (dataset) { return {
+            };
+        }),
+        beforeSend: function(){
+            valid = true;
+            return valid;
+        },
+        callback: function(data) {
+            if (data.img != null && data.scale != null){
+                prependOutputSet();
+                appendOutput(data.img, null, null, null, data);
+                updateMap(data.mapimg);
+                setLegend(data.scale);
+            }
+        },
+        onSelect: function() {
+        },
+        onDeselect: function(){
+            resetMap();
+            resetLegend();
+        },
+        onVariableChange: function() {
+        },
+        onRegionChange: function() {}
+    },
     poamasla: {
         params: override(function (dataset) { return {
             };

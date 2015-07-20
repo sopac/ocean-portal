@@ -49,7 +49,8 @@ products = {"reynolds": {"daily":     "REY00001",
                     "rect": "WAV00002"
                    },
             "sealevel": {"point": "SEA00001",
-                         "monthly": "SEA00002"
+                         "monthly": "SEA00002",
+                          "daily": "SEA00003"
                         },
             "ww3forecast": {"7d":  "WFC00001"
                            },

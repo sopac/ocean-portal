@@ -38,6 +38,11 @@
     "name": "Chlorophyll-A",
     "vars": ["chldaily"]
   },
+  
+  "msla": {
+    "name": "Near Real Time Sea Level",
+    "vars": ["sla"]
+  }, 
 
   "poamasla": {
     "name": "Seasonal Sea Level Forecast",

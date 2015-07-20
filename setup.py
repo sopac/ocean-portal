@@ -52,7 +52,8 @@ packages = [
     'ocean.datasets.poamasla',
     'ocean.datasets.poamassta',
     'ocean.datasets.currentforecast',
-    'ocean.datasets.convergence'
+    'ocean.datasets.convergence',
+    'ocean.datasets.msla',
 ]
 
 scripts = [
