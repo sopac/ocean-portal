@@ -15,6 +15,7 @@ import numpy.ma as ma
 from datetime import datetime, timedelta
 
 from ocean import config, logger, util
+from ocean.config import regionConfig
 from ocean.netcdf.surfaceplotter import SurfacePlotter
 from ocean.netcdf import Gridset
 from ocean.netcdf.extractor import LandError
@@ -33,7 +34,7 @@ class MslaPlotter(SurfacePlotter):
     
     apply_to = util.Parameterise()
     
-    PRODUCT_NAME = ""
+    PRODUCT_NAME = "AVISO Ssalto/Duacs SLA"
     
     def __init__(self, variable):
         super(MslaPlotter, self).__init__()
@@ -64,6 +65,17 @@ class MslaPlotter(SurfacePlotter):
     def get_labels(self, params={}):
         return ((self.get_ticks(params=params) * 1000).astype(int), None)
     
+    @apply_to(variable='sla')
+    def get_smooth_fac(self, params={}):
+        try:
+            if regionConfig.regions[params['area']][0] == 'pac':
+                return 1
+            else:
+                pass
+        except KeyError:
+            pass
+        return 30
+
     def get_path(self, params={}):
         return os.path.join(serverCfg['dataDir'][self.DATASET], 'grids', 'daily')
 
