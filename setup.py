@@ -128,7 +128,8 @@ web_files = [
     'js/comp/dsConf.js',
     'js/comp/app.js',
     'js/comp/dragdealer.js',
-    'js/comp/Ocean.js'
+    'js/comp/Ocean.js',
+    'js/comp/data_points_to_load.js'
 #   'js/sst.js',
 ]
 

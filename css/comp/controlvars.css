@@ -14,7 +14,8 @@
 #hour-slider,
 #reef,
 #marine,
-#alertdial
+#alertdial,
+#waveatlas
 {
   display: none;
 }
@@ -137,14 +138,12 @@
   display: inline;
 }
 
-
 .fishery #marine
 {
   display: inline;
 }
 
-.climate#waveatlas
+.climate #waveatlas
 {
   display: inline;
 }
-
