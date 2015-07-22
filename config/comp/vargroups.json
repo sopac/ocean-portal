@@ -29,11 +29,6 @@
     "vars": ["daily", "outlook"]
   },
  
-  "ww3forecast": {
-    "name": "Wave Forecast",
-    "vars": ["sig_wav_ht", "sig_ht_wnd_sea", "sig_ht_sw1", "pk_wav_per", "wnd_spd"]
-  },
-   
   "chlodaily": {
     "name": "Chlorophyll-A",
     "vars": ["chldaily"]
@@ -57,6 +52,11 @@
   "poamasst": {
     "name": "Seasonal Sea Surface Temperature Forecast",
     "vars": ["sst"]
+  },
+
+  "ww3forecast": {
+    "name": "Wave Forecast",
+    "vars": ["sig_wav_ht", "sig_ht_wnd_sea", "sig_ht_sw1", "pk_wav_per", "wnd_spd"]
   },
 
   "currentforecast": {

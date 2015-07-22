@@ -240,6 +240,10 @@ class SurfacePlotter(object):
     def get_contour_labels(self, params={}):
         return True
 
+    @apply_to(variable='sla')
+    def get_contour_labels(self, params={}):
+        return False
+
     #GAS Remove Contour labels
     @apply_to(variable='anom')
     def get_contour_labels(self, params={}):
