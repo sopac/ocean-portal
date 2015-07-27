@@ -211,7 +211,7 @@
     "id":"waveatlas",
     "name":"WACOP",
     "title": "WACOP",
-    "help": "help/about_ww3forecasts.pdf",
+    "help": "http://gsd.spc.int/marinecoastalsciencesurvey/wacop",
     "variables": [{
         "id": "atlas",
         "name": "Wave Atlas",
