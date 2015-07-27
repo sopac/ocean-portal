@@ -21,8 +21,7 @@ ocean.controls = [
     'reef',
     'alertdial',
     'marine',
-    'tunafishing',
-    'waveatlas'
+    'tunafishing'
 ];
 
 ocean.compare = { limit: 24 };
@@ -388,42 +387,6 @@ $(function() {
             ocean.mapObj.removeLayer(ocean.marineLayer);
         }
     });
-
-    var markers = new L.FeatureGroup();
-    
-    function populateMarkers() {
-        //Read file
-        $.getScript( "js/comp/data_points_to_load.js")  
-        
-          .done(function( script, textStatus ) {
-            
-            //Load the markers
-            for (var i = 0; i < points.length; i++) {
-                var marker = new L.marker([points[i][1],points[i][2]])
-                            .bindPopup("<b>Location: "+points[i][0] + "</b><br>" + "<a href=http://gsd.spc.int/wacop/" + points[i][4].trim() + " target=_blank>See wave climate report</a>");
-                markers.addLayer(marker);
-            }
-            return false;
-          })
-          
-        .fail(function( jqxhr, settings, exception ) {
-            alert("Failed to load the location points data file to show wave atlas report.");            
-        });        
-    }
-
-    if (ocean.app.new == "climate"){
-        populateMarkers();
-        $('#waveatlas')[0].checked=false;
-    }
-
-    $('#waveatlas').change(function() {
-        if(this.checked) {
-            ocean.mapObj.addLayer(markers);
-        } else {
-            ocean.mapObj.removeLayer(markers);
-        }
-    });
-
 
     var groupings = {};
 

@@ -232,6 +232,57 @@ ocean.dsConf = {
         },
         onRegionChange: function() {}
     },
+    waveatlas: {
+        params: override(function (dataset) { return {
+            };
+        }),
+        beforeSend: function() {
+            valid = true;
+            return valid;
+        },
+        callback: function(data) {
+        },
+        onSelect: function(){
+            if (ocean.variable == 'atlas'){
+                hideControls('plottype');
+                hideControls('dataset');
+                hideControls('period');
+
+                ocean.dsConf.ww3.overlay = new L.FeatureGroup();
+
+                //Read file
+                $.getScript( "js/comp/data_points_to_load.js")
+
+                  .done(function( script, textStatus ) {
+                    //Load the markers
+                    for (var i = 0; i < points.length; i++) {
+                        var marker = new L.marker([points[i][1],points[i][2]])
+                                    .bindPopup("<b>Location: "+points[i][0] + "</b><br>" + "<a href=http://gsd.spc.int/wacop/" + points[i][4].trim() + " target=_blank>See wave climate report</a>");
+                        ocean.dsConf.ww3.overlay.addLayer(marker);
+                    }
+                    return false;
+                  })
+
+                  .fail(function( jqxhr, settings, exception ) {
+                    fatal_error("Failed to load location points to show WACOP wave atlas report.");
+                  });
+
+                ocean.mapObj.addLayer(ocean.dsConf.ww3.overlay);
+
+                if (map.hasLayer(map.intersecMarker)){
+                    disableIntersecMarker();
+                }
+            }
+        },
+        onDeselect: function(){
+            if (map.hasLayer(ocean.dsConf.ww3.overlay)){
+                ocean.mapObj.removeLayer(ocean.dsConf.ww3.overlay);
+            }
+        },
+        onVariableChange: function(){},
+        onRegionChange: function() {}
+
+    },
     msla: {
         params: override(function (dataset) { return {
             };

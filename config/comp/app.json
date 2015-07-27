@@ -1,6 +1,6 @@
 {
     "climate": {
-        "datasets": ["reynolds", "ersst", "ww3", "bran"],
+        "datasets": ["reynolds", "ersst", "ww3", "bran", "waveatlas"],
         "vargroups": ["sst", "salt", "waves", "currents", "chlomonthly"]
     },
     "sealevel": {

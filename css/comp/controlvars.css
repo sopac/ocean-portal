@@ -14,8 +14,7 @@
 #hour-slider,
 #reef,
 #marine,
-#alertdial,
-#waveatlas
+#alertdial
 {
   display: none;
 }
@@ -109,7 +108,13 @@
 .variable-height #submit,
 .variable-ssta #submit,
 .variable-sst #submit,
-.variable-currents #submit
+.variable-currents #submit,
+.variable-atlas #submit,
+.variable-atlas #latitude,
+.variable-atlas #longitude,
+.variable-atlas #year,
+.variable-atlas #month,
+.variable-atlas #date
 {
   display: none;
 }
@@ -139,11 +144,6 @@
 }
 
 .fishery #marine
-{
-  display: inline;
-}
-
-.climate #waveatlas
 {
   display: inline;
 }

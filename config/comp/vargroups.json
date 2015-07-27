@@ -11,7 +11,7 @@
 
   "waves": {
     "name": "Waves",
-    "vars": [ "Hs", "Tm", "Dm" ]
+    "vars": [ "Hs", "Tm", "Dm", "atlas" ]
   },
 
   "sealevel": {

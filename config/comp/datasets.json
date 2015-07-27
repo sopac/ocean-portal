@@ -207,6 +207,17 @@
         "periods": ["7days"],
         "plottypes": ["map"]
     }]
+},{
+    "id":"waveatlas",
+    "name":"WACOP",
+    "title": "WACOP",
+    "help": "help/about_ww3forecasts.pdf",
+    "variables": [{
+        "id": "atlas",
+        "name": "Wave Atlas",
+        "periods": ["monthly"],
+        "plottypes": ["map"]
+    }]
 }, {
     "id":"msla",
     "name": "Near Real Time Sea Level",
