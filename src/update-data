@@ -74,6 +74,11 @@ case $DATASET in
         BASE_URL=http://www.bom.gov.au/ntc
         DATA_SUBDIR=gauges-new
         ;;
+    mur)
+	SERVER=http://podaac-opendap.jpl.nasa.gov
+	SERVER_PATH=/opendap/allData/ghrsst/data/L4/GLOB/JPL/MUR/
+	DATA_SUBDIR=data
+	;;
     *)
         echo "Unknown dataset $DATASET" >&2
         exit 1
@@ -475,6 +480,15 @@ try:
 except urllib2.HTTPError as e:
     print e.read()
 
+EOF
+    ;;
+
+    mur)
+	python << EOF
+print "Download MUR and process fronts..."
+
+from ocean.processing.Download_MUR import Download_MUR
+Download_MUR("$DATA_DIR","$DATA_SUBDIR","$SERVER","$SERVER_PATH")
 EOF
     ;;
 

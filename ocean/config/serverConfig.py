@@ -56,7 +56,8 @@ class tuscany(default):
         'oceanmaps':'/data/oceanmaps/',
         'chloro':'/data/chloro/',
         'currents':'/data/currents/',
-        'ww3forecast':'/data/wavewatch3/forecast/'
+        'ww3forecast':'/data/wavewatch3/forecast/',
+	'mur':'/data/sst/mur/'
     }
 
 class tunceli(default):
@@ -77,7 +78,8 @@ class tunceli(default):
         'oceanmaps':'/www4/data/cosppac/oceanmaps/',
         'chloro':'/www4/data/cosppac/chloro/',
         'currents':'/www4/data/cosppac/currents/',
-        'ww3forecast':'/www4/data/cosppac/wavewatch3/forecast/'
+        'ww3forecast':'/www4/data/cosppac/wavewatch3/forecast/',
+	'mur':'www4/data/cosppac/mur/'
     }
 
 class www4(default):
@@ -99,7 +101,8 @@ class www4(default):
         'oceanmaps': '/web/data/cosppac/oceanmaps/',
         'chloro':'/web/data/cosppac/chloro/',
         'currents':'/web/data/cosppac/currents/',
-        'ww3forecast':'/web/data/cosppac/wavewatch3/forecast/'
+        'ww3forecast':'/web/data/cosppac/wavewatch3/forecast/',
+	'mur':'/web/data/cosppac/mur'
     }
 
 class hoapp2(www4):
