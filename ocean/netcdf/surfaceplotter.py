@@ -264,6 +264,7 @@ class SurfacePlotter(object):
             'alt': "Sea Level Altimetry",
             'rec': "Sea Level Reconstruction",
             'sla': "Near Real Time Sea Level Anomay",
+            'height': "Sea Level Forecast",
         }
 
         return d[params['variable']]

@@ -114,7 +114,7 @@ class Plotter(object):
                                proj=self._DEFAULT_PROJ, product_label_str=None,
                                vlat=None, vlon=None, u=None, v=None,
                                draw_every=1, arrow_scale=10,
-                               resolution=None, area=None):
+                               resolution=None, area=None, boundaryInUse='True'):
 
             '''
             TODO
@@ -231,14 +231,24 @@ class Plotter(object):
                 tick_pos = cm_edge_values
             else:
                 tick_pos = cb_label_pos
-            cb = plt.colorbar(img, cax=cax,
-#                             spacing='proportional',
-                             spacing='uniform',
-                             drawedges='False',
-                             orientation='vertical',
-                             extend=extend,
-                             ticks=tick_pos,
-                             boundaries=cm_edge_values)
+
+            if boundaryInUse == 'True':
+                cb = plt.colorbar(img, cax=cax,
+    #                             spacing='proportional',
+                                 spacing='uniform',
+                                 drawedges='False',
+                                 orientation='vertical',
+                                 extend=extend,
+                                 ticks=tick_pos,
+                                 boundaries=cm_edge_values)
+            else:
+                cb = plt.colorbar(img, cax=cax,
+                                 spacing='uniform',
+                                 drawedges='False',
+                                 orientation='vertical',
+                                 extend=extend,
+                                 ticks=tick_pos)
+
             if cb_labels is None:
                 cb.set_ticklabels([cb_tick_fmt % k for k in cm_edge_values])
             else:

@@ -54,9 +54,12 @@ class POAMA(Dataset):
         config = self.generateConfig(params)
         configStr = json.dumps(config) 
 
+        params['forecast'] = config
+
         response['forecast'] = configStr 
         response['mapimg'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['mapimg']
         response['scale'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['scale']
+        response['img'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['img']
 
         if ('mode' in params) and (params['mode'] == 'preprocess'):
             response['preproc'] = 'inside'
