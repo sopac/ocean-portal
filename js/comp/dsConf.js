@@ -397,11 +397,23 @@ ocean.dsConf = {
                         data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
                         updateMap(data.mapimg);
                     }
+
+                    //Sets the download image link for the datasets having slider option.
+                    if (data.img) {
+                        data.img = data.img.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
+                        ocean.sliderdownloadlink = data.img;
+                    }
                 };
                 slider.options.callback = function(x, y) {
                     if (data.mapimg) {
                         data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
                         updateMap(data.mapimg);
+                    }
+
+                    //Sets the download image link for the datasets having slider option.
+                    if (data.img) {
+                        data.img = data.img.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
+                        ocean.sliderdownloadlink = data.img;
                     }
                 };
                 slider.value.prev = [-1, -1];
@@ -417,7 +429,7 @@ ocean.dsConf = {
         onSelect: function() {
             updatePage();
             //Hide the download link as functionality has been implemented. TODO: remove this once  poamasla, poamassta, ww3forecast and currentforecast all are implemented.
-            $('#download_slider_png').hide();
+            $('#download_slider_png').show();
 
         },
         onDeselect: function() {

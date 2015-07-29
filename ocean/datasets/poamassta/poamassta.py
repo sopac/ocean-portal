@@ -16,7 +16,7 @@ from dateutil.relativedelta import *
 import numpy as np
 
 from ocean import util, config
-from ocean.config import productName
+from ocean.config import productName, regionConfig
 from ocean.datasets.poama import POAMA
 from ocean.netcdf import SurfacePlotter, Gridset
 
@@ -70,7 +70,10 @@ class PoamaPlotterWrapper(SurfacePlotter):
 
     @apply_to(variable='ssta', period='seasonal')
     def get_formatted_date(self, params={}):
-        return ''
+        if 'step' in params:
+            return params['forecast'][params['step']]['datetime']
+        else:
+            return ''
 
     @apply_to(variable='sst', period='seasonal')
     def get_formatted_date(self, params={}):
@@ -183,6 +186,69 @@ class PoamaPlotterWrapper(SurfacePlotter):
 
         plot.wait()
 
+    def plot_surface_data(self, output, step, args):
+        area = args['area']
+        variable = args['variable']
+        args['formattedDate'] = self.get_formatted_date(params=args)
+        output_filename = serverCfg['outputDir'] + output + '.png'
+
+        regionLongName = regionConfig.regions[area][2]
+        title = regionLongName + '\n'
+
+        if 'period' in args:
+            title += "%s %s: %s" % (self.get_period_name(params=args),
+                                    self.get_title(params=args),
+                                    args['formattedDate'])
+
+        units = self.get_units(params=args)
+        cmap_name = self.get_colormap(params=args)
+        cb_ticks = self.get_ticks(params=args)
+        cb_tick_fmt = self.get_ticks_format(params=args)
+        cb_labels, cb_label_pos = self.get_labels(params=args)
+        extend = self.get_extend(params=args)
+        contourLabels = self.get_contour_labels(params=args)
+        plotStyle = self.get_plotstyle(params=args)#GAS
+        contourLines = self.get_contourlines(params=args)#GAS
+        smoothFactor = self.get_smooth_fac(params=args)#GAS
+        colors = self.get_colors(params=args)
+        fill_color = self.get_fill_color(params=args)
+        colormap_strategy = self.get_colormap_strategy(params=args)
+
+        plot = self.getPlotter()
+
+        lat_min = regionConfig.regions[area][1]['llcrnrlat']
+        lat_max = regionConfig.regions[area][1]['urcrnrlat']
+        lon_min = regionConfig.regions[area][1]['llcrnrlon']
+        lon_max = regionConfig.regions[area][1]['urcrnrlon']
+
+        grid = self.get_grid(params=args,
+                             lonrange=(lon_min, lon_max),
+                             latrange=(lat_min, lat_max))
+
+        plot.plot_surface_data(grid.lats, grid.lons, grid.data[step],
+                               lat_min, lat_max, lon_min, lon_max,
+                               output_filename=output_filename,
+                               title=title,
+                               units=units,
+                               cm_edge_values=cb_ticks,
+                               cb_tick_fmt=cb_tick_fmt,
+                               cb_labels=cb_labels,
+                               cb_label_pos=cb_label_pos,
+                               colormap_strategy = colormap_strategy,
+                               cmp_name=cmap_name,
+                               colors = colors,
+                               fill_color = fill_color,
+                               extend=extend,
+                               plotStyle=plotStyle,
+                               contourLines=contourLines,
+                               contourLabels=contourLabels,
+                               smoothFactor=smoothFactor,
+                               product_label_str=self.PRODUCT_NAME,
+                               area=area,
+                               boundaryInUse='False')
+
+        plot.wait()
+
 class PoamaGridset(Gridset):
     TIME_VARIABLE = ['time']
 
@@ -229,6 +295,8 @@ class poamassta(POAMA):
    #         self.plotter.plot_basemaps_and_colorbar(self.getPlotFileName(var, step, region)[1], step,  args)
             plot_filename = '%s_%s_%s_%02d' % (poamaProduct[var], var, region, step)
             self.plotter.plot_basemaps_and_colorbar(plot_filename, step,  args)
+            args['step'] = step
+            self.plotter.plot_surface_data(plot_filename, step,  args)
 
     def generateConfig(self, params):
         '''
