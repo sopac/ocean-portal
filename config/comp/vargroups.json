@@ -72,5 +72,10 @@
   "convergence": {
     "name": "Daily Sea Surface Temperature",
     "vars": ["mean"]
+  },
+
+  "mur": {
+    "name": "Multiscale Ultrahigh Resolution (MUR) Level 4 Sea Surface Temperature",
+    "vars": ["mursst"]
   }
 }

@@ -310,5 +310,20 @@
         "minDate": "19810901",
         "maxDate": "-2"
     }
+}, {
+    "id":"mur",
+    "name":"MUR",
+    "title": "MUR High Resolution SST",
+    "help": "help/about_OceanTemperature.pdf",
+    "variables": [{
+        "id":"mursst",
+        "name":"Sea Surface Temperature",
+        "periods": ["daily"],
+        "plottypes": ["map"]
+    }],
+    "dateRange" : {
+        "minDate": "-2",
+        "maxDate": "-2"
+    }
 }
 ]
