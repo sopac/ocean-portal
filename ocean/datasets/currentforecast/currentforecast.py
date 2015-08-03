@@ -34,6 +34,7 @@ currentProduct = productName.products['currentfc']
 FORECAST_STEPS = 12 
 
 class currentforecast(Dataset):
+    PRODUCT_NAME = "Forecast Surface Currents"
 
     __form_params__ = {
         'mode': str
@@ -57,6 +58,9 @@ class currentforecast(Dataset):
 
     __subdirs__ = [
     ]
+
+    def getPlotter(self):
+        return CurrentForecastPlotter()
 
     def process(self, params):
         response = {}
@@ -102,6 +106,7 @@ class currentforecast(Dataset):
 ##        response['mapimg'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['mapimg']
 ##        response['scale'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['scale']
         response['mapimg'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['mapimg']
+        response['img'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['img']
         response['scale'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['scale']
 #        os.utime(os.path.join(serverCfg['outputDir'], filename), None)
 
@@ -117,7 +122,6 @@ class currentforecast(Dataset):
         latestFilePath = serverCfg['dataDir']['currents'] + 'daily/latest_HYCOM_currents.nc'
 
         self.grid = currentforecastGrid(latestFilePath, latestFilePath, ('u', 'v'), (-90, 90), (105, 295), (0, FORECAST_STEPS))
-        
         #Generate configuration file
         config = self.generateConfig(latestFilePath, self.grid.time)
         with open(configFileName, 'w') as f:
@@ -129,6 +133,7 @@ class currentforecast(Dataset):
             if value[0] == 'pac' or value[0] == None:
                 for step in range(FORECAST_STEPS):
                     self.plotSurfaceData(varName, step, key)
+                    self.plot_surface_data(varName, step, key, config)
 
     def preprocess(self, varName, region):
         '''
@@ -153,7 +158,7 @@ class currentforecast(Dataset):
         dateTimeObjArray = [baseDateTime + x for x in timeObjArray]
         dateTimeStrArray = [{"datetime": x.strftime('%d-%m-%Y %H:%M')} for x in dateTimeObjArray]
         return dateTimeStrArray
-   
+
     def getPlotFileName(self, varName, timeIndex, regionName):
         '''
             A helper method to put together the plot file name.
@@ -165,7 +170,6 @@ class currentforecast(Dataset):
                                                  serverCfg['rasterURL'],
                                                  plot_filename)
         return plot_filename_fullpath, raster_filename_fullpath
-        
 
     def plotSurfaceData(self, varName, timeIndex, regionName):
         '''
@@ -175,23 +179,87 @@ class currentforecast(Dataset):
             and
             wnd_spd, with wnd_dir vector overlay.
         ''' 
-        cm = 'jet'
-        cb_ticks = np.array([0.0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.6, 1.0, 1.5, 2.5])
-        unitStr = 'm/s'
-        cb_tick_fmt = '%.2f'
+        plot = self.getPlotter()
+
+        cm = plot.get_colormap()
+        cb_ticks = plot.get_ticks()
+        unitStr = plot.get_units()
+        cb_tick_fmt = plot.get_ticks_format()
         plot_filename_fullpath = self.getPlotFileName(varName, timeIndex, regionName)[0]
         clabel = False
         vector = True
+        extend = plot.get_extend()
 
-        plot = CurrentForecastPlotter()
         plot.plot_basemaps_and_colorbar(self.grid.lats, self.grid.lons, self.grid.data, timeIndex, 
         #                                overlay_grid = self.overlayGrid.data[timeIndex],
                                         output_filename=plot_filename_fullpath,
                                         units=unitStr, cm_edge_values=cb_ticks,
                                         cb_tick_fmt=cb_tick_fmt,
                                         cb_labels=None, cb_label_pos=None,
-                                        cmp_name=cm, extend='neither', clabel=clabel, vector=vector, regionName = regionName)
+                                        cmp_name=cm, extend=extend, clabel=clabel, vector=vector, regionName = regionName)
 
+
+        plot.wait()
+
+    def plot_surface_data(self, variable, timeIndex, area, dateTimeStrArray):
+
+        output_filename = self.getPlotFileName(variable, timeIndex, area)[0] + '.png'
+
+        regionLongName = regionConfig.regions[area][2]
+        title = regionLongName + '\n'
+
+        params = {}
+        params['step'] = timeIndex
+        params['forecast'] = dateTimeStrArray
+
+        plot = self.getPlotter()
+
+        formattedDate = plot.get_formatted_date(params)
+        title += "%s %s: %s" % ('Daily', 'Current speed and Direction', formattedDate)
+
+        cmap_name = plot.get_colormap()
+        cb_ticks = plot.get_ticks()
+        units = plot.get_units()
+        cb_tick_fmt = plot.get_ticks_format()
+        cb_labels = None
+
+        cb_label_pos = plot.get_labels()
+
+        extend = plot.get_extend()
+        contourLabels = plot.get_contour_labels()
+        plotStyle = plot.get_plotstyle()
+        contourLines = plot.get_contourlines()
+        smoothFactor = plot.get_smooth_fac()
+        colors = plot.get_colors()
+        fill_color = plot.get_fill_color()
+        colormap_strategy = plot.get_colormap_strategy()
+
+        lat_min = regionConfig.regions[area][1]['llcrnrlat']
+        lat_max = regionConfig.regions[area][1]['urcrnrlat']
+        lon_min = regionConfig.regions[area][1]['llcrnrlon']
+        lon_max = regionConfig.regions[area][1]['urcrnrlon']
+
+        plot.plot_surface_data(self.grid.lats, self.grid.lons, self.grid.data, timeIndex,
+                               lat_min, lat_max, lon_min, lon_max,
+                               output_filename=output_filename,
+                               title=title,
+                               units=units,
+                               cm_edge_values=cb_ticks,
+                               cb_tick_fmt=cb_tick_fmt,
+                               cb_labels=cb_labels,
+                               cb_label_pos=cb_label_pos,
+                               colormap_strategy = colormap_strategy,
+                               cmp_name=cmap_name,
+                               colors = colors,
+                               fill_color = fill_color,
+                               extend=extend,
+                               plotStyle=plotStyle,
+                               contourLines=contourLines,
+                               contourLabels=contourLabels,
+                               smoothFactor=smoothFactor,
+                               product_label_str=self.PRODUCT_NAME,
+                               area=area,
+                               boundaryInUse='False')
 
         plot.wait()
 

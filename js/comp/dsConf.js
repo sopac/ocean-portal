@@ -453,6 +453,8 @@ ocean.dsConf = {
             if(data.forecast) {
                 var forecast = $.parseJSON(data.forecast);
                 this.mapimg = data.mapimg;
+                this.downloadimg = data.img;
+
                 slider.options.steps = forecast.length;
                 slider.options.snap = true;
                 slider.stepRatios = slider.calculateStepRatios();
@@ -467,6 +469,9 @@ ocean.dsConf = {
 //                        bounds = $('#subregion option:selected').data('bounds');
 //                        updateMap(data.mapimg, bounds);
 //                    }
+
+                      //Sets the download image link for the datasets having slider option.
+                      ocean.dataset.updateDownloadImg();
                 };
                 slider.options.callback = function(x, y) {
                     if (data.mapimg) {
@@ -474,6 +479,9 @@ ocean.dsConf = {
 //                        data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
 //                        updateMap(data.mapimg);
                     }
+
+                    //Sets the download image link for the datasets having slider option.
+                    ocean.dataset.updateDownloadImg();
                 };
                 slider.value.prev = [-1, -1];
                 slider.animate(false, true);
@@ -488,7 +496,7 @@ ocean.dsConf = {
         onSelect: function() {
             updatePage();
             //Hide the download link as functionality has been implemented. TODO: remove this once  poamasla, poamassta, ww3forecast and currentforecast all are implemented.
-            $('#download_slider_png').hide();
+            $('#download_slider_png').show();
         },
         onDeselect: function() {
             resetMap();
@@ -514,10 +522,19 @@ ocean.dsConf = {
             updateMap(mapimg, bounds);
         },
         onRegionChange: function() {
+            this.updateDownloadImg(this.downloadimg);
             this.updateMapImg(this.mapimg);
         },
+        updateDownloadImg:  function() {
+             img = this.downloadimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
+             img = img.replace('_' + this.selectedRegion, '_' + ocean.area);
+             this.downloadimg = img;
+             ocean.sliderdownloadlink = img;
+             this.selectedRegion = ocean.area;
+        },
         selectedRegion: ocean.area,
-        mapimg: ''
+        mapimg: '',
+        downloadimg:''
     },
     sealevel: {
         params: override(function (dataset) { return {
