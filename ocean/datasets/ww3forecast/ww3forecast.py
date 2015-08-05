@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 import numpy as np
 
 from ocean import util, config
-from ocean.config import productName
+from ocean.config import productName, regionConfig
 #from ocean.netcdf.extractor import Extractor
 from ocean.datasets import Dataset
 from ww3forecastPlotter import Ww3ForecastPlotter, COMMON_FILES
@@ -36,6 +36,7 @@ ww3Product = productName.products['ww3forecast']
 FORECAST_STEPS = 25
 
 class ww3forecast(Dataset):
+    PRODUCT_NAME = "Wave Forecast"
 
     __form_params__ = {
         'mode': str
@@ -63,6 +64,9 @@ class ww3forecast(Dataset):
 
     __subdirs__ = [
     ]
+
+    def getPlotter(self):
+        return Ww3ForecastPlotter()
 
     def process(self, params):
         response = {}
@@ -92,8 +96,10 @@ class ww3forecast(Dataset):
 
         response['forecast'] = configStr 
 #        response['mapimg'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['mapimg']
+        response['img'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['img']
 #        response['scale'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['scale']
         response['mapimg'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['mapimg']
+#        response['img'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['img']
         response['scale'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['scale']
 #        os.utime(os.path.join(serverCfg['outputDir'], filename), None)
 
@@ -112,10 +118,22 @@ class ww3forecast(Dataset):
             self.grid = ww3forecastGrid(latestFilePath, latestFilePath, varStr, (-90, 90), (0, 360), (0, FORECAST_STEPS))
             self.overlayGrid = ww3forecastGrid(latestFilePath, latestFilePath, self.get_overlay_variable(varStr), (-90, 90), (0, 360), (0, FORECAST_STEPS))
 
+            config = self.generateConfig(latestFilePath, self.grid.time)
+            configStr = json.dumps(config)
+
             if varStr == 'wnd_spd':
                 self.grid.data = self.grid.data * 1.94384449
+
             for step in range(FORECAST_STEPS):
-                self.plotSurfaceData(varStr, step, region) 
+                self.plotSurfaceData(varStr, step, region)
+                # self.plot_surface_data(varStr, step, region, config)
+
+            #Generating image for each regions
+            for key, value in regionConfig.regions.iteritems():
+                if value[0] == 'pac' or value[0] == None:
+                    for step in range(FORECAST_STEPS):
+                        # self.plotSurfaceData(varStr, step, key)
+                        self.plot_surface_data(varStr, step, key, config)
 
     def preprocess(self, varName, region):
         '''
@@ -127,7 +145,7 @@ class ww3forecast(Dataset):
 #        if varName == 'wnd_spd':
 #            self.grid.data = self.grid.data * 1.94384449
 #        for step in range(FORECAST_STEPS):
-#            self.plotSurfaceData(varName, step, region) 
+#            self.plotSurfaceData(varName, step, region)
 
     def generateConfig(self, latestFilePath, gridTime):
         '''
@@ -165,58 +183,96 @@ class ww3forecast(Dataset):
             and
             wnd_spd, with wnd_dir vector overlay.
         ''' 
-        if varName == 'sig_ht_sw1':
-            cm = 'wav_cm'
-            cb_ticks = 'sig'
-            unitStr = 'Metres'
-            cb_tick_fmt = '%.1f'
-            plot_filename_fullpath = self.getPlotFileName(varName, timeIndex, regionName)[0]
-            clabel = False
-            vector = True
-        elif varName == 'pk_wav_per':
-            cm = 'wav_cm'
-            cb_ticks = 'pk'
-            unitStr = 'Seconds'
-            cb_tick_fmt = '%2d'
-            plot_filename_fullpath = self.getPlotFileName(varName, timeIndex, regionName)[0]
-            clabel = True 
-            vector = False
-        elif varName == 'wnd_spd':
-            cm = 'wnd_cm'
-            cb_ticks = 'wnd'
-            unitStr = 'Speed(kts)'
-            cb_tick_fmt = '%3d'
-            plot_filename_fullpath = self.getPlotFileName(varName, timeIndex, regionName)[0]
-            clabel = False 
-            vector = True
-#            self.grid.data = self.grid.data[timeIndex] * 1.94384449
-#            self.grid.data = self.grid.data * 1.94384449
-        elif varName == 'sig_wav_ht':
-            cm = 'wav_cm'
-            cb_ticks = 'sig'
-            unitStr = 'Metres'
-            cb_tick_fmt = '%.1f'
-            plot_filename_fullpath = self.getPlotFileName(varName, timeIndex, regionName)[0]
-            clabel = False
-            vector = True
-        elif varName == 'sig_ht_wnd_sea':
-            cm = 'wav_cm'
-            cb_ticks = 'sig'
-            unitStr = 'Metres'
-            cb_tick_fmt = '%.1f'
-            plot_filename_fullpath = self.getPlotFileName(varName, timeIndex, regionName)[0]
-            clabel = False
-            vector = True
+        plot_filename_fullpath = self.getPlotFileName(varName, timeIndex, regionName)[0]
 
-        plot = Ww3ForecastPlotter()
+        params = {}
+        params['variable'] = varName
+
+        plot = self.getPlotter()
+
+        cmp_name = plot.get_colormap(params)
+        unitStr = plot.get_units(params)
+        cb_ticks = plot.get_ticks(params)
+        cb_tick_fmt = plot.get_ticks_format(params)
+        extend = plot.get_extend()
+        clabel = plot.get_labels(params)
+        vector = plot.get_vector(params)
+
         plot.plot_basemaps_and_colorbar(self.grid.lats, self.grid.lons, self.grid.data[timeIndex],
                                         overlay_grid = self.overlayGrid.data[timeIndex],
                                         output_filename=plot_filename_fullpath,
                                         units=unitStr, cm_edge_values=cb_ticks,
                                         cb_tick_fmt=cb_tick_fmt,
                                         cb_labels=None, cb_label_pos=None,
-                                        cmp_name=cm, extend='neither', clabel=clabel, vector=vector)
+                                        cmp_name=cmp_name, extend=extend, clabel=clabel, vector=vector)
 
+
+        plot.wait()
+
+    def plot_surface_data(self, varName, timeIndex, area, dateTimeStrArray):
+
+        plot_filename_fullpath = self.getPlotFileName(varName, timeIndex, area)[0] + '.png'
+
+        regionLongName = regionConfig.regions[area][2]
+        title = regionLongName + '\n'
+
+        params = {}
+        params['step'] = timeIndex
+        params['forecast'] = dateTimeStrArray
+        params['variable'] = varName
+
+        plot = self.getPlotter()
+
+        formattedDate = plot.get_formatted_date(params)
+        title += "%s %s: %s" % ('Weekly', plot.get_title(params), formattedDate)
+
+        colormap_strategy = plot.get_colormap_strategy(params)
+        cmp_name = plot.get_colormap(params)
+        units = plot.get_units(params)
+        cb_ticks = plot.get_ticks(params)
+        cb_tick_fmt = plot.get_ticks_format(params)
+        clabel = plot.get_labels(params)
+        vector = plot.get_vector(params)
+
+        cb_labels = None
+        cb_label_pos = None
+
+        extend = plot.get_extend()
+        # contourLabels = plot.get_contour_labels()
+        plotStyle = plot.get_plotstyle()
+        contourLines = plot.get_contourlines()
+        smoothFactor = plot.get_smooth_fac()
+        colors = plot.get_colors()
+        fill_color = plot.get_fill_color()
+
+        lat_min = regionConfig.regions[area][1]['llcrnrlat']
+        lat_max = regionConfig.regions[area][1]['urcrnrlat']
+        lon_min = regionConfig.regions[area][1]['llcrnrlon']
+        lon_max = regionConfig.regions[area][1]['urcrnrlon']
+
+        plot.plot_surface_data(self.grid.lats, self.grid.lons, self.grid.data[timeIndex],
+                               lat_min, lat_max, lon_min, lon_max,
+                               overlay_grid = self.overlayGrid.data[timeIndex],
+                               output_filename=plot_filename_fullpath ,
+                               title=title,
+                               units=units,
+                               cm_edge_values=cb_ticks,
+                               cb_tick_fmt=cb_tick_fmt,
+                               cb_labels=cb_labels,
+                               cb_label_pos=cb_label_pos,
+                               colormap_strategy = colormap_strategy,
+                               cmp_name=cmp_name,
+                               colors = colors,
+                               fill_color = fill_color,
+                               extend=extend,
+                               plotStyle=plotStyle,
+                               contourLines=contourLines,
+                               contourLabels=clabel, #contourLabels,
+                               smoothFactor=smoothFactor,
+                               vector=vector,
+                               product_label_str=self.PRODUCT_NAME,
+                               area=area,
+                               boundaryInUse='False')
 
         plot.wait()
 
