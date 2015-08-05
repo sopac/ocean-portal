@@ -134,7 +134,3 @@ h5 {
 .datepicker[readonly] {
    cursor: pointer;
 }
-
-#download_slider_png {
-   float: right;
-}
