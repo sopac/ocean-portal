@@ -334,6 +334,11 @@ $(function() {
         $('#dshelp').attr('href', ocean.datasets[datasetid].help);
         $('#dshelp span').html(ocean.datasets[datasetid].name);
 
+        /* Show different help file link text for particular datasets */
+        if (["Reynolds", "ERSST"].indexOf(ocean.datasets[ocean.datasetid].name) != -1){
+            $('#dshelp span').html("Ocean Temperature");
+        }
+
         if (ocean.dataset.onSelect) {
             ocean.dataset.onSelect();
         }
