@@ -77,7 +77,10 @@ class PoamaPlotterWrapper(SurfacePlotter):
 
     @apply_to(variable='sst', period='seasonal')
     def get_formatted_date(self, params={}):
-        return ''
+        if 'step' in params:
+            return params['forecast'][params['step']]['datetime']
+        else:
+            return ''
 
     def get_ticks_format(self, params={}):
         return '%.1f'
