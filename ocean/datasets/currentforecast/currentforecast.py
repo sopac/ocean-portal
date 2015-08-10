@@ -215,7 +215,7 @@ class currentforecast(Dataset):
         plot = self.getPlotter()
 
         formattedDate = plot.get_formatted_date(params)
-        title += "%s %s: %s" % ('Daily', 'Current speed and Direction', formattedDate)
+        title += "%s: %s" % ('Current speed and Direction', formattedDate)
 
         cmap_name = plot.get_colormap()
         cb_ticks = plot.get_ticks()

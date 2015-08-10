@@ -207,7 +207,7 @@ class Ww3ForecastPlotter(Plotter):
                 for text in labels:
                     text.set_linespacing(1)
                     text.set_bbox(bbox_props)
- 
+
             #extract the overlay grid
             if vector:
 #                overlay_grid = kwargs.get('overlay_grid', None)
@@ -338,9 +338,18 @@ class Ww3ForecastPlotter(Plotter):
                 m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, zorder=3)
 
             # Draw land, coastlines, parallels, meridians and add title
-            m.drawmapboundary(linewidth=0.0)
+            m.drawmapboundary(linewidth=1.0, fill_color=fill_color)
             m.drawcoastlines(linewidth=0.5, color='#505050', zorder=8)
-            m.fillcontinents(color='white', zorder=7)
+            m.fillcontinents(color='0.58', zorder=7)
+
+            parallels, p_dec_places = get_tick_values(lat_min, lat_max)
+            meridians, m_dec_places = get_tick_values(lon_min, lon_max)
+            m.drawparallels(parallels, labels=[True, False, False, False],
+                            fmt='%.' + str(p_dec_places) + 'f',
+                            fontsize=6, dashes=[3, 3], color='gray')
+            m.drawmeridians(meridians, labels=[False, False, False, True],
+                            fmt='%.' + str(m_dec_places) + 'f',
+                            fontsize=6, dashes=[3, 3], color='gray')
 
             plt.title(title, fontsize=9)
 

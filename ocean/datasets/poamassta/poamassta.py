@@ -31,7 +31,7 @@ FORECAST_STEPS = 8
 
 class PoamaPlotterWrapper(SurfacePlotter):
     DATASET = 'poamassta'
-    PRODUCT_NAME = "Seasonal Sea Surface Temperature Forecast"
+    PRODUCT_NAME = "POAMA Forecast"
 
     VARIABLE_MAP = {
         'ssta': 'SSTA_emn',

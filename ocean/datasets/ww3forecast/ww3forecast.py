@@ -36,7 +36,7 @@ ww3Product = productName.products['ww3forecast']
 FORECAST_STEPS = 25
 
 class ww3forecast(Dataset):
-    PRODUCT_NAME = "Wave Forecast"
+    PRODUCT_NAME = "Global AUSWAVE Forecast"
 
     __form_params__ = {
         'mode': str
@@ -224,7 +224,7 @@ class ww3forecast(Dataset):
         plot = self.getPlotter()
 
         formattedDate = plot.get_formatted_date(params)
-        title += "%s %s: %s" % ('Weekly', plot.get_title(params), formattedDate)
+        title += "%s: %s" % (plot.get_title(params), formattedDate)
 
         colormap_strategy = plot.get_colormap_strategy(params)
         cmp_name = plot.get_colormap(params)
