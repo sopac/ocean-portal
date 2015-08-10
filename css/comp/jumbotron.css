@@ -134,3 +134,11 @@ h5 {
 .datepicker[readonly] {
    cursor: pointer;
 }
+
+#back_to_menu{
+    float: right;
+}
+
+#portal_title {
+    margin-bottom: -35px;
+}
