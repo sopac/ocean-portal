@@ -777,11 +777,30 @@ function appendOutput(image, dataURL, name, extras, data){
     if (extras) {
         captionText = captionText + extras
     }
-    fotorama.push({img: image, caption: captionText});
+    //Check if the img is already in the gallery. If not, then add the img.
+    var index = -1;
+    if (fotorama.data){
+        for (var i=0; i<fotorama.data.length; i++){
+            if (fotorama.data[i].img == image){
+                index = i;
+                i = fotorama.data.length;
+            }
+        }
+    }
+
+    if (index == -1){
+        fotorama.push({img: image, caption: captionText});
+    }
+
     if (fotorama.size > 20) {//TODO extract 20 to the config
         fotorama.shift();
     }
-    fotorama.show(fotorama.size - 1);
+
+    if (index == -1){
+        fotorama.show(fotorama.size - 1);
+    } else {
+        fotorama.show(index);
+    }
 
     if (name) {
         $('<h2>', {
