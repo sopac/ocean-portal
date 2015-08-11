@@ -880,15 +880,15 @@ function updateVisibilities(controlvar, old, new_) {
 function updatePage() {
     if (!ocean.processing) {
 
+        /*Show feedback id variable is not selected.*/
+        if ((typeof (ocean.variable) == 'undefined') || (!ocean.variable)){
+            show_feedback("Please select a variable.", "Missing Input:");
+            return;
+        }
+
         if (!ocean.dataset)
             return;
 
-        /*Show feedback id variable is not selected.*/
-        if ((typeof (ocean.variable) == 'undefined') || (!ocean.variable)){
-            show_feedback("Please select a variable.");
-            return;
-        }    
-        
         function show_error(params, text)
         {
             var url = 'cgi/portal.py?' + $.param(params);
@@ -954,9 +954,13 @@ function stepBackward() {
     slider.setStep(slider.getStep()[0] - 1);
 }
 
-function show_feedback(text){
-     $('#error-dialog-status').html("<b>Missing Input:</b>");
+function show_feedback(text, title){
+     $('#error-dialog-status').html("<b>"+title+"</b>");
      $('#error-dialog-content').html(text);
      $('#error-dialog-report-back').hide();
      $('#error-dialog').dialog('open');
 }  
+
+$('.fotorama').on('fotorama:error', function (e, fotorama, extra) {
+  show_feedback("The image " + extra.src + " has not been generated.", "");
+});

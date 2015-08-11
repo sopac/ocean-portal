@@ -587,7 +587,7 @@ ocean.dsConf = {
                 }
             }
             if (text != ""){
-                show_feedback(text);
+                show_feedback(text, "Missing Input:");
                 return valid;
             }
 
