@@ -99,59 +99,10 @@ class SurfacePlotter(object):
         return formatted_date 
 
     # --- get_formatted_date ---
-#    @apply_to(period='daily')
-#    def get_formatted_date(self, params={}):
-#        return params['date'].strftime('%d %B %Y')
-
-#    @apply_to(period='4weeks')
-#    def get_formatted_date(self, params={}):
-#        return params['date'].strftime('%d %B %Y')
-
-#    @apply_to(period='8weeks')
-#    def get_formatted_date(self, params={}):
-#        return params['date'].strftime('%d %B %Y')
-
-#    @apply_to(period='12weeks')
-#    def get_formatted_date(self, params={}):
-#        return params['date'].strftime('%d %B %Y')
-
-#    @apply_to(period='monthly')
-#    def get_formatted_date(self, params={}):
-#        return params['date'].strftime('%B %Y')
-
-#    @apply_to(period='3monthly')
-#    def get_formatted_date(self, params={}):
-#        return self._get_formatted_date(params, 3)
-
-#    @apply_to(period='6monthly')
-#    def get_formatted_date(self, params={}):
-#        return self._get_formatted_date(params, 6)
-
-#    @apply_to(period='12monthly')
-#    def get_formatted_date(self, params={}):
-#        return self._get_formatted_date(params, 12)
-
-#    @apply_to(period='yearly')
-#    def get_formatted_date(self, params={}):
-#        return params['date'].strftime('%Y')
-
     def _get_formatted_date(self, params, range):
         months = util.getMonths(params['date'], range)
         return "%s to %s" % (months[0].strftime('%B %Y'),
                              months[-1].strftime('%B %Y'))
-
-#    @apply_to(variable='trend', period='monthly')
-#    def get_formatted_date(self, params={}):
-#        return "%s, %s to present" % (params['date'].strftime('%B'),
-#                                      params['baseYear'])
-
-#    @apply_to(variable='trend', period='3monthly')
-#    def get_formatted_date(self, params={}):
-#        return self._get_formatted_date_trend(params, 3)
-
-#    @apply_to(variable='trend', period='6monthly')
-#    def get_formatted_date(self, params={}):
-#        return self._get_formatted_date_trend(params, 6)
 
     def _get_formatted_date_trend(self, params, range):
         months = util.getMonths(params['date'], range)
@@ -159,9 +110,6 @@ class SurfacePlotter(object):
                                             months[-1].strftime('%B'),
                                             params['baseYear'])
 
-#    @apply_to(variable='trend', period='yearly')
-#    def get_formatted_date(self, params={}):
-#        return '%s to present' % (params['baseYear'])
 
     # --- get_ticks_format ---
     @apply_to()
@@ -266,6 +214,7 @@ class SurfacePlotter(object):
             'sla': "Near Real Time Sea Level Anomay",
             'height': "Sea Level Forecast",
             'ssta': "Sea Surface Temperature Forecast",
+            'mursst': "MUR Sea Surface Temperature"
         }
 
         return d[params['variable']]
@@ -326,7 +275,6 @@ class SurfacePlotter(object):
         return '1.0'
 
     #GAS ---- get_plotstyle ---
-    @apply_to()
     def get_plotstyle(self, params={}):
         style = 'pcolormesh'
         if params['variable'] == 'anom':

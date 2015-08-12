@@ -322,8 +322,8 @@
         "plottypes": ["map"]
     }],
     "dateRange" : {
-        "minDate": "-2",
-        "maxDate": "-2"
+        "minDate": "20150715",
+        "maxDate": "20150715"
     }
 }
 ]

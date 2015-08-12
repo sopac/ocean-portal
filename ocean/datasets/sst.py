@@ -47,6 +47,7 @@ class SST(Dataset):
         'dec',
         'anom',
         'trend',
+        'mursst',
     ]
 
     __plots__ = [

@@ -57,7 +57,7 @@ class tuscany(default):
         'chloro':'/data/chloro/',
         'currents':'/data/currents/',
         'ww3forecast':'/data/wavewatch3/forecast/',
-	'mur':'/data/sst/mur/'
+        'mur':'/data/sst/mur/'
     }
 
 class tunceli(default):

@@ -54,6 +54,7 @@ packages = [
     'ocean.datasets.currentforecast',
     'ocean.datasets.convergence',
     'ocean.datasets.msla',
+    'ocean.datasets.mur'
 ]
 
 scripts = [
@@ -64,12 +65,7 @@ scripts = [
 
 # run generate-manifest.py after editing these sections
 backend_resources = [
-#    'east.pgw',
-#    'subeast.pgw',
-#    'west.pgw',
-#    'subwest.pgw',
     'maps/bathymetry.map',
-#    'maps/raster.map',
     'fonts/fonts.list',
     'fonts/DejaVuSans.ttf',
 ]
@@ -100,8 +96,6 @@ map_layers = [
 
 BASE_PATH = 'share/portal'
 html = [
-#   'sst.html',
-#    'compmap.html',
     'ocean.html',
     'app.html'
 ]
@@ -117,7 +111,6 @@ script_substitutions = {
 }
 
 web_files = [
-#   'css/sst.css',
     'css/comp/controlPanel.css',
     'css/comp/compmap.css',
     'css/comp/controlvars.css',
@@ -130,7 +123,6 @@ web_files = [
     'js/comp/dragdealer.js',
     'js/comp/Ocean.js',
     'js/comp/data_points_to_load.js'
-#   'js/sst.js',
 ]
 
 data = [
@@ -138,7 +130,6 @@ data = [
     'config/comp/vargroups.json',
     'config/comp/portals.json',
     'config/comp/app.json',
-#    'config/comp/tidalGauges.txt',
     'config/comp/tidegauges.geojson',
     'images/search.gif',
     'images/calendar-blue.gif',

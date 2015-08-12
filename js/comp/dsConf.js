@@ -720,6 +720,43 @@ ocean.dsConf = {
         }, 
         onVariableChange: function(){},
         onRegionChange: function() {}
+    },
+    mur: {
+        params: override(function (dataset) { return {
+        };}),
+        beforeSend: function() {
+            valid = true;
+            return valid;
+        },
+        callback: function(data) {
+            if (data.img != null && data.scale != null) {
+                prependOutputSet();
+                appendOutput(data.img, null, null, null, data);
+                updateMap(data.mapimg);
+                setLegend(data.scale);
+            }
+            if (data.mapimg) {
+                this.mapimg = data.mapimg;
+                ocean.dataset.updateMapImg();
+            }
+        },
+        onSelect: function() {
+        },
+        onDeselect: function() {
+            resetMap();
+            resetLegend();
+        },
+        updateMapImg: function() {
+            bounds = $('#subregion option:selected').data('bounds');
+            if ($('#subregion option:selected').val() === 'pac') {
+                bounds = null;
+            }
+            updateMap(this.mapimg, bounds);
+        },
+        onVariableChange: function(){},
+        onRegionChange: function() {
+            resetMap();
+        }
     }
 
 };
