@@ -188,6 +188,7 @@ ocean.dsConf = {
         callback: function(data) {
             if(data.forecast) {
                 var forecast = $.parseJSON(data.forecast);
+                this.downloadimg = data.img;
                 slider.options.steps = forecast.length;
                 slider.options.snap = true;
                 slider.stepRatios = slider.calculateStepRatios();
@@ -205,12 +206,19 @@ ocean.dsConf = {
                         data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
                         updateMap(data.mapimg);
                     }
+
+                    //Sets the download image link for the datasets having slider option.
+                    ocean.dataset.updateDownloadImg();
+                    appendOutput(ocean.sliderdownloadlink);
                 };
                 slider.options.callback = function(x, y) {
                     if (data.mapimg) {
                         data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
                         updateMap(data.mapimg);
                     }
+
+                    //Sets the download image link for the datasets having slider option.
+                    ocean.dataset.updateDownloadImg();
                 };
                 slider.value.prev = [-1, -1];
                 slider.animate(false, true);
@@ -224,8 +232,6 @@ ocean.dsConf = {
         },
         onSelect: function() {
             updatePage();
-            //Hide the download link as functionality has not been implemented.
-            $('#download_slider_png').hide();
         },
         onDeselect: function() {
             resetMap();
@@ -234,7 +240,19 @@ ocean.dsConf = {
         onVariableChange: function() {
             updatePage();
         },
-        onRegionChange: function() {}
+        onRegionChange: function() {
+            this.updateDownloadImg();
+            appendOutput(ocean.sliderdownloadlink);
+        },
+        updateDownloadImg:  function() {
+             img = this.downloadimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
+             img = img.replace('_' + this.selectedRegion, '_' + ocean.area);
+             this.downloadimg = img;
+             ocean.sliderdownloadlink = img;
+             this.selectedRegion = ocean.area;
+        },
+        selectedRegion: ocean.area,
+        downloadimg:''
     },
     waveatlas: {
         params: override(function (dataset) { return {
@@ -324,6 +342,7 @@ ocean.dsConf = {
         callback: function(data) {
             if(data.forecast) {
                 var forecast = $.parseJSON(data.forecast);
+                this.downloadimg = data.img;
                 slider.options.steps = forecast.length;
                 slider.options.snap = true;
                 slider.stepRatios = slider.calculateStepRatios();
@@ -336,10 +355,8 @@ ocean.dsConf = {
                     }
 
                     //Sets the download image link for the datasets having slider option.
-                    if (data.img) {
-                        data.img = data.img.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
-                        ocean.sliderdownloadlink = data.img;
-                    }
+                    ocean.dataset.updateDownloadImg();
+                    appendOutput(ocean.sliderdownloadlink);
                 };
                 slider.options.callback = function(x, y) {
                     if (data.mapimg) {
@@ -347,10 +364,7 @@ ocean.dsConf = {
                         updateMap(data.mapimg);
                     }
                     //Sets the download image link for the datasets having slider option.
-                    if (data.img) {
-                        data.img = data.img.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
-                        ocean.sliderdownloadlink = data.img;
-                    }
+                    ocean.dataset.updateDownloadImg();
                 };
                 slider.value.prev = [-1, -1];
                 slider.animate(false, true);
@@ -364,8 +378,6 @@ ocean.dsConf = {
         },
         onSelect: function() {
             updatePage();
-            //Hide the download link as functionality has been implemented. TODO: remove this once  poamasla, poamassta, ww3forecast and currentforecast all are implemented.
-            $('#download_slider_png').show();
         },
         onDeselect: function() {
             resetMap();
@@ -374,7 +386,19 @@ ocean.dsConf = {
         onVariableChange: function() {
             updatePage();
         },
-        onRegionChange: function() {}
+        onRegionChange: function() {
+            this.updateDownloadImg();
+            appendOutput(ocean.sliderdownloadlink);
+        },
+        updateDownloadImg:  function() {
+             img = this.downloadimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
+             img = img.replace('_' + this.selectedRegion, '_' + ocean.area);
+             this.downloadimg = img;
+             ocean.sliderdownloadlink = img;
+             this.selectedRegion = ocean.area;
+        },
+        selectedRegion: ocean.area,
+        downloadimg:''
     },
     poamassta: {
         params: override(function (dataset) { return {
@@ -387,6 +411,7 @@ ocean.dsConf = {
         callback: function(data) {
             if(data.forecast) {
                 var forecast = $.parseJSON(data.forecast);
+                this.downloadimg = data.img;
                 slider.options.steps = forecast.length;
                 slider.options.snap = true;
                 slider.stepRatios = slider.calculateStepRatios();
@@ -399,10 +424,8 @@ ocean.dsConf = {
                     }
 
                     //Sets the download image link for the datasets having slider option.
-                    if (data.img) {
-                        data.img = data.img.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
-                        ocean.sliderdownloadlink = data.img;
-                    }
+                    ocean.dataset.updateDownloadImg();
+                    appendOutput(ocean.sliderdownloadlink);
                 };
                 slider.options.callback = function(x, y) {
                     if (data.mapimg) {
@@ -411,10 +434,7 @@ ocean.dsConf = {
                     }
 
                     //Sets the download image link for the datasets having slider option.
-                    if (data.img) {
-                        data.img = data.img.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
-                        ocean.sliderdownloadlink = data.img;
-                    }
+                    ocean.dataset.updateDownloadImg();
                 };
                 slider.value.prev = [-1, -1];
                 slider.animate(false, true);
@@ -428,9 +448,6 @@ ocean.dsConf = {
         },
         onSelect: function() {
             updatePage();
-            //Hide the download link as functionality has been implemented. TODO: remove this once  poamasla, poamassta, ww3forecast and currentforecast all are implemented.
-            $('#download_slider_png').show();
-
         },
         onDeselect: function() {
             resetMap();
@@ -439,7 +456,19 @@ ocean.dsConf = {
         onVariableChange: function() {
             updatePage();
         },
-        onRegionChange: function() {}
+        onRegionChange: function() {
+            this.updateDownloadImg();
+            appendOutput(ocean.sliderdownloadlink);
+        },
+        updateDownloadImg:  function() {
+             img = this.downloadimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
+             img = img.replace('_' + this.selectedRegion, '_' + ocean.area);
+             this.downloadimg = img;
+             ocean.sliderdownloadlink = img;
+             this.selectedRegion = ocean.area;
+        },
+        selectedRegion: ocean.area,
+        downloadimg:''
     },
     currentforecast: {
         params: override(function (dataset) { return {
@@ -453,6 +482,8 @@ ocean.dsConf = {
             if(data.forecast) {
                 var forecast = $.parseJSON(data.forecast);
                 this.mapimg = data.mapimg;
+                this.downloadimg = data.img;
+
                 slider.options.steps = forecast.length;
                 slider.options.snap = true;
                 slider.stepRatios = slider.calculateStepRatios();
@@ -467,6 +498,10 @@ ocean.dsConf = {
 //                        bounds = $('#subregion option:selected').data('bounds');
 //                        updateMap(data.mapimg, bounds);
 //                    }
+
+                      //Sets the download image link for the datasets having slider option.
+                      ocean.dataset.updateDownloadImg();
+                      appendOutput(ocean.sliderdownloadlink);
                 };
                 slider.options.callback = function(x, y) {
                     if (data.mapimg) {
@@ -474,6 +509,9 @@ ocean.dsConf = {
 //                        data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
 //                        updateMap(data.mapimg);
                     }
+
+                    //Sets the download image link for the datasets having slider option.
+                    ocean.dataset.updateDownloadImg();
                 };
                 slider.value.prev = [-1, -1];
                 slider.animate(false, true);
@@ -487,8 +525,6 @@ ocean.dsConf = {
         },
         onSelect: function() {
             updatePage();
-            //Hide the download link as functionality has been implemented. TODO: remove this once  poamasla, poamassta, ww3forecast and currentforecast all are implemented.
-            $('#download_slider_png').hide();
         },
         onDeselect: function() {
             resetMap();
@@ -514,10 +550,19 @@ ocean.dsConf = {
             updateMap(mapimg, bounds);
         },
         onRegionChange: function() {
+            this.updateDownloadImg();
+            appendOutput(ocean.sliderdownloadlink);
             this.updateMapImg(this.mapimg);
         },
+        updateDownloadImg:  function() {
+             img = this.downloadimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
+             img = img.replace('_' + this.selectedRegion, '_' + ocean.area);
+             this.downloadimg = img;
+             ocean.sliderdownloadlink = img;
+        },
         selectedRegion: ocean.area,
-        mapimg: ''
+        mapimg: '',
+        downloadimg:''
     },
     sealevel: {
         params: override(function (dataset) { return {
@@ -542,7 +587,7 @@ ocean.dsConf = {
                 }
             }
             if (text != ""){
-                show_feedback(text);
+                show_feedback(text, "Missing Input:");
                 return valid;
             }
 
@@ -769,11 +814,30 @@ function appendOutput(image, dataURL, name, extras, data){
     if (extras) {
         captionText = captionText + extras
     }
-    fotorama.push({img: image, caption: captionText});
+    //Check if the img is already in the gallery. If not, then add the img.
+    var index = -1;
+    if (fotorama.data){
+        for (var i=0; i<fotorama.data.length; i++){
+            if (fotorama.data[i].img == image){
+                index = i;
+                i = fotorama.data.length;
+            }
+        }
+    }
+
+    if (index == -1){
+        fotorama.push({img: image, caption: captionText});
+    }
+
     if (fotorama.size > 20) {//TODO extract 20 to the config
         fotorama.shift();
     }
-    fotorama.show(fotorama.size - 1);
+
+    if (index == -1){
+        fotorama.show(fotorama.size - 1);
+    } else {
+        fotorama.show(index);
+    }
 
     if (name) {
         $('<h2>', {

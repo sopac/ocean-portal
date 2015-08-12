@@ -167,7 +167,7 @@
         "periods": ["daily"],
         "plottypes": ["map"],
         "dateRange" : {
-            "minDate": "20150101",
+            "minDate": "20130609",
             "maxDate": "-3"
         }
     },{

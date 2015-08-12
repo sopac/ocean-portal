@@ -37,8 +37,9 @@ class CoralPlotterWrapper(SurfacePlotter):
 
     @apply_to(variable='daily')
     def get_path(self, params={}):
+        year = params['date'].year
         return os.path.join(serverCfg['dataDir'][self.DATASET],
-                            'daily')
+                            'daily', str(year))
 
     @apply_to(variable='outlook')
     def get_path(self, params={}):

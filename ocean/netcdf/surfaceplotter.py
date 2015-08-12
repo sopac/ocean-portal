@@ -214,7 +214,8 @@ class SurfacePlotter(object):
             'sla': "Near Real Time Sea Level Anomay",
             'height': "Sea Level Forecast",
             'ssta': "Sea Surface Temperature Forecast",
-            'mursst': "MUR Sea Surface Temperature"
+            'mursst': "MUR Sea Surface Temperature",
+            'sst': "Sea Surface Temperature Forecast"
         }
 
         return d[params['variable']]

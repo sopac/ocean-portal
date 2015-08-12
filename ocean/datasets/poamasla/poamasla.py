@@ -31,7 +31,7 @@ FORECAST_STEPS = 6
 
 class PoamaPlotterWrapper(SurfacePlotter):
     DATASET = 'poamasla'
-    PRODUCT_NAME = "Seasonal Sea Level Forecast"
+    PRODUCT_NAME = "POAMA Forecast"
 
     VARIABLE_MAP = {
         'height': 'HEIGHT'

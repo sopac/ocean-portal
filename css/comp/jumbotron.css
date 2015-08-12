@@ -135,6 +135,10 @@ h5 {
    cursor: pointer;
 }
 
-#download_slider_png {
-   float: right;
+#back_to_menu{
+    float: right;
+}
+
+#portal_title {
+    margin-bottom: -35px;
 }

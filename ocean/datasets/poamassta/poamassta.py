@@ -31,7 +31,7 @@ FORECAST_STEPS = 8
 
 class PoamaPlotterWrapper(SurfacePlotter):
     DATASET = 'poamassta'
-    PRODUCT_NAME = "Seasonal Sea Surface Temperature Forecast"
+    PRODUCT_NAME = "POAMA Forecast"
 
     VARIABLE_MAP = {
         'ssta': 'SSTA_emn',
@@ -77,7 +77,10 @@ class PoamaPlotterWrapper(SurfacePlotter):
 
     @apply_to(variable='sst', period='seasonal')
     def get_formatted_date(self, params={}):
-        return ''
+        if 'step' in params:
+            return params['forecast'][params['step']]['datetime']
+        else:
+            return ''
 
     def get_ticks_format(self, params={}):
         return '%.1f'
