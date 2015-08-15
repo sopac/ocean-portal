@@ -91,7 +91,8 @@ map_layers = [
     'COSPPac_EEZs',
     'ReefLocations',
     'CRW_Outlines',
-    'MP_FINAL'
+    'MP_FINAL',
+    'CRW_Outlook_EEZ'
 ]
 
 BASE_PATH = 'share/portal'

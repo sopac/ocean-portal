@@ -51,8 +51,13 @@ def filter_alert(params, grid):
     #Therefore the converting from Geographic (lon/lat) to Map Projection (x/y) Coordinates is not necessary here.
     map = Basemap(llcrnrlon=110,llcrnrlat=-90,urcrnrlon=290,urcrnrlat=90,
         resolution='c', projection='cyl')
-    crw = map.readshapefile(util.get_resource('maps', 'layers', 'CRW_Outlines'),
-                            'crw')
+
+    if params['variable'] == 'daily':
+        crw = map.readshapefile(util.get_resource('maps', 'layers', 'CRW_Outlook_EEZ'),
+                                'crw')
+    elif params['variable'] == 'outlook':
+        crw = map.readshapefile(util.get_resource('maps', 'layers', 'CRW_Outlines'),
+                                'crw')
 
     collection = []
     max = None

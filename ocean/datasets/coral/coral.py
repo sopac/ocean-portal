@@ -250,9 +250,9 @@ class coral(SST):
     ]
 
     def process_stats(self, params):
-        if params['area'] == 'pac' or params['variable'] == 'outlook':
+        if params['area'] == 'pac':
             return {}
-        else: 
+        else: #params['variable'] == 'outlook' or 'daily' 
             grid = self.plotter.get_grid(params=params) 
             alertLevel = filter_alert(params, grid)
             return {'dial': os.path.join('images', params['variable'] + '_' + str(alertLevel) + '.png')}
