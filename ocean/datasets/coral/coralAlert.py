@@ -26,7 +26,7 @@ country = {
     'kiribati_phoenix': 'KIRIBATI_PHOENIX',
     'kiribati_nor_line': 'KIRIBATI_LINE_NORTH',
     'kiribati_sou_line': 'KIRIBATI_LINE_SOUTH',
-    'marshall': 'MARSHALL1',
+    'marshall': 'MARSHALL',
     'nauru': 'NAURU',
     'niue': 'NIUE',
     'palau': 'PALAU',
@@ -52,10 +52,10 @@ def filter_alert(params, grid):
     map = Basemap(llcrnrlon=110,llcrnrlat=-90,urcrnrlon=290,urcrnrlat=90,
         resolution='c', projection='cyl')
 
-    if params['variable'] == 'daily':
+    if params['variable'] == 'outlook':
         crw = map.readshapefile(util.get_resource('maps', 'layers', 'CRW_Outlook_EEZ'),
                                 'crw')
-    elif params['variable'] == 'outlook':
+    elif params['variable'] == 'daily':
         crw = map.readshapefile(util.get_resource('maps', 'layers', 'CRW_Outlines'),
                                 'crw')
 

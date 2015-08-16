@@ -79,7 +79,8 @@ def Convert_Outlook(data_dir,data_subdir):
         		lon.setncattr('grids','Uniform grid from '+str(lon_array[0])+' to '+str(lon_array[lon_len-1])+' by '+str(gridcell))
 		        lon[:]=lon_array
 #       	        data = nc_pointer.createVariable(var_name,'f4',(u'time',u'ensemble',u'lat',u'lon'),zlib=True,complevel=6,fill_value=-999)
-        		data = nc_pointer.createVariable(var_name,'f4',(u'time',u'lat',u'lon'),zlib=True,complevel=6,fill_value=-999)
+        		#data = nc_pointer.createVariable(var_name,'f4',(u'time',u'lat',u'lon'),zlib=True,complevel=6,fill_value=-999)
+        		data = nc_pointer.createVariable(var_name,'f4',(u'time',u'lat',u'lon'),zlib=True,complevel=6,fill_value=255)
 			z=0#the date storage number, is 0,1,2
 			baa=np.zeros(shape=(360,720))
 			for x in range(0,num_weeks):

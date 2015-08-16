@@ -255,7 +255,7 @@ class coral(SST):
         else: #params['variable'] == 'outlook' or 'daily' 
             grid = self.plotter.get_grid(params=params) 
             alertLevel = filter_alert(params, grid)
-            return {'dial': os.path.join('images', params['variable'] + '_' + str(alertLevel) + '.png')}
+            return {'dial': os.path.join('images', params['variable'] + '_' + str(int(alertLevel)) + '.png')}
 
 
 def getLastestFile(path):
