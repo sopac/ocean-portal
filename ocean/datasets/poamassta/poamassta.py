@@ -19,6 +19,7 @@ from ocean import util, config
 from ocean.config import productName, regionConfig
 from ocean.datasets.poama import POAMA
 from ocean.netcdf import SurfacePlotter, Gridset
+from poamasstPlotter import PoamaSstPlotter
 
 #get the server dependant path configurations
 serverCfg = config.get_server_config()
@@ -172,7 +173,11 @@ class PoamaPlotterWrapper(SurfacePlotter):
         fill_color = self.get_fill_color(params=args)
         colormap_strategy = self.get_colormap_strategy(params=args)
 
-        plot = self.getPlotter()
+        if variable in ['sst']:
+            plot = PoamaSstPlotter()
+        else:
+            plot = self.getPlotter()
+
         grid = self.get_grid(params=args)
  
         plot.plot_basemaps_and_colorbar(grid.lats, grid.lons, grid.data[step],
@@ -217,7 +222,10 @@ class PoamaPlotterWrapper(SurfacePlotter):
         fill_color = self.get_fill_color(params=args)
         colormap_strategy = self.get_colormap_strategy(params=args)
 
-        plot = self.getPlotter()
+        if variable in ['sst']:
+            plot = PoamaSstPlotter()
+        else:
+            plot = self.getPlotter()
 
         lat_min = regionConfig.regions[area][1]['llcrnrlat']
         lat_max = regionConfig.regions[area][1]['urcrnrlat']
