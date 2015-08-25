@@ -43,7 +43,11 @@ case $DATASET in
         DATA_SUBDIR=outlook
         MIRROR_FLAGS='-I outlook*.dat'
         ;;
-
+    msla)
+        SERVER=ftp://ftp.aviso.altimetry.fr
+        SERVER_PATH=/global/near-real-time/grids/msla/all-sat-merged/
+        DATA_SUBDIR=h
+        ;;
     poamasla)
         SERVER=http://opendap.bom.gov.au:8080
         SERVER_PATH=/thredds/fileServer/paccsap/sea_level_seasonal/grid/
