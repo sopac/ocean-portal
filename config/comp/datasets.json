@@ -230,7 +230,7 @@
         "plottypes": ["map"],
         "dateRange" : {
             "minDate": "20150706",
-            "maxDate": "-1"
+            "maxDate": "-2"
         }
     }]    
 }, {
