@@ -103,7 +103,7 @@ html = [
 
 script_substitutions = {
     # development version, compressed version
-    'jquery.js': ('jquery-1.8.3.js', 'jquery-1.8.3.min.js'),
+    'jquery.js': ('jquery-1.11.3.js', 'jquery-1.11.3.min.js'),
     'jquery-ui.js': ('jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.js',
                      'jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js'),
     'jquery-ui.css': ('jquery-ui-1.9.2.custom/css/smoothness/jquery-ui-1.9.2.custom.css',
