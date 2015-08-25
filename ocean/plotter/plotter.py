@@ -114,7 +114,8 @@ class Plotter(object):
                                proj=self._DEFAULT_PROJ, product_label_str=None,
                                vlat=None, vlon=None, u=None, v=None,
                                draw_every=1, arrow_scale=10,
-                               resolution=None, area=None, boundaryInUse='True'):
+                               resolution=None, area=None, boundaryInUse='True',
+                               annual_clim_label_str = None, monthly_clim_label_str = None, overlay_grid = None):
 
             '''
             TODO

@@ -46,7 +46,8 @@ class PoamaSstPlotter(Plotter):
                                contourLabels=True, smoothFactor=1,
                                proj=self._DEFAULT_PROJ, product_label_str=None,
                                vlat=None, vlon=None, u=None, v=None,
-                               draw_every=1, arrow_scale=10,
+                               draw_every=1, arrow_scale=10, overlay_grid=None,
+                               annual_clim_label_str=None, monthly_clim_label_str=None,
                                resolution=None, area=None, boundaryInUse='True'):
 
             '''
@@ -107,6 +108,7 @@ class PoamaSstPlotter(Plotter):
 	    
             # Plot data
             x, y = None, None
+
             if plotStyle == 'contourf':
                 x, y = m(*np.meshgrid(lons, lats))
                 img = plt.contourf(x, y, data, levels=cm_edge_values, norm=norm,
@@ -124,10 +126,12 @@ class PoamaSstPlotter(Plotter):
                     x, y = m(*np.meshgrid(lons, lats))
                 #GAS negative contour not to be dashed
                 plt.rcParams['contour.negative_linestyle'] = 'solid'
-                cnt = plt.contour(x, y, data, levels=cm_edge_values, norm=norm,
-                                 colors = 'k', linewidths = 0.4, hold='on')
+                # cnt = plt.contour(x, y, data, levels=cm_edge_values, norm=norm,
+                                 # colors = 'k', linewidths = 0.4, hold='on')
+                cnt = plt.contour(x, y, data,levels = [29], colors=('b',),linestyles=('-',),linewidths=(1,))
+
                 if contourLabels:
-                    plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8)
+                    plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8, colors = 'b')
 
             img.set_clim(cm_edge_values.min(), cm_edge_values.max())
 
@@ -139,6 +143,13 @@ class PoamaSstPlotter(Plotter):
                     draw_vector_plot(m, vlon, vlat, u, v,
                                      draw_every=draw_every,
                                      arrow_scale=arrow_scale)
+
+            #extract the overlay grid
+            if overlay_grid is not None:
+                x, y = m(*np.meshgrid(overlay_grid.lons, overlay_grid.lats))
+                cnt = plt.contour(x, y, overlay_grid.data,levels = [29], colors=('g',),linestyles=('-',),linewidths=(1,))
+                if contourLabels:
+                    plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8, colors = 'g', zorder=3)
 
             # Draw land, coastlines, parallels, meridians and add title
             m.drawmapboundary(linewidth=1.0, fill_color=fill_color)
@@ -159,6 +170,7 @@ class PoamaSstPlotter(Plotter):
             # Draw colorbar
             ax = plt.gca()
             divider = make_axes_locatable(ax)
+
             cax = divider.append_axes("right", size=0.2, pad=0.3)
             if cb_label_pos is None:
                 tick_pos = cm_edge_values
@@ -206,7 +218,10 @@ class PoamaSstPlotter(Plotter):
                 copyright_label_xadj = -0.1
                 product_label_xadj = 1.04
 
-            # Draw copyright and product labels
+            # Draw legend, copyright and product labels
+            proxy = [plt.Line2D([0,0],[1,1],linestyle='-', color='b'), plt.Line2D([0,0],[1,1],linestyle='-',color = 'g')]
+            plt.figlegend(proxy, [monthly_clim_label_str, annual_clim_label_str], 'lower right', frameon=False, prop={'size':7})
+
             box = TextArea(getCopyright(),
                            textprops=dict(color='k', fontsize=6))
             copyrightBox = AnchoredOffsetbox(loc=3, child=box,
@@ -238,8 +253,11 @@ class PoamaSstPlotter(Plotter):
 
     def plot_basemaps_and_colorbar(self, *args, **kwargs):
         #Plots the image for the map overlay.
-
         output_filename = kwargs.get('output_filename', 'noname.png')
+        overlay_grid = kwargs.get('overlay_grid', None)
+        monthly_clim_label_str = kwargs.get('monthly_clim_label_str', None)
+        annual_clim_label_str = kwargs.get('annual_clim_label_str', None)
+
         fileName, fileExtension = os.path.splitext(output_filename)
         colorbar_filename = fileName + COMMON_FILES['scale']
         outputfile_map = fileName + COMMON_FILES['mapimg']
@@ -281,6 +299,7 @@ class PoamaSstPlotter(Plotter):
 
         def _plot_basemap(region, lats, lons, data,
                           units='', cb_tick_fmt="%.0f", cb_labels=None,
+                          contourLines = True, extend='both', contourLabels = False,
                           proj=self._DEFAULT_PROJ, **kwargs):
 
             m = Basemap(projection=proj,
@@ -297,7 +316,24 @@ class PoamaSstPlotter(Plotter):
             # Plot data
             x2, y2 = m(*np.meshgrid(lons2, lats2))
             img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap, norm=norm)
+
+            # Draw contours
+            if contourLines:
+                x, y = m(*np.meshgrid(lons, lats))
+                #GAS negative contour not to be dashed
+                plt.rcParams['contour.negative_linestyle'] = 'solid'
+                cnt = plt.contour(x, y, data,levels = [29], colors=('b',),linestyles=('-',),linewidths=(1,))
+                if contourLabels:
+                    plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8, colors = 'b')
+
             img.set_clim(cm_edge_values.min(), cm_edge_values.max())
+
+            #extract the overlay grid
+            if overlay_grid is not None:
+                x, y = m(*np.meshgrid(overlay_grid.lons, overlay_grid.lats))
+                cnt = plt.contour(x, y, overlay_grid.data,levels = [29], colors=('g',),linestyles=('-',),linewidths=(1,))
+                if contourLabels:
+                    plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8, colors = 'g', zorder=3)
 
             m.drawmapboundary(linewidth=0.0, fill_color=fill_color)
             m.fillcontinents(color='0.58', zorder=7)
@@ -337,9 +373,14 @@ class PoamaSstPlotter(Plotter):
                 tick.set_fontsize(6)
                 tick.set_fontweight('bold')
 
+            proxy = [plt.Line2D([0,0],[1,1],linestyle='-', color='b'), plt.Line2D([0,0],[1,1],linestyle='-',color = 'g')]
+            plt.figlegend(proxy, [monthly_clim_label_str, annual_clim_label_str], 'lower right', frameon=False, prop={'size':8})
+
             plt.savefig(colorbar_filename,
-                    dpi=120,
-                    transparent=True)
+                    dpi=150,
+                    transparent=True,
+                    bbox_inches='tight',
+                    pad_inches=0.4)
             plt.close()
             pngcrush(colorbar_filename)
 

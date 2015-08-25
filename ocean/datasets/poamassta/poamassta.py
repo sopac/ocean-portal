@@ -14,11 +14,12 @@ import json
 from datetime import datetime, timedelta
 from dateutil.relativedelta import *
 import numpy as np
+import calendar
 
 from ocean import util, config
 from ocean.config import productName, regionConfig
 from ocean.datasets.poama import POAMA
-from ocean.netcdf import SurfacePlotter, Gridset
+from ocean.netcdf import SurfacePlotter, Gridset, Grid
 from poamasstPlotter import PoamaSstPlotter
 
 #get the server dependant path configurations
@@ -95,6 +96,10 @@ class PoamaPlotterWrapper(SurfacePlotter):
     def get_extend(self, params={}):
         return 'neither'
 
+    @apply_to(variable='sst')
+    def get_extend(self, params={}):
+        return 'both'
+
     @apply_to(variable='ssta', period='seasonal')
     def get_extend(self, params={}):
         return 'both'
@@ -112,6 +117,9 @@ class PoamaPlotterWrapper(SurfacePlotter):
 
     @apply_to(variable='sst')
     def get_contourlines(self, params={}):
+        return True
+
+    def get_contour_labels(self, params={}):
         return False
 
     @apply_to(variable='ssta')
@@ -149,6 +157,24 @@ class PoamaPlotterWrapper(SurfacePlotter):
                        date=params['date'],
                        **kwargs)
         return grid
+
+    def get_overlay_variable(self, variable):
+        if variable in ['sst']:
+            return 'sst'
+        return ''
+
+    def getOverlayVariableGrid(self, var, date):
+        monthName = date[:4].strip()
+        monthNumbers = dict((v,k) for k,v in enumerate(calendar.month_abbr))
+        monthNumber = monthNumbers[monthName]
+
+        latestFilePath = os.path.join(serverCfg['dataDir']['reynolds'],
+                            'climatology', 'climatology_' + str("%02d"%monthNumber) + '.nc')
+
+        overlayVariable = self.get_overlay_variable(var)
+        if overlayVariable != '':
+            return Grid(latestFilePath, latestFilePath, overlayVariable, (-90, 90), (0, 360), (0, FORECAST_STEPS))
+        return  None
 
     def plot_basemaps_and_colorbar(self, output, step, args):
         area = args['area']
@@ -179,8 +205,18 @@ class PoamaPlotterWrapper(SurfacePlotter):
             plot = self.getPlotter()
 
         grid = self.get_grid(params=args)
- 
+
+        # get overlay grid
+        annual_clim_label_str = args['formattedDate']
+        monthly_clim_label_str = args['formattedDate']
+
+        overlay_grid = None
+        if args['formattedDate'] != '':
+            overlay_grid = self.getOverlayVariableGrid(variable, args['formattedDate'])
+            annual_clim_label_str = args['formattedDate'][:4].strip() + ' Climatology'
+
         plot.plot_basemaps_and_colorbar(grid.lats, grid.lons, grid.data[step],
+                                        overlay_grid = overlay_grid,
                                         output_filename=output_filename,
                                         units=units,
                                         cm_edge_values=cb_ticks,
@@ -190,7 +226,11 @@ class PoamaPlotterWrapper(SurfacePlotter):
                                         cmp_name=cmap_name, extend=extend,
                                         colormap_strategy = colormap_strategy,
                                         colors = colors,
-                                        fill_color = fill_color)
+                                        fill_color = fill_color,
+                                        contourLines = contourLines,
+                                        contourLabels = contourLabels,
+                                        annual_clim_label_str = annual_clim_label_str,
+                                        monthly_clim_label_str = monthly_clim_label_str)
 
         plot.wait()
 
@@ -236,8 +276,18 @@ class PoamaPlotterWrapper(SurfacePlotter):
                              lonrange=(lon_min, lon_max),
                              latrange=(lat_min, lat_max))
 
+        # get overlay grid
+        annual_clim_label_str = args['formattedDate']
+        monthly_clim_label_str = args['formattedDate']
+
+        overlay_grid = None
+        if args['formattedDate'] != '':
+            overlay_grid = self.getOverlayVariableGrid(variable, args['formattedDate'])
+            annual_clim_label_str = args['formattedDate'][:4].strip() + ' Climatology'
+
         plot.plot_surface_data(grid.lats, grid.lons, grid.data[step],
                                lat_min, lat_max, lon_min, lon_max,
+                               overlay_grid = overlay_grid,
                                output_filename=output_filename,
                                title=title,
                                units=units,
@@ -256,7 +306,9 @@ class PoamaPlotterWrapper(SurfacePlotter):
                                smoothFactor=smoothFactor,
                                product_label_str=self.PRODUCT_NAME,
                                area=area,
-                               boundaryInUse='False')
+                               boundaryInUse='False',
+                               annual_clim_label_str = annual_clim_label_str,
+                               monthly_clim_label_str = monthly_clim_label_str)
 
         plot.wait()
 
@@ -305,8 +357,9 @@ class poamassta(POAMA):
         for step in range(FORECAST_STEPS):
    #         self.plotter.plot_basemaps_and_colorbar(self.getPlotFileName(var, step, region)[1], step,  args)
             plot_filename = '%s_%s_%s_%02d' % (poamaProduct[var], var, region, step)
-            self.plotter.plot_basemaps_and_colorbar(plot_filename, step,  args)
             args['step'] = step
+            args['area'] = region
+            self.plotter.plot_basemaps_and_colorbar(plot_filename, step,  args)
             self.plotter.plot_surface_data(plot_filename, step,  args)
 
     def generateConfig(self, params):
