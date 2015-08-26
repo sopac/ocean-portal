@@ -51,6 +51,7 @@ class tuscany(default):
         'msla': '/data/sea_level/',
         'ww3': '/data/wavewatch3/',
         'coral':'/data/sst/coral/',
+	'coral_ol':'/data/sst/coral/',
         'poamasla':'/data/poama/',
         'poamassta':'/data/poama/',
         'oceanmaps':'/data/oceanmaps/',
