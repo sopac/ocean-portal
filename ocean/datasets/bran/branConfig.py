@@ -19,7 +19,7 @@ class BranConfig ():
     variableConfig = None
 
     def __init__(self):
-        self.variableConfig = {"temp": ("Monthly Average BRAN2.1 Temperature ",
+        self.variableConfig = {"temp": ("Monthly Average BRAN3.5 Temperature ",
                                         {"colorbounds": [-2, 34],
                                          "colormap": plt.cm.jet,
                                          "contourlevels": np.arange(-2.0,34.1,1),
@@ -27,7 +27,7 @@ class BranConfig ():
                                          "format": '%d'
                                        },
                                        "temp"),
-                               "temp_ano": ("Monthly Average BRAN2.1 Temperature Anomaly ",
+                               "temp_ano": ("Monthly Average BRAN3.5 Temperature Anomaly ",
                                         {"colorbounds": [-1.5, 1.5],
                                          "colormap": plt.cm.RdBu_r,
                                          "contourlevels": np.arange(-1.5,1.5,0.5),
@@ -35,7 +35,7 @@ class BranConfig ():
                                          "format": '%5.1f'
                                        },
                                        "temp"),
-                               "temp_dec": ("Monthly Average BRAN2.1 Temperature Deciles",
+                               "temp_dec": ("Monthly Average BRAN3.5 Temperature Deciles",
                                        {"colorbounds": [0, 11],
                                         "colormap": plt.cm.RdBu_r,
                                         "unit": ur'\u00b0' + 'C',
@@ -45,7 +45,7 @@ class BranConfig ():
                                                    'Highest on \nrecord']
                                        },
                                        "temp_dec"),
-                               "salt": ("Monthly Average BRAN2.1 Salinity",
+                               "salt": ("Monthly Average BRAN3.5 Salinity",
                                         {"colorbounds": [32, 37],
                                          "colormap": plt.cm.jet,
                                          "contourlevels": np.arange(32,37.1,0.25),
@@ -53,14 +53,14 @@ class BranConfig ():
                                          "format": '%5.1f'
                                        },
                                        "salt"),
-                               "saltanom": ("Monthly Average BRAN2.1 Salinity Anomaly",
+                               "saltanom": ("Monthly Average BRAN3.5 Salinity Anomaly",
                                         {"colorbounds": [-2, 2],
                                          "colormap": plt.cm.RdBu_r,
                                          "unit": ur'PSU',
                                          "format": '%5.1f'
                                        },
                                        "salt_ano"),
-                               "salt_dec": ("Monthly Average BRAN2.1 Salinity Deciles",
+                               "salt_dec": ("Monthly Average BRAN3.5 Salinity Deciles",
                                        {"colorbounds": [0, 11],
                                         "colormap": plt.cm.RdBu_r,
                                         "unit": ur'PSU',
@@ -70,7 +70,7 @@ class BranConfig ():
                                                    'Highest on \nrecord']
                                        },
                                        "salt_dec"),
-                               "eta": ("Monthly Average BRAN2.1 Sea Level",
+                               "eta": ("Monthly Average BRAN3.5 Sea Level",
                                         {"colorbounds": [-0.6, 0.6],
                                          "colormap": plt.cm.jet,
                                          "contourlevels": np.arange(-0.6,0.6,0.1),
@@ -78,14 +78,14 @@ class BranConfig ():
                                          "format": '%5.1f'
                                        },
                                        "eta"),
-                               "eta_ano": ("Monthly Average BRAN2.1 Sea Level Anomaly",
+                               "eta_ano": ("Monthly Average BRAN3.5 Sea Level Anomaly",
                                         {"colorbounds": [-2, 2],
                                          "colormap": plt.cm.RdBu_r,
                                          "unit": ur'M',
                                          "format": '%5.1f'
                                        },
                                        "eta_ano"),
-                               "eta_dec": ("Monthly Average BRAN2.1 Sea Level Deciles",
+                               "eta_dec": ("Monthly Average BRAN3.5 Sea Level Deciles",
                                        {"colorbounds": [0, 11],
                                         "colormap": plt.cm.RdBu_r,
                                         "unit": ur'M',
@@ -95,7 +95,7 @@ class BranConfig ():
                                                    'Highest on \nrecord']
                                        },
                                        "eta_dec"),
-                               "currents": ("Monthly Average BRAN2.1 Currents",
+                               "currents": ("Monthly Average BRAN3.5 Currents",
                                         {"colorbounds": [-1, 1],
                                          "colormap": plt.cm.jet,
                                          "unit": ur'M/s',

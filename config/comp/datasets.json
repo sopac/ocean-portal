@@ -116,7 +116,7 @@
     }],
     "dateRange" : {
         "minDate": "19930101",
-        "maxDate": "20061230"
+        "maxDate": "20120731"
     }
 }, {
     "id": "church",

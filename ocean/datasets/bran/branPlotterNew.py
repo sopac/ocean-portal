@@ -21,7 +21,7 @@ from ocean.util.pngcrush import pngcrush
 class BRANGrid(Grid):
     LATS_VARIABLE = ['yt_ocean', 'yu_ocean'] + Grid.LATS_VARIABLE
     LONS_VARIABLE = ['xt_ocean', 'xu_ocean'] + Grid.LONS_VARIABLE
-    DEPTHS_VARIABLE = ['zt_ocean']
+    DEPTHS_VARIABLE = ['st_ocean']
 
     @logger.time_and_log
     def get_depths(self, variables):

@@ -25,6 +25,9 @@ import branPlotterNew
 server_config = config.get_server_config()
 branProduct = productName.products['bran']
 
+BRAN_VERSION = 'bran3.5'
+PRODUCT_LABEL = 'Bluelink Reanalysis 3.5'
+
 class bran(Dataset):
 
     __form_params__ = {
@@ -139,7 +142,7 @@ class bran(Dataset):
                 title_date_str = months[0].strftime('%B %Y') + ' to ' + months[-1].strftime('%B %Y')
                 input_data_file = os.path.join(server_config['dataDir']['bran'],
                                               'averages', periodStr, varName,
-                                              'bran2.1_%smthavg_%s_%s.nc4' % (monthInt, months[0].strftime('%Y%m'), months[-1].strftime('%Y%m')))
+                                              BRAN_VERSION + '_%smthavg_%s_%s.nc4' % (monthInt, months[0].strftime('%Y%m'), months[-1].strftime('%Y%m')))
             titleStr = varLongName + ': \n' + title_date_str + '\n'
 
             lats1, lons1, zlevels1, zonal_data = \
@@ -166,7 +169,7 @@ class bran(Dataset):
                                                  output_filename=plot_filename_fullpath + '.png',
                                                  units=unitStr, title=titleStr,
                                                  cb_ticks=cb_ticks,
-                                                 product_label_str='Bluelink Reanalysis 2.1')
+                                                 product_label_str=PRODUCT_LABEL)
         else:
             # Plot surface data
             plot_filename = '%s_%s_%s_%s' % (branProduct[periodStr],
@@ -299,7 +302,7 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
         title_date_str = months[0].strftime('%B %Y') + ' to ' + months[-1].strftime('%B %Y')
         input_data_file = os.path.join(server_config['dataDir']['bran'],
                                       'averages', periodStr, dataVar,
-                                      'bran2.1_%smthavg_%s_%s.nc4' % (monthInt, months[0].strftime('%Y%m'), months[-1].strftime('%Y%m')))
+                                      BRAN_VERSION + '_%smthavg_%s_%s.nc4' % (monthInt, months[0].strftime('%Y%m'), months[-1].strftime('%Y%m')))
 
     lats, lons, zlevels, data = \
         branPlotterNew.load_BRAN_data(input_data_file, dataVar,
@@ -340,7 +343,7 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
             else:
                 input_data_file = os.path.join(server_config['dataDir']['bran'],
                                                'averages', periodStr, 'u',
-                                               'bran2.1_%smthavg_%s_%s.nc4' % (monthInt, months[0].strftime('%Y%m'), months[-1].strftime('%Y%m')))
+                                               BRAN_VERSION + '_%smthavg_%s_%s.nc4' % (monthInt, months[0].strftime('%Y%m'), months[-1].strftime('%Y%m')))
             lats2, lons2, zlevels, u = \
                 branPlotterNew.load_BRAN_data(input_data_file, 'u',
                                               lat_min - 1.0, lat_max + 1.0,
@@ -352,7 +355,7 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
             else:
                 input_data_file = os.path.join(server_config['dataDir']['bran'],
                                                'averages', periodStr, 'v',
-                                               'bran2.1_%smthavg_%s_%s.nc4' % (monthInt, months[0].strftime('%Y%m'), months[-1].strftime('%Y%m')))
+                                               BRAN_VERSION + '_%smthavg_%s_%s.nc4' % (monthInt, months[0].strftime('%Y%m'), months[-1].strftime('%Y%m')))
             lats2, lons2, zlevels, v = \
                 branPlotterNew.load_BRAN_data(input_data_file, 'v',
                                               lat_min - 1.0, lat_max + 1.0,
@@ -371,7 +374,7 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
                                cm_edge_values=cb_ticks, cb_tick_fmt=cb_tick_fmt,
                                cmp_name='jet', proj='cyl',
                                contourLines=contourLines,
-                               product_label_str='Bluelink Reanalysis 2.1',
+                               product_label_str=PRODUCT_LABEL,
                                vlat=lats2, vlon=lons2, u=u, v=v,
                                draw_every=draw_every, arrow_scale=arrow_scale,
                                area=regionStr)

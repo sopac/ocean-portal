@@ -44,14 +44,14 @@ class tuscany(default):
     debug = True
     mapservPath = '/usr/libexec/mapserver'
     dataDir = {
-        'bran': '/data/blue_link/data/',
+        'bran': '/data/blue_link/data/BRAN3p5/',
         'ersst': '/data/sst/ersst/data/',
         'reynolds': '/data/sst/reynolds/',
         'sealevel': '/data/sea_level/',
         'msla': '/data/sea_level/',
         'ww3': '/data/wavewatch3/',
         'coral':'/data/sst/coral/',
-	'coral_ol':'/data/sst/coral/',
+        'coral_ol':'/data/sst/coral/',
         'poamasla':'/data/poama/',
         'poamassta':'/data/poama/',
         'oceanmaps':'/data/oceanmaps/',
