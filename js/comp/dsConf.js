@@ -423,6 +423,10 @@ ocean.dsConf = {
                         updateMap(data.mapimg);
                     }
 
+                    if (data.scale) {
+                        data.scale = data.scale.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
+                        setLegend(data.scale);
+                    }
                     //Sets the download image link for the datasets having slider option.
                     ocean.dataset.updateDownloadImg();
                     appendOutput(ocean.sliderdownloadlink);
@@ -433,12 +437,16 @@ ocean.dsConf = {
                         updateMap(data.mapimg);
                     }
 
+                    if (data.scale) {
+                        data.scale = data.scale.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
+                        setLegend(data.scale);
+                    }
+
                     //Sets the download image link for the datasets having slider option.
                     ocean.dataset.updateDownloadImg();
                 };
                 slider.value.prev = [-1, -1];
                 slider.animate(false, true);
-                setLegend(data.scale);
             }
             prependOutputSet();
 

@@ -32,6 +32,11 @@ from ocean.plotter import Plotter, COMMON_FILES, getCopyright, from_levels_and_c
 
 class PoamaSstPlotter(Plotter):
 
+    def plotConvergenceLegend(self, monthly_clim_label_str, annual_clim_label_str, fontsize):
+        proxy = [plt.Line2D([0,0],[1,1],linestyle='-', linewidth=2.0, color='purple'), plt.Line2D([0,0],[1,1],linestyle='-', linewidth=2.0, color = 'g')]
+        legend = plt.figlegend(proxy, [monthly_clim_label_str, annual_clim_label_str], 'lower right', frameon=False, prop={'size':fontsize}, title="Convergence Zone")
+        plt.setp(legend.get_title(),fontsize=fontsize)
+
     def plot_surface_data(self, *args, **kwargs):
 
         def _plot_surface_data(lats, lons, data,
@@ -128,10 +133,10 @@ class PoamaSstPlotter(Plotter):
                 plt.rcParams['contour.negative_linestyle'] = 'solid'
                 # cnt = plt.contour(x, y, data, levels=cm_edge_values, norm=norm,
                                  # colors = 'k', linewidths = 0.4, hold='on')
-                cnt = plt.contour(x, y, data,levels = [29], colors=('b',),linestyles=('-',),linewidths=(1,))
+                cnt = plt.contour(x, y, data,levels = [29], colors=('purple',),linestyles=('-',),linewidths=(1,))
 
                 if contourLabels:
-                    plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8, colors = 'b')
+                    plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8, colors = 'purple')
 
             img.set_clim(cm_edge_values.min(), cm_edge_values.max())
 
@@ -219,8 +224,7 @@ class PoamaSstPlotter(Plotter):
                 product_label_xadj = 1.04
 
             # Draw legend, copyright and product labels
-            proxy = [plt.Line2D([0,0],[1,1],linestyle='-', color='b'), plt.Line2D([0,0],[1,1],linestyle='-',color = 'g')]
-            plt.figlegend(proxy, [monthly_clim_label_str, annual_clim_label_str], 'lower right', frameon=False, prop={'size':7})
+            self.plotConvergenceLegend(monthly_clim_label_str, annual_clim_label_str, 7)
 
             box = TextArea(getCopyright(),
                            textprops=dict(color='k', fontsize=6))
@@ -322,9 +326,9 @@ class PoamaSstPlotter(Plotter):
                 x, y = m(*np.meshgrid(lons, lats))
                 #GAS negative contour not to be dashed
                 plt.rcParams['contour.negative_linestyle'] = 'solid'
-                cnt = plt.contour(x, y, data,levels = [29], colors=('b',),linestyles=('-',),linewidths=(1,))
+                cnt = plt.contour(x, y, data,levels = [29], colors=('purple',),linestyles=('-',),linewidths=(1,))
                 if contourLabels:
-                    plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8, colors = 'b')
+                    plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8, colors = 'purple')
 
             img.set_clim(cm_edge_values.min(), cm_edge_values.max())
 
@@ -349,7 +353,8 @@ class PoamaSstPlotter(Plotter):
                            proj=self._DEFAULT_PROJ, **kwargs):
             # Draw colorbar
             fig = plt.figure(figsize=(1.5,2))
-            ax1 = fig.add_axes([0.05, 0.05, 0.125, 0.85])
+            ax1 = fig.add_axes([0.05, 0.05, 0.225, 1.5])
+
             cb = mpl.colorbar.ColorbarBase(
                     ax1,
                     cmap=d_cmap,
@@ -365,22 +370,21 @@ class PoamaSstPlotter(Plotter):
                 cb.set_ticklabels(cb_labels)
             cb.set_label(units,
                     rotation='horizontal',
-                    fontsize=6,
+                    fontsize=10,
                     fontweight='bold')
 
             cb.set_ticks(tick_pos)
             for tick in cb.ax.get_yticklabels():
-                tick.set_fontsize(6)
+                tick.set_fontsize(10)
                 tick.set_fontweight('bold')
 
-            proxy = [plt.Line2D([0,0],[1,1],linestyle='-', color='b'), plt.Line2D([0,0],[1,1],linestyle='-',color = 'g')]
-            plt.figlegend(proxy, [monthly_clim_label_str, annual_clim_label_str], 'lower right', frameon=False, prop={'size':8})
+            self.plotConvergenceLegend(monthly_clim_label_str, annual_clim_label_str, 12)
 
             plt.savefig(colorbar_filename,
                     dpi=150,
                     transparent=True,
                     bbox_inches='tight',
-                    pad_inches=0.4)
+                    pad_inches=0.9)
             plt.close()
             pngcrush(colorbar_filename)
 
