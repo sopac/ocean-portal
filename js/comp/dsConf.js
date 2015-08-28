@@ -209,7 +209,6 @@ ocean.dsConf = {
 
                     //Sets the download image link for the datasets having slider option.
                     ocean.dataset.updateDownloadImg();
-                    appendOutput(ocean.sliderdownloadlink);
                 };
                 slider.options.callback = function(x, y) {
                     if (data.mapimg) {
@@ -242,7 +241,6 @@ ocean.dsConf = {
         },
         onRegionChange: function() {
             this.updateDownloadImg();
-            appendOutput(ocean.sliderdownloadlink);
         },
         updateDownloadImg:  function() {
              img = this.downloadimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
@@ -356,7 +354,6 @@ ocean.dsConf = {
 
                     //Sets the download image link for the datasets having slider option.
                     ocean.dataset.updateDownloadImg();
-                    appendOutput(ocean.sliderdownloadlink);
                 };
                 slider.options.callback = function(x, y) {
                     if (data.mapimg) {
@@ -388,7 +385,6 @@ ocean.dsConf = {
         },
         onRegionChange: function() {
             this.updateDownloadImg();
-            appendOutput(ocean.sliderdownloadlink);
         },
         updateDownloadImg:  function() {
              img = this.downloadimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
@@ -429,7 +425,6 @@ ocean.dsConf = {
                     }
                     //Sets the download image link for the datasets having slider option.
                     ocean.dataset.updateDownloadImg();
-                    appendOutput(ocean.sliderdownloadlink);
                 };
                 slider.options.callback = function(x, y) {
                     if (data.mapimg) {
@@ -466,7 +461,6 @@ ocean.dsConf = {
         },
         onRegionChange: function() {
             this.updateDownloadImg();
-            appendOutput(ocean.sliderdownloadlink);
         },
         updateDownloadImg:  function() {
              img = this.downloadimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
@@ -509,7 +503,6 @@ ocean.dsConf = {
 
                       //Sets the download image link for the datasets having slider option.
                       ocean.dataset.updateDownloadImg();
-                      appendOutput(ocean.sliderdownloadlink);
                 };
                 slider.options.callback = function(x, y) {
                     if (data.mapimg) {
@@ -559,7 +552,6 @@ ocean.dsConf = {
         },
         onRegionChange: function() {
             this.updateDownloadImg();
-            appendOutput(ocean.sliderdownloadlink);
             this.updateMapImg(this.mapimg);
         },
         updateDownloadImg:  function() {
@@ -881,6 +873,6 @@ function updateInfo(image, altText){
  */
 function openDownloadImageLink(){
     if (ocean.sliderdownloadlink != ""){
-        window.open(ocean.sliderdownloadlink,'_blank','resizable=yes');
+        appendOutput(ocean.sliderdownloadlink);
     }
 }
