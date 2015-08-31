@@ -283,7 +283,7 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
     elif varName == 'uveta':
         dataVar = 'eta'
         unitStr = "Metres"
-        cb_ticks = np.arange(-0.5, 0.51, 0.1)
+        cb_ticks = np.arange(-0.3, 0.31, 0.06)
         varLongName = "Sea Level Height and Currents"
         cb_tick_fmt = '%.2f'
         currents = True
