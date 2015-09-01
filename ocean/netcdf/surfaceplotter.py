@@ -116,9 +116,9 @@ class SurfacePlotter(object):
     def get_ticks_format(self, params={}):
         return '%.1f'
     #GAS remove this code so all colorbars have one decimal place
-    #@apply_to(variable='mean')
-    #def get_ticks_format(self, params={}):
-    #    return '%.0f'
+    @apply_to(variable='mean')
+    def get_ticks_format(self, params={}):
+        return '%.0f'
 
     # --- get_labels ---
     @apply_to()
@@ -141,7 +141,7 @@ class SurfacePlotter(object):
     def get_ticks(self, params={}):
         try:
             if regionConfig.regions[params['area']][0] == 'pac':
-                return np.arange(24.0, 32.1, 0.5)
+                return np.arange(20.0, 32.1, 1.0)
             else:
                 pass
         except KeyError:
