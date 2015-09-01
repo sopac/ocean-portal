@@ -763,8 +763,12 @@ ocean.dsConf = {
             resetLegend();
             hideControls('tunafishing');
         }, 
-        onVariableChange: function(){},
-        onRegionChange: function() {}
+        onVariableChange: function(){
+            updateDatasetForSST();
+        },
+        onRegionChange: function(){
+            updateDatasetForSST();
+        }
     },
     mur: {
         params: override(function (dataset) { return {
@@ -798,9 +802,12 @@ ocean.dsConf = {
             }
             updateMap(this.mapimg, bounds);
         },
-        onVariableChange: function(){},
-        onRegionChange: function() {
+        onVariableChange: function(){
+            updateDatasetForSST();
+        },
+        onRegionChange: function(){
             resetMap();
+            updateDatasetForSST();
         }
     }
 
@@ -874,5 +881,21 @@ function updateInfo(image, altText){
 function openDownloadImageLink(){
     if (ocean.sliderdownloadlink != ""){
         appendOutput(ocean.sliderdownloadlink);
+    }
+}
+
+
+/**
+ * Merge the Reynolds daily sst product in fisheries with the MUR.
+ * http://tuscany/redmine/issues/729
+ */
+
+function updateDatasetForSST(){
+    if (getValue('region') == 'pac'){
+        addOption('dataset', 'convergence', 'Reynolds');
+        ocean.variable = 'mean';
+    } else { //for subregions
+        addOption('dataset', 'mur', 'MUR');
+        ocean.variable = 'mursst';
     }
 }

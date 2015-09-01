@@ -689,6 +689,24 @@ function setValue(comboid, value) {
     $('#' + comboid).change();
 }
 
+
+
+/**
+ * Update combobox to merge the Reynolds daily sst product in fisheries with the MUR.
+ * This deletes all available options in the combobox and adds new option.
+ * http://tuscany/redmine/issues/729
+ */
+function addOption(comboid, newvalue, newtitle){
+    $('#' + comboid)
+        .find('option')
+        .remove()
+        .end()
+        .append('<option value="' + newvalue + '">' + newtitle + '</option>')
+        .val(newvalue)
+        .attr('selected', true)
+        .change();
+}
+
 /**
  * selectFirstIfRequired:
  *
