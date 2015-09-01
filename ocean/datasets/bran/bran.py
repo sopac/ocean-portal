@@ -241,7 +241,7 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
         unitStr = ur'\u00b0' + 'C'
 
         if regionStr in regionConfig.regions:
-            if regionConfig.regions[regionStr][0] == 'pi':
+            if regionConfig.regions[regionStr][0] == 'pac':
                 cb_ticks = np.arange(20.0, 32.1, 1.0)
             else:
                 cb_ticks = np.arange(0.0, 32.1, 2.0)
@@ -256,7 +256,7 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
         unitStr = ur'\u00b0' + 'C'
 
         if regionStr in regionConfig.regions:
-            if regionConfig.regions[regionStr][0] == 'pi':
+            if regionConfig.regions[regionStr][0] == 'pac':
                 cb_ticks = np.arange(20.0, 32.1, 1.0)
             else:
                 cb_ticks = np.arange(0.0, 32.1, 2.0)
