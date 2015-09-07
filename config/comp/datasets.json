@@ -89,7 +89,7 @@
 },{
     "id":"bran",
     "name":"BRAN",
-    "title": "BRAN 2.1",
+    "title": "BRAN 3.5",
     "rank": 50,
     "help": "help/about_bran.pdf",
     "variables": [{
@@ -106,11 +106,6 @@
     }, {
         "id":"uvtemp",
         "name":"Temp & Currents",
-        "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
-        "plottypes": ["map"]
-    }, {
-        "id":"uveta",
-        "name":"Sea Level & Currents",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map"]
     }],
