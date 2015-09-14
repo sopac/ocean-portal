@@ -3,9 +3,10 @@
 DATASET=$1
 PERIOD=$2
 
-export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/:/srv/map-portal/usr/lib64/python2.6/site-packages
-export PATH=${PATH}:/srv/map-portal/usr/bin/
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/srv/map-portal/usr/lib/
+#export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/:/srv/map-portal/usr/lib64/python2.6/site-packages
+export PYTHONPATH=${PYTHONPATH}:/srv/gsmith/usr/lib/python2.6/site-packages/:/srv/gsmith/usr/lib64/python2.6/site-packages
+export PATH=${PATH}:/srv/gsmith/usr/bin/
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/srv/gsmith/usr/lib/
 
 # configuration
 
@@ -46,7 +47,7 @@ case $DATASET in
     msla)
         SERVER=ftp://ftp.aviso.altimetry.fr
         SERVER_PATH=/global/near-real-time/grids/msla/all-sat-merged/
-        DATA_SUBDIR=h
+        DATA_SUBDIR=grids/daily
         ;;
     poamasla)
         SERVER=http://opendap.bom.gov.au:8080
@@ -434,7 +435,16 @@ Calculate_MultiMonth_Averages().process("$DATASET")
 # FIXME: calculate deciles
 EOF
     ;;
+    msla)
+        python << EOF
+print "Calculate Monthly Averages..."
 
+# calculate monthly averages
+from ocean.processing.Calculate_Monthly_Averages import Calculate_Monthly_Averages
+
+Calculate_Monthly_Averages().process("$DATASET")
+EOF
+    ;;
     coral_ol)
         python << EOF
 print "Convert CRW Outlook V3 to NETCDF..."

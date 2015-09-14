@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 Title: Calculate_Monthly_Averages.py
-Author: Nicholas Summons, n.summons@bom.gov.au
+Author: Nicholas Summons, Grant Smith
 CreationDate: 2012-11-05
 
 Description:
@@ -25,6 +25,7 @@ class Calculate_Monthly_Averages():
         sys_config = get_server_config()
 
         reynolds_end_date = self.get_date_for_last_complete_month()
+        nrt_sea_level_end_date = self.get_date_for_last_complete_month()
 
         # Settings for each dataset
         self.config = \
@@ -41,6 +42,19 @@ class Calculate_Monthly_Averages():
                 'input_filename_preliminary': 'avhrr-only-v2.%(year)04d%(month)02d%(day)02d_preliminary.nc',
                 'output_filename_preliminary': '%(product_str)s_avhrr-only-v2_%(year)04d%(month)02d_preliminary.nc',
                 'use_old_version_of_ncea': True},
+             'msla':{
+                'product_str': 'nrt_sea_level',
+                'start_year': 2015,
+                'start_month': 8,
+                'end_year': nrt_sea_level_end_date.year,
+                'end_month': nrt_sea_level_end_date.month,
+                'input_dir': os.path.join(sys_config.dataDir['msla'],'grids/daily'),
+                'input_filename': 'nrt_global_allsat_msla_h_%(year)04d%(month)02d%(day)02d_%(year)04d%(month)02d%(day)02d.nc',
+                'output_dir': os.path.join(sys_config.dataDir['msla'], 'grids/monthly/'),
+                'output_filename': '%(product_str)s_%(year)04d%(month)02d.nc',
+                'input_filename_preliminary': '',
+                'output_filename_preliminary': '',
+                'processing_settings':'-v sla'},
              'BRAN_eta':{
                 'product_str': 'bran3.5_',
                 'start_year': 1993,
