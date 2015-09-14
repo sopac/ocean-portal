@@ -3,10 +3,9 @@
 DATASET=$1
 PERIOD=$2
 
-#export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/:/srv/map-portal/usr/lib64/python2.6/site-packages
-export PYTHONPATH=${PYTHONPATH}:/srv/gsmith/usr/lib/python2.6/site-packages/:/srv/gsmith/usr/lib64/python2.6/site-packages
-export PATH=${PATH}:/srv/gsmith/usr/bin/
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/srv/gsmith/usr/lib/
+export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/:/srv/map-portal/usr/lib64/python2.6/site-packages
+export PATH=${PATH}:/srv/map-portal/usr/bin/
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/srv/map-portal/usr/lib/
 
 # configuration
 
@@ -46,7 +45,7 @@ case $DATASET in
         ;;
     msla)
         SERVER=ftp://ftp.aviso.altimetry.fr
-        SERVER_PATH=/global/near-real-time/grids/msla/all-sat-merged/
+        SERVER_PATH=/global/near-real-time/grids/msla/all-sat-merged/h
         DATA_SUBDIR=grids/daily
         ;;
     poamasla)
