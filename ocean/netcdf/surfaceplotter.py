@@ -211,7 +211,7 @@ class SurfacePlotter(object):
             'trend': "Trend",
             'alt': "Sea Level Altimetry",
             'rec': "Sea Level Reconstruction",
-            'sla': "Near Real Time Sea Level Anomay",
+            'sla': "Near Real Time Sea Level Anomaly",
             'height': "Sea Level Forecast",
             'ssta': "Sea Surface Temperature Forecast",
             'mursst': "MUR Sea Surface Temperature",
