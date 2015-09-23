@@ -106,7 +106,6 @@ if [ "x$DATA_DIR" = "x" ]; then
 fi
 
 # download data
-
 cd $DATA_DIR$DATA_SUBDIR || exit 1
 fi
 
@@ -435,6 +434,27 @@ Calculate_MultiMonth_Averages().process("$DATASET")
 EOF
     ;;
     msla)
+        # Read login detail for msla dataset.
+        source_path=${0%/*}
+        IFS=' ' read -a credentials <<< `cat $source_path/userpass`
+        USER_NAME=${credentials[0]}
+        PASSWORD=${credentials[1]}
+
+        #Gets the data
+        cd $DATA_DIR$DATA_SUBDIR || exit 1
+
+        FILE_DATE=`date +%Y%m%d -d 'yesterday'`
+        FILE_PREFIX='nrt_global_allsat_msla_h_'
+
+        ORIGINAL_FILE_NAME=$FILE_PREFIX'latest.nc.gz'
+        NEW_FILE_NAME=$FILE_PREFIX$FILE_DATE'_'$FILE_DATE'.nc.gz'
+
+        lftp -u $USER_NAME:$PASSWORD $SERVER$SERVER_PATH -e "get $ORIGINAL_FILE_NAME -o $DATA_DIR$DATA_SUBDIR/$NEW_FILE_NAME; exit;"
+        #mirror --only-missing -n $MIRROR_FLAGS
+        #chmod -R 666
+        cd $DATA_DIR$DATA_SUBDIR
+        gunzip -f $NEW_FILE_NAME
+
         python << EOF
 print "Calculate Monthly Averages..."
 
@@ -499,7 +519,6 @@ EOF
     mur)
 	python << EOF
 print "Download MUR and process fronts..."
-
 from ocean.processing.Download_MUR import Download_MUR
 Download_MUR("$DATA_DIR","$DATA_SUBDIR","$SERVER","$SERVER_PATH")
 EOF
