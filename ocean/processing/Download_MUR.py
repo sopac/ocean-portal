@@ -19,13 +19,8 @@ import os
 #sys.path.insert(0,'/home/gsmith/map-portal5/map-portal')
 from ocean.config.regionConfig import regions
 
-def Download_MUR(data_dir,data_subdir,server,server_path):
+def Download_MUR(data_dir,data_subdir,server,server_path, day, month, year):
 	mur_path=data_dir+'/'+data_subdir
-
-	#Start date, needs to be fed into subroutine from update-data
-        year=2015
-	month=7
-	day=15
 
         gridcell = 360/float(32768)
         variable_name='analysed_sst'
