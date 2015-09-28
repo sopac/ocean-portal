@@ -217,7 +217,7 @@
     "id":"msla",
     "name": "Near Real Time Sea Level",
     "title": "Near Real Time Sea Level",
-    "help": "help/about_POAMA_Sea_Level.pdf",
+    "help": "help/about_AVISO_Sea_Level.pdf",
     "variables": [{
         "id": "sla",
         "name": "Sea Level Anomaly",
@@ -309,7 +309,7 @@
     "id":"mur",
     "name":"MUR",
     "title": "MUR High Resolution SST",
-    "help": "help/about_OceanTemperature.pdf",
+    "help": "help/about_MUR_Fronts.pdf",
     "variables": [{
         "id":"mursst",
         "name":"Sea Surface Temperature",
