@@ -317,8 +317,8 @@
         "plottypes": ["map"]
     }],
     "dateRange" : {
-        "minDate": "20150715",
-        "maxDate": "20150715"
+        "minDate": "-8",
+        "maxDate": "-2"
     }
 }
 ]

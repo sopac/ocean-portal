@@ -898,4 +898,7 @@ function updateDatasetForSST(){
         addOption('dataset', 'mur', 'MUR');
         ocean.variable = 'mursst';
     }
+
+    //Updates the available date.
+    updateDatepicker();
 }

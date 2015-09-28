@@ -209,12 +209,7 @@ $(function() {
         } else if ($('#date').is(':visible')) {
             var date_ = $('#date');
             /* set range on datepicker */
-            date_.datepick('option', {
-                minDate: range.min,
-                maxDate: range.max,
-                yearRange: range.min.getFullYear() + ':' + range.max.getFullYear()
-            });
-
+            updateDatepicker();
 
             /*Bug#790, initialise date*/
             if (range.max.getTime() < ocean.date.getTime()) {
@@ -982,3 +977,14 @@ function show_feedback(text, title){
 $('.fotorama').on('fotorama:error', function (e, fotorama, extra) {
   show_feedback("The image " + extra.src + " has not been generated.", "");
 });
+
+function updateDatepicker(){
+    var date_ = $('#date');
+    var range = getCombinedDateRange();
+    /* set range on datepicker */
+    date_.datepick('option', {
+        minDate: range.min,
+        maxDate: range.max,
+        yearRange: range.min.getFullYear() + ':' + range.max.getFullYear()
+    });
+}
