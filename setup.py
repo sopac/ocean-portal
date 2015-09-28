@@ -168,7 +168,8 @@ data = [
     'help/about_POAMA_Sea_Level.pdf',
     'help/about_POAMA_SST.pdf',
     'help/Beverly_11_Remote_sensing_guide.pdf',
-    'help/about_AVISO_Sea_Level.pdf'
+    'help/about_AVISO_Sea_Level.pdf',
+    'help/about_MUR_Fronts.pdf'
 ]
 
 # CODE BEGINS
