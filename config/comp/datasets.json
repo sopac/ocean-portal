@@ -59,7 +59,7 @@
     }],
     "dateRange" : {
         "minDate": "19500101",
-        "maxDate": "20130331"
+        "maxDate": "-1"
     }
 },{
     "id":"ww3",
