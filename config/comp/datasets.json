@@ -307,7 +307,7 @@
     }
 }, {
     "id":"mur",
-    "name":"MUR",
+    "name":"High Resolution SST & Fronts",
     "title": "MUR High Resolution SST",
     "help": "help/about_MUR_Fronts.pdf",
     "variables": [{
