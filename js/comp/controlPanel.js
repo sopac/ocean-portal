@@ -175,48 +175,12 @@ $(function() {
         /* FIXME: is this strictly correct? it would collapse for datasets
          * with holes in them. That's fine for the year combo, but not the
          * datepicker */
-        var range = getCombinedDateRange();
-
         if ($('#year').is(':visible')) {
-            /* populate year */
-            var year = $('#year');
-
-            year.find('option').remove();
-
-            for (y = range.min.getFullYear();
-                 y <= range.max.getFullYear();
-                 y++) {
-                $('<option>', {
-                    value: y,
-                    text: y
-                }).appendTo(year);
-            }
-
-            var y = ocean.date.getFullYear();
-
-            if (y < range.min.getFullYear()) {
-                selectFirstIfRequired('year');
-            } else if (y > range.max.getFullYear()) {
-                year.find('option:last').attr('selected', true);
-                year.change();
-            } else {
-                setValue('year', y);
-            }
+            updateNonDailyDateBasedOnDataset();
         } else if ($('#month').is(':visible')) {
-            /* if year is shown, we populate month based on the selected year
-             * (see below) */
-            updateMonths();
+            updateMonthBasedOnDataset();
         } else if ($('#date').is(':visible')) {
-            var date_ = $('#date');
-            /* set range on datepicker */
-            updateDatepicker();
-
-            /*Bug#790, initialise date*/
-            if (range.max.getTime() < ocean.date.getTime()) {
-                ocean.date = range.max;
-            }
-            /* automatically clamps the date to the available range */
-            date_.datepick('setDate', ocean.date).change();
+            updateDailyDateBasedOnDataset();
         } else {
             /* datasets are not date dependent */
             updateDatasets();
@@ -225,22 +189,7 @@ $(function() {
 
     /* Year */
     $('#year').change(function () {
-        /* populate month */
-        var range = getCombinedDateRange();
-
-        /* calculate the possible month range */
-        var selectedyear = getValue('year');
-        var minMonth = null;
-        var maxMonth = null;
-
-        if (selectedyear == range.min.getFullYear()) {
-            minMonth = range.min.getMonth();
-        } 
-        if (selectedyear == range.max.getFullYear()) {
-            maxMonth = range.max.getMonth();
-        }
-
-        updateMonths(minMonth, maxMonth);
+        updateMonthBasedOnDataset();
     });
 
     /* Date range is changed */
@@ -333,6 +282,9 @@ $(function() {
         if (["Reynolds", "ERSST"].indexOf(ocean.datasets[ocean.datasetid].name) != -1){
             $('#dshelp span').html("Ocean Temperature");
         }
+
+        /* update the year and month based on dataset*/
+        updateNonDailyDateBasedOnDataset();
 
         if (ocean.dataset.onSelect) {
             ocean.dataset.onSelect();
@@ -443,30 +395,35 @@ function getBackendId(datasetid, varid) {
 function getDateRange(datasetid, varid, period)
 {
     var dataset = ocean.datasets[datasetid];
-    var variable = $.grep(dataset.variables, function (var_) {
-        return (var_.id == varid);
-    });
-    var range;
-    var month_delta = 0;
 
-    /* multi-month periods decrease the available start date range */
-    switch (period) {
-        case '3monthly':
-            month_delta = 2;
-            break;
-        case '6monthly':
-            month_delta = 5;
-            break;
-        case '12monthly':
-            month_delta = 11;
-            break;
-    }
+    if (typeof(dataset) != 'undefined'){
+        var variable = $.grep(dataset.variables, function (var_) {
+            return (var_.id == varid);
+        });
+        var range;
+        var month_delta = 0;
 
-    if (variable.length == 1 && 'dateRange' in variable[0]) {
-        range = variable[0].dateRange;
-    /* else use the dataset dateRange */
-    } else if ('dateRange' in dataset) {
-        range = dataset.dateRange;
+        /* multi-month periods decrease the available start date range */
+        switch (period) {
+            case '3monthly':
+                month_delta = 2;
+                break;
+            case '6monthly':
+                month_delta = 5;
+                break;
+            case '12monthly':
+                month_delta = 11;
+                break;
+        }
+
+        if (variable.length == 1 && 'dateRange' in variable[0]) {
+            range = variable[0].dateRange;
+        /* else use the dataset dateRange */
+        } else if ('dateRange' in dataset) {
+            range = dataset.dateRange;
+        } else {
+            return null;
+        }
     } else {
         return null;
     }
@@ -977,6 +934,77 @@ function show_feedback(text, title){
 $('.fotorama').on('fotorama:error', function (e, fotorama, extra) {
   show_feedback("The image " + extra.src + " has not been generated.", "");
 });
+
+/* update the year and month based on dataset
+ * Incorrect maximum date are available in the datepicker
+ * http://tuscany/redmine/issues/885
+ */
+function updateNonDailyDateBasedOnDataset(){
+    updateYearBasedOnDataset();
+    updateMonthBasedOnDataset();
+}
+
+/* populates year */
+function updateYearBasedOnDataset(){
+    if ($('#year').is(':visible')) {
+        var range = getDateRange(ocean.datasetid, ocean.variable, ocean.period);
+        if (range != null){
+            var year = $('#year');
+            year.find('option').remove();
+
+            for (y = range.min.getFullYear(); y <= range.max.getFullYear(); y++) {
+                $('<option>', {
+                    value: y,
+                    text: y
+                }).appendTo(year);
+            }
+
+            year.find('option:last').attr('selected', true);
+       }
+    }
+}
+
+/* populates month */
+function updateMonthBasedOnDataset(){
+    if ($('#month').is(':visible')) {
+        var range = getDateRange(ocean.datasetid, ocean.variable, ocean.period);
+        if (range != null){
+            var selectedYear =  parseInt(getValue('year'));
+            var minYear = range.min.getFullYear();
+            var maxYear = range.max.getFullYear();
+            var minMonth = range.min.getMonth();
+            var maxMonth = range.max.getMonth();
+
+            if (selectedYear != minYear){
+                minMonth = 0;
+            }
+
+            if (selectedYear != maxYear){
+                maxMonth = 11;
+            }
+
+            updateMonths(minMonth, maxMonth);
+        }
+    }
+}
+
+/* populates date */
+function updateDailyDateBasedOnDataset(){
+    if ($('#date').is(':visible')) {
+        var range = getCombinedDateRange();
+        var date_ = $('#date');
+
+        /* set range on datepicker */
+        updateDatepicker();
+
+        /*Bug#790, initialise date*/
+        if (range.max.getTime() < ocean.date.getTime()) {
+            ocean.date = range.max;
+        }
+        /* automatically clamps the date to the available range */
+        date_.datepick('setDate', ocean.date).change();
+    }
+}
 
 function updateDatepicker(){
     var date_ = $('#date');
