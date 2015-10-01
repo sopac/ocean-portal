@@ -71,11 +71,11 @@ class ChlorophyllPlotterWrapper(SurfacePlotter):
 
     @apply_to(variable='chldaily')
     def get_ticks(self, params={}):
-        return np.array([0.01, 0.03, 0.1, 0.3, 1.0, 3.0, 10.0, 30.0]) 
+        return np.array([0.01,0.03,0.05,0.07,0.1,0.15,0.2,0.3,0.5,1.0,2.0,3.0,5.0,10.0]) 
 
     @apply_to(variable='chlmonthly')
     def get_ticks(self, params={}):
-        return np.array([0.01, 0.03, 0.1, 0.3, 1.0, 3.0, 10.0, 30.0]) 
+        return np.array([0.01,0.03,0.05,0.07,0.1,0.15,0.2,0.3,0.5,1.0,2.0,3.0,5.0,10.0]) 
 
     def get_ticks_format(self, params={}):
         return '%.2f'
