@@ -71,7 +71,9 @@ ocean.dsConf = {
             resetMap();
             resetLegend();
         }, 
-        onVariableChange: function(){},
+        onVariableChange: function(){
+            selectMonthsForNearRealTimeDatasets();
+        },
         onRegionChange: function() {}
     },
     ersst: {
@@ -113,7 +115,9 @@ ocean.dsConf = {
             resetMap();
             resetLegend();
         }, 
-        onVariableChange: function(){},
+        onVariableChange: function(){
+            selectMonthsForNearRealTimeDatasets();
+        },
         onRegionChange: function() {}
 
 
@@ -150,7 +154,9 @@ ocean.dsConf = {
             resetMap();
             resetLegend();
         }, 
-        onVariableChange: function(){},
+        onVariableChange: function(){
+            selectMonthsForNearRealTimeDatasets();
+        },
         onRegionChange: function() {}
     },
     ww3: {

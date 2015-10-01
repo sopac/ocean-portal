@@ -284,7 +284,11 @@ $(function() {
         }
 
         /* update the year and month based on dataset*/
-        updateNonDailyDateBasedOnDataset();
+        if ($('#year').is(':visible')) {
+            updateNonDailyDateBasedOnDataset();
+        }
+
+        selectMonthsForNearRealTimeDatasets();
 
         if (ocean.dataset.onSelect) {
             ocean.dataset.onSelect();
@@ -984,6 +988,9 @@ function updateMonthBasedOnDataset(){
             }
 
             updateMonths(minMonth, maxMonth);
+
+            //Automatically select previous month for particular near real time data sets from 3rd day of each month
+           selectMonthsForNearRealTimeDatasets();
         }
     }
 }
@@ -998,9 +1005,8 @@ function updateDailyDateBasedOnDataset(){
         updateDatepicker();
 
         /*Bug#790, initialise date*/
-        if (range.max.getTime() < ocean.date.getTime()) {
-            ocean.date = range.max;
-        }
+        ocean.date = range.max;
+
         /* automatically clamps the date to the available range */
         date_.datepick('setDate', ocean.date).change();
     }
@@ -1015,4 +1021,79 @@ function updateDatepicker(){
         maxDate: range.max,
         yearRange: range.min.getFullYear() + ':' + range.max.getFullYear()
     });
+}
+
+/**
+ * Automatically select previous month for particular near real time data sets from 3rd day of each month
+ * http://tuscany/redmine/issues/923
+ */
+function selectMonthsForNearRealTimeDatasets(){
+    var range = getDateRange(ocean.datasetid, ocean.variable, ocean.period);
+    if (range != null && $('#month').is(':visible')){
+        var var_list = new Array("meansst", "sstanom", "sstdec");
+        var dataset_list = new Array("reynolds", "ersst");
+
+        if (var_list.indexOf(ocean.variable) != -1  && dataset_list.indexOf(ocean.datasetid) != -1 ){
+
+            if (ocean.period != "daily"){//Shows previous month for the dataset if current day is before the 3rd day.
+                //Constants
+                var minMonthInAYear = 0;
+                var maxMonthInAYear = 11;
+
+                //Current Date info
+                var current_year = new Date().getFullYear();
+
+                //Date range for the dataset
+                var maxMonth =  range.max.getMonth();
+
+                //User selection
+                var selected_year = parseInt(getValue("year"));
+
+                if (current_year == selected_year){//for current year shows the last month if today is greater than startDayOfSelection.
+                     maxMonth = _getUpdatedMonth();
+                } else {//for all other years
+                    lastValueOfCombo = parseInt($('#year').find('option:last').val());
+                    if (lastValueOfCombo == selected_year){ //if it is the last year
+                       maxMonth = _getUpdatedMonth();
+                    } else { //otherwise
+                       maxMonth = maxMonthInAYear;
+                    }
+                }
+
+                //Updates month range
+                updateMonths(minMonthInAYear, maxMonth);
+                $('#month').find('option:eq(  ' + maxMonth + ' )').attr('selected', true);
+            }
+        } else {
+            //Select the month
+            $('#month').find('option:last').attr('selected', true);
+        }
+    }
+}
+
+function _getUpdatedMonth(){
+    var startDayOfSelection = 3; //3rd day of each month
+    var minMonthInAYear = 0;
+    var maxMonthInAYear = 12;
+
+    var current_date = new Date();
+    var current_day = current_date.getDate();
+    var current_month = current_date.getMonth();
+    var current_year = current_date.getFullYear();
+
+    var maxMonth = current_day >= startDayOfSelection ? current_month - 1 : current_month -2;
+
+    //Check for negative month
+    if (maxMonth < minMonthInAYear){
+        maxMonth = maxMonthInAYear + maxMonth;
+
+        //updates year
+        lastValueOfCombo = parseInt($('#year').find('option:last').val());
+        if (lastValueOfCombo == current_year){//Deletes the current year from the year combo
+            $('#year').find('option:last').remove();
+            setValue('year', current_year-1);
+        }
+    }
+
+    return maxMonth;
 }
