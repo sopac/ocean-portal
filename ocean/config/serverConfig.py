@@ -80,7 +80,7 @@ class tunceli(default):
         'chloro':'/www4/data/cosppac/chloro/',
         'currents':'/www4/data/cosppac/currents/',
         'ww3forecast':'/www4/data/cosppac/wavewatch3/forecast/',
-	'mur':'www4/data/cosppac/mur/'
+	'mur':'/www4/data/cosppac/mur/'
     }
 
 class www4(default):
