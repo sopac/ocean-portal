@@ -1065,8 +1065,13 @@ function selectMonthsForNearRealTimeDatasets(){
                 $('#month').find('option:eq(  ' + maxMonth + ' )').attr('selected', true);
             }
         } else {
-            //Select the month
-            $('#month').find('option:last').attr('selected', true);
+            length = $('#month').find('option:last').length;
+            if (length == 0){
+                //populate the months
+                updateMonths();
+            } else {
+                $('#month').find('option:last').attr('selected', true);
+            }
         }
     }
 }
