@@ -168,7 +168,21 @@ ocean.dsConf = {
         };}),
         beforeSend: function() {
             valid = true;
-            return valid; 
+            var text = "";
+            var variable = getBackendId(ocean.datasetid, ocean.variable);
+            if (["atlas"].indexOf(variable) == -1) { //All variables under ww3 except wave atlas
+                if (($('#latitude').val().trim() === "") || ($('#longitude').val().trim() === "")){
+                    text = "Please click on the map to select a location.";
+                    valid = false;
+                }
+            }
+
+            if (text != ""){
+                show_feedback(text, "Missing Input:");
+                return valid;
+            }
+
+            return valid;
         },
         callback: function(data) {
             prependOutputSet();
