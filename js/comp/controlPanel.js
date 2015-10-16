@@ -49,6 +49,7 @@ var intersecIcon = L.icon({
 var slider;
 /* set up JQuery UI elements */
 $(function() {
+
     /* work out which region file to load */
     if (location.search == '')
         ocean.config = 'pac';
@@ -57,6 +58,7 @@ $(function() {
 
     hideControls();
     assignAppClass();
+    updateApplicationTitle();
 
     /* set up the date picker */
     $("#date").datepick({
@@ -87,6 +89,7 @@ $(function() {
     /* Variable */
     $('#variable').change(function () {
         var currentApp = ocean.app.new;
+
         var varid = getValue('variable');
 
         if (varid == '--') {
@@ -1101,4 +1104,31 @@ function _getUpdatedMonth(){
     }
 
     return maxMonth;
+}
+
+/**
+ * Titles to inform user of which Application they are in
+ * http://tuscany/redmine/issues/964
+ */
+function updateApplicationTitle(){
+    base_name = 'Ocean Portal';
+
+    $.getJSON("config/comp/app.json", function( data ) {
+        app_name = window.location.hash.split('#')[1];
+
+        if (typeof(app_name) !== 'undefined'){
+            app_title = data[app_name].title;
+
+            if (typeof(app_title) !== 'undefined') {
+                $('#portal_title').text(function(i, oldText) {
+                    return oldText === base_name ? base_name +  ": " + app_title : base_name;
+                });
+            }
+        }
+    })
+    .error(function() {
+        $('#portal_title').text(function(i, oldText){
+            return base_name;
+        });
+    });
 }
