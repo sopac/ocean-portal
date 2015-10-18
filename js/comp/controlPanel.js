@@ -949,6 +949,9 @@ $('.fotorama').on('fotorama:error', function (e, fotorama, extra) {
 function updateNonDailyDateBasedOnDataset(){
     updateYearBasedOnDataset();
     updateMonthBasedOnDataset();
+
+    //set the date
+    ocean.date = new Date(getValue('year'), getValue('month'), 1);
 }
 
 /* populates year */
