@@ -215,12 +215,8 @@ ocean.dsConf = {
                 slider.options.animationCallback = function(x, y) {
                     $('.handle-text').text(forecast[this.getStep()[0] - 1].datetime + 'UTC');
                     //display local time
-                    //Example datetime string
-                    //"26-01-2015 12:00"
-                    dt = forecast[this.getStep()[0] - 1].datetime
-                    local = new Date(dt.slice(6,10),dt.slice(3,5)-1,dt.slice(0,2),dt.slice(11,13),dt.slice(14));
-                    var hourOffset = local.getTimezoneOffset() / 60;
-                    local.setHours(local.getHours() - hourOffset);
+                    var dt = forecast[this.getStep()[0] - 1].datetime
+                    var local = getLocalTime(dt);
                     $('.slider-hint').text(local.toString());
                     if (data.mapimg) {
                         data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
@@ -510,8 +506,11 @@ ocean.dsConf = {
                 slider.options.snap = true;
                 slider.stepRatios = slider.calculateStepRatios();
                 slider.options.animationCallback = function(x, y) {
-                    $('.handle-text').text(forecast[Math.round(this.getStep()[0]) - 1].datetime);//Math.round is to fix a problem found when getStep returns somthing like 30.000000000000004.
-                    $('.slider-hint').text('');
+                    $('.handle-text').text(forecast[Math.round(this.getStep()[0]) - 1].datetime  + 'UTC');//Math.round is to fix a problem found when getStep returns somthing like 30.000000000000004.
+                    //display local time
+                    var dt = forecast[this.getStep()[0] - 1].datetime
+                    var local = getLocalTime(dt);
+                    $('.slider-hint').text(local.toString());
 //                    if (data.mapimg) {
 //                        ocean.dataset.mapimg = data.mapimg;
                         ocean.dataset.updateMapImg();
@@ -921,4 +920,14 @@ function updateDatasetForSST(){
 
     //Updates the available date.
     updateDatepicker();
+}
+
+//gets local time
+function getLocalTime(dt){
+    //Example datetime string
+    //"26-01-2015 12:00"
+    local = new Date(dt.slice(6,10),dt.slice(3,5)-1,dt.slice(0,2),dt.slice(11,13),dt.slice(14));
+    var hourOffset = local.getTimezoneOffset() / 60;
+    local.setHours(local.getHours() - hourOffset);
+    return local;
 }

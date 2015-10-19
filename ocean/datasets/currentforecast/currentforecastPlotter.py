@@ -29,7 +29,7 @@ class CurrentForecastPlotter(Plotter):
 
     def get_formatted_date(self, params={}):
         if 'step' in params:
-            return datetime.strptime(params['forecast'][params['step']]['datetime'], '%d-%m-%Y %H:%M').strftime('%d %B %Y %H:%M')
+            return datetime.strptime(params['forecast'][params['step']]['datetime'], '%d-%m-%Y %H:%M').strftime('%d %B %Y %H:%M') + " UTC"
         else:
             return ''
 
