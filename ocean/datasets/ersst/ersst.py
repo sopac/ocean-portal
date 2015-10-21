@@ -50,6 +50,9 @@ class ERSSTPlotter(SurfacePlotter):
     def get_path(self, params={}):
         return self.get_path(params=params, _ignore=['period'])
 
+    def get_colormap_strategy(self, params={}):
+        return 'nonlinear'
+
 class ersst(SST):
     DATASET = 'ersst'
     PLOTTER = ERSSTPlotter
