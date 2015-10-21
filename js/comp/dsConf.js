@@ -259,11 +259,13 @@ ocean.dsConf = {
             this.updateDownloadImg();
         },
         updateDownloadImg:  function() {
-             img = this.downloadimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
-             img = img.replace('_' + this.selectedRegion, '_' + ocean.area);
-             this.downloadimg = img;
-             ocean.sliderdownloadlink = img;
-             this.selectedRegion = ocean.area;
+             if (typeof(this.downloadimg) != 'undefined') {
+                 img = this.downloadimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
+                 img = img.replace('_' + this.selectedRegion, '_' + ocean.area);
+                 this.downloadimg = img;
+                 ocean.sliderdownloadlink = img;
+                 this.selectedRegion = ocean.area;
+             }
         },
         selectedRegion: ocean.area,
         downloadimg:''
@@ -403,11 +405,13 @@ ocean.dsConf = {
             this.updateDownloadImg();
         },
         updateDownloadImg:  function() {
-             img = this.downloadimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
-             img = img.replace('_' + this.selectedRegion, '_' + ocean.area);
-             this.downloadimg = img;
-             ocean.sliderdownloadlink = img;
-             this.selectedRegion = ocean.area;
+             if (typeof(this.downloadimg) != 'undefined') {
+                 img = this.downloadimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
+                 img = img.replace('_' + this.selectedRegion, '_' + ocean.area);
+                 this.downloadimg = img;
+                 ocean.sliderdownloadlink = img;
+                 this.selectedRegion = ocean.area;
+             }
         },
         selectedRegion: ocean.area,
         downloadimg:''
@@ -479,11 +483,13 @@ ocean.dsConf = {
             this.updateDownloadImg();
         },
         updateDownloadImg:  function() {
-             img = this.downloadimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
-             img = img.replace('_' + this.selectedRegion, '_' + ocean.area);
-             this.downloadimg = img;
-             ocean.sliderdownloadlink = img;
-             this.selectedRegion = ocean.area;
+             if (typeof(this.downloadimg) != 'undefined') {
+                 img = this.downloadimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
+                 img = img.replace('_' + this.selectedRegion, '_' + ocean.area);
+                 this.downloadimg = img;
+                 ocean.sliderdownloadlink = img;
+                 this.selectedRegion = ocean.area;
+             }
         },
         selectedRegion: ocean.area,
         downloadimg:''
@@ -574,10 +580,12 @@ ocean.dsConf = {
             this.updateMapImg(this.mapimg);
         },
         updateDownloadImg:  function() {
-             img = this.downloadimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
-             img = img.replace('_' + this.selectedRegion, '_' + ocean.area);
-             this.downloadimg = img;
-             ocean.sliderdownloadlink = img;
+             if (typeof(this.downloadimg) != 'undefined') {
+                 img = this.downloadimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
+                 img = img.replace('_' + this.selectedRegion, '_' + ocean.area);
+                 this.downloadimg = img;
+                 ocean.sliderdownloadlink = img;
+             }
         },
         selectedRegion: ocean.area,
         mapimg: '',
