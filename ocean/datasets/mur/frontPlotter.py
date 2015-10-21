@@ -132,13 +132,14 @@ class FrontPlotter(Plotter):
                     draw_vector_plot(m, vlon, vlat, u, v,
                                      draw_every=draw_every,
                                      arrow_scale=arrow_scale)
-
-
+            
             if shapefile is not None:
-                front_info = m.readshapefile(shapefile, 'front')
+                if os.path.exists(shapefile + ".shp"):
+                    front_info = m.readshapefile(shapefile, 'front')
 		marker = '_'
-		for front in m.front:
-		    m.plot(front[0] if front[0] > 0 else front[0] +360, front[1], color='k', marker=marker, markersize=1, markeredgewidth=1)
+		if hasattr(m, 'front'):
+		    for front in m.front:
+		    	m.plot(front[0] if front[0] > 0 else front[0] +360, front[1], color='k', marker=marker, markersize=1, markeredgewidth=1)
 
             # Draw land, coastlines, parallels, meridians and add title
             m.drawmapboundary(linewidth=1.0, fill_color=fill_color)
@@ -295,10 +296,12 @@ class FrontPlotter(Plotter):
 
 
             if shapefile is not None:
-                front_info = m.readshapefile(shapefile, 'front')
+                if os.path.exists(shapefile + ".shp"):
+                    front_info = m.readshapefile(shapefile, 'front')
 		marker = '_'
-		for front in m.front:
-		    m.plot(front[0] if front[0] > 0 else front[0] +360, front[1], color='k', marker=marker, markersize=1, markeredgewidth=1)
+		if hasattr(m, 'front'):
+		    for front in m.front:
+		    	m.plot(front[0] if front[0] > 0 else front[0] +360, front[1], color='k', marker=marker, markersize=1, markeredgewidth=1)
 
             m.drawmapboundary(linewidth=0.0, fill_color=fill_color)
             m.fillcontinents(color='#F1EBB7', zorder=7)
