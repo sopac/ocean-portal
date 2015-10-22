@@ -215,8 +215,8 @@
         <div class="row">
         <div class="col-sm-7 col-sm-offset-2">
             <div class="controlgroup">
-                <span class="glyphicon glyphicon-step-backward" aria-hidden="true" onclick="stepBackward()"></span>
-                <span class="glyphicon glyphicon-step-forward" aria-hidden="true" onclick="stepForward()"></span>
+                <span class="glyphicon glyphicon-step-backward" aria-hidden="true" tabindex="0" onclick="stepBackward()"></span>
+                <span class="glyphicon glyphicon-step-forward" aria-hidden="true" tabindex="0" onclick="stepForward()"></span>
                 <span class="hint slider-hint"></span>
                 <button type="button" class="btn btn-primary field" id="download_slider_png" onclick="openDownloadImageLink()">Generate Picture</button>
                 <div class="input-group input-group-sm controlvar">
@@ -232,7 +232,7 @@
         </form>
         <div class="row reactive">
             <div class="col-sm-10 col-sm-offset-1">
-                <div class="fotorama" data-auto="false" data-nav="thumbs" data-navposition="top">
+                <div class="fotorama" data-auto="false" data-nav="thumbs" data-navposition="top" data-keyboard="true" tabindex="0">
                 </div>
                 <span><p class="fotorama-caption"></p><a class="download-data"></a></span>
             </div>

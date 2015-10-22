@@ -1135,3 +1135,16 @@ function updateApplicationTitle(){
         });
     });
 }
+
+$('.glyphicon-step-forward').on('keypress', function(event){
+    if ( event.charCode || event.keyCode == 13){
+        stepForward();
+    }
+});
+
+$('.glyphicon-step-backward').on('keypress', function(event){
+    if ( event.charCode || event.keyCode == 13){
+        stepBackward();
+    }
+});
+ 
