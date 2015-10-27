@@ -11,6 +11,8 @@ var ocean = ocean || {};
 
 ocean.sliderdownloadlink = '';
 
+var location_missing_msg = "Please click on the map to select a location.";
+
 function override(paramsfunc) {
     return function () {
         /* default parameters */
@@ -138,7 +140,22 @@ ocean.dsConf = {
         }),
         beforeSend: function() {
             valid = true;
-            return valid; 
+            var text = "";
+            var variable = getBackendId(ocean.datasetid, ocean.variable);
+            var plottype = ocean.plottype;
+            if ((["salt", "temp"].indexOf(variable) != -1) && (["xsections"].indexOf(plottype) != -1)){
+                valid = isLocationPointValid();
+                if (!valid){
+                    text = location_missing_msg;
+                }
+            }
+
+            if (text != ""){
+                show_feedback(text, "Missing Input:");
+                return valid;
+            }
+
+            return valid;
         },
         callback: function(data) {
             prependOutputSet();
@@ -171,9 +188,9 @@ ocean.dsConf = {
             var text = "";
             var variable = getBackendId(ocean.datasetid, ocean.variable);
             if (["atlas"].indexOf(variable) == -1) { //All variables under ww3 except wave atlas
-                if (($('#latitude').val().trim() === "") || ($('#longitude').val().trim() === "")){
-                    text = "Please click on the map to select a location.";
-                    valid = false;
+                valid = isLocationPointValid();
+                if (!valid){
+                    text = location_missing_msg;
                 }
             }
 
@@ -602,10 +619,10 @@ ocean.dsConf = {
             var text = "";
             var variable = getBackendId(ocean.datasetid, ocean.variable);
             if (ocean.plottype === "ts") {
-                if (["rec", "alt"].indexOf(variable) >= 0) {
-                    if (($('#latitude').val().trim() === "") || ($('#longitude').val().trim() === "")){
-                        text = "Please click on the map to select a location.";
-                        valid = false;
+                if (["rec", "alt"].indexOf(variable) != -1) {
+                    valid = isLocationPointValid();
+                    if (!valid){
+                        text = location_missing_msg;
                     }
                 }
                 else if (ocean.variable === "gauge" && $('#tgId').val().trim() === "") {
@@ -938,4 +955,13 @@ function getLocalTime(dt){
     var hourOffset = local.getTimezoneOffset() / 60;
     local.setHours(local.getHours() - hourOffset);
     return local;
+}
+
+function isLocationPointValid(){
+    var valid = true;
+    if (($('#latitude').val().trim() === "") || ($('#longitude').val().trim() === "")){
+        valid = false;
+    }
+
+    return valid;
 }
