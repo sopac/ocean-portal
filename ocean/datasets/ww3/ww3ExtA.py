@@ -52,7 +52,13 @@ class WaveWatch3Extraction ():
         inputLon = float(inputLon)
 
         assert -90 < inputLat < 90
-        assert -180 < inputLon < 180
+
+        try:
+            assert -180 < inputLon < 180
+        except AssertionError:
+            if (inputLon > 180):
+                inputLon = -180 + (inputLon - 180)
+            pass
 
         nc = Dataset(filez[0], 'r')
         lats, latl, latr = slice(nc.variables['y'], inputLat)
