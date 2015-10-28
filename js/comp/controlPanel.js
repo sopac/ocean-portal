@@ -152,6 +152,7 @@ $(function() {
                 }
 
                 enableIntersecMarker();
+                $('#latitude').change();
                 break;
 
             default:
@@ -345,6 +346,10 @@ $(function() {
         else {
             ocean.mapObj.removeLayer(ocean.marineLayer);
         }
+    });
+
+    $('#latitude, #longitude').change(function () {
+            moveIntersectionToNewLocation();
     });
 
     var groupings = {};
@@ -693,7 +698,7 @@ function selectFirstIfRequired(comboid) {
  * Adds a point selection layer to the map.
  */
 function enableIntersecMarker () {
-    map.on('click', setIntersection); 
+    map.on('click', setIntersection);
     if (map.intersecMarker) {
         map.intersecMarker.setOpacity(1.0); 
     }
@@ -728,14 +733,52 @@ function disableIntersecMarker () {
     }
 }
 
-function setIntersection(e) {
-    if (!map.intersecMarker) {
-        map.intersecMarker = L.marker([90.0, 0], {icon: intersecIcon}).addTo(map);
+function createMarkerIfUndefined(){
+    if (typeof(map.intersecMarker) == 'undefined' || !map.intersecMarker){
+            map.intersecMarker = L.marker([90.0, 0], {icon: intersecIcon}).addTo(map);
     }
+}
+
+function setIntersection(e){
+    createMarkerIfUndefined();
     map.intersecMarker.setLatLng(e.latlng);
     $('#latitude').val(e.latlng.lat);
     $('#longitude').val(e.latlng.lng);
-    
+
+    if (map.intersecMarker) {
+        if (map.hasEventListeners('click')){//If click event is enabled
+            lat = $('#latitude').val();
+            lon = $('#longitude').val();
+            if (lat != '' && lon != ''){//If the location point is valid
+                map.intersecMarker.setOpacity(1.0);
+            } else {//Hide the marker if the location point is invalid
+                map.intersecMarker.setOpacity(0);
+            }
+        } else { //Hide the marker as click event is disabled
+            map.intersecMarker.setOpacity(0);
+        }
+    }
+}
+
+/**
+* The marker is moved to the new loction based on the input textfields.
+* http://tuscany/redmine/issues/979
+*/
+function moveIntersectionToNewLocation(){
+    var lat = $('#latitude').val();
+    var lon = $('#longitude').val();
+
+    if (lat != '' && lon != ''){
+        createMarkerIfUndefined();
+        if (map.intersecMarker) {
+            map.intersecMarker.setOpacity(1.0);
+        }
+        map.intersecMarker.setLatLng(L.latLng(lat, lon));
+    } else {//Hide the emarker for invalid location point
+        if (map.intersecMarker) {
+            map.intersecMarker.setOpacity(0);
+        }
+    }
 }
 
 function _controlVarParent(control) {
