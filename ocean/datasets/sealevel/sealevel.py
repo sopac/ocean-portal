@@ -200,8 +200,7 @@ class sealevel(Dataset):
 
         FILES = ['.png', '.csv']
 
-        if not util.check_files_exist(outputFileName, FILES):
-            plotTidalGauge(outputFileName, **params)
+        plotTidalGauge(outputFileName, **params)
 
         if not util.check_files_exist(outputFileName, FILES):
             responseObj['error'] = \
