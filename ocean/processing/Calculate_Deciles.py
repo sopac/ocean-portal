@@ -174,10 +174,14 @@ class Calculate_Deciles(object):
                 input_files_preliminary = glob.glob(file_path_preliminary)
                 input_files = input_files + input_files_preliminary
                 output_dir = os.path.join(self.sys_config.dataDir[dataset], 'decile', '1950', 'monthly') 
-            elif dataset == 'ersst': #TODO
-                input_files = glob.glob('/data/sst/ersst/data/monthly_processed/ersst.19[5-9][0-9]' + month_str + '.nc') + \
-                              glob.glob('/data/sst/ersst/data/monthly_processed/ersst.20[0-9][0-9]' + month_str + '.nc')
-                output_dir = '/data/sst/ersst/data/decile/1950/monthly/'
+            elif dataset == 'ersst': 
+                file_name = 'ersst.19[5-9][0-9]' + month_str + '.nc'
+                file_name_2 = 'ersst.20[0-9][0-9]' + month_str + '.nc'
+                file_path = os.path.join(self.sys_config.dataDir[dataset], 'monthly_processed', file_name)
+                file_path_2 = os.path.join(self.sys_config.dataDir[dataset], 'monthly_processed', file_name_2)
+                input_files = glob.glob(file_path) + glob.glob(file_path_2)
+
+                output_dir = os.path.join(self.sys_config.dataDir[dataset], 'decile', '1950', 'monthly')
         else:
             if dataset == 'reynolds':
                 file_name = 'reynolds_sst_avhrr-only-v2_' + \
@@ -194,16 +198,14 @@ class Calculate_Deciles(object):
                 input_files = input_files + input_files_preliminary
                 output_dir = os.path.join(self.sys_config.dataDir[dataset], 'decile', '1950', avg_period_str + 'monthly')                    
 
-            elif dataset == 'ersst': #TODO
-                input_files = glob.glob('/data/sst/ersst/data/averages/' + \
-                                        avg_period_str + 'monthly/ersst_v3b_' + \
-                                        avg_period_str + 'mthavg_19[5-9][0-9]' + \
-                                        month_str + '_[1-2][0-9][0-9][0-9][0-9][0-9].nc') + \
-                              glob.glob('/data/sst/ersst/data/averages/' + \
-                                        avg_period_str + 'monthly/ersst_v3b_' + \
-                                        avg_period_str + 'mthavg_20[0-9][0-9]' + \
-                                        month_str + '_[1-2][0-9][0-9][0-9][0-9][0-9].nc')
-                output_dir = '/data/sst/ersst/data/decile/1950/' + avg_period_str + 'monthly/'
+            elif dataset == 'ersst': 
+                file_name = 'ersst_v3b_' + avg_period_str + 'mthavg_19[5-9][0-9]' + month_str + '_[1-2][0-9][0-9][0-9][0-9][0-9].nc'
+                file_name_2 = 'ersst_v3b_' + avg_period_str + 'mthavg_20[0-9][0-9]' + month_str + '_[1-2][0-9][0-9][0-9][0-9][0-9].nc'
+                file_path = os.path.join(self.sys_config.dataDir[dataset], 'averages', avg_period_str + 'monthly', file_name)
+                file_path_2 = os.path.join(self.sys_config.dataDir[dataset], 'averages', avg_period_str + 'monthly', file_name_2)
+                input_files = glob.glob(file_path) + glob.glob(file_path_2)
+
+                output_dir = os.path.join(self.sys_config.dataDir[dataset], 'decile', '1950', avg_period_str + 'monthly')
 
         # Remove preliminary files from list when final version also exists
         filelist = set([k.rstrip('.nc') for k in input_files])

@@ -570,10 +570,11 @@ EOF
         python << EOF
 print "Calculate Decile ..."
 
-# calculate decile, currrently for Reynolds only 
+# calculate decile: reynolds and ersst
 from ocean.processing.Calculate_Deciles import Calculate_Deciles
 
 Calculate_Deciles().process("reynolds")
+Calculate_Deciles().process("ersst")
 
 EOF
     ;;
