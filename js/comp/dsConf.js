@@ -338,6 +338,77 @@ ocean.dsConf = {
         onRegionChange: function() {}
 
     },
+    tideforecast: {
+        params: override(function (dataset) { return {
+            };
+        }),
+        beforeSend: function() {
+            valid = true;
+            return valid;
+        },
+        callback: function(data) {
+        },
+        onSelect: function(){
+            if (ocean.variable == 'tide'){
+                hideControls('plottype');
+                hideControls('dataset');
+                hideControls('period');
+
+                ocean.dsConf.tideforecast.overlay = new L.FeatureGroup();
+
+                //Read file
+                $.getScript("js/comp/tide_gauges_to_load.js")
+
+                  .done(function( script, textStatus ) {
+                    //Current year
+                    year_0 = (new Date()).getFullYear();
+                    year_1 = year_0 + 1;
+                    year_2 = year_1 + 1;
+
+                    //Load the markers
+                    base_pdf_url = "http://www.bom.gov.au/ntc/IDO59001/IDO59001_";
+                    for (var i = 0; i < points.length; i++) {
+                        web_url =  "http://www.bom.gov.au/australia/tides/#!/offshore-" + points[i][4].trim();
+                        pdf_url_0 =  base_pdf_url  + year_0 + "_INT_" + points[i][5].trim() + ".pdf";
+                        pdf_url_1 =  base_pdf_url  + year_1 + "_INT_" + points[i][5].trim() + ".pdf";
+                        pdf_url_2 =  base_pdf_url  + year_2 + "_INT_" + points[i][5].trim() + ".pdf";
+
+                        data = "<b>"+ points[i][0] + "</b><br><br>"
+                               + "Tide forecast reports:<br>"
+                               + "<a href=" + pdf_url_0 + " target=_blank>" + year_0 + "</a>  "
+                               + "<a href=" + pdf_url_1 + " target=_blank>" + year_1 + "</a>  "
+                               + "<a href=" + pdf_url_2 + " target=_blank>" + year_2 + "</a>" + "<br><br>"
+                               + "<a href=" + web_url + " target=_blank>Go to Tide Prediction website</a>";
+
+                        var marker = new L.marker([points[i][1],points[i][2]]).bindPopup(data);
+                        ocean.dsConf.tideforecast.overlay.addLayer(marker);
+                    }
+                    return false;
+                  })
+
+                  .fail(function( jqxhr, settings, exception ) {
+                    fatal_error("Failed to load location points to show tide calendar report.");
+                  });
+
+                ocean.mapObj.addLayer(ocean.dsConf.tideforecast.overlay);
+
+                if (map.hasLayer(map.intersecMarker)){
+                    disableIntersecMarker();
+                }
+            }
+        },
+        onDeselect: function(){
+            hideSpanForControl('date');
+            if (map.hasLayer(ocean.dsConf.tideforecast.overlay)){
+                ocean.mapObj.removeLayer(ocean.dsConf.tideforecast.overlay);
+            }
+        },
+        onVariableChange: function(){
+            hideControls('period');
+        },
+        onRegionChange: function() {}
+
+    },
     msla: {
         params: override(function (dataset) { return {
             };
@@ -355,6 +426,7 @@ ocean.dsConf = {
             }
         },
         onSelect: function() {
+            showSpanForControl('date');
         },
         onDeselect: function(){
             resetMap();

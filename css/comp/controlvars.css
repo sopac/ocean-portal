@@ -114,7 +114,13 @@
 .variable-atlas #longitude,
 .variable-atlas #year,
 .variable-atlas #month,
-.variable-atlas #date
+.variable-atlas #date,
+.variable-tide #submit,
+.variable-tide #latitude,
+.variable-tide #longitude,
+.variable-tide #year,
+.variable-tide #month,
+.variable-tide #date
 {
   display: none;
 }

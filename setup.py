@@ -123,7 +123,8 @@ web_files = [
     'js/comp/app.js',
     'js/comp/dragdealer.js',
     'js/comp/Ocean.js',
-    'js/comp/data_points_to_load.js'
+    'js/comp/data_points_to_load.js',
+    'js/comp/tide_gauges_to_load.js'
 ]
 
 data = [

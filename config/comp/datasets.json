@@ -229,6 +229,17 @@
         }
     }]    
 }, {
+    "id":"tideforecast",
+    "name":"Tide calendar",
+    "title": "Tide calendar",
+    "help": "http://www.bom.gov.au/australia/tides/#!/offshore",
+    "variables": [{
+        "id": "tide",
+        "name": "Tide forecast",
+        "periods": ["daily"],
+        "plottypes": ["map"]
+    }]
+}, {
     "id":"poamasla",
     "name":"Seasonal Sea Level Forecast",
     "title": "Seasonal Sea Level Forecast",

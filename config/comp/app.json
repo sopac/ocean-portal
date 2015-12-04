@@ -5,7 +5,7 @@
         "title": "Ocean Monitoring"
     },
     "sealevel": {
-        "datasets": ["reynolds", "ersst", "ww3", "bran"],
+        "datasets": ["reynolds", "ersst", "ww3", "bran", "tideforecast"],
         "vargroups": ["sealevel", "ww3forecast", "poamasla", "msla"],
         "title": "Sea Level"
     },
