@@ -39,6 +39,7 @@ class msla(Dataset):
     
     __periods__ = [
         'daily',
+        'monthly'
     ]
 
     __variables__ = [        
@@ -60,24 +61,28 @@ class msla(Dataset):
             raise MissingParameter("Missing parameter 'date'")
         elif 'area' not in params:
             raise MissingParameter("Missing parameter 'area'")
-            
+
         variableStr = params['variable']
-        dateStr = params['date'].strftime('%Y%m%d')
         areaStr = params['area']
         periodStr = params['period']
-        
-        filepath = os.path.join(serverCfg['dataDir'][DATASET], 'grids', 'daily')
-                
+
         plotter = MslaPlotter(variableStr)
-                
+
         if periodStr == 'daily':
+            dateStr = params['date'].strftime('%Y%m%d')
             fileName = seaGraph % (seaLevelProduct['daily'],
                                    variableStr, areaStr,
                                    dateStr)                                   
+        elif periodStr == 'monthly':
+            dateStr = params['date'].strftime('%Y%m')
+            fileName = seaGraph % (seaLevelProduct['monthly'],
+                                   variableStr, areaStr,
+                                   dateStr)
         else:
             assert 0, "Should not be reached"
 
         outputFileName = serverCfg['outputDir'] + fileName
+
         if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
             plotter.plot(fileName, **params)
 

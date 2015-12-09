@@ -23,7 +23,6 @@ from ocean.netcdf.extractor import LandError
 serverCfg = config.get_server_config()
     
 DATASET = 'msla'
-FILE_PREFIX = 'nrt_global_allsat_msla_h_'
 
 class MslaPlotter(SurfacePlotter):
     DATASET = DATASET
@@ -76,11 +75,21 @@ class MslaPlotter(SurfacePlotter):
             pass
         return 30
 
+    @apply_to(period='daily')
     def get_path(self, params={}):
         return os.path.join(serverCfg['dataDir'][self.DATASET], 'grids', 'daily')
 
+    @apply_to(period='monthly')
+    def get_path(self, params={}):
+        return os.path.join(serverCfg['dataDir'][self.DATASET], 'grids', 'monthly')
+
+    @apply_to(period='daily')
     def get_prefix(self, params={}):
-        return FILE_PREFIX
+        return 'nrt_global_allsat_msla_h_'
+
+    @apply_to(period='monthly')
+    def get_prefix(self, params={}):
+        return 'nrt_sea_level_'
     
 
 class MslaGrid(Gridset):
@@ -89,13 +98,19 @@ class MslaGrid(Gridset):
         """
         Get the file based on the given date
         """
-        return getFileForTheDate(path, prefix, date)        
+        return getFileForTheDate(path, prefix, date, period)
 
 """
 Get the file based on the given date
 """
-def getFileForTheDate(path, prefix, date):
-    formatted_date = date.strftime('%Y%m%d')
-    file_name = prefix + formatted_date + '_'+ formatted_date + '.nc'
+def getFileForTheDate(path, prefix, date, period):
+
+    if period == 'daily':
+        formatted_date = date.strftime('%Y%m%d')
+        file_name = prefix + formatted_date + '_'+ formatted_date + '.nc'
+    elif period == 'monthly':
+        formatted_date = date.strftime('%Y%m')
+        file_name = prefix + formatted_date + '.nc'
+
     file_name_with_path = os.path.join(path, file_name)
-    return file_name_with_path   
+    return file_name_with_path

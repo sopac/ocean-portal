@@ -221,7 +221,7 @@
     "variables": [{
         "id": "sla",
         "name": "Sea Level Anomaly",
-        "periods": ["daily"],
+        "periods": ["daily", "monthly"],
         "plottypes": ["map"],
         "dateRange" : {
             "minDate": "20150706",
