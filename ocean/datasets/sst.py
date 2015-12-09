@@ -122,7 +122,10 @@ class SST(Dataset):
         fileName = self.get_filename_format(params=params) % p
         outputFileName = os.path.join(serverCfg['outputDir'], fileName)
 
-        if not util.check_files_exist(outputFileName,
+        if params['variable'] == 'dec':
+            self.plotter.plot(fileName, **params)
+
+        elif not util.check_files_exist(outputFileName,
                                       COMMON_FILES.values()):
             self.plotter.plot(fileName, **params)
 
