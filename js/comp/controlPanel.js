@@ -1087,8 +1087,8 @@ function updateDatepicker(){
 function selectMonthsForNearRealTimeDatasets(){
     var range = getDateRange(ocean.datasetid, ocean.variable, ocean.period);
     if (range != null && $('#month').is(':visible')){
-        var var_list = new Array("meansst", "sstanom", "sstdec");
-        var dataset_list = new Array("reynolds", "ersst");
+        var var_list = new Array("meansst", "sstanom", "sstdec", "sla");
+        var dataset_list = new Array("reynolds", "ersst", "msla");
 
         if (var_list.indexOf(ocean.variable) != -1  && dataset_list.indexOf(ocean.datasetid) != -1 ){
 
@@ -1102,9 +1102,12 @@ function selectMonthsForNearRealTimeDatasets(){
 
                 //Date range for the dataset
                 var maxMonth =  range.max.getMonth();
+                var minMonth =  range.min.getMonth();
+                var minYear =  range.min.getFullYear();
 
                 //User selection
                 var selected_year = parseInt(getValue("year"));
+                minMonthInAYear = minYear == selected_year ? minMonth: minMonthInAYear;
 
                 if (current_year == selected_year){//for current year shows the last month if today is greater than startDayOfSelection.
                      maxMonth = _getUpdatedMonth();
