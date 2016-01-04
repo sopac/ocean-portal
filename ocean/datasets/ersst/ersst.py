@@ -53,6 +53,14 @@ class ERSSTPlotter(SurfacePlotter):
     def get_colormap_strategy(self, params={}):
         return 'nonlinear'
 
+    @apply_to(variable='dec')
+    def get_plotstyle(self, params={}):
+        return 'pcolormesh'
+
+    @apply_to(variable='dec')
+    def get_contourlines(self, params={}):
+        return False
+
 class ersst(SST):
     DATASET = 'ersst'
     PLOTTER = ERSSTPlotter
