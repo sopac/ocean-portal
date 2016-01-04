@@ -3,9 +3,9 @@
 DATASET=$1
 PERIOD=$2
 
-export PYTHONPATH=${PYTHONPATH}:/srv/ktahera/usr/lib/python2.6/site-packages/:/srv/ktahera/usr/lib64/python2.6/site-packages
-export PATH=${PATH}:/srv/ktahera/usr/bin/
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/srv/ktahera/usr/lib/
+export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/:/srv/map-portal/usr/lib64/python2.6/site-packages
+export PATH=${PATH}:/srv/map-portal/usr/bin/
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/srv/map-portal/usr/lib/
 
 # configuration
 
