@@ -3,9 +3,9 @@
 DATASET=$1
 PERIOD=$2
 
-export PYTHONPATH=${PYTHONPATH}:/srv/map-portal/usr/lib/python2.6/site-packages/:/srv/map-portal/usr/lib64/python2.6/site-packages
-export PATH=${PATH}:/srv/map-portal/usr/bin/
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/srv/map-portal/usr/lib/
+export PYTHONPATH=${PYTHONPATH}:/srv/ktahera/usr/lib/python2.6/site-packages/:/srv/ktahera/usr/lib64/python2.6/site-packages
+export PATH=${PATH}:/srv/ktahera/usr/bin/
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/srv/ktahera/usr/lib/
 
 # configuration
 
@@ -350,11 +350,14 @@ import os
 import urllib
 import urllib2
 from datetime import timedelta, date
+from dateutil.relativedelta import relativedelta
 from subprocess import check_call, CalledProcessError
+from ocean.config import regionConfig
 import calendar
 
 url = '$SERVER/$SERVER_PATH'
 today = date.today()
+format = "%Y%m%d"
 #daily
 if '$PERIOD' == 'daily':
     for delta in range(4):
@@ -364,6 +367,7 @@ if '$PERIOD' == 'daily':
         nc_file_name = file_name + '.nc'
         nc_file_path = 'daily/' + nc_file_name
         full_url = url + nc_file_name
+        print full_url
         if os.path.exists(nc_file_path):
             continue
         else:
@@ -380,6 +384,87 @@ if '$PERIOD' == 'daily':
                 print e.read()
                 print '\n'
                 continue
+
+    #----------preprocess --------
+    """
+    TODO: pre-generate images.
+    """
+    date = today + timedelta(-2)
+    date = date.strftime(format)
+    print date
+
+    #----------preprocess on tuscany--------
+    url = "http://tuscany/portal/cgi/portal.py"
+
+    #Read regionconfig files and do a loop to generate images for all regions
+
+    for key, value in regionConfig.regions.iteritems():
+        if value[0] == 'pac' or value[0] == None:
+            print key
+            values = {"dataset": "chlorophyll",
+                      "variable": "chldaily",
+                      "plot": "map",
+                      "period": "daily",
+                      "area": key,
+                      "date": date
+                       }
+            data = urllib.urlencode(values)
+            full_url = url + '?' + data
+            print full_url
+            try:
+                response = urllib2.urlopen(full_url)
+                print response.read()
+            except urllib2.HTTPError as e:
+                print e.read()
+
+    #----------preprocess on tunceli--------
+    url = "http://tunceli/portal/cgi/portal.py"
+
+    #Read regionconfig files and do a loop to generate images for all regions
+
+    for key, value in regionConfig.regions.iteritems():
+        if value[0] == 'pac' or value[0] == None:
+            print key
+            values = {"dataset": "chlorophyll",
+                      "variable": "chldaily",
+                      "plot": "map",
+                      "period": "daily",
+                      "area": key,
+                      "date": date
+                       }
+            data = urllib.urlencode(values)
+            full_url = url + '?' + data
+            print full_url
+            try:
+                response = urllib2.urlopen(full_url)
+                print response.read()
+            except urllib2.HTTPError as e:
+                print e.read()
+
+    #----------preprocess on www --------
+    url = "http://www.bom.gov.au/cosppac/apps/portal/cgi/portal.py"
+
+    #Read regionconfig files and do a loop to generate images for all regions
+
+    for key, value in regionConfig.regions.iteritems():
+        if value[0] == 'pac' or value[0] == None:
+            print key
+            values = {"dataset": "chlorophyll",
+                      "variable": "chldaily",
+                      "plot": "map",
+                      "period": "daily",
+                      "area": key,
+                      "date": date
+                       }
+            data = urllib.urlencode(values)
+            full_url = url + '?' + data
+            print full_url
+            try:
+                response = urllib2.urlopen(full_url)
+                print response.read()
+            except urllib2.HTTPError as e:
+                print e.read()
+
 #monthly
 elif '$PERIOD' == 'monthly':
     date = today.replace(day=1)
@@ -411,6 +496,89 @@ elif '$PERIOD' == 'monthly':
                 print e.read()
                 print '\n'
                 continue
+
+    #----------preprocess --------
+    """
+    pre-generate images.
+    """
+    print
+    print 'pre-generate images.'
+    from datetime import date
+    last_month = today - relativedelta(months=1)
+    last_month_unformatted = date(last_month.year, last_month.month, 1)
+    date = last_month_unformatted.strftime(format)
+
+    print 'preprocess image for ', date
+
+    #----------preprocess on tuscany--------
+    url = "http://tuscany/portal/cgi/portal.py"
+
+    #Read regionconfig files and do a loop to generate images for all regions
+    for key, value in regionConfig.regions.iteritems():
+        if value[0] == 'pac' or value[0] == None:
+            print key + ' : ' + date
+            values = {"dataset": "chlorophyll",
+                      "variable": "chlmonthly",
+                      "plot": "map",
+                      "period": "monthly",
+                      "area": key,
+                      "date": date
+                       }
+            data = urllib.urlencode(values)
+            full_url = url + '?' + data
+            print full_url
+            try:
+                response = urllib2.urlopen(full_url)
+                print response.read()
+            except urllib2.HTTPError as e:
+                print e.read()
+
+    #----------preprocess on tunceli--------
+    url = "http://tunceli/portal/cgi/portal.py"
+
+    #Read regionconfig files and do a loop to generate images for all regions
+    for key, value in regionConfig.regions.iteritems():
+        if value[0] == 'pac' or value[0] == None:
+            print key + ' : ' + date
+            values = {"dataset": "chlorophyll",
+                      "variable": "chlmonthly",
+                      "plot": "map",
+                      "period": "monthly",
+                      "area": key,
+                      "date": date
+                       }
+            data = urllib.urlencode(values)
+            full_url = url + '?' + data
+            print full_url
+            try:
+                response = urllib2.urlopen(full_url)
+                print response.read()
+            except urllib2.HTTPError as e:
+                print e.read()
+
+    #----------preprocess on www --------
+    url = "http://www.bom.gov.au/cosppac/apps/portal/cgi/portal.py"
+
+    #Read regionconfig files and do a loop to generate images for all regions
+    for key, value in regionConfig.regions.iteritems():
+        if value[0] == 'pac' or value[0] == None:
+            print key + ' : ' + date
+            values = {"dataset": "chlorophyll",
+                      "variable": "chlmonthly",
+                      "plot": "map",
+                      "period": "monthly",
+                      "area": key,
+                      "date": date
+                       }
+            data = urllib.urlencode(values)
+            full_url = url + '?' + data
+            print full_url
+            try:
+                response = urllib2.urlopen(full_url)
+                print response.read()
+            except urllib2.HTTPError as e:
+                print e.read()
+
 EOF`
         echo -n $response
     ;;
