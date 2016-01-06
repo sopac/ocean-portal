@@ -57,6 +57,9 @@ class ERSSTPlotter(SurfacePlotter):
     def get_plotstyle(self, params={}):
         return 'pcolormesh'
 
+    def get_plotstyle(self, params={}):
+        return 'contourf'
+
     @apply_to(variable='dec')
     def get_contourlines(self, params={}):
         return False
