@@ -115,7 +115,7 @@ class Plotter(object):
                                vlat=None, vlon=None, u=None, v=None,
                                draw_every=1, arrow_scale=10,
                                resolution=None, area=None, boundaryInUse='True',
-                               annual_clim_label_str = None, monthly_clim_label_str = None, overlay_grid = None):
+                               annual_clim_label_str = None, monthly_clim_label_str = None, overlay_grid = None, var_name=None):
 
             '''
             TODO
@@ -204,9 +204,10 @@ class Plotter(object):
                (vlat is not None) and (vlon is not None):
                 # Draw vectors
                 if draw_every is not None:
-                    draw_vector_plot(m, vlon, vlat, u, v,
-                                     draw_every=draw_every,
-                                     arrow_scale=arrow_scale)
+                    if var_name in ['uv']:
+                        draw_vector_plot_direction_only(m, vlon, vlat, u, v, draw_every=draw_every, arrow_scale=arrow_scale)
+                    else:
+                        draw_vector_plot(m, vlon, vlat, u, v, draw_every=draw_every, arrow_scale=arrow_scale)
 
             # Draw land, coastlines, parallels, meridians and add title
             m.drawmapboundary(linewidth=1.0, fill_color=fill_color)
@@ -602,3 +603,14 @@ def draw_vector_plot(m, x, y, u, v, draw_every=1, arrow_scale=10, quiverkey_valu
     quiverkey_label = '$' + str(quiverkey_value) + units + '$'
     plt.quiverkey(q, 1.08, -0.07, quiverkey_value, quiverkey_label, coordinates='axes',
                  labelpos='N', labelsep=0.01, fontproperties={'size':'xx-small', 'weight':'1000'})
+
+def draw_vector_plot_direction_only(m, x, y, u, v, draw_every=1, arrow_scale=10):
+    x = x[::draw_every]
+    y = y[::draw_every]
+    x, y = m(*np.meshgrid(x, y))
+
+    u = u[::draw_every,::draw_every]
+    v = v[::draw_every,::draw_every]
+    rad = np.arctan2(v, u)
+
+    q = m.quiver(x, y, np.cos(rad), np.sin(rad), pivot='mid', scale=arrow_scale, scale_units='inches')

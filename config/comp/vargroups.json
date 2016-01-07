@@ -21,7 +21,7 @@
 
   "currents": {
     "name": "Currents",
-    "vars": [ "uvtemp", "uveta" ]
+    "vars": [ "uv", "uveta" ]
   },
 
   "crw": {

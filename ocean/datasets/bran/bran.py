@@ -19,7 +19,6 @@ from ocean.plotter import Plotter, COMMON_FILES
 from ocean.datasets import Dataset
 from ocean.util import dateRange
 
-import branConfig as bc
 import branPlotterNew
 
 server_config = config.get_server_config()
@@ -40,7 +39,7 @@ class bran(Dataset):
         'temp',
         'salt',
         'eta',
-        'uvtemp',
+        'uv',
         'uveta',
     ]
 
@@ -90,6 +89,7 @@ class bran(Dataset):
         if plot_subsurface:
             lat_cnt = params['lat']
             lon_cnt = np.mod(params['lon'], 360.0)
+
             if (0 <= lon_cnt <= 360) and (-90 <= lat_cnt <= 90):
                 lon_str = '%.2fE' % lon_cnt
                 if lat_cnt >= 0:
@@ -181,7 +181,7 @@ class bran(Dataset):
 
             if not check_basemap_and_plot_exists(plot_filename_fullpath):
                 # If drawing currents, determine vector plot settings
-                if varName in ['uvtemp', 'uveta']:
+                if varName in ['uv', 'uveta']:
                     lat_min = regionConfig.regions[regionStr][1]['llcrnrlat']
                     lat_max = regionConfig.regions[regionStr][1]['urcrnrlat']
                     lon_min = regionConfig.regions[regionStr][1]['llcrnrlon']
@@ -236,6 +236,9 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
                       plot_filename_fullpath=None, basemap_only=False,
                       draw_every=1, arrow_scale=10):
 
+    extend = 'both'
+    plotStyle='contourf'
+
     if varName == 'temp':
         dataVar = 'temp'
         unitStr = ur'\u00b0' + 'C'
@@ -251,21 +254,16 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
         varLongName = "Sea Surface Temperature"
         cb_tick_fmt = '%.0f'
         currents = False
-    elif varName == 'uvtemp':
-        dataVar = 'temp'
-        unitStr = ur'\u00b0' + 'C'
-
-        if regionStr in regionConfig.regions:
-            if regionConfig.regions[regionStr][0] == 'pac':
-                cb_ticks = np.arange(20.0, 32.1, 1.0)
-            else:
-                cb_ticks = np.arange(0.0, 32.1, 2.0)
-        else:
-            cb_ticks = np.arange(0.0, 32.1, 2.0)
-
-        varLongName = "Sea Surface Temperature and Currents"
-        cb_tick_fmt = '%.0f'
+    elif varName == 'uv':
+        dataVar = 'u'
+        unitStr = 'm/s'
+        cb_ticks = np.array([0.0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.6, 1.0, 1.5, 2.5])
+        varLongName = "Currents Speed and Direction"
+        cb_tick_fmt = '%.2f'
         currents = True
+        extend = 'neither'
+        draw_every = 5
+        plotStyle='pcolormesh'
     elif varName == 'salt':
         dataVar = 'salt'
         unitStr = "PSU"
@@ -309,14 +307,14 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
                                       -999.0, 999.0, -999.0, 999.0)
 
     # Plot background image layers
-    config = bc.BranConfig()
     plot = Plotter()
-    plot.plot_basemaps_and_colorbar(lats, lons, data,
+    if varName not in ['uv']:
+        plot.plot_basemaps_and_colorbar(lats, lons, data,
                                     output_filename=basemap_filename_fullpath,
                                     units=unitStr, cm_edge_values=cb_ticks,
                                     cb_tick_fmt=cb_tick_fmt,
                                     cb_labels=None, cb_label_pos=None,
-                                    cmp_name='jet', extend='both')
+                                    cmp_name='jet', extend=extend)
 
     if not basemap_only:
         # Get domain boundaries
@@ -335,7 +333,7 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
                                           lon_min, lon_max)
 
         # Load current data if required
-        if currents == True:
+        if currents == True or varName in ['uv']: # For 'uv' variable we need to read from multiple input files.
             if periodStr == 'monthly':
                 input_data_file = os.path.join(server_config['dataDir']['bran'],
                                                periodStr, 'u',
@@ -361,10 +359,21 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
                                               lat_min - 1.0, lat_max + 1.0,
                                               lon_min - 1.0, lon_max + 1.0)
             contourLines = False
+
         else:
             lats2 = None; lons2 = None
             u = None; v = None
             contourLines = True
+
+        if varName in ['uv']:
+            data = np.sqrt(u**2 + v**2)
+            #Plot basemap
+            plot.plot_basemaps_and_colorbar(lats, lons, data,
+                                    output_filename=basemap_filename_fullpath,
+                                    units=unitStr, cm_edge_values=cb_ticks,
+                                    cb_tick_fmt=cb_tick_fmt,
+                                    cb_labels=None, cb_label_pos=None,
+                                    cmp_name='jet', extend=extend, fill_color='0.85')
 
         # Plot surface data
         plot.plot_surface_data(lats, lons, data,
@@ -377,7 +386,7 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
                                product_label_str=PRODUCT_LABEL,
                                vlat=lats2, vlon=lons2, u=u, v=v,
                                draw_every=draw_every, arrow_scale=arrow_scale,
-                               area=regionStr)
+                               area=regionStr, extend=extend, var_name=varName, plotStyle=plotStyle)
 
     plot.wait()
 

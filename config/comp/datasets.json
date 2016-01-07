@@ -104,8 +104,8 @@
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map", "xsections"]
     }, {
-        "id":"uvtemp",
-        "name":"Temp & Currents",
+        "id":"uv",
+        "name":"Currents Speed and Direction",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map"]
     }],
