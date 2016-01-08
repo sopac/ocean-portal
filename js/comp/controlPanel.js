@@ -907,6 +907,9 @@ function updateVisibilities(controlvar, old, new_) {
  */
 function updatePage() {
     if (!ocean.processing) {
+        /*Reset map for each new request.*/
+        resetMap();
+        resetLegend();
 
         /*Show feedback id variable is not selected.*/
         if ((typeof (ocean.variable) == 'undefined') || (!ocean.variable)){
