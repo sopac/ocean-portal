@@ -408,6 +408,8 @@ ocean.dsConf = {
                     disableIntersecMarker();
                 }
             }
+
+            updatePage();
         },
         onDeselect: function(){
             hideSpanForControl('date');
