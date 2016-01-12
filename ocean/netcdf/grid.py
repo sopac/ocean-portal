@@ -247,6 +247,10 @@ class Gridset(Grid):
         assert suffix2 is not None 
         assert date is not None
 
+        if variable in ("sst", "anom", "sst_dec_cats") and period == "weekly":
+            weekdays = util.getWeekDays(date)
+            date = weekdays[0]
+
         filename = self.get_filename(path, prefix, suffix, date, period)
         filename2 =self.get_filename(path, prefix, suffix2, date, period)
 
@@ -270,6 +274,8 @@ class Gridset(Grid):
         date_string = ''
         period =  kwargs.get('params')['period']
         if period == 'daily':
+            date_string = date.strftime('%Y%m%d')
+        elif period == 'weekly':
             date_string = date.strftime('%Y%m%d')
         elif period == 'monthly':
             date_string =  date.strftime('%Y%m')

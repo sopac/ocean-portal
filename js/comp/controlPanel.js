@@ -63,6 +63,7 @@ $(function() {
     /* set up the date picker */
     $("#date").datepick({
         dateFormat: 'd MM yyyy',
+        firstDay: 1,
         renderer: $.datepick.themeRollerRenderer,
         changeMonth: true,
        // alignment: 'bottom'
@@ -171,7 +172,9 @@ $(function() {
             return;
         }
 
-        updateVisibilities('period', ocean.period, period)
+        updateVisibilities('period', ocean.period, period);
+        //Update datepicker display
+        updateDatepickerDisplay(period);
         ocean.period = period;
 
         showControls('dataset');
@@ -1204,4 +1207,22 @@ $('.glyphicon-step-backward').on('keypress', function(event){
         stepBackward();
     }
 });
- 
+
+function updateDatepickerDisplay(period){
+
+    if (period == 'weekly'){
+        $('#date').datepick('option', 'rangeSelect', true);
+        $('#date').datepick('option', 'onShow', $.datepick.multipleEvents($.datepick.highlightWeek, $.datepick.selectWeek));
+        $('#date').datepick('option', 'renderer', $.extend({},
+                           $.datepick.themeRollerWeekOfYearRenderer,
+                           {picker: $.datepick.themeRollerRenderer.picker.
+                                    replace(/\{link:clear\}/, '').
+                                    replace(/\{link:close\}/, '')
+                           }));
+    } else {
+        $('#date').datepick('option', 'rangeSelect', false);
+        $('#date').datepick('option', 'onShow', null);
+        $('#date').datepick('option', 'renderer', $.datepick.themeRollerRenderer);
+
+    }
+}

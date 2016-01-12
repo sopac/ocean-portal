@@ -8,19 +8,19 @@
         "id":"meansst",
         "bid": "mean",
         "name":"Mean Temperature",
-        "periods": ["daily", "monthly", "3monthly", "6monthly", "12monthly"],
+        "periods": ["daily", "weekly", "monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map"]
     },{
         "id":"sstanom",
         "bid": "anom",
         "name":"Anomalies",
-        "periods": ["daily", "monthly", "3monthly", "6monthly", "12monthly"],
+        "periods": ["daily", "weekly", "monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map"]
     },{
         "id":"sstdec",
         "bid": "dec",
         "name":"Deciles",
-        "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
+        "periods": ["monthly", "weekly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map"]
     }],
     "dateRange" : {

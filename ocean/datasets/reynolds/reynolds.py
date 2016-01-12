@@ -54,6 +54,7 @@ class reynolds(SST):
     __periods__ = [
         'daily',
         'monthly',
+        'weekly',
         '3monthly',
         '6monthly',
         '12monthly',

@@ -80,6 +80,9 @@ class SurfacePlotter(object):
         else:
             if params['period'] == 'daily':
                 formatted_date = params['date'].strftime('%d %B %Y')
+            if params['period'] == 'weekly':
+                weekdays = util.getWeekDays(params['date'])
+                formatted_date = weekdays[0].strftime('%d %B %Y') + ' to ' + weekdays[-1].strftime('%d %B %Y')                 
             if params['period'] == '4weeks':
                 formatted_date = params['date'].strftime('%d %B %Y')
             elif params['period'] == '8weeks':

@@ -105,6 +105,11 @@ class SST(Dataset):
                 formatted_date = '{0.month:02d}'.format(params['date'])
         else:
             formatted_date = format[params['period']].format(params['date'])
+
+        if params['variable'] == 'mean' and params['period'] == 'weekly':
+            weekdays = util.getWeekDays(params['date'])
+            formatted_date = format[params['period']].format(weekdays[0])
+
         return formatted_date
 
     def process_stats(self, params):
