@@ -334,6 +334,12 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
 
         # Load current data if required
         if currents == True or varName in ['uv']: # For 'uv' variable we need to read from multiple input files.
+            if varName not in ['uv']:
+                lat_min = lat_min - 1.0
+                lat_max = lat_max + 1.0
+                lon_min = lon_min - 1.0
+                lon_max = lon_max + 1.0
+
             if periodStr == 'monthly':
                 input_data_file = os.path.join(server_config['dataDir']['bran'],
                                                periodStr, 'u',
@@ -344,8 +350,8 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
                                                BRAN_VERSION + '_%smthavg_%s_%s.nc4' % (monthInt, months[0].strftime('%Y%m'), months[-1].strftime('%Y%m')))
             lats2, lons2, zlevels, u = \
                 branPlotterNew.load_BRAN_data(input_data_file, 'u',
-                                              lat_min - 1.0, lat_max + 1.0,
-                                              lon_min - 1.0, lon_max + 1.0)
+                                              lat_min, lat_max,
+                                              lon_min, lon_max)
             if periodStr == 'monthly':
                 input_data_file = os.path.join(server_config['dataDir']['bran'],
                                                periodStr, 'v',
@@ -356,8 +362,8 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
                                                BRAN_VERSION + '_%smthavg_%s_%s.nc4' % (monthInt, months[0].strftime('%Y%m'), months[-1].strftime('%Y%m')))
             lats2, lons2, zlevels, v = \
                 branPlotterNew.load_BRAN_data(input_data_file, 'v',
-                                              lat_min - 1.0, lat_max + 1.0,
-                                              lon_min - 1.0, lon_max + 1.0)
+                                              lat_min, lat_max,
+                                              lon_min, lon_max)
             contourLines = False
 
         else:
