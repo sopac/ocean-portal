@@ -726,9 +726,10 @@ print "Download MUR and process fronts..."
 from datetime import timedelta, date
 from ocean.processing.Download_MUR import Download_MUR
 today=date.today()
-year=today.year
-month=today.month
-day=today.day-2
+baseStartDate = today + timedelta(-2)
+year=baseStartDate.year
+month=baseStartDate.month
+day=baseStartDate.day
 print "date: " + str(day) + '/' + str(month) + '/' + str(year)
 Download_MUR("$DATA_DIR","$DATA_SUBDIR","$SERVER","$SERVER_PATH", day, month, year)
 EOF
