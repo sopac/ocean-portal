@@ -216,6 +216,7 @@ $(function() {
             case 'daily':
             case 'weekly':
                 date_ = $('#date').datepick('getDate')[0];
+                selectEntireWeek(date_);
                 break;
 
             case 'monthly':
@@ -1208,11 +1209,26 @@ $('.glyphicon-step-backward').on('keypress', function(event){
     }
 });
 
+function selectEntireWeek(date){
+    if (typeof(date) != 'undefined'){
+        weekNo = date.getWeek();
+
+        //Find the week elements
+        week_items = $('a[title="Select the entire week"]');
+        for( i = 0; i< week_items.length; i++){
+            if (parseInt(week_items[i].text) == weekNo){
+                week_items[i].click();
+                i = week_items.length;
+            }
+        }
+    }
+}
+
 function updateDatepickerDisplay(period){
 
     if (period == 'weekly'){
         $('#date').datepick('option', 'rangeSelect', true);
-        $('#date').datepick('option', 'onShow', $.datepick.multipleEvents($.datepick.highlightWeek, $.datepick.selectWeek));
+        $('#date').datepick('option', 'onShow', $.datepick.selectWeek);
         $('#date').datepick('option', 'renderer', $.extend({},
                            $.datepick.themeRollerWeekOfYearRenderer,
                            {picker: $.datepick.themeRollerRenderer.picker.
@@ -1223,6 +1239,18 @@ function updateDatepickerDisplay(period){
         $('#date').datepick('option', 'rangeSelect', false);
         $('#date').datepick('option', 'onShow', null);
         $('#date').datepick('option', 'renderer', $.datepick.themeRollerRenderer);
-
     }
+}
+
+// Returns the ISO week of the date.
+Date.prototype.getWeek = function() {
+  var date = new Date(this.getTime());
+   date.setHours(0, 0, 0, 0);
+  // Thursday in current week decides the year.
+  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+  // January 4 is always in week 1.
+  var week1 = new Date(date.getFullYear(), 0, 4);
+  // Adjust to Thursday in week 1 and count number of weeks from date to week1.
+  return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
+                        - 3 + (week1.getDay() + 6) % 7) / 7);
 }
