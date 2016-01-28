@@ -20,7 +20,7 @@
         "id":"sstdec",
         "bid": "dec",
         "name":"Deciles",
-        "periods": ["monthly", "weekly", "3monthly", "6monthly", "12monthly"],
+        "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map"]
     }],
     "dateRange" : {

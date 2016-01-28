@@ -8,7 +8,7 @@
 
 import os.path
 import bisect
-
+import datetime
 import numpy as np
 from netCDF4 import Dataset
 from mpl_toolkits.basemap import shiftgrid 
@@ -247,7 +247,7 @@ class Gridset(Grid):
         assert suffix2 is not None 
         assert date is not None
 
-        if variable in ("sst", "anom", "sst_dec_cats") and period == "weekly":
+        if variable in ("sst", "anom") and period == "weekly":
             weekdays = util.getWeekDays(date)
             date = weekdays[0]
 
@@ -276,7 +276,10 @@ class Gridset(Grid):
         if period == 'daily':
             date_string = date.strftime('%Y%m%d')
         elif period == 'weekly':
-            date_string = date.strftime('%Y%m%d')
+            base_date = datetime.date(1981, 9, 01)
+            weeknumber = util.weeks_between(base_date, date)
+            weeknumber = '%02d' % weeknumber
+            date_string = date.strftime('%Y%m') + '_week_' + str(weeknumber)
         elif period == 'monthly':
             date_string =  date.strftime('%Y%m')
         elif period == '3monthly':

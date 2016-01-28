@@ -1211,10 +1211,10 @@ $('.glyphicon-step-backward').on('keypress', function(event){
 
 function selectEntireWeek(date){
     if (typeof(date) != 'undefined'){
-        weekNo = date.getWeek();
+        var weekNo = date.getWeek();
 
         //Find the week elements
-        week_items = $('a[title="Select the entire week"]');
+        var week_items = $('a[title="Select the entire week"]');
         for( i = 0; i< week_items.length; i++){
             if (parseInt(week_items[i].text) == weekNo){
                 week_items[i].click();
