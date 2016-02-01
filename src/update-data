@@ -619,6 +619,9 @@ from ocean.processing.Calculate_Monthly_Averages import Calculate_Monthly_Averag
 
 Calculate_Monthly_Averages().process("$DATASET")
 
+from ocean.processing.Calculate_Weekly_Averages import Calculate_Weekly_Averages
+Calculate_Weekly_Averages().process("$DATASET")
+
 EOF
 
     ;& # continue
