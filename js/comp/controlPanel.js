@@ -142,9 +142,6 @@ $(function() {
         switch (plottype) {
             case 'xsections':
             case 'histogram':
-                  showSpanForControl('month');
-                  break;
-
             case 'waverose':
             case 'ts':
                 if (ocean.variable == 'gauge') {

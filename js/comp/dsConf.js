@@ -221,6 +221,7 @@ ocean.dsConf = {
         },
         onSelect: function(){
             $('#plottype').change();
+            showSpanForControl('month');
         },
         onDeselect: null, 
         onVariableChange: function(){},

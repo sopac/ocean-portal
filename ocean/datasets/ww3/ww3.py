@@ -98,11 +98,14 @@ class ww3(Dataset):
     def process(self, params):
         response = {}
 
-        response.update(getattr(self, 'plot_%s' % params['plot'])(params))
+        if params['plot'] == 'map':
+            response.update(self.plot_hourly(params))
+        else: #for histogram and waverose
+            response.update(self.plot_monthly(params))
         return response
 
     #For hourly surface map
-    def plot_map(self, params):
+    def plot_hourly(self, params):
         response = {}
         varStr = params['variable']
         periodStr = params['period']
@@ -281,7 +284,7 @@ class ww3(Dataset):
 
         return dateTimeStrArray
 
-    def plot_histogram(self, params):
+    def plot_monthly(self, params):
         response = {}
 
         if 'lllat' not in params:
