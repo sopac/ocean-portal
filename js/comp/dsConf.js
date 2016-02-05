@@ -181,13 +181,14 @@ ocean.dsConf = {
             lllat: $('#latitude').val(),
             lllon: $('#longitude').val(),
             urlat: $('#latitude').val(),
-            urlon: $('#longitude').val()
+            urlon: $('#longitude').val(),
+            step: $('#hour').val()
         };}),
         beforeSend: function() {
             valid = true;
             var text = "";
             var variable = getBackendId(ocean.datasetid, ocean.variable);
-            if (["atlas"].indexOf(variable) == -1) { //All variables under ww3 except wave atlas
+            if (["atlas"].indexOf(variable) == -1 && ocean.dataset.params().plot != 'map') { //All variables under ww3 except wave atlas
                 valid = isLocationPointValid();
                 if (!valid){
                     text = location_missing_msg;
@@ -203,12 +204,24 @@ ocean.dsConf = {
         },
         callback: function(data) {
             prependOutputSet();
+            periodStr = ocean.dataset.params()["period"];
 
-            if(data.ext != null) {
-                appendOutput(data.img, data.ext);
+            if (periodStr == "monthly"){
+                if(data.ext != null) {
+                    appendOutput(data.img, data.ext);
+                }
+            } else if  (periodStr == "hourly"){
+              if (data.img != null && data.scale != null){
+                    prependOutputSet();
+                    appendOutput(data.img, null, null, null, data);
+                    updateMap(data.mapimg);
+                    setLegend(data.scale);
+                }
             }
         },
-        onSelect: null,
+        onSelect: function(){
+            $('#plottype').change();
+        },
         onDeselect: null, 
         onVariableChange: function(){},
         onRegionChange: function() {}

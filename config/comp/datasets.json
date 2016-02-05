@@ -69,13 +69,13 @@
     "variables": [{
         "id": "Hs",
         "name": "Significant Wave Height",
-        "periods": ["monthly"],
-        "plottypes": ["histogram"]
+        "periods": ["hourly", "monthly"],
+        "plottypes": ["map", "histogram" ]
     }, {
         "id": "Tm",
         "name": "Mean Wave Period",
-        "periods": ["monthly"],
-        "plottypes": ["histogram"]
+        "periods": ["hourly", "monthly"],
+        "plottypes": ["map", "histogram"]
     }, {
         "id": "Dm",
         "name": "Mean Wave Direction",

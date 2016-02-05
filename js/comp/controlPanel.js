@@ -9,6 +9,7 @@ var ocean = ocean || {};
 ocean.controls = [
     'plottype',
     'period',
+    'hour',
     'date',
     'month',
     'year',
@@ -59,6 +60,7 @@ $(function() {
     hideControls();
     assignAppClass();
     updateApplicationTitle();
+    updateHours();
 
     /* set up the date picker */
     $("#date").datepick({
@@ -103,7 +105,7 @@ $(function() {
             return;
         }
 
-        updateVisibilities('variable', ocean.variable, varid)
+        updateVisibilities('variable', ocean.variable, varid);
         ocean.variable = varid;
 
         /* filter the options list */
@@ -131,11 +133,7 @@ $(function() {
         ocean.plottype = plottype;
 
         /* filter the period list */
-        var periods = ocean.variables[ocean.variable].plots[plottype];
-
-        filterOpts('period', periods);
-        showControls('period');
-        selectFirstIfRequired('period');
+        updatePeriods();
 
         /* plot specific controls -
          * Note: do not call showControls or hideControls here, control
@@ -144,6 +142,9 @@ $(function() {
         switch (plottype) {
             case 'xsections':
             case 'histogram':
+                  showSpanForControl('month');
+                  break;
+
             case 'waverose':
             case 'ts':
                 if (ocean.variable == 'gauge') {
@@ -169,6 +170,8 @@ $(function() {
         var period = getValue('period');
 
         if (!(period in ocean.variables[ocean.variable].plots[ocean.plottype])) {
+            filterOpts('period', ocean.variables[ocean.variable].plots[ocean.plottype]);
+            selectFirstIfRequired('period');
             return;
         }
 
@@ -213,6 +216,7 @@ $(function() {
         var date_;
 
         switch (ocean.period) {
+            case 'hourly':
             case 'daily':
             case 'weekly':
                 date_ = $('#date').datepick('getDate')[0];
@@ -472,6 +476,11 @@ function getCombinedDateRange() {
         if (!range)
             return; /* continue */
 
+        /* 726: ww3 hourly data is available until July 2014 whereas monthly data is available until 2009*/
+        if (datasetid == "ww3" && ocean.period == "hourly" && ocean.plottype == "map"){
+            range.max = new Date(2014, 06, 1);
+        }
+
         minDate = Math.min(minDate, range.min);
         maxDate = Math.max(maxDate, range.max);
     });
@@ -517,6 +526,13 @@ function updateMonths(minMonth, maxMonth) {
     }
 
     switch (ocean.period) {
+        case 'hourly':
+            fmt = function (m) {
+                return $.datepick.formatDate('MM',
+                    new Date(selectedyear, m));
+            };
+            break;
+
         case 'monthly':
             fmt = function (m) {
                 return $.datepick.formatDate('MM',
@@ -574,6 +590,12 @@ function updateMonths(minMonth, maxMonth) {
  * Updates the datasets displayed in the datasets combo.
  */
 function updateDatasets(filter) {
+    if (!(ocean.period in ocean.variables[ocean.variable].plots[ocean.plottype])){
+        ocean.period = ocean.variables[ocean.variable].variable['periods'][0];
+        filterOpts('period', ocean.variables[ocean.variable].plots[ocean.plottype]);
+        selectFirstIfRequired('period');
+    }
+
     var datasets = ocean.variables[ocean.variable].plots[ocean.plottype][ocean.period];
 
     if (filter) {
@@ -1240,6 +1262,56 @@ function updateDatepickerDisplay(period){
         $('#date').datepick('option', 'onShow', null);
         $('#date').datepick('option', 'renderer', $.datepick.themeRollerRenderer);
     }
+}
+
+
+/**
+ * updateHours:
+ *
+ * Updates the hours displayed in the hours combo.
+ */
+function updateHours(){
+
+    var hour = $('#hour');
+
+    hour.find('option').remove();
+
+    var time = ":00:00 AM";
+    for (m = 0; m <= 23; m++) {
+        if (m >= 12){
+            time = ":00:00 PM";
+        }
+        $('<option>', {
+            value: m,
+            html: m + time
+        }).appendTo(hour);
+    }
+
+    hour.find('option:first').attr('selected', true);
+}
+
+/**
+ * updatePeriods:
+ *
+ * Updates the periods combo with values of the selected variable.
+ */
+function updatePeriods(){
+    var periods;
+
+    /* 726: Set the period to hourly for ww3 dataset and hide the monthly option as it is not available for surface map. */
+    if (ocean.datasetid == 'ww3'){
+        if (ocean.plottype == 'histogram'){
+            periods = {"monthly": ocean.variables[ocean.variable].plots[getValue('plottype')]['monthly']};
+        }else if (ocean.plottype == 'map'){
+            periods = {"hourly": ocean.variables[ocean.variable].plots[getValue('plottype')]['hourly']};
+        }
+      } else {
+        periods = ocean.variables[ocean.variable].plots[ocean.plottype];
+      }
+
+    filterOpts('period', periods);
+    selectFirstIfRequired('period');
+    showControls('period');
 }
 
 // Returns the ISO week of the date.

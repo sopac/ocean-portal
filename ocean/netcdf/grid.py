@@ -69,16 +69,17 @@ class Grid(object):
                  depthrange=(0, 0),
                  **kwargs):
 
+        params = kwargs.get('params', None)
+        self.params = params
+
         if not os.access(filename, os.R_OK):
             filename=filename2
         if not os.access(filename, os.R_OK):
                 raise FileNotFound(filename)
 
         with Dataset(filename) as nc:
-
-
             self.time = self.get_time(nc.variables)
-
+            self.time_units = self.get_time_unit(nc.variables)
             lats = self.get_lats(nc.variables)
             lons = self.get_lons(nc.variables)
             depths = self.get_depths(nc.variables)
@@ -143,6 +144,17 @@ class Grid(object):
             return self._get_variable(variables, self.TIME_VARIABLE)
         else:
             return [0.]
+
+    def get_time_unit(self, variables):
+        """
+        Retrieve time unit from the dataset
+        """
+        if len(self.TIME_VARIABLE):
+            # times = self._get_variable(variables, self.TIME_VARIABLE)[:]
+            units = variables['time'].units
+            return units
+        else:
+            return ""
 
     def get_lats(self, variables):
         """
@@ -253,7 +265,6 @@ class Gridset(Grid):
 
         filename = self.get_filename(path, prefix, suffix, date, period)
         filename2 =self.get_filename(path, prefix, suffix2, date, period)
-
         #Grid.__init__(self, filename, variable, **kwargs)
         Grid.__init__(self, filename, filename2, variable, **kwargs)
 

@@ -28,6 +28,7 @@ class Dataset(object):
         'date': datetime.date,
         'period': str,
         'area': str,
+        'step': str,
     }
 
     # these parameters are required, failure to include them is an exception

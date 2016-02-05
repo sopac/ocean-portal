@@ -6,6 +6,7 @@
 
 /* hide these by default */
 #date,
+#hour,
 #month,
 #year,
 #tidalgauge,
@@ -21,7 +22,8 @@
 
 /* show #date for daily and weekly data */
 .period-daily #date,
-.period-weekly #date
+.period-weekly #date,
+.period-hourly #date
 {
   display: inline;
 }
@@ -120,7 +122,9 @@
 .variable-tide #longitude,
 .variable-tide #year,
 .variable-tide #month,
-.variable-tide #date
+.variable-tide #date,
+.variable-Hs.period-monthly #hour,
+.variable-Tm.period-monthly #hour
 {
   display: none;
 }
@@ -133,7 +137,9 @@
 .variable-height #hour-slider,
 .variable-ssta #hour-slider,
 .variable-sst #hour-slider,
-.variable-currents #hour-slider
+.variable-currents #hour-slider,
+.variable-Hs.period-hourly #hour,
+.variable-Tm.period-hourly #hour
 {
   display: block;
 }
@@ -152,4 +158,10 @@
 .fishery #marine
 {
   display: inline;
+}
+
+.period-hourly #month,
+.period-hourly #year
+{
+  display: none;
 }
