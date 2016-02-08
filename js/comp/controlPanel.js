@@ -106,6 +106,7 @@ $(function() {
         }
 
         updateVisibilities('variable', ocean.variable, varid);
+
         ocean.variable = varid;
 
         /* filter the options list */
@@ -842,6 +843,25 @@ function showControls() {
     });
 }
 
+function updatSpanForControls(){
+    var controls = arguments;
+
+    if (controls.length == 0) {
+        controls = ocean.controls;
+    }
+
+    $.each(controls, function (i, control) {
+        var parent = _controlVarParent(control);
+        var control_element = $('#' + control);
+        var siblings = control_element.siblings();
+
+        if (control_element.css('display') == 'none'){
+            siblings.hide();
+        } else {
+            siblings.show();
+        }
+    });
+}
 /**
  * hideControls:
  *
@@ -921,6 +941,9 @@ function updateVisibilities(controlvar, old, new_) {
             group.hide();
         }
     });
+
+    //Update spans based on visibilities
+    updatSpanForControls();
 }
 
 /**

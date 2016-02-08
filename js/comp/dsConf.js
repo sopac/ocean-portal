@@ -221,9 +221,11 @@ ocean.dsConf = {
         },
         onSelect: function(){
             $('#plottype').change();
-            showSpanForControl('month');
         },
-        onDeselect: null, 
+        onDeselect: function() {
+            resetMap();
+            resetLegend();
+        },
         onVariableChange: function(){},
         onRegionChange: function() {}
 
