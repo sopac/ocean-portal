@@ -187,6 +187,7 @@ $(function() {
             updateNonDailyDateBasedOnDataset();
         } else if ($('#month').is(':visible')) {
             updateMonthBasedOnDataset();
+            updateOceanDate();
         } else if ($('#date').is(':visible')) {
             updateDailyDateBasedOnDataset();
         } else {
@@ -1049,10 +1050,20 @@ $('.fotorama').on('fotorama:error', function (e, fotorama, extra) {
 function updateNonDailyDateBasedOnDataset(){
     updateYearBasedOnDataset();
     updateMonthBasedOnDataset();
+    updateOceanDate();
+}
+
+function updateOceanDate(){
 
     //set the date
-    ocean.date = new Date(getValue('year'), getValue('month'), 1);
+    var year = getValue('year');
+
+    if (typeof(year) == 'undefined'){
+        year = (new Date()).getFullYear();
+    }
+    ocean.date = new Date(year, getValue('month'), 1);
 }
+
 
 /* populates year */
 function updateYearBasedOnDataset(){
