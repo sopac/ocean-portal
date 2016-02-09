@@ -318,7 +318,6 @@ ocean.dsConf = {
                 hideControls('plottype');
                 hideControls('dataset');
                 hideControls('period');
-
                 ocean.dsConf.ww3.overlay = new L.FeatureGroup();
 
                 //Read file
@@ -428,7 +427,6 @@ ocean.dsConf = {
             updatePage();
         },
         onDeselect: function(){
-            hideSpanForControl('date');
             if (map.hasLayer(ocean.dsConf.tideforecast.overlay)){
                 ocean.mapObj.removeLayer(ocean.dsConf.tideforecast.overlay);
             }
@@ -455,9 +453,7 @@ ocean.dsConf = {
                 setLegend(data.scale);
             }
         },
-        onSelect: function() {
-            showSpanForControl('date');
-        },
+        onSelect: function() {},
         onDeselect: function(){
             resetMap();
             resetLegend();

@@ -806,14 +806,6 @@ function moveIntersectionToNewLocation(){
     }
 }
 
-function showSpanForControl(control) {
-    $('.controlgroup .controlvar #' + control + '.field').prev().show();
-}
-
-function hideSpanForControl(control) {
-    $('.controlgroup .controlvar #' + control + '.field').prev().hide();
-}
-
 function _controlVarParent(control) {
     return $('#' + control).parent('.controlvar');
 }
