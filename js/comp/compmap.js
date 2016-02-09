@@ -194,12 +194,34 @@ function updateMap(data, bounds) {
     if(ocean.imageOverlay) {
         ocean.overlayGroup.removeLayer(ocean.imageOverlay);
     }
-    
     ocean.imageOverlay = L.imageOverlay(imageUrl, imageBounds);
-    ocean.overlayGroup.addLayer(ocean.imageOverlay);
-    ocean.imageOverlay.setOpacity(1.0);
-    ocean.greylandLayer.setOpacity(1.0);
-    ocean.bathymetryLayer.setOpacity(0.0);
+
+    $.ajax({
+        url: data,
+        success: function(data, textStatus, jqXHR) {
+            ocean.overlayGroup.addLayer(ocean.imageOverlay);
+            ocean.imageOverlay.setOpacity(1.0);
+            ocean.greylandLayer.setOpacity(1.0);
+            ocean.bathymetryLayer.setOpacity(0.0);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            if (typeof(data) == "string"){
+                show_error(data, jqXHR.statusText);
+                resetMap();
+                resetLegend();
+            }
+        }
+    });
+}
+
+function show_error(url, text)
+{
+    text = "The image " + url + " is " + text.toLowerCase() + ".";
+    $('#error-dialog-status').html("<b>Error:</b>");
+    $('#error-dialog-content').html(text);
+    $('#error-dialog-request').prop('href', url);
+    $('#error-dialog-report-back').show();
+    $('#error-dialog').dialog('open');
 }
 
 /**
