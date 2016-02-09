@@ -124,7 +124,13 @@
 .variable-tide #month,
 .variable-tide #date,
 .variable-Hs.period-monthly #hour,
-.variable-Tm.period-monthly #hour
+.variable-Tm.period-monthly #hour,
+.variable-atlas.period-monthly #period,
+.variable-atlas.period-monthly #dataset,
+.variable-atlas.period-monthly #plottype,
+.variable-tide.period-daily #period,
+.variable-tide.period-daily #dataset,
+.variable-tide.period-daily #plottype
 {
   display: none;
 }

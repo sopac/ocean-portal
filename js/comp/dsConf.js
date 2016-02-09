@@ -315,9 +315,6 @@ ocean.dsConf = {
         },
         onSelect: function(){
             if (ocean.variable == 'atlas'){
-                hideControls('plottype');
-                hideControls('dataset');
-                hideControls('period');
                 ocean.dsConf.ww3.overlay = new L.FeatureGroup();
 
                 //Read file
@@ -415,10 +412,6 @@ ocean.dsConf = {
         },
         onSelect: function(){
             if (ocean.variable == 'tide'){
-                hideControls('plottype');
-                hideControls('dataset');
-                hideControls('period');
-
                 if (map.hasLayer(map.intersecMarker)){
                     disableIntersecMarker();
                 }
@@ -431,9 +424,7 @@ ocean.dsConf = {
                 ocean.mapObj.removeLayer(ocean.dsConf.tideforecast.overlay);
             }
         },
-        onVariableChange: function(){
-            hideControls('period');
-        },
+        onVariableChange: function(){},
         onRegionChange: function() {}
 
     },
