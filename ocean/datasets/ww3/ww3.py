@@ -397,8 +397,10 @@ class ww3Grid(Grid):
             return variable[0]
         elif ndim == 3:
             # data arranged time, lat, lon
+            idx_list_start = idx[0][0]
+            idx_list_end = idx_list_start + len(idx[0].tolist()) + 1
             if (idx):   #for hourly data
-                return variable[idx[0][0]:idx[0][23]]
+                return variable[idx_list_start: idx_list_end]
             else:
                 return variable[:]
         elif ndim == 2:
