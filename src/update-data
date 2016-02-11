@@ -687,8 +687,26 @@ EOF
 print "Download and Convert HYCOM Currents..."
 
 from ocean.processing.Download_Compile_HYCOM_Currents import Download_Compile_HYCOM_Currents
+import sys, traceback
 
-Download_Compile_HYCOM_Currents("$DATA_DIR","$DATA_SUBDIR","$SERVER","$SERVER_PATH")
+retry = 0
+retry_max = 3
+flag = True
+while flag:
+    try:
+        Download_Compile_HYCOM_Currents("$DATA_DIR","$DATA_SUBDIR","$SERVER","$SERVER_PATH")
+        print 'The currents file has been ownloaded successfully.'
+        flag = False
+    except Exception,e:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        if 'NetCDF' in str(exc_value):
+            retry = retry + 1
+            if (retry != retry_max):
+                print 'Retrying: ' + str(retry)
+                continue
+            else:
+                print 'Gave up for ' + str(exc_value)
+                break
 
 import urllib
 import urllib2
