@@ -479,7 +479,7 @@ function getCombinedDateRange() {
 
         /* 726: ww3 hourly data is available until July 2014 whereas monthly data is available until 2009*/
         if (datasetid == "ww3" && ocean.period == "hourly" && ocean.plottype == "map"){
-            range.max = new Date(2014, 06, 1);
+            range.max = new Date(2016, 0, 31);
         }
 
         minDate = Math.min(minDate, range.min);
