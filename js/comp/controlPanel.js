@@ -292,6 +292,8 @@ $(function() {
         /* Show different help file link text for particular datasets */
         if (["Reynolds", "ERSST"].indexOf(ocean.datasets[ocean.datasetid].name) != -1){
             $('#dshelp span').html("Ocean Temperature");
+        } else if (["WaveWatch III"].indexOf(ocean.datasets[ocean.datasetid].name) != -1){
+            $('#dshelp span').html("Wave Hindcast");
         }
 
         /* update the year and month based on dataset*/
