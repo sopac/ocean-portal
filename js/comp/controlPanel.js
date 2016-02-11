@@ -1301,10 +1301,10 @@ function updateHours(){
 
     hour.find('option').remove();
 
-    var time = ":00:00 AM";
+    var time = ":00 AM";
     for (m = 0; m <= 23; m++) {
         if (m >= 12){
-            time = ":00:00 PM";
+            time = ":00 PM";
         }
         $('<option>', {
             value: m,
