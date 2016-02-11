@@ -52,7 +52,7 @@ class MslaPlotter(SurfacePlotter):
         return grid
     
     def get_ticks(self, params={}):
-        return np.arange(-0.3,0.31,0.06)
+        return np.arange(-0.3,0.31,0.05)
 
     def get_ticks_format(self, params={}, **kwargs):
         return '%.0f'
@@ -62,7 +62,7 @@ class MslaPlotter(SurfacePlotter):
     
     @apply_to(variable='sla')
     def get_labels(self, params={}):
-        return ((self.get_ticks(params=params) * 1000).astype(int), None)
+        return (((self.get_ticks(params=params) * 1000).astype(np.float16)).astype(int), None)
     
     @apply_to(variable='sla')
     def get_smooth_fac(self, params={}):

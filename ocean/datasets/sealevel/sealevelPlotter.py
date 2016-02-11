@@ -142,7 +142,7 @@ class SeaLevelSurfacePlotter(SurfacePlotter):
         return SeaLevelGrid(params['variable'], date=params['date'])
 
     def get_ticks(self, params={}, **kwargs):
-        return np.arange(-300,300.01,60.0)
+        return np.arange(-300,300.01,50.0)
 
     def get_ticks_format(self, params={}, **kwargs):
         return '%.0f'

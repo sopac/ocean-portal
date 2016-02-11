@@ -54,7 +54,7 @@ class PoamaPlotterWrapper(SurfacePlotter):
 
     @apply_to(variable='height')
     def get_ticks(self, params={}):
-        return np.arange(-30, 31, 6)
+        return np.arange(-30, 31, 5)
 
     @apply_to(period='seasonal')
     def get_formatted_date(self, params={}):
