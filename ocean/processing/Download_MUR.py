@@ -19,72 +19,66 @@ import os
 #sys.path.insert(0,'/home/gsmith/map-portal5/map-portal')
 from ocean.config.regionConfig import regions
 
-def Download_MUR(data_dir,data_subdir,server,server_path, day, month, year):
-	mur_path=data_dir+'/'+data_subdir
+def Download_MUR(data_dir,data_subdir,server,server_path, day, month, year, reg_name):
+    mur_path=data_dir+'/'+data_subdir
+    gridcell = 360/float(32768)
+    variable_name='analysed_sst'
+    temp_offset=-273.15
+    #print out ASCII grids
+    ascii_flag=False
+    time_unit='seconds since 1981-01-01 00:00:00 UTC'
 
-        gridcell = 360/float(32768)
-        variable_name='analysed_sst'
-        temp_offset=-273.15
-	#print out ASCII grids
-	ascii_flag=False
-        time_unit='seconds since 1981-01-01 00:00:00 UTC'
+    latStart=regions[reg_name][1]['llcrnrlat']
+    latEnd=regions[reg_name][1]['urcrnrlat']
+    lonStart=regions[reg_name][1]['llcrnrlon']
+    lonEnd=regions[reg_name][1]['urcrnrlon']
 
-	for key in regions:
-	   reg_name=key
-	   if regions[reg_name][0]=='pac':#!='pac':# and reg_name=='nauru':
-		print key
+    day_of_year=(datetime.datetime(year=year, month=month, day=day)-datetime.datetime(year,1,1)).days +1
+    filename=str(year)+str(month).zfill(2)+str(day).zfill(2)+'-JPL-L4UHfnd-GLOB-v01-fv04-MUR.nc.bz2'
+    total_name=server+server_path+'/'+str(year)+'/'+str(day_of_year).zfill(3)+'/'+filename
+    #total_name='/home/gsmith/MUR/20150715-JPL-L4UHfnd-GLOB-v01-fv04-MUR.nc.bz2'
 
-		latStart=regions[reg_name][1]['llcrnrlat']
-		latEnd=regions[reg_name][1]['urcrnrlat']
-		lonStart=regions[reg_name][1]['llcrnrlon']
-		lonEnd=regions[reg_name][1]['urcrnrlon']
+    if not os.path.exists(mur_path+'/'+reg_name):
+        os.makedirs(mur_path+'/'+reg_name)
+    output_filename=mur_path+'/'+reg_name+'/MUR_'+str(year)+str(month).zfill(2)+str(day).zfill(2)+'_'+reg_name
+    if (lonEnd<180):
+      lonCellStart=int((lonStart+180)/gridcell)
+      lonCellEnd=int((lonEnd+180)/gridcell)
+      lonRange=range(lonCellStart,lonCellEnd)
+    elif (lonStart>180):
+      lonCellStart=int((lonStart-180)/gridcell)
+      lonCellEnd=int((lonEnd-180)/gridcell)
+      lonRange=range(lonCellStart,lonCellEnd)
+    else:
+      lonCellStart1=int((lonStart+180)/gridcell)
+      lonCellEnd1=32768
+      lonCellStart2=0
+      lonCellEnd2=int((lonEnd-180)/gridcell)
+      lonRange=range(lonCellStart1,lonCellEnd1)+range(lonCellStart2,lonCellEnd2)
 
-		day_of_year=(datetime.datetime(year=year, month=month, day=day)-datetime.datetime(year,1,1)).days +1
-        	filename=str(year)+str(month).zfill(2)+str(day).zfill(2)+'-JPL-L4UHfnd-GLOB-v01-fv04-MUR.nc.bz2'
-	        total_name=server+server_path+'/'+str(year)+'/'+str(day_of_year).zfill(3)+'/'+filename
-		#total_name='/home/gsmith/MUR/20150715-JPL-L4UHfnd-GLOB-v01-fv04-MUR.nc.bz2'
-		
-		if not os.path.exists(mur_path+'/'+reg_name):
-			os.makedirs(mur_path+'/'+reg_name)
-		output_filename=mur_path+'/'+reg_name+'/MUR_'+str(year)+str(month).zfill(2)+str(day).zfill(2)+'_'+reg_name
-	        if (lonEnd<180):
-		  lonCellStart=int((lonStart+180)/gridcell)
-		  lonCellEnd=int((lonEnd+180)/gridcell)
-		  lonRange=range(lonCellStart,lonCellEnd)
-		elif (lonStart>180):
-		  lonCellStart=int((lonStart-180)/gridcell)
-		  lonCellEnd=int((lonEnd-180)/gridcell)
-		  lonRange=range(lonCellStart,lonCellEnd)
-	        else:
-	          lonCellStart1=int((lonStart+180)/gridcell)
-	          lonCellEnd1=32768
-	          lonCellStart2=0
-	          lonCellEnd2=int((lonEnd-180)/gridcell)
-	          lonRange=range(lonCellStart1,lonCellEnd1)+range(lonCellStart2,lonCellEnd2)
-
-        	latCellStart=int((90+latStart)/gridcell)
-		latCellEnd=int((90+latEnd)/gridcell)
-		latRange=range(latCellStart,latCellEnd)
-		lat,lon,sst_data,sst_time=extract_sst(total_name,lonRange,latRange,variable_name,temp_offset)
-		gradient_data=calc_grad(sst_data,lon,lat)
-		front_data=front_detect(sst_data,lon,lat,gradient_data,output_filename)
-		create_nc(output_filename,len(lonRange),len(latRange),'sst',lat,lon,sst_data,gradient_data,front_data,sst_time,time_unit,gridcell,temp_offset,ascii_flag)
+    latCellStart=int((90+latStart)/gridcell)
+    latCellEnd=int((90+latEnd)/gridcell)
+    latRange=range(latCellStart,latCellEnd)
+    lat,lon,sst_data,sst_time=extract_sst(total_name,lonRange,latRange,variable_name,temp_offset)
+    gradient_data=calc_grad(sst_data,lon,lat)
+    front_data=front_detect(sst_data,lon,lat,gradient_data,output_filename)
+    create_nc(output_filename,len(lonRange),len(latRange),'sst',lat,lon,sst_data,gradient_data,front_data,sst_time,time_unit,gridcell,temp_offset,ascii_flag)
 
 def extract_sst(filename,lonRange,latRange,nc_data_name,temp_offset):
 
-	cdf1=Dataset(filename,'r')
-	data_var_names=cdf1.variables.keys()
-	lat=np.empty([len(latRange)])
-	lon=np.empty([len(lonRange)])
-	sst=np.empty([len(latRange),len(lonRange)])
+    cdf1=Dataset(filename,'r')
+    data_var_names=cdf1.variables.keys()
+    lat=np.empty([len(latRange)])
+    lon=np.empty([len(lonRange)])
+    sst=np.empty([len(latRange),len(lonRange)])
 
-        lat[:]=cdf1.variables["lat"][latRange]
-	lon[:]=cdf1.variables["lon"][lonRange]
-	sst[:,:]=cdf1.variables[nc_data_name][0,latRange,lonRange]
-	time=cdf1.variables["time"][0]
-	#sst=sst-temp_offset
-	cdf1.close()
-	return lat,lon,sst,time
+    lat[:]=cdf1.variables["lat"][latRange]
+    lon[:]=cdf1.variables["lon"][lonRange]
+    sst[:,:]=cdf1.variables[nc_data_name][0,latRange,lonRange]
+    time=cdf1.variables["time"][0]
+    #sst=sst-temp_offset
+    cdf1.close()
+    return lat,lon,sst,time
 
 def calc_grad(sst_array,lon,lat):
 	grad=np.empty([len(lat),len(lon)])
