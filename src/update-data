@@ -39,7 +39,7 @@ case $DATASET in
         ;;
     coral_ol)
         SERVER=ftp://ftp.star.nesdis.noaa.gov
-        SERVER_PATH=/pub/sod/mecb/gliu/outlook_for_bom_v3
+        SERVER_PATH=/pub/sod/mecb/crw/data/cfsv2_outlook_v3/
         DATA_SUBDIR=outlook
         MIRROR_FLAGS='-I outlook*.dat'
         ;;
