@@ -80,7 +80,8 @@ class Calculate_Weekly_Averages():
 	else:
 		first_date_to_use = start_date+dateutil.relativedelta.relativedelta(days=7-idx)
 	num_of_days=end_date-first_date_to_use
-	num_of_weeks=num_of_days.days/7
+
+	num_of_weeks=(num_of_days.days/7)+1
 	
 
         # Loop through months in date range
@@ -95,6 +96,7 @@ class Calculate_Weekly_Averages():
         month = last_date_to_use.month
 	day = last_date_to_use.day
         end_date = datetime.datetime(year, month, day)
+	print end_date
         return end_date
 
     def _calc_weekly_average(self, settings, first_date,week):
