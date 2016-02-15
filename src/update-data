@@ -710,6 +710,25 @@ while flag:
 import urllib
 import urllib2
 from ocean.config import regionConfig
+#-------------preprocess on tuscany-------
+url = "http://tuscany/portal/cgi/portal.py"
+values = {"dataset": "currentforecast",
+          "variable": "currents",
+          "plot": "map",
+          "period": "3days",
+          "area": "fiji",
+          "date": "20120701",
+          "mode": "preprocess"
+         }
+data = urllib.urlencode(values)
+full_url = url + '?' + data
+try:
+    response = urllib2.urlopen(full_url, None, 60000)
+    print response.read()
+except urllib2.HTTPError as e:
+    print e.read()
+
+
 #-------------preprocess on tunceli--------
 url = "http://tunceli/portal/cgi/portal.py"
 values = {"dataset": "currentforecast",
