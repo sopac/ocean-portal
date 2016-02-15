@@ -161,7 +161,7 @@ data = [
     'help/about_bran.pdf',
     'help/about_sealevel.pdf',
     'help/about_ww3forecasts.pdf',
-    'help/about_ww3.pdf',
+    'help/about_ww3climate.pdf',
     'help/about_chlorophyll.pdf',
     'help/about_coralbleaching.pdf',
     'help/about_currents.pdf',

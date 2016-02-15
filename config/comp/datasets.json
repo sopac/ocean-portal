@@ -65,7 +65,7 @@
     "id":"ww3",
     "name":"WaveWatch III",
     "title": "WaveWatch III",
-    "help": "help/about_ww3.pdf",
+    "help": "help/about_ww3climate.pdf",
     "variables": [{
         "id": "Hs",
         "name": "Significant Wave Height",
