@@ -1028,7 +1028,7 @@ function updateDatasetForSST(){
         addOption('dataset', 'convergence', 'Reynolds');
         ocean.variable = 'mean';
     } else { //for subregions
-        addOption('dataset', 'mur', 'MUR');
+        addOption('dataset', 'mur', 'High Resolution SST & Fronts');
         ocean.variable = 'mursst';
     }
 
