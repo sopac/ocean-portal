@@ -1329,6 +1329,8 @@ function updatePeriods(){
             periods = {"monthly": ocean.variables[ocean.variable].plots[getValue('plottype')]['monthly']};
         }else if (ocean.plottype == 'map'){
             periods = {"hourly": ocean.variables[ocean.variable].plots[getValue('plottype')]['hourly']};
+        } else if (ocean.plottype == 'waverose'){
+            periods = {"monthly": ocean.variables[ocean.variable].plots[getValue('plottype')]['monthly']};
         }
       } else {
         periods = ocean.variables[ocean.variable].plots[ocean.plottype];
