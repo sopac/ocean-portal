@@ -196,3 +196,8 @@ class chlorophyll(SST):
         'chlmonthly'
     ]
 
+    def preprocess(self, fileName, **params):
+        '''
+            Allows the map images to be produced via the URL.
+        '''
+        self.plotter.plot(fileName, **params)

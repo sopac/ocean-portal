@@ -113,7 +113,13 @@ class SST(Dataset):
         return formatted_date
 
     def process_stats(self, params):
-        return {} 
+        return {}
+
+    def preprocess(self, fileName, **params):
+        '''
+            Allows the map images to be produced via the URL.
+        '''
+        pass
 
     def process(self, params):
         response = {}
@@ -132,7 +138,11 @@ class SST(Dataset):
 
         elif not util.check_files_exist(outputFileName,
                                       COMMON_FILES.values()):
-            self.plotter.plot(fileName, **params)
+            if ('mode' in params) and (params['mode'] == 'preprocess'):
+                response['preproc'] = 'inside'
+                self.preprocess(fileName, **params)
+            else:
+                self.plotter.plot(fileName, **params)
 
         if not util.check_files_exist(outputFileName,
                                       COMMON_FILES.values()):
