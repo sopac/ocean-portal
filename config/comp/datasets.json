@@ -105,7 +105,7 @@
         "plottypes": ["map", "xsections"]
     }, {
         "id":"uv",
-        "name":"Currents Speed and Direction",
+        "name":"Current Speed and Direction",
         "periods": ["monthly", "3monthly", "6monthly", "12monthly"],
         "plottypes": ["map"]
     }],
