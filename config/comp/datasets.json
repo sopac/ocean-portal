@@ -91,7 +91,7 @@
     "name":"BRAN",
     "title": "BRAN 3.5",
     "rank": 50,
-    "help": "help/about_bran.pdf",
+    "help": "help/about_BRAN.pdf",
     "variables": [{
         "id":"meansst",
         "bid": "temp",
