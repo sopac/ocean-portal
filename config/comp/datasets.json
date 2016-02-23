@@ -167,7 +167,7 @@
         }
     },{
         "id":"outlook",
-        "name":"Coral Bleaching Forecast",
+        "name":"Coral Bleaching Outlook",
         "periods": ["4weeks", "8weeks", "12weeks"],
         "plottypes": ["map"]
     }]
