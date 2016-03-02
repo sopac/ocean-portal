@@ -154,7 +154,7 @@ class CurrentForecastPlotter(Plotter):
 
             m.drawcoastlines(linewidth=0.5, color='#505050', zorder=8)
 #            m.fillcontinents(color='#F1EBB7', zorder=7)
-            m.fillcontinents(color='white', zorder=7)
+            m.fillcontinents(color='0.58', zorder=7)
 
             # Save figure
             plt.savefig(region['output_filename'], dpi=120,
