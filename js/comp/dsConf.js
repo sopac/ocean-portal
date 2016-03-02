@@ -359,43 +359,43 @@ ocean.dsConf = {
             return valid;
         },
         callback: function(data) {
-            ocean.dsConf.tideforecast.overlay = new L.FeatureGroup();
+            /*ocean.dsConf.tideforecast.overlay = new L.FeatureGroup();
 
             //Current year
-            year_0 = (new Date()).getFullYear();
-            year_1 = year_0 + 1;
-            year_2 = year_1 + 1;
+            var year_0 = (new Date()).getFullYear();
+            var year_1 = year_0 + 1;
+            var year_2 = year_1 + 1;
 
             //Load the markers
-            base_pdf_url = "http://www.bom.gov.au/ntc/IDO59001/IDO59001_";
-            high_tide_content = ""
-            low_tide_content = ""
+            var base_pdf_url = "http://www.bom.gov.au/ntc/IDO59001/IDO59001_";
+            var high_tide_content = ""
+            var low_tide_content = ""
 
             points = data;
 
             for (var key in points){
                 var point = points[key];
 
-                web_url =  "http://www.bom.gov.au/australia/tides/#!/offshore-" + point.short_name.trim();
-                pdf_url_0 =  base_pdf_url  + year_0 + "_" + point.station_number.trim() + ".pdf";
-                pdf_url_1 =  base_pdf_url  + year_1 + "_" + point.station_number.trim() + ".pdf";
-                pdf_url_2 =  base_pdf_url  + year_2 + "_" + point.station_number.trim() + ".pdf";
+                var web_url =  "http://www.bom.gov.au/australia/tides/#!/offshore-" + point.short_name.trim();
+                var pdf_url_0 =  base_pdf_url  + year_0 + "_" + point.station_number.trim() + ".pdf";
+                var pdf_url_1 =  base_pdf_url  + year_1 + "_" + point.station_number.trim() + ".pdf";
+                var pdf_url_2 =  base_pdf_url  + year_2 + "_" + point.station_number.trim() + ".pdf";
 
                 if (point.high_tide_time && point.current_time){
-                    nextHighTide = point.high_tide_time - point.current_time;
-                    high_hour = Math.floor(nextHighTide/(60*60));
-                    high_min = Math.floor((nextHighTide % (60 * 60)) / 60);
-                    high_tide_content = "Next high tide in: <b>" + high_hour + "  hrs " + high_min + "  min ("+ point.high_tide_height + " m)</b><br>";
+                    var nextHighTide = point.high_tide_time - point.current_time;
+                    var high_hour = Math.floor(nextHighTide/(60*60));
+                    var high_min = Math.floor((nextHighTide % (60 * 60)) / 60);
+                    var high_tide_content = "Next high tide in: <b>" + high_hour + "  hrs " + high_min + "  min ("+ point.high_tide_height + " m)</b><br>";
                 }
 
                 if (point.low_tide_time && point.current_time){
-                    nextLowTide = point.low_tide_time - point.current_time;
-                    low_hour = Math.floor(nextLowTide/(60*60));
-                    low_min = Math.floor((nextLowTide % (60 * 60)) / 60);
-                    low_tide_content =  "Next low tide in: <b>" + low_hour + "  hrs " + low_min + "  min (" + point.low_tide_height + " m)</b><br>";
+                    var nextLowTide = point.low_tide_time - point.current_time;
+                    var low_hour = Math.floor(nextLowTide/(60*60));
+                    var low_min = Math.floor((nextLowTide % (60 * 60)) / 60);
+                    var low_tide_content =  "Next low tide in: <b>" + low_hour + "  hrs " + low_min + "  min (" + point.low_tide_height + " m)</b><br>";
                 }
 
-                popup_content = "<h4>"+ key + "</h4>"
+                var popup_content = "<h4>"+ key + "</h4>"
                        + high_tide_content
                        + low_tide_content
                        + "<br>Tide forecast reports:<br>"
@@ -408,16 +408,52 @@ ocean.dsConf = {
                 ocean.dsConf.tideforecast.overlay.addLayer(marker);
             }
 
-            ocean.mapObj.addLayer(ocean.dsConf.tideforecast.overlay);
+            ocean.mapObj.addLayer(ocean.dsConf.tideforecast.overlay);*/
         },
         onSelect: function(){
+            resetMap();
+            resetLegend();
             if (ocean.variable == 'tide'){
+                ocean.dsConf.tideforecast.overlay = new L.FeatureGroup();
+
+                //Current year
+                var year_0 = (new Date()).getFullYear();
+                var year_1 = year_0 + 1;
+
+                var BASE_URL = "http://www.bom.gov.au/australia/tides/scripts/getNextTides.php?";
+                var base_pdf_url = "http://www.bom.gov.au/ntc/IDO59001/IDO59001_";
+
+                //Read file
+                $.getScript("js/comp/tide_gauges_to_load.js")
+                    .done(function( script, textStatus ) {
+                        for (var i = 0; i < points.length; i++) {
+                            var web_url =  "http://www.bom.gov.au/australia/tides/#!/offshore-" + points[i][4].trim();
+                            var pdf_url_0 =  base_pdf_url  + year_0 + "_" + points[i][6].trim() + ".pdf";
+                            var pdf_url_1 =  base_pdf_url  + year_1 + "_" + points[i][6].trim() + ".pdf";
+                            var url = BASE_URL + "aac=" + points[i][6] + "&offset=false&tz=" + points[i][5];
+                            var popup_content = "<h4 id='title'>"+ points[i][0] + "</h4>"
+                                   + "<p id='website'><a href=" + web_url + " target=_blank>Go to Tide Prediction website</a></p>"
+                                   + "<p id='url' style='display:none;'>" + url + "</p>"
+                                   + "<p id='reports'>Tide forecast reports: " + "<a href=" + pdf_url_0 + " target=_blank>" + year_0 + "</a>  <a href=" + pdf_url_1 + " target=_blank>" + year_1 + "</a></p>";
+
+                            //Load the markers
+                            var marker = new L.marker([points[i][1],points[i][2]]).bindPopup(popup_content).on('popupopen', getTideInfo);
+                            ocean.dsConf.tideforecast.overlay.addLayer(marker);
+                        }
+
+                        return false;
+                    })
+
+                    .fail(function( jqxhr, settings, exception ) {
+                        fatal_error("Failed to load location points to show tide calendar report.");
+                    });
+
+                ocean.mapObj.addLayer(ocean.dsConf.tideforecast.overlay);
+
                 if (map.hasLayer(map.intersecMarker)){
                     disableIntersecMarker();
                 }
             }
-
-            updatePage();
         },
         onDeselect: function(){
             if (map.hasLayer(ocean.dsConf.tideforecast.overlay)){
@@ -1053,4 +1089,81 @@ function isLocationPointValid(){
     }
 
     return valid;
+}
+
+function getTideInfo(e) {
+    $('#loading-dialog').dialog('open');
+
+    var popup = e.target.getPopup();
+
+    //Retrieving url from the cpopup content
+    var children = popup._contentNode.children;
+    var title = '';
+    var website = '';
+    var url = '';
+    var reports = '';
+
+    for(var i=0; i < children.length; i++){
+        if (children[i].id == 'title'){
+            title = children[i].innerHTML.trim();
+        } else if (children[i].id == 'website'){
+            website = children[i].innerHTML.trim();
+        } else if (children[i].id == 'url'){
+            url = children[i].textContent.trim();
+        } else if (children[i].id == 'reports'){
+            reports = children[i].innerHTML.trim();
+        }
+    }
+
+    // As the machines inside DMZ are not accessible from the outside, so we are taking advantage of Yahoo Query Language (YQL) to get the json response from the cross domain request.
+    // https://developer.yahoo.com/yql/
+    request_url = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + url + '"') + '&format=json';
+
+    if (request_url != ''){
+        $.ajax({
+            type: 'GET',
+            url: request_url,
+            dataType:"text",
+            success: function(text) {
+               if ($.parseJSON(text).query.results){
+                    data = $.parseJSON($.parseJSON(text).query.results.body).results;
+               }
+
+               var new_content = '';
+               var high_tide_content = '';
+               var low_tide_content = '';
+
+               if (data.next_high.time && data.current_time){
+                    var nextHighTide = data.next_high.time - data.current_time;
+                    var high_hour = Math.floor(nextHighTide/(60*60));
+                    var high_min = Math.floor((nextHighTide % (60 * 60)) / 60);
+                    var high_tide_content = "<p id ='tide'>Next high tide in: <b>" + high_hour + "  hrs " + high_min + "  min ("+ data.next_high.height + " m)</b><br/>";
+               }
+
+               if (data.next_low.time && data.current_time){
+                    var nextLowTide = data.next_low.time - data.current_time;
+                    var low_hour = Math.floor(nextLowTide/(60*60));
+                    var low_min = Math.floor((nextLowTide % (60 * 60)) / 60);
+                    var low_tide_content =  "Next low tide in: <b>" + low_hour + "  hrs " + low_min + "  min (" + data.next_low.height + " m)</b></p>";
+               }
+
+               if ((high_tide_content != '') && (low_tide_content != '')){
+                    new_content = "<h4 id='title'>"+ title + "</h4>"
+                                   + "<p id='website'>" + website + "</p>"
+                                   + "<p id='url' style='display:none;'>" + url + "</p>"
+                                   + "<p id='reports'>" + reports + "</p>"
+                                   + high_tide_content + low_tide_content;
+
+                    popup.setContent(new_content);
+               }
+            },
+            error: function(xhr, status, error) {
+               console.log('error');
+               console.log(xhr);
+            },
+            complete: function(xhr, status) {
+                $('#loading-dialog').dialog('close');
+            }
+        });
+    }
 }
