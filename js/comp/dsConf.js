@@ -1141,14 +1141,14 @@ function getTideInfo(e) {
                     var nextHighTide = data.next_high.time - current_time;
                     var high_hour = Math.floor(nextHighTide/(60*60));
                     var high_min = Math.floor((nextHighTide % (60 * 60)) / 60);
-                    var high_tide_content = "<p id ='tide'>Next high tide in: <b>" + high_hour + "  hrs " + high_min + "  min ("+ data.next_high.height + " m)</b><br/>";
+                    high_tide_content = "<p id ='tide'>Next high tide in: <b>" + high_hour + "  hrs " + high_min + "  min ("+ data.next_high.height + " m)</b><br/>";
                }
 
                if (data.next_low.time && (data.next_low.time - current_time > 0)){
                     var nextLowTide = data.next_low.time - current_time;
                     var low_hour = Math.floor(nextLowTide/(60*60));
                     var low_min = Math.floor((nextLowTide % (60 * 60)) / 60);
-                    var low_tide_content =  "Next low tide in: <b>" + low_hour + "  hrs " + low_min + "  min (" + data.next_low.height + " m)</b></p>";
+                    low_tide_content =  "Next low tide in: <b>" + low_hour + "  hrs " + low_min + "  min (" + data.next_low.height + " m)</b></p>";
                }
 
                if ((high_tide_content != '') && (low_tide_content != '')){
