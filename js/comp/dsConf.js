@@ -1117,7 +1117,13 @@ function getTideInfo(e) {
 
     // As the machines inside DMZ are not accessible from the outside, so we are taking advantage of Yahoo Query Language (YQL) to get the json response from the cross domain request.
     // https://developer.yahoo.com/yql/
-    request_url = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + url + '"') + '&format=json';
+
+    //We are not using the data.current_time as its corresponding ajax response is inconsistant. Instead we use the system time. Also we are adding the random current_time_ms in the url to force YQL not to get response from cache. 
+    var d = new Date();
+    var current_time_ms = d.getTime();
+    var current_time = current_time_ms/1000;
+
+    request_url = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + url + "&rnd=" + current_time_ms + '"') + '&format=json';
 
     if (request_url != ''){
         $.ajax({
@@ -1132,10 +1138,6 @@ function getTideInfo(e) {
                var new_content = '';
                var high_tide_content = '';
                var low_tide_content = '';
-
-               //We are not using the data.current_time as its corresponding ajax response is inconsistant. Instead we use the system time.
-               var d = new Date();
-               var current_time = d.getTime()/1000;
 
                if (data.next_high.time && (data.next_high.time - current_time > 0)){
                     var nextHighTide = data.next_high.time - current_time;
