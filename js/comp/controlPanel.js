@@ -720,6 +720,70 @@ function selectFirstIfRequired(comboid) {
 }
 
 /**
+ * enable right click on the map to retrieve point value for selected variables.
+ */
+function enablePointClick() {
+    map.on('contextmenu', pointClick);
+
+    createPointPopup();
+}
+
+function disablePointClick() {
+    map.off('contextmenu', pointClick(e));
+}
+
+function createPointPopup(){
+    if (typeof(map.pointPopup) == 'undefined' || !map.pointPopup){
+        map.pointPopup = L.popup();
+    }
+}
+
+function pointClick(e) {
+    var params = $.extend(ocean.dataset.params(), {
+            lat: e.latlng.lat,
+            lon: e.latlng.lng,
+            plot: 'point'
+        });
+    $.ajax({
+            url: 'cgi/portal.py',
+            data: params,
+            dataType: 'json',
+            beforeSend: function(jqXHR, settings) {
+                ocean.processing = true;
+                map.pointPopup.setLatLng(e.latlng)
+                   .setContent('<p>...</p>')
+                   .openOn(map);
+                paramscheck = ocean.dataset.beforeSend();
+                if (!paramscheck) {
+                    ocean.processing = false;
+                    map.closePopup(map.pointPopup);
+                }
+                return paramscheck;
+            },
+            success: function(data, textStatus, jqXHR) {
+                if (data == null || $.isEmptyObject(data))
+                {
+                    map.pointPopup.setContent('<p>Failed to get point value</p>');
+                    map.pointPopup.update()
+                }
+                else
+                {
+                    if (data.error) {
+                        map.pointPopup.setContent('<p>' + data.error + '</p>');
+                    } else {
+                        map.pointPopup.setContent('<p>' + data.value.toFixed(2) + '</p>');
+                    }
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+            },
+            complete: function(jqXHR, textStatus) {
+                ocean.processing = false;
+            }
+        });
+}
+
+/**
  * addPointLayer:
  *
  * Adds a point selection layer to the map.

@@ -68,7 +68,9 @@ ocean.dsConf = {
                 setLegend(data.scale);
             }
         },
-        onSelect: null,
+        onSelect: function() {
+            enablePointClick();
+        },
         onDeselect: function() {
             resetMap();
             resetLegend();

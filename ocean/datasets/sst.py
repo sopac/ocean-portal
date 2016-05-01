@@ -34,6 +34,8 @@ class SST(Dataset):
         'trend': bool,
         'runningInterval': int,
         'baseYear': int,
+        'lat': float,
+        'lon': float,
     }
     __form_params__.update(Dataset.__form_params__)
 
@@ -52,6 +54,7 @@ class SST(Dataset):
 
     __plots__ = [
         'map',
+        'point'
     ]
 
     apply_to = util.Parameterise(Dataset)
@@ -133,31 +136,36 @@ class SST(Dataset):
         fileName = self.get_filename_format(params=params) % p
         outputFileName = os.path.join(serverCfg['outputDir'], fileName)
 
-        if params['variable'] == 'dec':
-            self.plotter.plot(fileName, **params)
-
-        elif not util.check_files_exist(outputFileName,
-                                      COMMON_FILES.values()):
-            if ('mode' in params) and (params['mode'] == 'preprocess'):
-                response['preproc'] = 'inside'
-                self.preprocess(fileName, **params)
-            else:
+        if params['plot'] == 'map':
+            if params['variable'] == 'dec':
                 self.plotter.plot(fileName, **params)
 
-        if not util.check_files_exist(outputFileName,
-                                      COMMON_FILES.values()):
-            response['error'] = \
-                "Requested image is not available at this time."
-        else:
-            response.update(util.build_response_object(
-                    COMMON_FILES.keys(),
-                    os.path.join(serverCfg['baseURL'],
-                                 serverCfg['rasterURL'],
-                                 fileName),
-                    COMMON_FILES.values()))
-            util.touch_files(os.path.join(serverCfg['outputDir'],
-                                          fileName),
-                             COMMON_FILES.values())
+            elif not util.check_files_exist(outputFileName,
+                                          COMMON_FILES.values()):
+                if ('mode' in params) and (params['mode'] == 'preprocess'):
+                    response['preproc'] = 'preprocessing...'
+                    self.preprocess(fileName, **params)
+                else:
+                    self.plotter.plot(fileName, **params)
 
-        response.update(self.process_stats(params))
+            if not util.check_files_exist(outputFileName,
+                                          COMMON_FILES.values()):
+                response['error'] = \
+                    "Requested image is not available at this time."
+            else:
+                response.update(util.build_response_object(
+                        COMMON_FILES.keys(),
+                        os.path.join(serverCfg['baseURL'],
+                                     serverCfg['rasterURL'],
+                                     fileName),
+                        COMMON_FILES.values()))
+                util.touch_files(os.path.join(serverCfg['outputDir'],
+                                              fileName),
+                                 COMMON_FILES.values())
+
+            response.update(self.process_stats(params))
+        elif params['plot'] == 'point': #for point value extraction 
+            (lat, lon), value = self.plotter.extract(**params)
+            response['value'] = float(value)
+
         return response

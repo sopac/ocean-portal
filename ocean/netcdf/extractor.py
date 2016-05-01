@@ -106,7 +106,6 @@ class Extractor():
                 result = ((lats[point[1]], lons[point[0]]),
                           (point[1], point[0]))
                 break
-
         return result
 
     @classmethod

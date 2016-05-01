@@ -11,6 +11,8 @@ import os
 import sys
 import json
 
+import tempfile
+os.environ['MPLCONFIGDIR'] = tempfile.mkdtemp()
 import matplotlib
 matplotlib.use('agg')
 
