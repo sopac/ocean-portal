@@ -729,7 +729,8 @@ function enablePointClick() {
 }
 
 function disablePointClick() {
-    map.off('contextmenu', pointClick(e));
+    map.off('contextmenu', pointClick);
+    map.closePopup(map.pointPopup);
 }
 
 function createPointPopup(){

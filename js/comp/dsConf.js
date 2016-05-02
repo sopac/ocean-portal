@@ -74,6 +74,7 @@ ocean.dsConf = {
         onDeselect: function() {
             resetMap();
             resetLegend();
+            disablePointClick();
         }, 
         onVariableChange: function(){
             selectMonthsForNearRealTimeDatasets();
@@ -114,10 +115,13 @@ ocean.dsConf = {
                 setLegend(data.scale);
             }
         },
-        onSelect: null,
+        onSelect: function() {
+            enablePointClick();
+        },
         onDeselect: function() {
             resetMap();
             resetLegend();
+            disablePointClick();
         }, 
         onVariableChange: function(){
             selectMonthsForNearRealTimeDatasets();

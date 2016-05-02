@@ -8,11 +8,15 @@
 #          Danielle Madeley <d.madeley@bom.gov.au>
 
 import os.path
+import numpy as np
+import numpy.ma as ma
 
 from ocean import config
 from ocean.datasets import SST
 from ocean.netcdf import SurfacePlotter
 from ocean.util import Parameterise
+from ocean.netcdf.extractor import Extractor, LandError
+from ocean.config import regionConfig
 
 serverCfg = config.get_server_config()
 
@@ -64,6 +68,31 @@ class ERSSTPlotter(SurfacePlotter):
     def get_contourlines(self, params={}):
         return False
 
+    def extract(self, **args):
+
+        area = args['area']
+        variable = args['variable']
+        inputLat = args['lat']
+        inputLon = args['lon']
+
+        lat_min = regionConfig.regions[area][1]['llcrnrlat']
+        lat_max = regionConfig.regions[area][1]['urcrnrlat']
+        lon_min = regionConfig.regions[area][1]['llcrnrlon']
+        lon_max = regionConfig.regions[area][1]['urcrnrlon']
+
+        grid = self.get_grid(params=args,
+                             lonrange=(lon_min, lon_max),
+                             latrange=(lat_min, lat_max))
+
+        #extract lat/lon and value
+        (lat, lon), (latIndex, lonIndex) = Extractor.getGridPoint(inputLat, inputLon, grid.lats, grid.lons,
+                                                     grid.data)
+        value = grid.data[latIndex, lonIndex]
+        if value is ma.masked:
+            raise LandError()
+        #return extracted values
+        return (lat, lon), value
+  
 class ersst(SST):
     DATASET = 'ersst'
     PLOTTER = ERSSTPlotter
