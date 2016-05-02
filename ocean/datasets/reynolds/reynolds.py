@@ -69,8 +69,7 @@ class ReynoldsPlotter(SurfacePlotter):
 
         #extract lat/lon and value
         (lat, lon), (latIndex, lonIndex) = Extractor.getGridPoint(inputLat, inputLon, grid.lats, grid.lons,
-                                                     grid.data,
-                                                     strategy='exhaustive')
+                                                     grid.data)
         value = grid.data[latIndex, lonIndex]
         if value is ma.masked:
             raise LandError()
