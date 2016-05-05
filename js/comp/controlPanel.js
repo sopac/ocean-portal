@@ -772,7 +772,7 @@ function pointClick(e) {
                     if (data.error) {
                         map.pointPopup.setContent('<p>' + data.error + '</p>');
                     } else {
-                        map.pointPopup.setContent('<p>' + data.value.toFixed(2) + '</p>');
+                        map.pointPopup.setContent('<p>' + ocean.dataset.formatValue(data.value) + '</p>');
                     }
                 }
             },

@@ -79,7 +79,10 @@ ocean.dsConf = {
         onVariableChange: function(){
             selectMonthsForNearRealTimeDatasets();
         },
-        onRegionChange: function() {}
+        onRegionChange: function() {},
+        formatValue: function(value) {
+            return value.toFixed(2);
+        }
     },
     ersst: {
         params: override(function (dataset) { return {
@@ -126,7 +129,10 @@ ocean.dsConf = {
         onVariableChange: function(){
             selectMonthsForNearRealTimeDatasets();
         },
-        onRegionChange: function() {}
+        onRegionChange: function() {},
+        formatValue: function(value) {
+            return value.toFixed(2);
+        }
 
 
     },
@@ -867,11 +873,14 @@ ocean.dsConf = {
             updateInfo(data.dial, 'Alert level');
 
         },
-        onSelect: null,
+        onSelect: function() {
+            enablePointClick();
+        },
         onDeselect: function() {
             resetMap();
             resetLegend();
             updateInfo(null, '');
+            disablePointClick();
         }, 
         onVariableChange: function(){
             resetMap();
@@ -881,6 +890,9 @@ ocean.dsConf = {
         onRegionChange: function() {
             resetMap();
             updateInfo(null, '');
+        },
+        formatValue: function(value) {
+            return value.toFixed(0);
         }
     },
     chlorophyll: {

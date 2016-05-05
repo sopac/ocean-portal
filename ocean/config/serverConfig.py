@@ -40,6 +40,26 @@ class default(BaseConfig):
     debug = False
     profile = False
 
+class localhost(default):
+    debug = True
+    mapservPath = '/usr/libexec/mapserver'
+    dataDir = {
+        'bran': '/data/blue_link/data/',
+        'ersst': '/data/sst/ersst/data/',
+        'reynolds': '/data/sst/reynolds/',
+        'sealevel': '/data/sea_level/',
+        'msla': '/data/sea_level/',
+        'ww3': '/data/wavewatch3/',
+        'coral':'/data/sst/coral/',
+        'poamasla':'/data/poama/',
+        'poamassta':'/data/poama/',
+        'oceanmaps':'/data/oceanmaps/',
+        'chloro':'/data/chloro/',
+        'currents':'/data/currents/',
+        'ww3forecast':'/data/wavewatch3/forecast/',
+        'mur':'/data/sst/mur/'
+    }
+
 class tuscany(default):
     debug = True
     mapservPath = '/usr/libexec/mapserver'

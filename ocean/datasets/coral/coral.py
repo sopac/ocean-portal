@@ -11,6 +11,7 @@ import glob
 from datetime import datetime, timedelta
 
 import numpy as np
+import numpy.ma as ma
 
 from ocean import util, config
 from ocean.config import productName
@@ -18,6 +19,8 @@ from ocean.netcdf import SurfacePlotter
 from ocean.plotter import Plotter
 from ocean.datasets import SST
 from ocean.netcdf import Gridset
+from ocean.netcdf.extractor import Extractor, LandError
+from ocean.config import regionConfig
 
 from coralAlert import filter_alert
 
@@ -187,6 +190,31 @@ class CoralPlotterWrapper(SurfacePlotter):
         elif params['period'] == '12weeks':
             grid.data = grid.data[2]
         return grid
+
+    def extract(self, **args):
+
+        area = args['area']
+        variable = args['variable']
+        inputLat = args['lat']
+        inputLon = args['lon']
+
+        lat_min = regionConfig.regions[area][1]['llcrnrlat']
+        lat_max = regionConfig.regions[area][1]['urcrnrlat']
+        lon_min = regionConfig.regions[area][1]['llcrnrlon']
+        lon_max = regionConfig.regions[area][1]['urcrnrlon']
+
+        grid = self.get_grid(params=args,
+                             lonrange=(lon_min, lon_max),
+                             latrange=(lat_min, lat_max))
+
+        #extract lat/lon and value
+        (lat, lon), (latIndex, lonIndex) = Extractor.getGridPoint(inputLat, inputLon, grid.lats, grid.lons,
+                                                     grid.data)
+        value = grid.data[latIndex, lonIndex]
+        if value is ma.masked:
+            raise LandError()
+        #return extracted values
+        return (lat, lon), value
         
 class CoralGridset(Gridset):
  
@@ -242,6 +270,7 @@ class coral(SST):
 
     __plots__ = [
         'map',
+        'point'
     ]
 
     __variables__ = [

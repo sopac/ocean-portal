@@ -43,7 +43,13 @@ class Extractor():
 
         gridPointColIndex = 0
 
-        latInsertIndex = bisect.bisect_left(lats, inputLat)
+        if lats[0] > lats[-1]:
+            flippedlats = np.flipud(lats)
+            latInsertIndex = bisect.bisect_left(flippedlats, inputLat)
+            latInsertIndex = lats.size - latInsertIndex
+        else:
+            latInsertIndex = bisect.bisect_left(lats, inputLat)
+        #latInsertIndex = bisect.bisect_left(lats, inputLat)
         # For lon, first we need to check the lon range in the dataset.
         # if the lon range is from 0 to a number larger
         # than 180, than we should convert the input lon. Otherwise the
@@ -57,11 +63,14 @@ class Extractor():
         nearestPoints = []
         lonInsertIndex = bisect.bisect_left(lons, dataLon)
 
+        #check if the dataset is upside down
+        upside_down = lats[0] > lats[-1]
         # check if the dataset wraps around the globe
         dataset_wraps = (np.abs(lons[0] + lons[-1]) % 360) ** 2 <= 25
 
         if validate_range and \
-           (not lats[0] < inputLat < lats[-1] or \
+           ((upside_down and not lats[-1] < inputLat < lats[0]) or \
+            (not upside_down and not lats[0] < inputLat < lats[-1]) or \
             (not dataset_wraps and not lons[0] < dataLon < lons[-1])):
             raise OutOfDataRange((inputLat, inputLon), lats, lons)
 
