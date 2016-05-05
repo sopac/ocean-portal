@@ -547,10 +547,12 @@ ocean.dsConf = {
         },
         onSelect: function() {
             updatePage();
+            enablePointClick();
         },
         onDeselect: function() {
             resetMap();
             resetLegend();
+            disablePointClick();
         },
         onVariableChange: function() {
             updatePage();
@@ -625,10 +627,12 @@ ocean.dsConf = {
         },
         onSelect: function() {
             updatePage();
+            enablePointClick();
         },
         onDeselect: function() {
             resetMap();
             resetLegend();
+            disablePointClick();
         },
         onVariableChange: function() {
             updatePage();
@@ -916,6 +920,7 @@ ocean.dsConf = {
             if ($('#tunafishing').parent('.fishery').size() == 1) {
                 showControls('tunafishing');
             }
+            enablePointClick();
         },
         onDeselect: function() {
             resetMap();
@@ -923,9 +928,13 @@ ocean.dsConf = {
             if ($('#tunafishing').parent('.fishery').size() == 1) {
                 hideControls('tunafishing');
             }
+            disablePointClick();
         }, 
         onVariableChange: function(){},
-        onRegionChange: function() {}
+        onRegionChange: function() {},
+        formatValue: function(value) {
+            return value.toFixed(2);
+        }
     },
     convergence: {
         params: override(function (dataset) { return {

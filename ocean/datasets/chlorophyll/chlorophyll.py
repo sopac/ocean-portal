@@ -12,11 +12,14 @@ import calendar
 from datetime import date
 
 import numpy as np
+import numpy.ma as ma
 
 from ocean import util, config
 from ocean.netcdf import SurfacePlotter
 from ocean.datasets import SST
 from ocean.netcdf import Grid, Gridset
+from ocean.netcdf.extractor import Extractor, LandError
+from ocean.config import regionConfig
 
 
 #get the server dependant path configurations
@@ -149,6 +152,31 @@ class ChlorophyllPlotterWrapper(SurfacePlotter):
                        date=params['date'],
                        **kwargs)
         return grid
+  
+    def extract(self, **args):
+
+        area = args['area']
+        variable = args['variable']
+        inputLat = args['lat']
+        inputLon = args['lon']
+
+        lat_min = regionConfig.regions[area][1]['llcrnrlat']
+        lat_max = regionConfig.regions[area][1]['urcrnrlat']
+        lon_min = regionConfig.regions[area][1]['llcrnrlon']
+        lon_max = regionConfig.regions[area][1]['urcrnrlon']
+
+        grid = self.get_grid(params=args,
+                             lonrange=(lon_min, lon_max),
+                             latrange=(lat_min, lat_max))
+
+        #extract lat/lon and value
+        (lat, lon), (latIndex, lonIndex) = Extractor.getGridPoint(inputLat, inputLon, grid.lats, grid.lons,
+                                                     grid.data)
+        value = grid.data[latIndex, lonIndex]
+        if value is ma.masked:
+            raise LandError()
+        #return extracted value
+        return (lat, lon), value
 
 
 class ChlorophyllGridset(Gridset):
@@ -189,6 +217,7 @@ class chlorophyll(SST):
 
     __plots__ = [
         'map',
+        'point'
     ]
 
     __variables__ = [
