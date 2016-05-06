@@ -14,11 +14,13 @@ import json
 from datetime import datetime, timedelta
 from dateutil.relativedelta import *
 import numpy as np
+import numpy.ma as ma
 
 from ocean import util, config
 from ocean.config import productName, regionConfig
 from ocean.datasets.poama import POAMA
 from ocean.netcdf import SurfacePlotter, Gridset
+from ocean.netcdf.extractor import Extractor, LandError
 
 #get the server dependant path configurations
 serverCfg = config.get_server_config()
@@ -217,6 +219,33 @@ class PoamaPlotterWrapper(SurfacePlotter):
                                boundaryInUse='False')
 
         plot.wait()
+
+    def extract(self, **args):
+
+        area = args['area']
+        variable = args['variable']
+        inputLat = args['lat']
+        inputLon = args['lon']
+        step = args['step']
+
+        lat_min = regionConfig.regions[area][1]['llcrnrlat']
+        lat_max = regionConfig.regions[area][1]['urcrnrlat']
+        lon_min = regionConfig.regions[area][1]['llcrnrlon']
+        lon_max = regionConfig.regions[area][1]['urcrnrlon']
+
+        grid = self.get_grid(params=args,
+                             lonrange=(lon_min, lon_max),
+                             latrange=(lat_min, lat_max))
+
+        #extract lat/lon and value
+        step = int(step)
+        (lat, lon), (latIndex, lonIndex) = Extractor.getGridPoint(inputLat, inputLon, grid.lats, grid.lons,
+                                                     grid.data[step])
+        value = grid.data[step][latIndex, lonIndex]
+        if value is ma.masked:
+            raise LandError()
+        #return extracted values
+        return (lat, lon), value * 10
 
 class PoamaGridset(Gridset):
     TIME_VARIABLE = ['time']

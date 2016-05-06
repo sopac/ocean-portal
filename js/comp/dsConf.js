@@ -503,6 +503,7 @@ ocean.dsConf = {
     },
     poamasla: {
         params: override(function (dataset) { return {
+                'step' : slider.getStep()[0] - 1
             };
         }),
         beforeSend: function() {
@@ -517,6 +518,8 @@ ocean.dsConf = {
                 slider.options.snap = true;
                 slider.stepRatios = slider.calculateStepRatios();
                 slider.options.animationCallback = function(x, y) {
+    //                $.extend(ocean.dataset.params(), {'step', this.getStep()[0] - 1});
+        //            $.extend(ocean.dataset.params(), {'step': this.getStep()[0] - 1});
                     $('.handle-text').text(forecast[this.getStep()[0] - 1].datetime);
                     $('.slider-hint').text('');
                     if (data.mapimg) {
@@ -570,7 +573,10 @@ ocean.dsConf = {
              }
         },
         selectedRegion: ocean.area,
-        downloadimg:''
+        downloadimg:'',
+        formatValue: function(value) {
+            return value.toFixed(2);
+        }
     },
     poamassta: {
         params: override(function (dataset) { return {

@@ -14,7 +14,9 @@ from ocean.plotter import COMMON_FILES
 class POAMA(Dataset):
 
     __form_params__ = {
-        'mode': str
+        'mode': str,
+        'lat': float,
+        'lon': float,
     }
     __form_params__.update(Dataset.__form_params__)
 
@@ -32,7 +34,8 @@ class POAMA(Dataset):
     ]
 
     __plots__ = [
-        'map'
+        'map',
+        'point'
     ]
 
     __subdirs__ = [
@@ -51,21 +54,26 @@ class POAMA(Dataset):
         periodStr = params['period']
         regionStr = params['area']
 
-        config = self.generateConfig(params)
-        configStr = json.dumps(config) 
+        if params['plot'] == 'map':
+            config = self.generateConfig(params)
+            configStr = json.dumps(config) 
 
-        params['forecast'] = config
+            params['forecast'] = config
 
-        response['forecast'] = configStr 
-        response['mapimg'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['mapimg']
-        response['scale'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['scale']
-        # response['img'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['img']
-        response['img'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['img']
+            response['forecast'] = configStr 
+            response['mapimg'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['mapimg']
+            response['scale'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['scale']
+            # response['img'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['img']
+            response['img'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['img']
 
-        if ('mode' in params) and (params['mode'] == 'preprocess'):
-            response['preproc'] = 'inside'
-            self.preprocess(varStr, regionStr, params)
+            if ('mode' in params) and (params['mode'] == 'preprocess'):
+                response['preproc'] = 'inside'
+                self.preprocess(varStr, regionStr, params)
 
+        elif params['plot'] == 'point': #for point value extraction
+            (lat, lon), value = self.plotter.extract(**params)
+            response['value'] = float(value)
+ 
         return response
 
     def preprocess(self, varName, region, args):
