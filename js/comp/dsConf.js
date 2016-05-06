@@ -963,17 +963,22 @@ ocean.dsConf = {
         },
         onSelect: function() {
             showControls('tunafishing');
+            enablePointClick();
         },
         onDeselect: function() {
             resetMap();
             resetLegend();
             hideControls('tunafishing');
+            disablePointClick();
         }, 
         onVariableChange: function(){
             updateDatasetForSST();
         },
         onRegionChange: function(){
             updateDatasetForSST();
+        },
+        formatValue: function(value) {
+            return value.toFixed(2);
         }
     },
     mur: {
@@ -996,10 +1001,12 @@ ocean.dsConf = {
             }
         },
         onSelect: function() {
+            enablePointClick();
         },
         onDeselect: function() {
             resetMap();
             resetLegend();
+            disablePointClick();
         },
         updateMapImg: function() {
             bounds = $('#subregion option:selected').data('bounds');
@@ -1014,6 +1021,9 @@ ocean.dsConf = {
         onRegionChange: function(){
             resetMap();
             updateDatasetForSST();
+        },
+        formatValue: function(value) {
+            return value.toFixed(2);
         }
     }
 
