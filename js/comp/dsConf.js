@@ -580,6 +580,7 @@ ocean.dsConf = {
     },
     poamassta: {
         params: override(function (dataset) { return {
+                'step' : slider.getStep()[0] - 1
             };
         }),
         beforeSend: function() {
@@ -656,7 +657,10 @@ ocean.dsConf = {
              }
         },
         selectedRegion: ocean.area,
-        downloadimg:''
+        downloadimg:'',
+        formatValue: function(value) {
+            return value.toFixed(2);
+        }
     },
     currentforecast: {
         params: override(function (dataset) { return {
