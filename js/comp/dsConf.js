@@ -492,14 +492,20 @@ ocean.dsConf = {
                 setLegend(data.scale);
             }
         },
-        onSelect: function() {},
+        onSelect: function() {
+            enablePointClick();
+        },
         onDeselect: function(){
             resetMap();
             resetLegend();
+            disablePointClick();
         },
         onVariableChange: function() {
         },
-        onRegionChange: function() {}
+        onRegionChange: function() {},
+        formatValue: function(value) {
+            return value.toFixed(2);
+        }
     },
     poamasla: {
         params: override(function (dataset) { return {

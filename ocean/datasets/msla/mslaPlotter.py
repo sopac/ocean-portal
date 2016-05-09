@@ -5,7 +5,6 @@
 #     All Rights Reserved
 #
 # Authors: Sheng Guo <s.guo@bom.gov.au>
-#          Danielle Madeley <d.madeley@bom.gov.au>
 
 import os
 import os.path
@@ -18,7 +17,7 @@ from ocean import config, logger, util
 from ocean.config import regionConfig
 from ocean.netcdf.surfaceplotter import SurfacePlotter
 from ocean.netcdf import Gridset
-from ocean.netcdf.extractor import LandError
+from ocean.netcdf.extractor import Extractor, LandError
 
 serverCfg = config.get_server_config()
     
@@ -91,6 +90,31 @@ class MslaPlotter(SurfacePlotter):
     def get_prefix(self, params={}):
         return 'nrt_sea_level_'
     
+    def extract(self, **args):
+
+        area = args['area']
+        variable = args['variable']
+        inputLat = args['lat']
+        inputLon = args['lon']
+
+        lat_min = regionConfig.regions[area][1]['llcrnrlat']
+        lat_max = regionConfig.regions[area][1]['urcrnrlat']
+        lon_min = regionConfig.regions[area][1]['llcrnrlon']
+        lon_max = regionConfig.regions[area][1]['urcrnrlon']
+
+        grid = self.get_grid(params=args,
+                             lonrange=(lon_min, lon_max),
+                             latrange=(lat_min, lat_max))
+
+        #extract lat/lon and value
+        (lat, lon), (latIndex, lonIndex) = Extractor.getGridPoint(inputLat, inputLon, grid.lats, grid.lons,
+                                                     grid.data)
+        value = grid.data[latIndex, lonIndex]
+        value = value * 1000
+        if value is ma.masked:
+            raise LandError()
+        #return extracted values
+        return (lat, lon), value
 
 class MslaGrid(Gridset):
 
