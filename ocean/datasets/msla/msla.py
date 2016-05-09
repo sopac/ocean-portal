@@ -103,6 +103,6 @@ class msla(Dataset):
                                               fileName),
                                  COMMON_FILES.values())
         elif params['plot'] == 'point': #for point value extraction
-            (lat, lon), value = self.plotter.extract(**params)
+            (lat, lon), value = plotter.extract(**params)
             response['value'] = float(value)
         return response
