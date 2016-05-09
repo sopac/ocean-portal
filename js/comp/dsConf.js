@@ -819,6 +819,7 @@ ocean.dsConf = {
         onSelect: function() {
             var seaLevelModel = new $.SeaLevelModel();
             if (ocean.variable != 'gauge') {
+                enablePointClick();
                 return;
             }
             $.when(
@@ -859,6 +860,7 @@ ocean.dsConf = {
                 map.removeLayer(ocean.dsConf.sealevel.overlay);
             }
             resetLegend();
+            disablePointClick();
 //            var controls = map.getControlsByClass(
 //                'OpenLayers.Control.SelectFeature');
 
@@ -872,8 +874,10 @@ ocean.dsConf = {
             resetMap();
             resetLegend();
         },
-        onRegionChange: function() {}
-
+        onRegionChange: function() {},
+        formatValue: function(value) {
+            return value.toFixed(0);
+        }
     },
     coral: {
         params: override(function (dataset) { return {

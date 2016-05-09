@@ -49,6 +49,7 @@ class sealevel(Dataset):
     __plots__ = [
         'map',
         'ts',
+        'point'
     ]
 
     __subdirs__ = [
@@ -74,34 +75,38 @@ class sealevel(Dataset):
         periodStr = params['period']
 
         plotter = SeaLevelSurfacePlotter(variableStr)
-        if periodStr == 'monthly':
-            fileName = seaGraph % (seaLevelProduct['monthly'],
-                                   variableStr, areaStr,
-                                   dateStr[:6])
-        else:
-            assert 0, "Should not be reached"
+ 
+        if params['plot'] == 'map':
+            if periodStr == 'monthly':
+                fileName = seaGraph % (seaLevelProduct['monthly'],
+                                       variableStr, areaStr,
+                                       dateStr[:6])
+            else:
+                assert 0, "Should not be reached"
 
-        outputFileName = serverCfg['outputDir'] + fileName
+            outputFileName = serverCfg['outputDir'] + fileName
 
-        if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
-            plotter.plot(fileName, **params)
+            if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
+                plotter.plot(fileName, **params)
 
-        if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
-            responseObj['error'] = \
-                "Requested image is not available at this time."
-        else:
-            response.update(util.build_response_object(
-                    COMMON_FILES.keys(),
-                    os.path.join(serverCfg['baseURL'],
-                                 serverCfg['rasterURL'],
-                                 fileName),
-                    COMMON_FILES.values()))
+            if not util.check_files_exist(outputFileName, COMMON_FILES.values()):
+                responseObj['error'] = \
+                    "Requested image is not available at this time."
+            else:
+                response.update(util.build_response_object(
+                        COMMON_FILES.keys(),
+                        os.path.join(serverCfg['baseURL'],
+                                     serverCfg['rasterURL'],
+                                     fileName),
+                        COMMON_FILES.values()))
 
-            util.touch_files(os.path.join(serverCfg['outputDir'],
-                                          fileName),
-                             COMMON_FILES.values())
-
-            return response
+                util.touch_files(os.path.join(serverCfg['outputDir'],
+                                              fileName),
+                                 COMMON_FILES.values())
+        elif params['plot'] == 'point': #for point value extraction
+            (lat, lon), value = plotter.extract(**params)
+            response['value'] = float(value)
+        return response
 
     def plot_alt(self, params):
         response = {}
