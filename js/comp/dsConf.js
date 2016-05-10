@@ -250,6 +250,7 @@ ocean.dsConf = {
     },
     ww3forecast: {
         params: override(function (dataset) { return {
+                'step' : slider.getStep()[0] - 1
             };
         }),
         beforeSend: function() {
@@ -298,10 +299,12 @@ ocean.dsConf = {
         },
         onSelect: function() {
             updatePage();
+            enablePointClick();
         },
         onDeselect: function() {
             resetMap();
             resetLegend();
+            disablePointClick();
         },
         onVariableChange: function() {
             updatePage();
@@ -319,7 +322,10 @@ ocean.dsConf = {
              }
         },
         selectedRegion: ocean.area,
-        downloadimg:''
+        downloadimg:'',
+        formatValue: function(value) {
+            return value.toFixed(1);
+        }
     },
     waveatlas: {
         params: override(function (dataset) { return {

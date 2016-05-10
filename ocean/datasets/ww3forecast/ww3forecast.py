@@ -14,13 +14,14 @@ import json
 from datetime import datetime, timedelta
 
 import numpy as np
+import numpy.ma as ma
 
 from ocean import util, config
 from ocean.config import productName, regionConfig
-#from ocean.netcdf.extractor import Extractor
 from ocean.datasets import Dataset
 from ww3forecastPlotter import Ww3ForecastPlotter, COMMON_FILES
 from ocean.netcdf import Grid
+from ocean.netcdf.extractor import Extractor, LandError
 
 
 
@@ -39,7 +40,9 @@ class ww3forecast(Dataset):
     PRODUCT_NAME = "Global AUSWAVE Forecast"
 
     __form_params__ = {
-        'mode': str
+        'mode': str,
+        'lat': float,
+        'lon': float
     }
     __form_params__.update(Dataset.__form_params__)
 
@@ -59,7 +62,8 @@ class ww3forecast(Dataset):
     ]
 
     __plots__ = [
-        'map'
+        'map',
+        'point'
     ]
 
     __subdirs__ = [
@@ -94,18 +98,23 @@ class ww3forecast(Dataset):
         config = self.generateConfig(latestFilePath, self.grid.time)
         configStr = json.dumps(config) 
 
-        response['forecast'] = configStr 
-#        response['mapimg'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['mapimg']
-        response['img'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['img']
-#        response['scale'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['scale']
-        response['mapimg'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['mapimg']
-#        response['img'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['img']
-        response['scale'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['scale']
-#        os.utime(os.path.join(serverCfg['outputDir'], filename), None)
+#        response['forecast'] = configStr 
+#        response['img'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['img']
+#        response['mapimg'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['mapimg']
+#        response['scale'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['scale']
 
         if ('mode' in params) and (params['mode'] == 'preprocess'):
             response['preproc'] = 'inside'
             self.preprocess(varStr, regionStr)
+        else:
+            if params['plot'] == 'map':
+                response['forecast'] = configStr
+                response['img'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['img']
+                response['mapimg'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['mapimg']
+                response['scale'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['scale']
+            elif params['plot'] == 'point': #for point value extraction
+                (lat, lon), value = self.extract(**params)
+                response['value'] = float(value)
 
         return response
 
@@ -286,6 +295,43 @@ class ww3forecast(Dataset):
         elif variable in ['wnd_spd']:
             return 'wnd_dir'
         return ''
+
+    def extract(self, **args):
+
+        area = args['area']
+        variable = args['variable']
+        inputLat = args['lat']
+        inputLon = args['lon']
+        step = args['step']
+
+        lat_min = regionConfig.regions[area][1]['llcrnrlat']
+        lat_max = regionConfig.regions[area][1]['urcrnrlat']
+        lon_min = regionConfig.regions[area][1]['llcrnrlon']
+        lon_max = regionConfig.regions[area][1]['urcrnrlon']
+
+        fileName = serverCfg['dataDir']['ww3forecast'] + 'ww3_????????_??.nc'
+        latestFilePath = max(glob.iglob(fileName), key=os.path.getctime)
+
+        grid = ww3forecastGrid(latestFilePath, latestFilePath, variable, 
+                                    latrange=(lat_min, lat_max), 
+                                    lonrange=(lon_min, lon_max), 
+                                    depthrange=(0, FORECAST_STEPS))
+
+        if variable == 'wnd_spd':
+             grid.data = grid.data * 1.94384449
+
+
+        #extract lat/lon and value
+        step = int(step)
+        (lat, lon), (latIndex, lonIndex) = Extractor.getGridPoint(inputLat, inputLon, grid.lats, grid.lons,
+                                                     grid.data[step])
+        value = grid.data[step][latIndex, lonIndex]
+
+        if value is ma.masked:
+            raise LandError()
+
+        #return extracted values
+        return (lat, lon), value
 
 class ww3forecastGrid(Grid):
     """
