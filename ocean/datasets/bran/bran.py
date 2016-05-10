@@ -77,16 +77,22 @@ class bran(Dataset):
         monthStr = '%02i' % inputDate.month
         yearMonthStr = yearStr + monthStr
 
-        if ('lat' in params) and ('lon' in params):
-            plot_subsurface = True
+
+        if params['plot'] == 'point': #for point value extraction
+            (lat, lon), value = self.plotter.extract(**params)
+            response['value'] = float(value)
+            return response
+        elif params['plot'] == 'xsections':
+#        if ('lat' in params) and ('lon' in params):
+#            plot_subsurface = True
             # Display error if variable selected for subsurface plot is invalid
             if not (varName == 'temp' or varName == 'salt'):
                 response['error'] = "To display a depth cross section, please select either Temperature or Salinity variables."
                 return response
-        else:
-            plot_subsurface = False
+#        else:
+#            plot_subsurface = False
 
-        if plot_subsurface:
+#        if plot_subsurface:
             lat_cnt = params['lat']
             lon_cnt = np.mod(params['lon'], 360.0)
 
@@ -170,7 +176,7 @@ class bran(Dataset):
                                                  units=unitStr, title=titleStr,
                                                  cb_ticks=cb_ticks,
                                                  product_label_str=PRODUCT_LABEL)
-        else:
+        elif params['plot'] == 'map':
             # Plot surface data
             plot_filename = '%s_%s_%s_%s' % (branProduct[periodStr],
                                              varName, yearMonthStr, regionStr)
@@ -395,6 +401,57 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
                                area=regionStr, extend=extend, var_name=varName, plotStyle=plotStyle)
 
     plot.wait()
+
+def extract(**args):
+    area = args['area']
+    variable = args['variable']
+    inputLat = args['lat']
+    inputLon = np.mod(args['lon'], 360.0)
+    area = args['area']
+    period = args['period']
+    inputDate = args["date"]
+    date = inputDate.strftime('%Y%m%d')
+    yearStr = '%04i' % inputDate.year
+    monthStr = '%02i' % inputDate.month
+    yearMonthStr = yearStr + monthStr
+
+    if variable == 'uv':
+        variable = 'u'
+    elif variable == 'uveta':
+        variable = 'eta'
+
+    # Load surface data
+    if period == 'monthly':
+        input_data_file = os.path.join(server_config['dataDir']['bran'],
+                                      period, variable,
+                                     '%s_%s_%s.nc4' % (variable,
+                                                        yearStr,
+                                                        monthStr))
+    else:
+        monthInt = int(''.join(i for i in period if i.isdigit()))
+        months = dateRange.getMonths(date, monthInt)
+        input_data_file = os.path.join(server_config['dataDir']['bran'],
+                                      'averages', period, variable,
+                                      BRAN_VERSION + '_%smthavg_%s_%s.nc4' % (monthInt, months[0].strftime('%Y%m'), months[-1].strftime('%Y%m')))
+
+    lat_min = regionConfig.regions[area][1]['llcrnrlat']
+    lat_max = regionConfig.regions[area][1]['urcrnrlat']
+    lon_min = regionConfig.regions[area][1]['llcrnrlon']
+    lon_max = regionConfig.regions[area][1]['urcrnrlon']
+
+    lats, lons, zlevels, data = \
+            branPlotterNew.load_BRAN_data(input_data_file, dataVar,
+                                          lat_min, lat_max,
+                                          lon_min, lon_max)
+
+    #extract lat/lon and value
+    (lat, lon), (latIndex, lonIndex) = Extractor.getGridPoint(inputLat, inputLon, lats, lons,
+                                                     data)
+    value = data[latIndex, lonIndex]
+    if value is ma.masked:
+        raise LandError()
+    #return extracted values
+    return (lat, lon), value
 
 def check_basemap_exists(filename_fullpath):
     return util.check_files_exist(filename_fullpath, [COMMON_FILES[k] for k in ['mapimg', 'scale']])

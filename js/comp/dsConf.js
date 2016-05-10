@@ -178,15 +178,21 @@ ocean.dsConf = {
                 setLegend(data.scale);
             }
         },
-        onSelect: null,
+        onSelect: function() {
+            enablePointClick();
+        },
         onDeselect: function() {
             resetMap();
             resetLegend();
+            disablePointClick();
         }, 
         onVariableChange: function(){
             selectMonthsForNearRealTimeDatasets();
         },
-        onRegionChange: function() {}
+        onRegionChange: function() {},
+        formatValue: function(value) {
+            return value.toFixed(2);
+        }
     },
     ww3: {
         params: override(function (dataset) { return {
