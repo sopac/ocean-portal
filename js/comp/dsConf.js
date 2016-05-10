@@ -239,13 +239,23 @@ ocean.dsConf = {
         },
         onSelect: function(){
             $('#plottype').change();
+            enablePointClick();
         },
         onDeselect: function() {
             resetMap();
             resetLegend();
+            disablePointClick();
         },
         onVariableChange: function(){},
-        onRegionChange: function() {}
+        onRegionChange: function() {},
+        formatValue: function(value) {
+            if (ocean.variable == 'Tm') {
+                return value.toFixed(0);
+            }
+            else if (ocean.variable == 'Hs') {
+                return value.toFixed(1);
+            }
+        }
 
     },
     ww3forecast: {

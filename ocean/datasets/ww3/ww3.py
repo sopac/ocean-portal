@@ -16,7 +16,7 @@ import json
 from datetime import datetime
 from ocean import util, config
 from ocean.config import productName, regionConfig
-from ocean.netcdf.extractor import Extractor
+from ocean.netcdf.extractor import Extractor, LandError
 from ocean.datasets import Dataset, MissingParameter
 from ww3Plotter import Ww3Plotter
 from ocean.netcdf import Grid
@@ -29,6 +29,7 @@ import formatter as frm
 import GridPointFinder as GPF
 import ww3ExtA
 import numpy as np
+import numpy.ma as ma
 
 #Maybe move these into configuration later
 pointExt = '%s_%s_%s_%s_%s'
@@ -62,6 +63,8 @@ class ww3(Dataset):
         'lllon': float,
         'urlat': float,
         'urlon': float,
+        'lat' : float,
+        'lon' : float
     }
     __form_params__.update(Dataset.__form_params__)
 
@@ -86,6 +89,7 @@ class ww3(Dataset):
         'histogram',
         'waverose',
         'map',
+        'point'
     ]
 
     __subdirs__ = [
@@ -98,11 +102,57 @@ class ww3(Dataset):
     def process(self, params):
         response = {}
 
-        if params['plot'] == 'map':
+        plot = params['plot']
+        if plot == 'map':
             response.update(self.plot_hourly(params))
-        else: #for histogram and waverose
+        elif plot == 'histogram' or plot == 'waverose': #for histogram and waverose
             response.update(self.plot_monthly(params))
+        elif plot == 'point':
+            response.update(self.extract(**params))
         return response
+
+    def extract(self, **args):
+        area = args['area']
+        variable = args['variable']
+        period = args['period']
+        inputLat = args['lat']
+        inputLon = args['lon']
+
+        monthNoStr = args['date'].strftime('%m')
+        yearStr = args['date'].strftime('%Y')
+        dateStr = args['date'].strftime('%d')
+        step = int(args['step'])
+
+        if period == 'hourly':
+            try:
+                variable = self.VARIABLE_MAP[variable]
+            except KeyError:
+                response['error'] = "The variable %s is not found. " % variable
+                return response
+
+            fileName = 'ww3.glob_24m.' + yearStr + monthNoStr + '.nc4'   #ww3.glob_24m.197901.nc4
+            filePath = os.path.join(serverCfg['dataDir']['ww3'], period, fileName)
+
+            lat_min = regionConfig.regions[area][1]['llcrnrlat']
+            lat_max = regionConfig.regions[area][1]['urcrnrlat']
+            lon_min = regionConfig.regions[area][1]['llcrnrlon']
+            lon_max = regionConfig.regions[area][1]['urcrnrlon']
+
+            # Get grid from the file
+            grid = ww3Grid(filePath, filePath, variable, (lat_min, lat_max), (lon_min, lon_max), (0, FORECAST_STEPS), params= args)
+
+            #extract lat/lon and value
+            (lat, lon), (latIndex, lonIndex) = Extractor.getGridPoint(inputLat, inputLon, grid.lats, grid.lons,
+                                                                      grid.data[step])
+            value = grid.data[step][latIndex, lonIndex]
+            if value is ma.masked:
+                raise LandError()
+            response['value'] = float(value)
+        else:
+            response['error'] = "Only hourly data is available. Please choose hourly period."
+
+        return response
+
 
     #For hourly surface map
     def plot_hourly(self, params):
