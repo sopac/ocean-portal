@@ -58,6 +58,7 @@ class bran(Dataset):
     __plots__ = [
         'map',
         'xsections',
+        'point'
     ]
 
     __subdirs__ = [
