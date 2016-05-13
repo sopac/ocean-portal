@@ -441,7 +441,7 @@ def extract(**args):
     lon_max = regionConfig.regions[area][1]['urcrnrlon']
 
     lats, lons, zlevels, data = \
-            branPlotterNew.load_BRAN_data(input_data_file, dataVar,
+            branPlotterNew.load_BRAN_data(input_data_file, variable,
                                           lat_min, lat_max,
                                           lon_min, lon_max)
 
