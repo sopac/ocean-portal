@@ -80,7 +80,7 @@ class bran(Dataset):
 
 
         if params['plot'] == 'point': #for point value extraction
-            (lat, lon), value = self.plotter.extract(**params)
+            (lat, lon), value = extract(**params)
             response['value'] = float(value)
             return response
         elif params['plot'] == 'xsections':

@@ -112,6 +112,7 @@ class ww3(Dataset):
         return response
 
     def extract(self, **args):
+        response = {}
         area = args['area']
         variable = args['variable']
         period = args['period']
