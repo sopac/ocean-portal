@@ -109,6 +109,7 @@ function createMap () {
        layers: 'greyland',
        format: 'image/png',
        transparent: true,
+       zIndex: 1000,
        attribution: '<a href="http://www.naturalearthdata.com/about/" title="About Natural Earth">Made with Natural Earth</a>'
     }).addTo(map);
     ocean.greylandLayer.setOpacity(0.0);
@@ -119,6 +120,14 @@ function createMap () {
        transparent: true,
        attribution: '<a href="http://www.naturalearthdata.com/about/" title="About Natural Earth">Made with Natural Earth</a>, <a href="http://www.marineregions.org/disclaimer.php" title="EEZ boundaries">Marineregions</a>'
     }).addTo(map);
+
+    ocean.resultLayer = L.tileLayer.wms("cgi/map.py?map=result", {
+       layers: 'plot',
+       format: 'image/png',
+       transparent: true,
+       zIndex: 900,
+       continuousWorld: true
+    }); 
 
 /**
     ocean.countriesLayer = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
@@ -212,6 +221,14 @@ function updateMap(data, bounds) {
             }
         }
     });
+}
+
+function updateMapTiles(mapname, mapimg) {
+    ocean.resultLayer.setUrl('cgi/map.py?map=' + mapname + '&mapimg=' + mapimg);
+    ocean.overlayGroup.addLayer(ocean.resultLayer);
+    ocean.greylandLayer.setOpacity(1.0);
+    ocean.bathymetryLayer.setOpacity(0.0);
+
 }
 
 function show_error(url, text)

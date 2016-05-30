@@ -64,7 +64,8 @@ ocean.dsConf = {
             else if (data.img != null && data.scale != null) {
                 prependOutputSet();
                 appendOutput(data.img, null, null, null, data);
-                updateMap(data.mapimg);
+                //updateMap(data.mapimg);
+                updateMapTiles('reynolds', data.mapimg);
                 setLegend(data.scale);
             }
         },
@@ -1101,7 +1102,7 @@ function appendOutput(image, dataURL, name, extras, data){
     }
 
     if (data) {
-        updateMap(data);
+//        updateMap(data);
     }
 }
 

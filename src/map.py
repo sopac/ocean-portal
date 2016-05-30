@@ -38,25 +38,26 @@ def main():
         map = queryMap['map'][0]
         queryMap['map'] = util.get_resource('maps', map + '.map')
 
-        if map == 'raster':
-            rasters = queryMap['raster'][0].split(' ')
-
-            MAP_EAST_PATTERN = re.compile('east.png$')
-            MAP_WEST_PATTERN = re.compile('west.png$')
-
-            for file in rasters:
-                filename = os.path.basename(file)
-
-                if MAP_EAST_PATTERN.search(filename):
-                    queryMap['eastFileName'] = os.path.join(config['outputDir'],
-                                                            filename)
-                elif MAP_WEST_PATTERN.search(filename):
-                    queryMap['westFileName'] = os.path.join(config['outputDir'],
-                                                            filename)
-
+#        if map == 'raster':
+#            queryMap['eastFileName'] = os.path.join(config['outputDir'], queryMap['eastmap'][0])
+#            queryMap['westFileName'] = os.path.join(config['outputDir'], queryMap['westmap'][0])
+#            rasters = queryMap['raster'][0].split(' ')
+#
+#            MAP_EAST_PATTERN = re.compile('east.png$')
+#            MAP_WEST_PATTERN = re.compile('west.png$')
+#
+#            for file in rasters:
+#                filename = os.path.basename(file)
+#
+#                if MAP_EAST_PATTERN.search(filename):
+#                    queryMap['eastFileName'] = os.path.join(config['outputDir'],
+#                                                            filename)
+#                elif MAP_WEST_PATTERN.search(filename):
+#                    queryMap['westFileName'] = os.path.join(config['outputDir'],
+#                                                            filename)
+        if map in ['reynolds']:
+            queryMap['base'] = config['outputDir'] + os.path.basename(os.path.splitext(queryMap['mapimg'][0])[0])
     queryString = urllib.urlencode(queryMap, True)
-
-    # calculate the etag from the query string
     m = hashlib.sha256()
     m.update(queryString)
 
@@ -81,11 +82,9 @@ def main():
         with os.tmpfile() as tmpfile:
             os.environ['QUERY_STRING'] = queryString
             subprocess.call(config['mapservPath'], stdout=tmpfile)
-
             # remove the first two lines from the tmpfile to make it a png
             tmpfile.seek(0)
             content_type = tmpfile.readline().strip().split(' ', 2)[1]
-
             # check to see if mapserver generated an error
             if content_type != 'image/png':
                 print 'Status: 500 Internal Server Error'

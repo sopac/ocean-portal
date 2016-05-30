@@ -35,6 +35,7 @@ except ImportError:
 
 from ocean import util
 from ocean.util.pngcrush import pngcrush
+from ocean.util.gdalprocess import gdal_process
 from ocean.config import get_server_config
 from ocean.config.regionConfig import regions
 #GAS for smoothing array
@@ -51,6 +52,8 @@ COMMON_FILES = {
 #    'mapwestw': '_west.pgw',
     'scale': '_scale.png',
 }
+
+BASEMAP_CMAP = 'binary'
 
 def guess_resolution(latmin, latmax, lonmin, lonmax):
     if min(abs(lonmax - lonmin), latmax - latmin) < 15:
@@ -339,6 +342,7 @@ class Plotter(object):
             d_cmap, norm = from_levels_and_colors(cm_edge_values, np.array(colors) / 255.0, None, extend=extend)
         elif colormap_strategy == 'nonlinear':
             d_cmap, norm = from_levels_and_colors(cm_edge_values, None, cmp_name, extend=extend)
+            basemap_cmap, basemap_norm = from_levels_and_colors(cm_edge_values, None, BASEMAP_CMAP, extend=extend)
   
         if cm_edge_values is None:
             cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
@@ -365,16 +369,22 @@ class Plotter(object):
 
             # Plot data
             x2, y2 = m(*np.meshgrid(lons2, lats2))
-            img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap, norm=norm)
+            img = m.pcolormesh(x2, y2, data, shading='flat', cmap=basemap_cmap, norm=basemap_norm)
             img.set_clim(cm_edge_values.min(), cm_edge_values.max())
 
             m.drawmapboundary(linewidth=0.0, fill_color=fill_color)
-            m.fillcontinents(color='0.58', zorder=7)
+            #m.fillcontinents(color='0.58', zorder=7)
 
             # Save figure
             plt.savefig(region['output_filename'], dpi=150,
                         bbox_inches='tight', pad_inches=0.0)
             plt.close()
+
+            # generate shape file
+            gdal_process(region['output_filename'], region['lon_min'], 
+                                                    region['lat_max'], 
+                                                    region['lon_max'], 
+                                                    region['lat_min'])
 
         def _plot_colorbar(lats, lons, data,
                            units='', cb_tick_fmt="%.0f",
@@ -554,6 +564,7 @@ def from_levels_and_colors(levels, colors, cm_name, extend='neither'):
                                    len(colors)))
 
     cmap = mpl.colors.ListedColormap(colors[colors_i0:colors_i1], N=n_data_colors)
+##    print cmap.colors
 
     if extend in ['min', 'both']:
         cmap.set_under(colors[0])

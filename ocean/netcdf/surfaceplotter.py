@@ -264,6 +264,7 @@ class SurfacePlotter(object):
         cm_name = 'RdBu_r'
         if params.get('variable') == 'mean':
             cm_name = 'jet'
+#            cm_name = 'binary'
         return cm_name
 
 #    @apply_to(variable='mean')
@@ -276,7 +277,8 @@ class SurfacePlotter(object):
         return None
 
     def get_fill_color(self, params={}):
-        return '1.0'
+        #return '1.0'
+        return '0.02'
 
     #GAS ---- get_plotstyle ---
     def get_plotstyle(self, params={}):
