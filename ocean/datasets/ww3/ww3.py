@@ -50,7 +50,7 @@ getGrid = GPF.Extractor()
 FORECAST_STEPS = 744
 
 class ww3(Dataset):
-    PRODUCT_NAME = "Global AUSWAVE Forecast"
+    PRODUCT_NAME = "Global PACCSAP Hindcast"
     VARIABLE_MAP = {    #used for hourly data
         'Hs': 'hs',
         'Tm': 't',
