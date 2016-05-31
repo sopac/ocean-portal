@@ -67,7 +67,8 @@ scripts = [
 # run generate-manifest.py after editing these sections
 backend_resources = [
     'maps/bathymetry.map',
-    'maps/reynolds.map',
+    'maps/mean.map',
+    'maps/mean_sub.map',
     'fonts/fonts.list',
     'fonts/DejaVuSans.ttf',
 ]

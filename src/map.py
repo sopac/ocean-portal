@@ -55,7 +55,7 @@ def main():
 #                elif MAP_WEST_PATTERN.search(filename):
 #                    queryMap['westFileName'] = os.path.join(config['outputDir'],
 #                                                            filename)
-        if map in ['reynolds']:
+        if map in ['mean', 'mean_sub']:
             queryMap['base'] = config['outputDir'] + os.path.basename(os.path.splitext(queryMap['mapimg'][0])[0])
     queryString = urllib.urlencode(queryMap, True)
     m = hashlib.sha256()

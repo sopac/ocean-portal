@@ -15,6 +15,7 @@ from ocean.datasets import Dataset
 from ocean.plotter import COMMON_FILES
 from ocean.util import areaMean
 from ocean.config import productName
+from ocean.config import regionConfig
 
 serverCfg = config.get_server_config()
 
@@ -159,6 +160,10 @@ class SST(Dataset):
                                      serverCfg['rasterURL'],
                                      fileName),
                         COMMON_FILES.values()))
+                if regionConfig.regions[params['area']][0] == 'pac':
+                    response['map'] = params['variable'] + '_sub'
+                else:
+                    response['map'] = params['variable']
                 util.touch_files(os.path.join(serverCfg['outputDir'],
                                               fileName),
                                  COMMON_FILES.values())
