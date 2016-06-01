@@ -70,6 +70,7 @@ backend_resources = [
     'maps/mean.map',
     'maps/mean_sub.map',
     'maps/anom.map',
+    'maps/dec.map',
     'fonts/fonts.list',
     'fonts/DejaVuSans.ttf',
 ]
