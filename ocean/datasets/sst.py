@@ -160,7 +160,7 @@ class SST(Dataset):
                                      serverCfg['rasterURL'],
                                      fileName),
                         COMMON_FILES.values()))
-                if regionConfig.regions[params['area']][0] == 'pac':
+                if params['variable'] == 'mean' and regionConfig.regions[params['area']][0] == 'pac':
                     response['map'] = params['variable'] + '_sub'
                 else:
                     response['map'] = params['variable']

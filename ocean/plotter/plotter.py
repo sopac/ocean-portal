@@ -334,6 +334,8 @@ class Plotter(object):
         colors = kwargs.get('colors', None)
         fill_color = kwargs.get('fill_color', '0.0')
 
+        log = open('/home/sguo/color.txt', 'a')
+
         n_colours = cm_edge_values.size - 1
         if colormap_strategy == 'discrete':
             d_cmap = discrete_cmap(cmp_name, n_colours, extend=extend)
@@ -342,8 +344,30 @@ class Plotter(object):
             d_cmap, norm = from_levels_and_colors(cm_edge_values, np.array(colors) / 255.0, None, extend=extend)
         elif colormap_strategy == 'nonlinear':
             d_cmap, norm = from_levels_and_colors(cm_edge_values, None, cmp_name, extend=extend)
+
+            log.write('--------- color ---------')
+            log.write(str(d_cmap._rgba_under))
+            log.write(str(d_cmap.colors))
+            log.write(str(d_cmap._rgba_over))
+
+            from matplotlib.colors import rgb2hex
+            log.write(rgb2hex(d_cmap._rgba_under))
+            for color in d_cmap.colors:
+                log.write(rgb2hex(color))
+            log.write(rgb2hex(d_cmap._rgba_over))
+            
+            log.write('-------------------------')
+
+
             basemap_cmap, basemap_norm = from_levels_and_colors(cm_edge_values, None, BASEMAP_CMAP, extend=extend)
+
+            log.write('--------- bin ---------')
+            log.write(str(basemap_cmap._rgba_under))
+            log.write(str(basemap_cmap.colors))
+            log.write(str(basemap_cmap._rgba_over))
+            log.write('-------------------------')
   
+            log.close()
         if cm_edge_values is None:
             cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
 
@@ -564,7 +588,6 @@ def from_levels_and_colors(levels, colors, cm_name, extend='neither'):
                                    len(colors)))
 
     cmap = mpl.colors.ListedColormap(colors[colors_i0:colors_i1], N=n_data_colors)
-##    print cmap.colors
 
     if extend in ['min', 'both']:
         cmap.set_under(colors[0])

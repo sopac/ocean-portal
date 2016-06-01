@@ -69,6 +69,7 @@ backend_resources = [
     'maps/bathymetry.map',
     'maps/mean.map',
     'maps/mean_sub.map',
+    'maps/anom.map',
     'fonts/fonts.list',
     'fonts/DejaVuSans.ttf',
 ]
