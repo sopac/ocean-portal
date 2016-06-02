@@ -125,7 +125,8 @@ class Ww3Plotter(Plotter):
         return 'neither'
 
     def get_fill_color(self, params={}):
-        return '1.0'
+        #return '1.0'
+        return '0.02'
 
     def get_smooth_fac(self, params={}):
         return 1
