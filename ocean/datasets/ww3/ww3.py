@@ -195,7 +195,7 @@ class ww3(Dataset):
             self.plotBasemapAndColourbar(varStr, fulldateStr, step, regionStr)
             self.plotSurfaceData(varStr, fulldateStr, step, regionStr, config)
 
-            response['map'] = varStr
+            response['map'] = 'hs' #varStr
         else:
             response['error'] = "Only hourly data is available. Please choose hourly period."
 
