@@ -194,6 +194,8 @@ class ww3(Dataset):
             response['img'] = self.getPlotFileName(varStr, fulldateStr, step, regionStr)[1] + COMMON_FILES['img']
             self.plotBasemapAndColourbar(varStr, fulldateStr, step, regionStr)
             self.plotSurfaceData(varStr, fulldateStr, step, regionStr, config)
+
+            response['map'] = varStr
         else:
             response['error'] = "Only hourly data is available. Please choose hourly period."
 

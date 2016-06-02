@@ -49,6 +49,31 @@ customColorMap = {"wav_cm": [[187, 214, 232],
                             [229, 39, 13],
                             [153, 0, 0]]}
 
+basemapColorMap = {"wav_cm": [[255, 255, 255], 
+                              [235, 235, 235],
+                              [216, 216, 216],
+                              [196, 196, 196],
+                              [177, 177, 177],
+                              [157, 157, 157],
+                              [137, 137, 137],
+                              [118, 118, 118],
+                              [98, 98, 98],
+                              [78, 78, 78],
+                              [59, 59, 59],
+                              [39, 39, 39],
+                              [20, 20, 20],
+                              [0, 0, 0]],
+                 "wnd_cm": [[239, 248, 253],
+                            [204, 240, 254],
+                            [156, 219, 252],
+                            [172, 255, 167],
+                            [126, 222, 120],
+                            [229, 229, 117],
+                            [255, 125, 75],
+                            [229, 39, 13],
+                            [153, 0, 0]]}
+
+
 customTicks = {"sig": [0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 20],
                "pk": [0, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 30]}
 
@@ -142,8 +167,10 @@ class Ww3Plotter(Plotter):
         overlay_grid = kwargs.get('overlay_grid', None)
 
         cmArray = customColorMap[cmp_name]
+        basemapArray = basemapColorMap[cmp_name]
 #        d_cmap = mpl.colors.ListedColormap(np.array(cmArray) / 255.0)
         d_cmap, norm = from_levels_and_colors(customTicks[cm_edge_values], np.array(cmArray) / 255.0)
+        basemap_cmap, basemap_norm = from_levels_and_colors(customTicks[cm_edge_values], np.array(basemapArray) / 255.0)
         cm_edge_values = np.array(customTicks[cm_edge_values])
 
         if cb_label_pos is None:
@@ -172,10 +199,11 @@ class Ww3Plotter(Plotter):
             # Plot data
             x2, y2 = m(*np.meshgrid(lons, lats))
             # img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap, norm=norm)
-            img = m.contourf(x2, y2, data, levels=cm_edge_values, cmap=d_cmap, norm=norm, antialiased=True, zorder=0)
+            img = m.contourf(x2, y2, data, levels=cm_edge_values, cmap=basemap_cmap, norm=norm, antialiased=True, zorder=0)
             img.set_clim(cm_edge_values.min(), cm_edge_values.max())
 
-            img = plt.contour(x2, y2, data, levels=cm_edge_values, colors='w', norm=norm, linewidths=0.5, zorder=1)
+            #bug798 comment out
+            #img = plt.contour(x2, y2, data, levels=cm_edge_values, colors='w', norm=norm, linewidths=0.5, zorder=1)
 
             #plot contouring labels
             if clabel:
