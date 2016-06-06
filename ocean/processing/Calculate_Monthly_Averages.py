@@ -166,6 +166,7 @@ class Calculate_Monthly_Averages():
         settings['month'] = month
 
         # Create list of input files and check if the files exist
+	missing_file_count=0
         for day in range(1, days_in_month + 1):
             settings['day'] = day
             input_dir = settings['input_dir'] % settings
@@ -184,18 +185,26 @@ class Calculate_Monthly_Averages():
             output_file_preliminary_fullpath = os.path.join(output_dir, output_filename_preliminary)
              
             # Raise error if input file not found
-            if not os.path.exists(input_file_fullpath):
+            #if not os.path.exists(input_file_fullpath):
+            if os.path.exists(input_file_fullpath):
+                 input_files.append(input_file_fullpath)
+	         input_files_timestamps.append(os.path.getmtime(input_file_fullpath))
                 # Use preliminary file if exists instead
-                if os.path.exists(input_file_preliminary_fullpath):
-                    input_file_fullpath = input_file_preliminary_fullpath
-                    preliminary_data_used = True
-                else:
-                    print >> sys.stderr, 'Missing input file: ' + input_file_fullpath
-                    raise Exception('Missing input file: ' + input_file_fullpath)
-                    break
+            elif os.path.exists(input_file_preliminary_fullpath):
+                 input_file_fullpath = input_file_preliminary_fullpath
+                 preliminary_data_used = True
+                 input_files.append(input_file_fullpath)
+                 input_files_timestamps.append(os.path.getmtime(input_file_fullpath))
+            else:
+                 print >> sys.stderr, 'Missing input file: ' + input_file_fullpath
+                 #raise Exception('Missing input file: ' + input_file_fullpath)
+                 missing_file_count=missing_file_count+1
+                 if missing_file_count > 5:
+                      raise Exception('Too many missing files, more than five')
+                      break
 
-            input_files.append(input_file_fullpath)
-            input_files_timestamps.append(os.path.getmtime(input_file_fullpath))
+            #input_files.append(input_file_fullpath)
+            #input_files_timestamps.append(os.path.getmtime(input_file_fullpath))
 
         if preliminary_data_used:
             output_filename = output_filename_preliminary
