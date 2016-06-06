@@ -126,6 +126,14 @@ class CoralPlotterWrapper(SurfacePlotter):
                          [240, 0, 0],
                          [150, 0, 0]])
 
+    @apply_to(variable='outlook')
+    def get_basemap_colors(self, params={}):
+        return np.array([[255, 255, 255],
+                         [191, 191, 191],
+                         [128, 128, 128],
+                         [64, 64, 64],
+                         [0, 0, 0]])
+
     def get_fill_color(self, params={}):
         #return '0.59'
         return '0.98'
