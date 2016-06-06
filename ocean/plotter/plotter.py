@@ -110,7 +110,7 @@ class Plotter(object):
                                cm_edge_values=None, cb_tick_fmt="%.0f",
                                cb_labels=None, cb_label_pos=None,
                                colormap_strategy='nonlinear',
-                               cmp_name='jet', colors=None, extend='both',
+                               cmp_name='jet', colors=None, basemap_colors=None, extend='both',
                                fill_color='1.0',
                                plotStyle='contourf', contourLines=True,
                                contourLabels=True, smoothFactor=1,
@@ -332,6 +332,7 @@ class Plotter(object):
         cb_label_pos = kwargs.get('cb_label_pos', None)
         colormap_strategy = kwargs.get('colormap_strategy', 'nonlinear')
         colors = kwargs.get('colors', None)
+        basemap_colors = kwargs.get('basemap_colors', None)
         fill_color = kwargs.get('fill_color', '0.0')
 
         n_colours = cm_edge_values.size - 1
@@ -340,6 +341,7 @@ class Plotter(object):
             norm = None
         elif colormap_strategy == 'levels':
             d_cmap, norm = from_levels_and_colors(cm_edge_values, np.array(colors) / 255.0, None, extend=extend)
+            basemap_cmap, basemap_norm = from_levels_and_colors(cm_edge_values, np.array(basemap_colors) / 255.0, None, extend=extend)
         elif colormap_strategy == 'nonlinear':
             d_cmap, norm = from_levels_and_colors(cm_edge_values, None, cmp_name, extend=extend)
             basemap_cmap, basemap_norm = from_levels_and_colors(cm_edge_values, None, BASEMAP_CMAP, extend=extend)

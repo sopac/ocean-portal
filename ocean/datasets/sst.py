@@ -164,6 +164,10 @@ class SST(Dataset):
                     response['map'] = params['variable'] + '_sub'
                 elif params['variable'] in ['chldaily', 'chlmonthly']:
                     response['map'] = 'chlo'
+                elif params['variable'] == 'daily': 
+                    response['map'] = 'coral_daily'
+                elif params['variable'] == 'outlook': 
+                    response['map'] = 'coral_outlook'
                 else:
                     response['map'] = params['variable']
                 util.touch_files(os.path.join(serverCfg['outputDir'],

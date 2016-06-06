@@ -276,6 +276,10 @@ class SurfacePlotter(object):
     def get_colors(self, params={}):
         return None
 
+    @apply_to()
+    def get_basemap_colors(self, params={}):
+        return None 
+
     def get_fill_color(self, params={}):
         #return '1.0'
         return '0.02'
@@ -400,6 +404,7 @@ class SurfacePlotter(object):
         contourLines = self.get_contourlines(params=args)#GAS
         smoothFactor = self.get_smooth_fac(params=args)#GAS
         colors = self.get_colors(params=args)
+        basemap_colors = self.get_basemap_colors(params=args)
         fill_color = self.get_fill_color(params=args)
         colormap_strategy = self.get_colormap_strategy(params=args)
         
@@ -453,6 +458,7 @@ class SurfacePlotter(object):
                                         cmp_name=cmap_name, extend=extend,
                                         colormap_strategy = colormap_strategy,
                                         colors = colors,
+                                        basemap_colors = basemap_colors,
                                         fill_color = fill_color)
 
         plot.wait()
