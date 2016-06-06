@@ -73,6 +73,7 @@ backend_resources = [
     'maps/dec.map',
     'maps/trend.map',
     'maps/hs.map',
+    'maps/chlo.map',
     'fonts/fonts.list',
     'fonts/DejaVuSans.ttf',
 ]
@@ -94,6 +95,7 @@ map_layers = [
     'ocean',
     'pacific_islands_capitals',
     'southern_pac',
+    'northern_pac',
     'land',
     'COSPPac_EEZs',
     'ReefLocations',

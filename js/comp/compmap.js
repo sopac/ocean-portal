@@ -106,7 +106,7 @@ function createMap () {
     }).addTo(map);
 
     ocean.greylandLayer = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
-       layers: 'greyland',
+       layers: 'greyland,greyland_n',
        format: 'image/png',
        transparent: true,
        zIndex: 1000,

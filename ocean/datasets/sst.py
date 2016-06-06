@@ -162,6 +162,8 @@ class SST(Dataset):
                         COMMON_FILES.values()))
                 if params['variable'] == 'mean' and regionConfig.regions[params['area']][0] == 'pac':
                     response['map'] = params['variable'] + '_sub'
+                elif params['variable'] in ['chldaily', 'chlmonthly']:
+                    response['map'] = 'chlo'
                 else:
                     response['map'] = params['variable']
                 util.touch_files(os.path.join(serverCfg['outputDir'],
