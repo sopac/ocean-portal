@@ -65,6 +65,9 @@ class POAMA(Dataset):
             response['scale'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['scale']
             # response['img'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['img']
             response['img'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['img']
+            if varStr == 'ssta':
+                response['map'] = 'anom'
+            
 
             if ('mode' in params) and (params['mode'] == 'preprocess'):
                 response['preproc'] = 'inside'

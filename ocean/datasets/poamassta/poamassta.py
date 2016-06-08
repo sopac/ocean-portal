@@ -107,7 +107,8 @@ class PoamaPlotterWrapper(SurfacePlotter):
         return 'both'
         
     def get_fill_color(self, params={}):
-        return '0.0'
+       # return '0.0'
+        return '0.02'
 
 #    @apply_to(variable='ssta')
 #    def get_units(self, params={}):
