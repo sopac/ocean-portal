@@ -7,7 +7,7 @@ var points = [
         ['Fiji – Lautoka ', -17.3619, 177.2617, 0, 'lautoka', 'Pacific/Fiji', 'INT_TP003'],
         ['Vanuatu – Port Vila', -17.4541, 168.1734, 0,  'port-vila', 'Pacific/Efate', 'INT_TP027'],
         ['Vanuatu – Luganville Wharf', -15.575300, 167.378700, 0,  'luganville-wharf', 'Pacific/Efate', 'INT_TP049'],
-        ['Funafuti Wave buoy', -8.525000, 179.215000, 0, 'funafuti', 'Pacific/Funafuti', 'INT_TP026'],
+        ['Tuvalu - Funafuti', -8.525000, 179.215000, 0, 'funafuti', 'Pacific/Funafuti', 'INT_TP026'],
         ['Solomon Islands – Honiara', -9.2544, 159.5719, 0, 'honiara', 'Pacific/Guadalcanal', 'INT_TP023'],
         ['Solomon Islands – Lata Wharf', -10.4315, 165.487, 0, 'lata-wharf', 'Pacific/Guadalcanal', 'INT_TP050'],
         ['Kiribati – Tarawa', -1.2154, 172.5559, 0, 'tarawa-betio', 'Pacific/Tarawa', 'INT_TP005'],
