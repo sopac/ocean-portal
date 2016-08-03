@@ -76,6 +76,7 @@ backend_resources = [
     'maps/chlo.map',
     'maps/coral_daily.map',
     'maps/coral_outlook.map',
+    'maps/wav.map',
     'fonts/fonts.list',
     'fonts/DejaVuSans.ttf',
 ]

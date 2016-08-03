@@ -24,6 +24,7 @@ from ocean import logger
 from ocean.netcdf.grid import Grid, GridWrongFormat
 from ocean.plotter import Plotter, COMMON_FILES, getCopyright, get_tick_values, discrete_cmap
 from ocean.util.pngcrush import pngcrush
+from ocean.util.gdalprocess import gdal_process
  
 customColorMap = {"wav_cm": [[187, 214, 232],
                              [107, 174, 214],
@@ -48,6 +49,30 @@ customColorMap = {"wav_cm": [[187, 214, 232],
                             [255, 125, 75],
                             [229, 39, 13],
                             [153, 0, 0]]}
+
+basemapColorMap = {"wav_cm": [[255, 255, 255],
+                              [235, 235, 235],
+                              [216, 216, 216],
+                              [196, 196, 196],
+                              [177, 177, 177],
+                              [157, 157, 157],
+                              [137, 137, 137],
+                              [118, 118, 118],
+                              [98, 98, 98],
+                              [78, 78, 78],
+                              [59, 59, 59],
+                              [39, 39, 39],
+                              [20, 20, 20],
+                              [0, 0, 0]],
+                 "wnd_cm": [[255, 255, 255],
+                            [223, 223, 223],
+                            [191, 191, 191],
+                            [159, 159, 159],
+                            [128, 128, 128],
+                            [96, 96, 96],
+                            [64, 64, 64],
+                            [32, 32, 32],
+                            [0, 0, 0]]}
 
 customTicks = {"sig": [0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 20],
                "pk": [0, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 30],
@@ -123,7 +148,8 @@ class Ww3ForecastPlotter(Plotter):
         return 'neither'
 
     def get_fill_color(self, params={}):
-        return '1.0'
+        #return '1.0'
+        return '0.02'
 
     def get_smooth_fac(self, params={}):
         return 1
@@ -161,12 +187,15 @@ class Ww3ForecastPlotter(Plotter):
         cb_label_pos = kwargs.get('cb_label_pos', None)
         clabel = kwargs.get('clabel', False)
         vector = kwargs.get('vector', False)
+        fill_color = kwargs.get('fill_color', '1.0')
 
         overlay_grid = kwargs.get('overlay_grid', None)
 
         cmArray = customColorMap[cmp_name]
+        basemapArray = basemapColorMap[cmp_name]
 #        d_cmap = mpl.colors.ListedColormap(np.array(cmArray) / 255.0)
         d_cmap, norm = from_levels_and_colors(customTicks[cm_edge_values], np.array(cmArray) / 255.0)
+        basemap_cmap, basemap_norm = from_levels_and_colors(customTicks[cm_edge_values], np.array(basemapArray) / 255.0)
         cm_edge_values = np.array(customTicks[cm_edge_values])
 
         if cb_label_pos is None:
@@ -195,10 +224,12 @@ class Ww3ForecastPlotter(Plotter):
             # Plot data
             x2, y2 = m(*np.meshgrid(lons, lats))
 #            img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap, norm=norm)
-            img = m.contourf(x2, y2, data, levels=cm_edge_values, cmap=d_cmap, norm=norm, antialiased=True, zorder=0)
+            #img = m.contourf(x2, y2, data, levels=cm_edge_values, cmap=d_cmap, norm=norm, antialiased=True, zorder=0)
+            img = m.contourf(x2, y2, data, levels=cm_edge_values, cmap=basemap_cmap, norm=norm, antialiased=False, zorder=0)
             img.set_clim(cm_edge_values.min(), cm_edge_values.max())
             
-            img = plt.contour(x2, y2, data, levels=cm_edge_values, colors='w', norm=norm, linewidths=0.5, zorder=1)
+            #bug798 comment out
+            #img = plt.contour(x2, y2, data, levels=cm_edge_values, colors='w', norm=norm, linewidths=0.5, zorder=1)
 
             #plot contouring labels
             if clabel:
@@ -211,7 +242,8 @@ class Ww3ForecastPlotter(Plotter):
             #extract the overlay grid
             if vector:
 #                overlay_grid = kwargs.get('overlay_grid', None)
-                every = 10 
+                #every = 10 
+                every = 15 
                 lons = lons[::every]
                 lats = lats[::every]
                 x2, y2 = m(*np.meshgrid(lons, lats))
@@ -219,17 +251,27 @@ class Ww3ForecastPlotter(Plotter):
                     radians_array = np.radians(overlay_grid)
                     radians_array = np.pi + radians_array
                     radians_array = radians_array[::every, ::every]
-                m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, zorder=3)
-            m.drawmapboundary(linewidth=0.0)
+                #m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, zorder=3, color='0.06', antialiased=True)
+                #m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, zorder=3, color='0.06', antialiased=False)
+                #m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, headwidth=4, headlength=4.5, headaxislength=2, zorder=3, color='0.06', antialiased=False)
+                #m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, zorder=3, color='0.06', antialiased=False, width=0.001)
+                m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, zorder=3, color='0.06', edgecolor='0.06', antialiased=False, headaxislength=2.5, headlength=3, linewidths=(0.01,))
+            m.drawmapboundary(linewidth=0.0, fill_color=fill_color)
 
-            m.drawcoastlines(linewidth=0.5, color='#505050', zorder=8)
+#            m.drawcoastlines(linewidth=0.5, color='#505050', zorder=8)
 #            m.fillcontinents(color='#F1EBB7', zorder=7)
-            m.fillcontinents(color='0.58', zorder=7)
 
             # Save figure
             plt.savefig(region['output_filename'], dpi=120,
                         bbox_inches='tight', pad_inches=0.0)
             plt.close()
+
+            # generate shape file
+            gdal_process(region['output_filename'], region['lon_min'],
+                                                    region['lat_max'],
+                                                    region['lon_max'],
+                                                    region['lat_min'])
+
             pngcrush(region['output_filename'])
 
         @logger.time_and_log('subprocess-plot-colorbar')

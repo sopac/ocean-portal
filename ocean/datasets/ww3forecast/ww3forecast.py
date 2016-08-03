@@ -112,6 +112,11 @@ class ww3forecast(Dataset):
                 response['img'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['img']
                 response['mapimg'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['mapimg']
                 response['scale'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['scale']
+                if varStr == 'wnd_spd':
+                    response['map'] = 'wnd'
+                else:
+                    response['map'] = 'wav'
+
             elif params['plot'] == 'point': #for point value extraction
                 (lat, lon), value = self.extract(**params)
                 response['value'] = float(value)
