@@ -52,12 +52,12 @@ def Download_Compile_HYCOM_Currents(data_dir,data_subdir,server,server_path):
 
     try: #Test to see whether yesterdays data is in, if not, pick the day before
         d=datetime.date.today()-datetime.timedelta(days=1)
-        filename='hycom_glb_911_'+str(int(d.year))+str(int(d.month)).zfill(2)+str(int(d.day)).zfill(2)+'00_t'+str(start_timestamp*3).zfill(3)+'_uv3z.nc'
+        filename='hycom_glb_912_'+str(int(d.year))+str(int(d.month)).zfill(2)+str(int(d.day)).zfill(2)+'00_t'+str(start_timestamp*3).zfill(3)+'_uv3z.nc'
         total_name=server+server_path+'/'+filename
         cdf1=Dataset(total_name,'r')
     except:
         d=datetime.date.today()-datetime.timedelta(days=2)
-        filename='hycom_glb_911_'+str(int(d.year))+str(int(d.month)).zfill(2)+str(int(d.day)).zfill(2)+'00_t'+str(start_timestamp*3).zfill(3)+'_uv3z.nc'
+        filename='hycom_glb_912_'+str(int(d.year))+str(int(d.month)).zfill(2)+str(int(d.day)).zfill(2)+'00_t'+str(start_timestamp*3).zfill(3)+'_uv3z.nc'
         total_name=server+server_path+'/'+filename
         cdf1=Dataset(total_name,'r')
 
@@ -69,7 +69,7 @@ def Download_Compile_HYCOM_Currents(data_dir,data_subdir,server,server_path):
             #Append data to netcdf
             add_nc(output_filename,'u','v',water_u,water_v,time,0)
         else:
-            filename='hycom_glb_911_'+str(int(d.year))+str(int(d.month)).zfill(2)+str(int(d.day)).zfill(2)+'00_t'+str(x*3).zfill(3)+'_uv3z.nc'
+            filename='hycom_glb_912_'+str(int(d.year))+str(int(d.month)).zfill(2)+str(int(d.day)).zfill(2)+'00_t'+str(x*3).zfill(3)+'_uv3z.nc'
             total_name=server+server_path+'/'+filename
             cdf1=Dataset(total_name,'r')
             #Only extract data and time stamp on subsequent iterations

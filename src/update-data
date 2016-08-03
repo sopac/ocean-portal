@@ -28,7 +28,7 @@ case $DATASET in
         ;;
     currents)
         SERVER=http://tds.hycom.org/
-        SERVER_PATH=/thredds/dodsC/GLBu0.08/expt_91.1/forecasts
+        SERVER_PATH=/thredds/dodsC/GLBu0.08/expt_91.2/forecasts
         DATA_SUBDIR=daily
         ;;
     coral)

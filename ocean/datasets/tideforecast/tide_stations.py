@@ -47,7 +47,7 @@ tide_stations = {
         "timezone": "Pacific/Efate",
         "station_number": "INT_TP049"
     },
-    "Funafuti Wave buoy": {
+    "Tuvalu - Funafuti": {
         "latlng": [-8.525000, 179.215000],
         "short_name": "funafuti",
         "timezone": "Pacific/Funafuti",
