@@ -130,6 +130,14 @@ function createMap () {
        continuousWorld: true
     }); 
 
+    ocean.resultOverlayLayer = L.tileLayer.wms("cgi/map.py?map=result", {
+       layers: 'plot',
+       format: 'image/png',
+       transparent: true,
+       zIndex: 910,
+       continuousWorld: true
+    }); 
+
 /**
     ocean.countriesLayer = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
        layers: 'capitals,countries',
@@ -224,9 +232,13 @@ function updateMap(data, bounds) {
     });
 }
 
-function updateMapTiles(mapname, mapimg) {
+function updateMapTiles(mapname, mapimg, overlayimg) {
     ocean.resultLayer.setUrl('cgi/map.py?map=' + mapname + '&mapimg=' + mapimg);
     ocean.overlayGroup.addLayer(ocean.resultLayer);
+    if (overlayimg) {
+        ocean.resultOverlayLayer.setUrl('cgi/map.py?map=grey&mapimg=' + overlayimg);
+        ocean.overlayGroup.addLayer(ocean.resultOverlayLayer);
+    }
     ocean.greylandLayer.setOpacity(1.0);
     ocean.bathymetryLayer.setOpacity(0.0);
 

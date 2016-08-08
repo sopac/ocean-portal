@@ -114,8 +114,13 @@ class ww3forecast(Dataset):
                 response['scale'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['scale']
                 if varStr == 'wnd_spd':
                     response['map'] = 'wnd'
+                    response['arrow'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['map'] + COMMON_FILES['arrow']
+                elif varStr == 'pk_wav_per':
+                    response['map'] = 'wav'
+                    response['label'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['map'] + COMMON_FILES['label']
                 else:
                     response['map'] = 'wav'
+                    response['arrow'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['map'] + COMMON_FILES['arrow']
 
             elif params['plot'] == 'point': #for point value extraction
                 (lat, lon), value = self.extract(**params)

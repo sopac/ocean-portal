@@ -31,6 +31,17 @@ def gdal_process(mapImgFile, ulx, uly, lrx, lry):
 
     #gdal_polygonize to convert geo-referenced map image to shape file
     shpFile = os.path.splitext(mapImgFile)[0] + '.shp'
+    prjFile = os.path.splitext(mapImgFile)[0] + '.prj'
+    shxFile = os.path.splitext(mapImgFile)[0] + '.shx'
+    dbfFile = os.path.splitext(mapImgFile)[0] + '.dbf'
+
+    try:
+        os.remove(shpFile)
+        os.remove(prjFile)
+        os.remove(shxFile)
+        os.remove(dbfFile)
+    except:
+        pass
 
     with open(os.devnull, 'wb') as devnull:
         subprocess.check_call(['gdal_polygonize.py', geoMapImgFile, '-f', 'ESRI Shapefile', shpFile],

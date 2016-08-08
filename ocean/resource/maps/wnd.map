@@ -40,7 +40,7 @@ MAP
             EXPRESSION ([DN]==0)
 
             STYLE
-                COLOR "#cc33cc"
+                COLOR "#990000"
             END
         END
 
@@ -61,98 +61,58 @@ MAP
         END
 
         CLASS
-            EXPRESSION ([DN]==20)
+            EXPRESSION ([DN]==32)
 
             STYLE
-                COLOR "#ff0000"
+                COLOR "#e5270d"
             END
         END
 
         CLASS
-            EXPRESSION ([DN]==39)
+            EXPRESSION ([DN]==64)
 
             STYLE
-                COLOR "#f03b20"
+                COLOR "#ff7d4b"
             END
         END
 
         CLASS
-            EXPRESSION ([DN]==59)
+            EXPRESSION ([DN]==96)
 
             STYLE
-                COLOR "#fd8d3c"
+                COLOR "#e5e575"
             END
         END
 
         CLASS
-            EXPRESSION ([DN]==78)
+            EXPRESSION ([DN]==128)
 
             STYLE
-                COLOR "#fecc5c"
+                COLOR "#7ede78"
             END
         END
 
         CLASS
-            EXPRESSION ([DN]==98)
+            EXPRESSION ([DN]==159)
 
             STYLE
-                COLOR "#ffffb2"
+                COLOR "#acffa7"
             END
         END
 
         CLASS
-            EXPRESSION ([DN]==118)
+            EXPRESSION ([DN]==191)
 
             STYLE
-                COLOR "#006d2c"
+                COLOR "#9cdbfc"
             END
         END
 
         CLASS
-            EXPRESSION ([DN]==137)
+            EXPRESSION ([DN]==223)
 
             STYLE
-                COLOR "#31a354"
-            END
-        END
-
-        CLASS
-            EXPRESSION ([DN]==157)
-
-            STYLE
-                COLOR "#74c476"
-            END
-        END
-
-        CLASS
-            EXPRESSION ([DN]==177)
-
-            STYLE
-                COLOR "#bae4b3"
-            END
-        END
-
-        CLASS
-            EXPRESSION ([DN]==196)
-
-            STYLE
-                COLOR "#08519c"
-            END
-        END
-
-        CLASS
-            EXPRESSION ([DN]==216)
-
-            STYLE
-                COLOR "#3182bd"
-            END
-        END
-
-        CLASS
-            EXPRESSION ([DN]==235)
-
-            STYLE
-                COLOR "#6baed6"
+                COLOR "#ccf0fe"
             END
         END
 
@@ -160,7 +120,7 @@ MAP
             EXPRESSION ([DN]==255)
 
             STYLE
-                COLOR "#bbd6e8"
+                COLOR "#eff8fd"
             END
         END
     END

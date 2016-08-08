@@ -221,51 +221,19 @@ class Ww3ForecastPlotter(Plotter):
                         urcrnrlon=region['lon_max'],
                         resolution='i')
 
+            m.drawmapboundary(linewidth=0.0, fill_color=fill_color)
             # Plot data
             x2, y2 = m(*np.meshgrid(lons, lats))
 #            img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap, norm=norm)
             #img = m.contourf(x2, y2, data, levels=cm_edge_values, cmap=d_cmap, norm=norm, antialiased=True, zorder=0)
-            img = m.contourf(x2, y2, data, levels=cm_edge_values, cmap=basemap_cmap, norm=norm, antialiased=False, zorder=0)
+            #img = m.contourf(x2, y2, data, levels=cm_edge_values, cmap=basemap_cmap, norm=norm, antialiased=False, zorder=0)
+            img = m.contourf(x2, y2, data, levels=cm_edge_values, cmap=basemap_cmap, norm=norm, antialiased=False)
             img.set_clim(cm_edge_values.min(), cm_edge_values.max())
             
             #bug798 comment out
             #img = plt.contour(x2, y2, data, levels=cm_edge_values, colors='w', norm=norm, linewidths=0.5, zorder=1)
-
-            #plot contouring labels
-            if clabel:
-                labels = plt.clabel(img, cm_edge_values[::4], inline=True, fmt='%.0f', colors='k', fontsize=5, zorder=2)
-                bbox_props = dict(boxstyle="round", fc="w", ec="w", alpha=0.9)
-                for text in labels:
-                    text.set_linespacing(1)
-                    text.set_bbox(bbox_props)
-
-            #extract the overlay grid
-            if vector:
-#                overlay_grid = kwargs.get('overlay_grid', None)
-                #every = 10 
-                every = 15 
-                lons = lons[::every]
-                lats = lats[::every]
-                x2, y2 = m(*np.meshgrid(lons, lats))
-                if overlay_grid is not None:
-                    radians_array = np.radians(overlay_grid)
-                    radians_array = np.pi + radians_array
-                    radians_array = radians_array[::every, ::every]
-                #m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, zorder=3, color='0.06', antialiased=True)
-                #m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, zorder=3, color='0.06', antialiased=False)
-                #m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, headwidth=4, headlength=4.5, headaxislength=2, zorder=3, color='0.06', antialiased=False)
-                #m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, zorder=3, color='0.06', antialiased=False, width=0.001)
-                m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, zorder=3, color='0.06', edgecolor='0.06', antialiased=False, headaxislength=2.5, headlength=3, linewidths=(0.01,))
-            m.drawmapboundary(linewidth=0.0, fill_color=fill_color)
-
-#            m.drawcoastlines(linewidth=0.5, color='#505050', zorder=8)
-#            m.fillcontinents(color='#F1EBB7', zorder=7)
-
-            # Save figure
             plt.savefig(region['output_filename'], dpi=120,
                         bbox_inches='tight', pad_inches=0.0)
-            plt.close()
-
             # generate shape file
             gdal_process(region['output_filename'], region['lon_min'],
                                                     region['lat_max'],
@@ -273,6 +241,82 @@ class Ww3ForecastPlotter(Plotter):
                                                     region['lat_min'])
 
             pngcrush(region['output_filename'])
+
+            baseName = os.path.splitext(region['output_filename'])[0]
+
+            #plot contouring labels
+            if clabel:
+                plt.clf()
+             #   m.drawmapboundary(linewidth=0.0, fill_color=fill_color)
+                m.drawmapboundary(linewidth=0.0)
+                #labels = plt.clabel(img, cm_edge_values[::4], inline=True, fmt='%.0f', colors='k', fontsize=5, zorder=2)
+                img = plt.contour(x2, y2, data, levels=cm_edge_values, colors='w', norm=norm, linewidths=0.5, zorder=1)
+                labels = plt.clabel(img, cm_edge_values[::4], inline=True, fmt='%.0f', colors='k', fontsize=5)
+            #    labels = plt.clabel(img, cm_edge_values[::4], inline=True, fmt='%.0f', colors='0.06', fontsize=5, zorder=2)
+             #   bbox_props = dict(boxstyle="round", fc="w", ec="w", alpha=0.9)
+                bbox_props = dict(boxstyle="round", fc="w", ec="w")
+                for text in labels:
+                    text.set_linespacing(1)
+                    text.set_bbox(bbox_props)
+                labelFile = baseName + '_label.png'
+                plt.savefig(labelFile, dpi=120,
+                            bbox_inches='tight', pad_inches=0.0, transparent=True)
+                # generate shape file
+                gdal_process(labelFile, region['lon_min'],
+                                                        region['lat_max'],
+                                                        region['lon_max'],
+                                                        region['lat_min'])
+
+                pngcrush(labelFile)
+
+            #extract the overlay grid
+            if vector:
+                plt.clf()
+                m.drawmapboundary(linewidth=0.0)
+#                overlay_grid = kwargs.get('overlay_grid', None)
+                every = 10 
+               # every = 15 
+                lons = lons[::every]
+                lats = lats[::every]
+                x2, y2 = m(*np.meshgrid(lons, lats))
+                if overlay_grid is not None:
+                    radians_array = np.radians(overlay_grid)
+                    radians_array = np.pi + radians_array
+                    radians_array = radians_array[::every, ::every]
+                m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, zorder=3)
+                #m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, zorder=3, color='0.06', antialiased=True)
+                #m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, zorder=3, color='0.06', antialiased=False)
+                #m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, headwidth=4, headlength=4.5, headaxislength=2, zorder=3, color='0.06', antialiased=False)
+                #m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, zorder=3, color='0.06', antialiased=False, width=0.001)
+                #m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, zorder=3, color='0.06', edgecolor='0.06', antialiased=False, headaxislength=2.5, headlength=3, linewidths=(0.01,))
+                arrowFile = baseName + '_arrow.png'
+                plt.savefig(arrowFile, dpi=120,
+                            bbox_inches='tight', pad_inches=0.0, transparent=True)
+                # generate shape file
+                gdal_process(arrowFile, region['lon_min'],
+                                        region['lat_max'],
+                                        region['lon_max'],
+                                        region['lat_min'])
+
+                pngcrush(labelFile)
+
+            m.drawmapboundary(linewidth=0.0, fill_color=fill_color)
+
+#            m.drawcoastlines(linewidth=0.5, color='#505050', zorder=8)
+#            m.fillcontinents(color='#F1EBB7', zorder=7)
+
+            # Save figure
+#            plt.savefig(region['output_filename'], dpi=120,
+#                        bbox_inches='tight', pad_inches=0.0)
+            plt.close()
+
+            # generate shape file
+#            gdal_process(region['output_filename'], region['lon_min'],
+#                                                    region['lat_max'],
+#                                                    region['lon_max'],
+#                                                    region['lat_min'])
+
+#            pngcrush(region['output_filename'])
 
         @logger.time_and_log('subprocess-plot-colorbar')
         def _plot_colorbar(lats, lons, data,
