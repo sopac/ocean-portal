@@ -79,6 +79,7 @@ backend_resources = [
     'maps/wav.map',
     'maps/wnd.map',
     'maps/grey.map',
+    'maps/poamasla.map',
     'fonts/fonts.list',
     'fonts/DejaVuSans.ttf',
 ]

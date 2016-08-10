@@ -98,6 +98,7 @@ class msla(Dataset):
                                      serverCfg['rasterURL'],
                                      fileName),
                         COMMON_FILES.values()))
+                response['map'] = 'poamasla'
 
                 util.touch_files(os.path.join(serverCfg['outputDir'],
                                               fileName),
