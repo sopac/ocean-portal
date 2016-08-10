@@ -846,7 +846,8 @@ ocean.dsConf = {
 
             if (data.img) {
                 appendOutput(data.img, null, null, null, data);
-                updateMap(data.mapimg);
+              //  updateMap(data.mapimg);
+                updateMapTiles(data.map, data.mapimg);
             }
 
             if (data.tidimg)
