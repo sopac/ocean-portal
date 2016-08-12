@@ -294,6 +294,10 @@ ocean.dsConf = {
                         if(data.arrow) {
                             overlayimg = data.arrow;
                         }
+                        if (overlayimg) {
+                            overlayimg = overlayimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
+                        }
+                        overlayimg = overlayimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
                         updateMapTiles(data.map, data.mapimg, overlayimg);
                     }
 
@@ -310,6 +314,9 @@ ocean.dsConf = {
                         }
                         if(data.arrow) {
                             overlayimg = data.arrow;
+                        }
+                        if (overlayimg) {
+                            overlayimg = overlayimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
                         }
                         updateMapTiles(data.map, data.mapimg, overlayimg);
                     }
@@ -726,7 +733,9 @@ ocean.dsConf = {
         callback: function(data) {
             if(data.forecast) {
                 var forecast = $.parseJSON(data.forecast);
+                this.map = data.map;
                 this.mapimg = data.mapimg;
+                this.overlayimg = data.arrow;
                 this.downloadimg = data.img;
 
                 slider.options.steps = forecast.length;
@@ -738,23 +747,16 @@ ocean.dsConf = {
                     var dt = forecast[this.getStep()[0] - 1].datetime
                     var local = getLocalTime(dt);
                     $('.slider-hint').text(local.toString());
-//                    if (data.mapimg) {
-//                        ocean.dataset.mapimg = data.mapimg;
+                    if (data.mapimg) {
                         ocean.dataset.updateMapImg();
-//                        data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
-//                        if self.selectedRegion !== ocean.area
-//                        bounds = $('#subregion option:selected').data('bounds');
-//                        updateMap(data.mapimg, bounds);
-//                    }
+                    }
 
-                      //Sets the download image link for the datasets having slider option.
-                      ocean.dataset.updateDownloadImg();
+                    //Sets the download image link for the datasets having slider option.
+                    ocean.dataset.updateDownloadImg();
                 };
                 slider.options.callback = function(x, y) {
                     if (data.mapimg) {
                         ocean.dataset.updateMapImg();
-//                        data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
-//                        updateMap(data.mapimg);
                     }
 
                     //Sets the download image link for the datasets having slider option.
@@ -782,19 +784,23 @@ ocean.dsConf = {
         },
         updateMapImg: function() {
             mapimg = this.mapimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
+            overlayimg = this.overlayimg.replace(/_\d\d/, '_' + pad((Math.round(slider.getStep()[0]) - 1), 2));
             if (!this.selectedRegion) {
                 this.selectedRegion = ocean.area;
             }
             if (this.selectedRegion !== ocean.area) {
                 mapimg = mapimg.replace('_' + this.selectedRegion, '_' + ocean.area);
+                overlayimg = overlayimg.replace('_' + this.selectedRegion, '_' + ocean.area);
                 this.mapimg = mapimg;
+                this.overlayimg = overlayimg;
                 this.selectedRegion = ocean.area;
             }
-            bounds = $('#subregion option:selected').data('bounds');
-            if ($('#subregion option:selected').val() === 'pac') {
-                bounds = null;
-            }
-            updateMap(mapimg, bounds);
+            updateMapTiles(this.map, mapimg, overlayimg);
+           // bounds = $('#subregion option:selected').data('bounds');
+           // if ($('#subregion option:selected').val() === 'pac') {
+           //     bounds = null;
+           // }
+           // updateMap(mapimg, bounds);
         },
         onRegionChange: function() {
             this.updateDownloadImg();

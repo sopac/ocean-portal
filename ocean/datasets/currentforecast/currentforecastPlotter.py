@@ -92,6 +92,7 @@ class CurrentForecastPlotter(Plotter):
         regionName = kwargs.get('regionName', None)
 #        d_cmap = mpl.colors.ListedColormap(np.array(cmArray) / 255.0)
         d_cmap, norm = from_levels_and_colors(cm_edge_values, None, cmp_name, extend=extend)
+        basemap_cmap, basemap_norm = from_levels_and_colors(cm_edge_values, None, 'binary', extend=extend)
 
         if cb_label_pos is None:
             tick_pos = cm_edge_values
@@ -117,14 +118,27 @@ class CurrentForecastPlotter(Plotter):
                         resolution='i')
 
             # Plot data
+            m.drawmapboundary(linewidth=1.0, fill_color='0.02')
             x2, y2 = m(*np.meshgrid(lons, lats))
 
             u = data[0][time]
             v = data[1][time]
             mag = np.sqrt(u**2 + v**2)
 
-            img = m.pcolormesh(x2, y2, mag, shading='flat', cmap=d_cmap, norm=norm)
+            #img = m.pcolormesh(x2, y2, mag, shading='flat', cmap=d_cmap, norm=norm)
+            img = m.pcolormesh(x2, y2, mag, shading='flat', cmap=basemap_cmap, norm=basemap_norm)
             img.set_clim(cm_edge_values.min(), cm_edge_values.max())
+
+            plt.savefig(region['output_filename'], dpi=120,
+                        bbox_inches='tight', pad_inches=0.0)
+            # generate shape file
+            gdal_process(region['output_filename'], region['lon_min'],
+                                                    region['lat_max'],
+                                                    region['lon_max'],
+                                                    region['lat_min'])
+
+            pngcrush(region['output_filename'])
+
 
             #plot contouring labels
             if clabel:
@@ -135,6 +149,10 @@ class CurrentForecastPlotter(Plotter):
                     text.set_bbox(bbox_props)
  
             #plot vectors
+            baseName = os.path.splitext(region['output_filename'])[0]
+            plt.clf()
+            m.drawmapboundary(linewidth=0.0)
+            
             if regionName == 'pac':
                 every = 50 
                 scale = 10
@@ -150,17 +168,28 @@ class CurrentForecastPlotter(Plotter):
 #            v2 = v[::every, ::every]
             rad = np.arctan2(v2, u2)
             m.quiver(x2, y2, np.cos(rad), np.sin(rad), scale=scale, zorder=3, scale_units='inches', pivot='middle')
-            m.drawmapboundary(linewidth=0.0)
 
-            m.drawcoastlines(linewidth=0.5, color='#505050', zorder=8)
+            arrowFile = baseName + '_arrow.png'
+            plt.savefig(arrowFile, dpi=120,
+                        bbox_inches='tight', pad_inches=0.0, transparent=True)
+            # generate shape file
+            gdal_process(arrowFile, region['lon_min'],
+                                    region['lat_max'],
+                                    region['lon_max'],
+                                    region['lat_min'])
+
+            pngcrush(arrowFile)
+#            m.drawmapboundary(linewidth=0.0)
+
+#            m.drawcoastlines(linewidth=0.5, color='#505050', zorder=8)
 #            m.fillcontinents(color='#F1EBB7', zorder=7)
-            m.fillcontinents(color='0.58', zorder=7)
+#            m.fillcontinents(color='0.58', zorder=7)
 
             # Save figure
-            plt.savefig(region['output_filename'], dpi=120,
+#            plt.savefig(region['output_filename'], dpi=120,
                         bbox_inches='tight', pad_inches=0.0)
             plt.close()
-            pngcrush(region['output_filename'])
+#            pngcrush(region['output_filename'])
 
         def _plot_colorbar(lats, lons, data, time,
                            units='', cb_tick_fmt="%.0f",
