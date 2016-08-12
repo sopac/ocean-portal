@@ -298,7 +298,7 @@ class Ww3ForecastPlotter(Plotter):
                                         region['lon_max'],
                                         region['lat_min'])
 
-                pngcrush(labelFile)
+                pngcrush(arrowFile)
 
             m.drawmapboundary(linewidth=0.0, fill_color=fill_color)
 
