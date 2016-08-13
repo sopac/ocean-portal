@@ -1023,7 +1023,8 @@ ocean.dsConf = {
             if (data.img != null && data.scale != null) {
                 prependOutputSet();
                 appendOutput(data.img, null, null, null, data);
-                updateMap(data.mapimg);
+                //updateMap(data.mapimg);
+                updateMapTiles(data.map, data.mapimg);
                 setLegend(data.scale);
             }
         },
@@ -1058,12 +1059,15 @@ ocean.dsConf = {
             if (data.img != null && data.scale != null) {
                 prependOutputSet();
                 appendOutput(data.img, null, null, null, data);
-                updateMap(data.mapimg);
+               // updateMap(data.mapimg);
                 setLegend(data.scale);
             }
             if (data.mapimg) {
-                this.mapimg = data.mapimg;
-                ocean.dataset.updateMapImg();
+                updateMapTiles(data.map, data.mapimg, data.front);
+
+
+                //this.mapimg = data.mapimg;
+                //ocean.dataset.updateMapImg();
             }
         },
         onSelect: function() {

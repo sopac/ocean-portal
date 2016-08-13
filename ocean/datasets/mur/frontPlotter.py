@@ -261,6 +261,7 @@ class FrontPlotter(Plotter):
 
 #        d_cmap = mpl.colors.ListedColormap(np.array(cmArray) / 255.0)
         d_cmap, norm = from_levels_and_colors(cm_edge_values, None, cmp_name, extend=extend)
+        basemap_cmap, basemap_norm = from_levels_and_colors(cm_edge_values, None, 'binary', extend=extend)
 
         if cb_label_pos is None:
             tick_pos = cm_edge_values
@@ -284,17 +285,31 @@ class FrontPlotter(Plotter):
                         urcrnrlat=region['lat_max'],
                         urcrnrlon=region['lon_max'],
                         resolution='c')
-
+            m.drawmapboundary(linewidth=0.0, fill_color='0.02')
             # Convert centre lat/lons to corner values required for pcolormesh
             lons2 = get_grid_edges(lons)
             lats2 = get_grid_edges(lats)
 
             # Plot data
             x2, y2 = m(*np.meshgrid(lons2, lats2))
-            img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap, norm=norm)
+            #img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap, norm=norm)
+            img = m.pcolormesh(x2, y2, data, shading='flat', cmap=basemap_cmap, norm=basemap_norm)
             img.set_clim(cm_edge_values.min(), cm_edge_values.max())
 
+            plt.savefig(region['output_filename'], dpi=120,
+                        bbox_inches='tight', pad_inches=0.0)
+            # generate shape file
+            gdal_process(region['output_filename'], region['lon_min'],
+                                                    region['lat_max'],
+                                                    region['lon_max'],
+                                                    region['lat_min'])
 
+            pngcrush(region['output_filename'])
+
+            #plot front
+            baseName = os.path.splitext(region['output_filename'])[0]
+            plt.clf()
+            m.drawmapboundary(linewidth=0.0)
             if shapefile is not None:
                 if os.path.exists(shapefile + ".shp"):
                     front_info = m.readshapefile(shapefile, 'front')
@@ -302,16 +317,28 @@ class FrontPlotter(Plotter):
 		if hasattr(m, 'front'):
 		    for front in m.front:
 		    	m.plot(front[0] if front[0] > 0 else front[0] +360, front[1], color='k', marker=marker, markersize=1, markeredgewidth=1)
+                frontFile = baseName + '_front.png'
+                plt.savefig(frontFile, dpi=120,
+                            bbox_inches='tight', pad_inches=0.0, transparent=True)
+                # generate shape file
+                gdal_process(frontFile, region['lon_min'],
+                                        region['lat_max'],
+                                        region['lon_max'],
+                                        region['lat_min'])
 
-            m.drawmapboundary(linewidth=0.0, fill_color=fill_color)
-            m.fillcontinents(color='#F1EBB7', zorder=7)
+                pngcrush(labelFile)
+            
+    
+
+           # m.drawmapboundary(linewidth=0.0, fill_color=fill_color)
+           # m.fillcontinents(color='#F1EBB7', zorder=7)
 
             # Save figure
-            plt.savefig(region['output_filename'], dpi=150,
-                        bbox_inches='tight', pad_inches=0.0)
+           # plt.savefig(region['output_filename'], dpi=150,
+           #             bbox_inches='tight', pad_inches=0.0)
             plt.close()
 
-            pngcrush(region['output_filename'])
+           # pngcrush(region['output_filename'])
 
         def _plot_colorbar(lats, lons, data,
                            units='', cb_tick_fmt="%.0f",

@@ -19,7 +19,7 @@ from ocean.config import productName
 from ocean.config import regionConfig 
 #from ocean.netcdf.extractor import Extractor
 from ocean.datasets import Dataset
-from currentforecastPlotter import CurrentForecastPlotter, COMMON_FILES
+from currentforecastPlotter import CurrentForecastPlotter, COMMON_FILES, EXTRA_FILES
 from ocean.netcdf import Grid
 
 svnDayForecast = '%s_%s.json'
@@ -109,7 +109,7 @@ class currentforecast(Dataset):
         response['img'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['img']
         response['scale'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['scale']
         response['map'] = 'current'
-        response['arrow'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['map'] + COMMON_FILES['arrow']
+        response['arrow'] = self.getPlotFileName(varStr, 0, regionStr)[1] + EXTRA_FILES['map'] + EXTRA_FILES['arrow']
 #        os.utime(os.path.join(serverCfg['outputDir'], filename), None)
 
         if ('mode' in params) and (params['mode'] == 'preprocess'):

@@ -45,15 +45,19 @@ from scipy import ndimage as nd
 
 COMMON_FILES = {
     'img': '.png',
-    'map': '_map',
     'mapimg': '_map.png',
 #    'mapeast': '_east.png',
 #    'mapeastw': '_east.pgw',
 #    'mapwest': '_west.png',
 #    'mapwestw': '_west.pgw',
     'scale': '_scale.png',
+}
+
+EXTRA_FILES = {
+    'map': '_map',
     'label': '_label.png',
-    'arrow': '_arrow.png'
+    'arrow': '_arrow.png',
+    'front': '_front.png'
 }
 
 BASEMAP_CMAP = 'binary'

@@ -12,7 +12,7 @@ import sys
 
 from ocean import util, config
 from ocean.datasets import Dataset
-from ocean.plotter import COMMON_FILES
+from ocean.plotter import COMMON_FILES, EXTRA_FILES
 from ocean.util import areaMean
 from ocean.config import productName
 from ocean.config import regionConfig
@@ -168,6 +168,11 @@ class SST(Dataset):
                     response['map'] = 'coral_daily'
                 elif params['variable'] == 'outlook': 
                     response['map'] = 'coral_outlook'
+                elif params['variable'] == 'mursst':
+                    response['map'] = 'mur'
+                    responts['front'] = os.path.join(serverCfg['baseURL'],
+                                                     serverCfg['rasterURL'],
+                                                     fileName) + EXTRA_FILES['map'] + EXTRA_FILES['front']
                 else:
                     response['map'] = params['variable']
                 util.touch_files(os.path.join(serverCfg['outputDir'],

@@ -19,7 +19,7 @@ import numpy.ma as ma
 from ocean import util, config
 from ocean.config import productName, regionConfig
 from ocean.datasets import Dataset
-from ww3forecastPlotter import Ww3ForecastPlotter, COMMON_FILES
+from ww3forecastPlotter import Ww3ForecastPlotter, COMMON_FILES, EXTRA_FILES
 from ocean.netcdf import Grid
 from ocean.netcdf.extractor import Extractor, LandError
 
@@ -114,13 +114,13 @@ class ww3forecast(Dataset):
                 response['scale'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['scale']
                 if varStr == 'wnd_spd':
                     response['map'] = 'wnd'
-                    response['arrow'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['map'] + COMMON_FILES['arrow']
+                    response['arrow'] = self.getPlotFileName(varStr, 0, 'pac')[1] + EXTRA_FILES['map'] + EXTRA_FILES['arrow']
                 elif varStr == 'pk_wav_per':
                     response['map'] = 'wav'
-                    response['label'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['map'] + COMMON_FILES['label']
+                    response['label'] = self.getPlotFileName(varStr, 0, 'pac')[1] + EXTRA_FILES['map'] + EXTRA_FILES['label']
                 else:
                     response['map'] = 'wav'
-                    response['arrow'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['map'] + COMMON_FILES['arrow']
+                    response['arrow'] = self.getPlotFileName(varStr, 0, 'pac')[1] + EXTRA_FILES['map'] + EXTRA_FILES['arrow']
 
             elif params['plot'] == 'point': #for point value extraction
                 (lat, lon), value = self.extract(**params)
