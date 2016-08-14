@@ -71,8 +71,7 @@ def main():
     try:
         cache_mtime = os.path.getmtime(filename)
         call_mapserver = \
-                cache_mtime < os.path.getmtime(queryMap['eastFileName']) or \
-                cache_mtime < os.path.getmtime(queryMap['eastFileName'])
+                cache_mtime < os.path.getmtime(queryMap['mapimg'])
     except os.error:
         call_mapserver = True
     except KeyError:
