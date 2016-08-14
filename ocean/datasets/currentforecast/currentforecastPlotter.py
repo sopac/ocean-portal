@@ -187,7 +187,7 @@ class CurrentForecastPlotter(Plotter):
 
             # Save figure
 #            plt.savefig(region['output_filename'], dpi=120,
-                        bbox_inches='tight', pad_inches=0.0)
+#                        bbox_inches='tight', pad_inches=0.0)
             plt.close()
 #            pngcrush(region['output_filename'])
 

@@ -268,8 +268,6 @@ class PoamaSstPlotter(Plotter):
 
         regions = [{'lat_min':-90,
                     'lat_max':90,
-#                    'lon_min':0,
-#                    'lon_max':360,
                     'lon_min':110,
                     'lon_max':290,
                     'output_filename':outputfile_map}
@@ -292,6 +290,7 @@ class PoamaSstPlotter(Plotter):
             d_cmap, norm = from_levels_and_colors(cm_edge_values, np.array(colors) / 255.0, None, extend=extend)
         elif colormap_strategy == 'nonlinear':
             d_cmap, norm = from_levels_and_colors(cm_edge_values, None, cmp_name, extend=extend)
+            basemap_cmap, basemap_norm = from_levels_and_colors(cm_edge_values, None, 'binary', extend=extend)
   
         if cm_edge_values is None:
             cm_edge_values = get_tick_values(data.min(), data.max(), 10)[0]
@@ -318,33 +317,70 @@ class PoamaSstPlotter(Plotter):
             lats2 = get_grid_edges(lats)
 
             # Plot data
+            m.drawmapboundary(linewidth=0.0, fill_color='0.02')
             x2, y2 = m(*np.meshgrid(lons2, lats2))
-            img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap, norm=norm)
+            img = m.pcolormesh(x2, y2, data, shading='flat', cmap=basemap_cmap, norm=basemap_norm)
+            img.set_clim(cm_edge_values.min(), cm_edge_values.max())
+            plt.savefig(region['output_filename'], dpi=120,
+                        bbox_inches='tight', pad_inches=0.0)
+            # generate shape file
+            gdal_process(region['output_filename'], region['lon_min'],
+                                                    region['lat_max'],
+                                                    region['lon_max'],
+                                                    region['lat_min'])
 
+            pngcrush(region['output_filename'])
+
+            baseName = os.path.splitext(region['output_filename'])[0]
             # Draw contours
             if contourLines:
+                plt.clf() 
+                m.drawmapboundary(linewidth=0.0)
                 x, y = m(*np.meshgrid(lons, lats))
                 #GAS negative contour not to be dashed
                 plt.rcParams['contour.negative_linestyle'] = 'solid'
-                cnt = plt.contour(x, y, data,levels = [29], colors=('purple',),linestyles=('-',),linewidths=(1,))
+                #cnt = plt.contour(x, y, data,levels = [29], colors=('purple',),linestyles=('-',),linewidths=(1,))
+                cnt = plt.contour(x, y, data,levels = [29], colors=('k',),linestyles=('-',),linewidths=(1,), antialiased=False)
                 if contourLabels:
                     plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8, colors = 'purple')
+                contourFile = baseName + '_contour.png'
+                plt.savefig(contourFile, dpi=120,
+                            bbox_inches='tight', pad_inches=0.0, transparent=True)
+                # generate shape file
+                gdal_process(contourFile, region['lon_min'],
+                                        region['lat_max'],
+                                        region['lon_max'],
+                                        region['lat_min'])
 
-            img.set_clim(cm_edge_values.min(), cm_edge_values.max())
+                pngcrush(contourFile)
+
 
             #extract the overlay grid
             if overlay_grid is not None:
+                plt.clf()
+                m.drawmapboundary(linewidth=0.0)
                 x, y = m(*np.meshgrid(overlay_grid.lons, overlay_grid.lats))
-                cnt = plt.contour(x, y, overlay_grid.data,levels = [29], colors=('g',),linestyles=('-',),linewidths=(1,))
+                #cnt = plt.contour(x, y, overlay_grid.data,levels = [29], colors=('g',),linestyles=('-',),linewidths=(1,))
+                cnt = plt.contour(x, y, overlay_grid.data,levels = [29], colors=('k',),linestyles=('-',),linewidths=(1,), antialiased=False)
                 if contourLabels:
                     plt.clabel(cnt, inline=True, fmt=cb_tick_fmt, fontsize=8, colors = 'g', zorder=3)
+                normalFile = baseName + '_normal.png'
+                plt.savefig(normalFile, dpi=120,
+                            bbox_inches='tight', pad_inches=0.0, transparent=True)
+                # generate shape file
+                gdal_process(normalFile, region['lon_min'],
+                                        region['lat_max'],
+                                        region['lon_max'],
+                                        region['lat_min'])
 
-            m.drawmapboundary(linewidth=0.0, fill_color=fill_color)
-            m.fillcontinents(color='0.58', zorder=7)
+                pngcrush(normalFile)
+
+           # m.drawmapboundary(linewidth=0.0, fill_color=fill_color)
+           # m.fillcontinents(color='0.58', zorder=7)
 
             # Save figure
-            plt.savefig(region['output_filename'], dpi=150,
-                        bbox_inches='tight', pad_inches=0.0)
+           # plt.savefig(region['output_filename'], dpi=150,
+           #             bbox_inches='tight', pad_inches=0.0)
             plt.close()
 
         def _plot_colorbar(lats, lons, data,

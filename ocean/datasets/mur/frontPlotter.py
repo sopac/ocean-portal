@@ -326,7 +326,7 @@ class FrontPlotter(Plotter):
                                         region['lon_max'],
                                         region['lat_min'])
 
-                pngcrush(labelFile)
+                pngcrush(frontFile)
             
     
 

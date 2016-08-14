@@ -657,8 +657,15 @@ ocean.dsConf = {
                     $('.slider-hint').text('');
                     if (data.mapimg) {
                         data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
-                       // updateMap(data.mapimg);
-                        updateMapTiles(data.map, data.mapimg);
+                        if (data.contour) {
+                            data.contour = data.contour.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
+                            data.normal = data.normal.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
+                            updateMapTilesSst(data.map, data.mapimg, data.contour, data.normal);
+                        }
+                        else {
+                            // updateMap(data.mapimg);
+                            updateMapTiles(data.map, data.mapimg);
+                        }
                     }
 
                     if (data.scale) {
@@ -671,8 +678,15 @@ ocean.dsConf = {
                 slider.options.callback = function(x, y) {
                     if (data.mapimg) {
                         data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
-                       // updateMap(data.mapimg);
-                        updateMapTiles(data.map, data.mapimg);
+                        if (data.contour) {
+                            data.contour = data.contour.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
+                            data.normal = data.normal.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
+                            updateMapTilesSst(data.map, data.mapimg, data.contour, data.normal);
+                        }
+                        else {
+                            // updateMap(data.mapimg);
+                            updateMapTiles(data.map, data.mapimg);
+                        }
                     }
 
                     if (data.scale) {

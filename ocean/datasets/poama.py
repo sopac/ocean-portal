@@ -69,6 +69,10 @@ class POAMA(Dataset):
                 response['map'] = 'anom'
             elif varStr == 'height':
                 response['map'] = 'poamasla'
+            elif varStr == 'sst':
+                response['map'] = 'mean'
+                response['contour'] = self.getPlotFileName(varStr, 0, 'pac')[1] + EXTRA_FILES['map'] + EXTRA_FILES['contour']
+                response['normal'] = self.getPlotFileName(varStr, 0, 'pac')[1] + EXTRA_FILES['map'] + EXTRA_FILES['normal']
 
             if ('mode' in params) and (params['mode'] == 'preprocess'):
                 response['preproc'] = 'inside'

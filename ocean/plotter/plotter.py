@@ -57,7 +57,9 @@ EXTRA_FILES = {
     'map': '_map',
     'label': '_label.png',
     'arrow': '_arrow.png',
-    'front': '_front.png'
+    'front': '_front.png',
+    'contour': '_contour.png',
+    'normal': '_normal.png'
 }
 
 BASEMAP_CMAP = 'binary'
