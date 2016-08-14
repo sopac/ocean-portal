@@ -228,6 +228,15 @@ class bran(Dataset):
             response['img'] = os.path.join(server_config['baseURL'],
                                            server_config['rasterURL'],
                                            plot_filename + '.png')
+            if params['variable'] == 'temp'
+                if regionConfig.regions[params['area']][0] == 'pac':
+                    response['map'] = 'mean_sub'
+                else:
+                    response['map'] = 'mean'
+            elif params['variable'] == 'salt':
+                response['map'] = 'salt'
+            elif params['variable'] == 'uv':
+                response['map'] = 'uv'
 
             util.touch_files(os.path.join(server_config['outputDir'],
                                           plot_filename),
@@ -323,7 +332,7 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
                                     units=unitStr, cm_edge_values=cb_ticks,
                                     cb_tick_fmt=cb_tick_fmt,
                                     cb_labels=None, cb_label_pos=None,
-                                    cmp_name='jet', extend=extend)
+                                    cmp_name='jet', extend=extend, fill_color='0.02')
 
     if not basemap_only:
         # Get domain boundaries
@@ -388,7 +397,8 @@ def plot_surface_data(varName, date, periodStr, yearStr, monthStr, regionStr,
                                     units=unitStr, cm_edge_values=cb_ticks,
                                     cb_tick_fmt=cb_tick_fmt,
                                     cb_labels=None, cb_label_pos=None,
-                                    cmp_name='jet', extend=extend, fill_color='0.85')
+                                    cmp_name='jet', extend=extend, fill_color='0.02')
+                                    #cmp_name='jet', extend=extend, fill_color='0.85')
 
         # Plot surface data
         plot.plot_surface_data(lats, lons, data,
