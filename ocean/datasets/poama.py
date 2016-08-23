@@ -9,7 +9,7 @@ import json
 
 from ocean import util, config
 from ocean.datasets import Dataset
-from ocean.plotter import COMMON_FILES
+from ocean.plotter import COMMON_FILES, EXTRA_FILES
 
 class POAMA(Dataset):
 
