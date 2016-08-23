@@ -733,6 +733,10 @@ function disablePointClick() {
     map.closePopup(map.pointPopup);
 }
 
+function resetPointClick() {
+    map.closePopup(map.pointPopup);
+}
+
 function createPointPopup(){
     if (typeof(map.pointPopup) == 'undefined' || !map.pointPopup){
         map.pointPopup = L.popup();

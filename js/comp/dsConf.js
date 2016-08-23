@@ -80,6 +80,7 @@ ocean.dsConf = {
         }, 
         onVariableChange: function(){
             selectMonthsForNearRealTimeDatasets();
+            resetPointClick();
         },
         onRegionChange: function() {},
         formatValue: function(value) {
@@ -131,6 +132,7 @@ ocean.dsConf = {
         }, 
         onVariableChange: function(){
             selectMonthsForNearRealTimeDatasets();
+            resetPointClick();
         },
         onRegionChange: function() {},
         formatValue: function(value) {
@@ -192,6 +194,7 @@ ocean.dsConf = {
         }, 
         onVariableChange: function(){
             selectMonthsForNearRealTimeDatasets();
+            resetPointClick();
         },
         onRegionChange: function() {},
         formatValue: function(value) {
@@ -251,7 +254,9 @@ ocean.dsConf = {
             resetLegend();
             disablePointClick();
         },
-        onVariableChange: function(){},
+        onVariableChange: function(){
+            resetPointClick();
+        },
         onRegionChange: function() {},
         formatValue: function(value) {
             if (ocean.variable == 'Tm') {
@@ -346,6 +351,7 @@ ocean.dsConf = {
         },
         onVariableChange: function() {
             updatePage();
+            resetPointClick();
         },
         onRegionChange: function() {
             this.updateDownloadImg();
@@ -552,6 +558,7 @@ ocean.dsConf = {
             disablePointClick();
         },
         onVariableChange: function() {
+            resetPointClick();
         },
         onRegionChange: function() {},
         formatValue: function(value) {
@@ -618,6 +625,7 @@ ocean.dsConf = {
         },
         onVariableChange: function() {
             updatePage();
+            resetPointClick();
         },
         onRegionChange: function() {
             this.updateDownloadImg();
@@ -718,6 +726,7 @@ ocean.dsConf = {
         },
         onVariableChange: function() {
             updatePage();
+            resetPointClick();
         },
         onRegionChange: function() {
             this.updateDownloadImg();
@@ -942,6 +951,7 @@ ocean.dsConf = {
         onVariableChange: function(){
             resetMap();
             resetLegend();
+            resetPointClick();
         },
         onRegionChange: function() {},
         formatValue: function(value) {
@@ -980,6 +990,7 @@ ocean.dsConf = {
             resetMap();
             resetLegend();
             updateInfo(null, '');
+            resetPointClick();
         },
         onRegionChange: function() {
             resetMap();
@@ -1021,7 +1032,9 @@ ocean.dsConf = {
             }
             disablePointClick();
         }, 
-        onVariableChange: function(){},
+        onVariableChange: function(){
+            resetPointClick();
+        },
         onRegionChange: function() {},
         formatValue: function(value) {
             return value.toFixed(2);
@@ -1055,6 +1068,7 @@ ocean.dsConf = {
         }, 
         onVariableChange: function(){
             updateDatasetForSST();
+            resetPointClick();
         },
         onRegionChange: function(){
             updateDatasetForSST();
@@ -1102,6 +1116,7 @@ ocean.dsConf = {
         },
         onVariableChange: function(){
             updateDatasetForSST();
+            resetPointClick();
         },
         onRegionChange: function(){
             resetMap();
