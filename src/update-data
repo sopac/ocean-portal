@@ -137,6 +137,28 @@ import urllib2
 from ocean.config import regionConfig
 
 #Read regionconfig files and do a loop to generate images for all regions
+#----------preprocess on tuscany--------
+url = "http://tuscany/portal/cgi/portal.py"
+
+for key, value in regionConfig.regions.iteritems():
+    if value[0] == 'pac' or value[0] == None:
+        values = {"dataset": "poamasla",
+                  "variable": "height",
+                  "plot": "map",
+                  "period": "seasonal",
+                  "area": key,
+                  "date": "20120701",
+                  "mode": "preprocess"
+                   }
+        data = urllib.urlencode(values)
+        full_url = url + '?' + data
+        try:
+            response = urllib2.urlopen(full_url)
+            print response.read()
+        except urllib2.HTTPError as e:
+            print e.read()
+
+            
 #----------preprocess on tunceli--------
 url = "http://tunceli/portal/cgi/portal.py"
 
@@ -202,6 +224,47 @@ import urllib2
 from ocean.config import regionConfig
 
 #Read regionconfig files and do a loop to generate images for all regions
+#----------preprocess on tuscany--------
+url = "http://tuscany/portal/cgi/portal.py"
+
+#variable: ssta
+for key, value in regionConfig.regions.iteritems():
+    if value[0] == 'pac' or value[0] == None:
+        values = {"dataset": "poamassta",
+                  "variable": "ssta",
+                  "plot": "map",
+                  "period": "seasonal",
+                  "area": key,
+                  "date": "20120701",
+                  "mode": "preprocess"
+                   }
+        data = urllib.urlencode(values)
+        full_url = url + '?' + data
+        try:
+            response = urllib2.urlopen(full_url)
+            print response.read()
+        except urllib2.HTTPError as e:
+            print e.read()
+
+#variable: sst
+for key, value in regionConfig.regions.iteritems():
+    if value[0] == 'pac' or value[0] == None:
+        values = {"dataset": "poamassta",
+                  "variable": "sst",
+                  "plot": "map",
+                  "period": "seasonal",
+                  "area": key,
+                  "date": "20120701",
+                  "mode": "preprocess"
+                   }
+        data = urllib.urlencode(values)
+        full_url = url + '?' + data
+        try:
+            response = urllib2.urlopen(full_url)
+            print response.read()
+        except urllib2.HTTPError as e:
+            print e.read()
+
 #----------preprocess on tunceli--------
 url = "http://tunceli/portal/cgi/portal.py"
 
@@ -315,6 +378,23 @@ import urllib
 import urllib2
 import time
 
+#-------batch process on tuscany-----
+url = "http://tuscany/portal/cgi/portal.py"
+values = {"dataset": "ww3forecast",
+          "variable": "sig_wav_ht",
+          "plot": "map",
+          "period": "7days",
+          "area": "pac",
+          "mode": "preprocess"
+           }
+data = urllib.urlencode(values)
+full_url = url + '?' + data
+try:
+    response = urllib2.urlopen(full_url)
+    print response.read()
+except urllib2.HTTPError as e:
+    print e.read()
+    
 #-------batch process on tunceli-----
 url = "http://tunceli/portal/cgi/portal.py"
 values = {"dataset": "ww3forecast",
@@ -393,6 +473,31 @@ if '$PERIOD' == 'daily':
     date = date.strftime(format)
     print date
 
+    #----------preprocess on tuscany--------
+    url = "http://tuscany/portal/cgi/portal.py"
+
+    #Read regionconfig files and do a loop to generate images for all regions
+
+    for key, value in regionConfig.regions.iteritems():
+        if value[0] == 'pac' or value[0] == None:
+            print key
+            values = {"dataset": "chlorophyll",
+                      "variable": "chldaily",
+                      "plot": "map",
+                      "period": "daily",
+                      "area": key,
+                      "date": date,
+                      "mode": "preprocess"
+                       }
+            data = urllib.urlencode(values)
+            full_url = url + '?' + data
+            print full_url
+            try:
+                response = urllib2.urlopen(full_url)
+                print response.read()
+            except urllib2.HTTPError as e:
+                print e.read()
+                
     #----------preprocess on tunceli--------
     url = "http://tunceli/portal/cgi/portal.py"
 
@@ -488,6 +593,30 @@ elif '$PERIOD' == 'monthly':
 
     print 'preprocess image for ', date
 
+    #----------preprocess on tuscany--------
+    url = "http://tuscany/portal/cgi/portal.py"
+
+    #Read regionconfig files and do a loop to generate images for all regions
+    for key, value in regionConfig.regions.iteritems():
+        if value[0] == 'pac' or value[0] == None:
+            print key + ' : ' + date
+            values = {"dataset": "chlorophyll",
+                      "variable": "chlmonthly",
+                      "plot": "map",
+                      "period": "monthly",
+                      "area": key,
+                      "date": date,
+                      "mode": "preprocess"
+                       }
+            data = urllib.urlencode(values)
+            full_url = url + '?' + data
+            print full_url
+            try:
+                response = urllib2.urlopen(full_url)
+                print response.read()
+            except urllib2.HTTPError as e:
+                print e.read()
+                
     #----------preprocess on tunceli--------
     url = "http://tunceli/portal/cgi/portal.py"
 
@@ -668,6 +797,24 @@ import urllib
 import urllib2
 from ocean.config import regionConfig
 
+#-------------preprocess on tuscany--------
+url = "http://tuscany/portal/cgi/portal.py"
+values = {"dataset": "currentforecast",
+          "variable": "currents",
+          "plot": "map",
+          "period": "3days",
+          "area": "fiji",
+          "date": "20120701",
+          "mode": "preprocess"
+         }
+data = urllib.urlencode(values)
+full_url = url + '?' + data
+try:
+    response = urllib2.urlopen(full_url, None, 60000)
+    print response.read()
+except urllib2.HTTPError as e:
+    print e.read()
+    
 #-------------preprocess on tunceli--------
 url = "http://tunceli/portal/cgi/portal.py"
 values = {"dataset": "currentforecast",
