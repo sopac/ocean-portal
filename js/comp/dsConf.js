@@ -240,7 +240,12 @@ ocean.dsConf = {
                     prependOutputSet();
                     appendOutput(data.img, null, null, null, data);
                    // updateMap(data.mapimg);
-                    updateMapTiles(data.map, data.mapimg);
+
+                    var overlayimg;
+                    if(data.arrow) {
+                        overlayimg = data.arrow;
+                    }
+                    updateMapTiles(data.map, data.mapimg, overlayimg);
                     setLegend(data.scale);
                 }
             }

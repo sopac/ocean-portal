@@ -20,7 +20,7 @@ from ocean.netcdf.extractor import Extractor, LandError
 from ocean.datasets import Dataset, MissingParameter
 from ww3Plotter import Ww3Plotter
 from ocean.netcdf import Grid
-from ocean.plotter import COMMON_FILES
+from ocean.plotter import COMMON_FILES, EXTRA_FILES
 from netCDF4 import Dataset as ds
 from netCDF4 import num2date
 
@@ -196,6 +196,7 @@ class ww3(Dataset):
             self.plotSurfaceData(varStr, fulldateStr, step, regionStr, config)
 
             response['map'] = 'hs' #varStr
+            response['arrow'] = self.getPlotFileName(varStr, fulldateStr, step, regionStr)[1] + EXTRA_FILES['map'] + EXTRA_FILES['arrow']
         else:
             response['error'] = "Only hourly data is available. Please choose hourly period."
 

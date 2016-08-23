@@ -24,6 +24,7 @@ from ocean import logger
 from ocean.netcdf.grid import Grid, GridWrongFormat
 from ocean.plotter import Plotter, COMMON_FILES, getCopyright, get_tick_values, discrete_cmap
 from ocean.util.pngcrush import pngcrush
+from ocean.util.gdalprocess import gdal_process
 
 customColorMap = {"wav_cm": [[187, 214, 232],
                              [107, 174, 214],
@@ -197,15 +198,28 @@ class Ww3Plotter(Plotter):
                         urcrnrlon=region['lon_max'],
                         resolution='i')
 
+            m.drawmapboundary(linewidth=0.0)
             # Plot data
             x2, y2 = m(*np.meshgrid(lons, lats))
             # img = m.pcolormesh(x2, y2, data, shading='flat', cmap=d_cmap, norm=norm)
-            img = m.contourf(x2, y2, data, levels=cm_edge_values, cmap=basemap_cmap, norm=norm, antialiased=True, zorder=0)
+            #img = m.contourf(x2, y2, data, levels=cm_edge_values, cmap=basemap_cmap, norm=norm, antialiased=True, zorder=0)
+            img = m.contourf(x2, y2, data, levels=cm_edge_values, cmap=basemap_cmap, norm=basemap_norm, antialiased=False, zorder=0)
             img.set_clim(cm_edge_values.min(), cm_edge_values.max())
 
             #bug798 comment out
             #img = plt.contour(x2, y2, data, levels=cm_edge_values, colors='w', norm=norm, linewidths=0.5, zorder=1)
 
+            plt.savefig(region['output_filename'], dpi=120,
+                        bbox_inches='tight', pad_inches=0.0)
+            # generate shape file
+            gdal_process(region['output_filename'], region['lon_min'],
+                                                    region['lat_max'],
+                                                    region['lon_max'],
+                                                    region['lat_min'])
+
+            pngcrush(region['output_filename'])
+
+            baseName = os.path.splitext(region['output_filename'])[0]
             #plot contouring labels
             if clabel:
                 labels = plt.clabel(img, cm_edge_values[::4], inline=True, fmt='%.0f', colors='k', fontsize=5, zorder=2)
@@ -216,6 +230,8 @@ class Ww3Plotter(Plotter):
 
             #extract the overlay grid
             if vector:
+                plt.clf()
+                m.drawmapboundary(linewidth=0.0)
 #                overlay_grid = kwargs.get('overlay_grid', None)
                 every = 10
                 lons = lons[::every]
@@ -226,16 +242,28 @@ class Ww3Plotter(Plotter):
                     radians_array = np.pi + radians_array
                     radians_array = radians_array[::every, ::every]
                 m.quiver(x2, y2, np.sin(radians_array), np.cos(radians_array), scale=60, zorder=3)
-            m.drawmapboundary(linewidth=0.0)
-            m.drawcoastlines(linewidth=0.5, color='#505050', zorder=8)
+
+                arrowFile = baseName + '_arrow.png'
+                plt.savefig(arrowFile, dpi=120,
+                            bbox_inches='tight', pad_inches=0.0, transparent=True)
+                # generate shape file
+                gdal_process(arrowFile, region['lon_min'],
+                                        region['lat_max'],
+                                        region['lon_max'],
+                                        region['lat_min'])
+
+                pngcrush(arrowFile)
+
+#            m.drawmapboundary(linewidth=0.0)
+#            m.drawcoastlines(linewidth=0.5, color='#505050', zorder=8)
 #            m.fillcontinents(color='#F1EBB7', zorder=7)
-            m.fillcontinents(color='0.58', zorder=7)
+#            m.fillcontinents(color='0.58', zorder=7)
 
             # Save figure
-            plt.savefig(region['output_filename'], dpi=120,
-                        bbox_inches='tight', pad_inches=0.0)
+#            plt.savefig(region['output_filename'], dpi=120,
+#                        bbox_inches='tight', pad_inches=0.0)
             plt.close()
-            pngcrush(region['output_filename'])
+#            pngcrush(region['output_filename'])
 
         @logger.time_and_log('subprocess-plot-colorbar')
         def _plot_colorbar(lats, lons, data,
