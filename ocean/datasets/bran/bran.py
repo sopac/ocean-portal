@@ -228,7 +228,7 @@ class bran(Dataset):
             response['img'] = os.path.join(server_config['baseURL'],
                                            server_config['rasterURL'],
                                            plot_filename + '.png')
-            if params['variable'] == 'temp'
+            if params['variable'] == 'temp':
                 if regionConfig.regions[params['area']][0] == 'pac':
                     response['map'] = 'mean_sub'
                 else:
