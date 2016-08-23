@@ -16,6 +16,7 @@ from datetime import datetime, timedelta
 from ocean.plotter import Plotter, COMMON_FILES, EXTRA_FILES, from_levels_and_colors, getCopyright, get_tick_values
 from ocean.config import regionConfig
 from ocean.util.pngcrush import pngcrush
+from ocean.util.gdalprocess import gdal_process
 
 try:
     from mpl_toolkits.axes_grid1 import make_axes_locatable
