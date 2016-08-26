@@ -69,9 +69,10 @@ def main():
 
     # determine whether or not we need to call into mapserver
     try:
+        mapimg = os.path.join(config['outputDir'] + os.path.basename(queryMap['mapimg'][0]))
         cache_mtime = os.path.getmtime(filename)
-        call_mapserver = \
-                cache_mtime < os.path.getmtime(queryMap['mapimg'])
+        call_mapserver = cache_mtime < os.path.getmtime(mapimg)
+               # cache_mtime < os.path.getmtime(queryMap['mapimg'][0])
     except os.error:
         call_mapserver = True
     except KeyError:
