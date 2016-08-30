@@ -14,13 +14,15 @@ import json
 from datetime import datetime, timedelta
 
 import numpy as np
+import numpy.ma as ma
+
 from ocean import util, config
 from ocean.config import productName
 from ocean.config import regionConfig 
-#from ocean.netcdf.extractor import Extractor
 from ocean.datasets import Dataset
 from currentforecastPlotter import CurrentForecastPlotter, COMMON_FILES, EXTRA_FILES
 from ocean.netcdf import Grid
+from ocean.netcdf.extractor import Extractor, LandError
 
 svnDayForecast = '%s_%s.json'
 
@@ -37,7 +39,9 @@ class currentforecast(Dataset):
     PRODUCT_NAME = "Forecast Surface Currents"
 
     __form_params__ = {
-        'mode': str
+        'mode': str,
+        'lat': float,
+        'lon': float
     }
     __form_params__.update(Dataset.__form_params__)
 
@@ -53,7 +57,8 @@ class currentforecast(Dataset):
     ]
 
     __plots__ = [
-        'map'
+        'map',
+        'point'
     ]
 
     __subdirs__ = [
@@ -79,42 +84,34 @@ class currentforecast(Dataset):
 
         latestFilePath = serverCfg['dataDir']['currents'] + 'daily/latest_HYCOM_currents.nc'
 
-        #The grid where u and v have been converted to magnitude
-#        self.grid = currentforecastGrid(latestFilePath, latestFilePath, ('u', 'v'), (-90, 90), (105, 295))
- 
-        #For the overlay grid, u and v are used.
-##        self.overlayGrid = currentforecastGrid(latestFilePath, latestFilePath, ('u', 'v'), (-90, 90), (105, 295))
-
         if not os.path.exists(configFileName):
             #The grid where u and v have been converted to magnitude
             self.grid = currentforecastGrid(latestFilePath, latestFilePath, ('u', 'v'), (-90, 90), (105, 295), (0, FORECAST_STEPS))
             #Generate the config file
-#            config = self.generateConfig()
             config = self.generateConfig(latestFilePath, self.grid.time)
             with open(configFileName, 'w') as f:
                 json.dump(config, f)
-           # and associated images.
         else:
             with open(configFileName, 'r') as f:
                 config = json.load(f)
-#        config = self.generateConfig(latestFilePath, self.grid.time)
         configStr = json.dumps(config) 
 
-        response['forecast'] = configStr 
-#        response['mapimg'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['mapimg']
-#        response['scale'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['scale']
-##        response['mapimg'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['mapimg']
-##        response['scale'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['scale']
-        response['mapimg'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['mapimg']
-        response['img'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['img']
-        response['scale'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['scale']
-        response['map'] = 'current'
-        response['arrow'] = self.getPlotFileName(varStr, 0, regionStr)[1] + EXTRA_FILES['map'] + EXTRA_FILES['arrow']
-#        os.utime(os.path.join(serverCfg['outputDir'], filename), None)
 
         if ('mode' in params) and (params['mode'] == 'preprocess'):
             response['preproc'] = 'being processed...'
             self.preprocess(varStr, regionStr)
+        else:
+            if params['plot'] == 'map':
+                response['forecast'] = configStr 
+                response['mapimg'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['mapimg']
+                response['img'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['img']
+                response['scale'] = self.getPlotFileName(varStr, 0, regionStr)[1] + COMMON_FILES['scale']
+                response['map'] = 'current'
+                response['arrow'] = self.getPlotFileName(varStr, 0, regionStr)[1] + EXTRA_FILES['map'] + EXTRA_FILES['arrow']
+            elif params['plot'] == 'point': #for point value extraction
+                (lat, lon), value = self.extract(**params)
+                response['value'] = float(value)
+
 
         return response
 
@@ -271,6 +268,37 @@ class currentforecast(Dataset):
         elif variable in ['wnd_spd']:
             return 'wnd_dir'
         return ''
+
+    def extract(self, **args):
+
+        area = args['area']
+        variable = args['variable']
+        inputLat = args['lat']
+        inputLon = args['lon']
+        step = args['step']
+
+        lat_min = regionConfig.regions[area][1]['llcrnrlat']
+        lat_max = regionConfig.regions[area][1]['urcrnrlat']
+        lon_min = regionConfig.regions[area][1]['llcrnrlon']
+        lon_max = regionConfig.regions[area][1]['urcrnrlon']
+
+        latestFilePath = serverCfg['dataDir']['currents'] + 'daily/latest_HYCOM_currents.nc'
+        grid = currentforecastGrid(latestFilePath, latestFilePath, ('u', 'v'), (-90, 90), (105, 295), (0, FORECAST_STEPS))
+
+        #extract lat/lon and value
+        step = int(step)
+        u = grid.data[0][step]
+        v = grid.data[1][step]
+        mag = np.sqrt(u**2 + v**2)
+        (lat, lon), (latIndex, lonIndex) = Extractor.getGridPoint(inputLat, inputLon, grid.lats, grid.lons,
+                                                     mag)
+        value = mag[latIndex, lonIndex]
+
+        if value is ma.masked:
+            raise LandError()
+
+        #return extracted values
+        return (lat, lon), value
 
 class currentforecastGrid(Grid):
     """

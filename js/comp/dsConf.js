@@ -845,7 +845,10 @@ ocean.dsConf = {
         },
         selectedRegion: ocean.area,
         mapimg: '',
-        downloadimg:''
+        downloadimg:'',
+        formatValue: function(value) {
+            return value.toFixed(2);
+        }
     },
     sealevel: {
         params: override(function (dataset) { return {

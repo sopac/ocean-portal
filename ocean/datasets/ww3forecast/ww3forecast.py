@@ -104,7 +104,7 @@ class ww3forecast(Dataset):
 #        response['scale'] = self.getPlotFileName(varStr, 0, 'pac')[1] + COMMON_FILES['scale']
 
         if ('mode' in params) and (params['mode'] == 'preprocess'):
-            response['preproc'] = 'inside'
+            response['preproc'] = 'processing...'
             self.preprocess(varStr, regionStr)
         else:
             if params['plot'] == 'map':
