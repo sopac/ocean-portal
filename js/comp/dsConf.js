@@ -80,7 +80,6 @@ ocean.dsConf = {
         }, 
         onVariableChange: function(){
             selectMonthsForNearRealTimeDatasets();
-            resetPointClick();
         },
         onRegionChange: function() {},
         formatValue: function(value) {
@@ -132,7 +131,6 @@ ocean.dsConf = {
         }, 
         onVariableChange: function(){
             selectMonthsForNearRealTimeDatasets();
-            resetPointClick();
         },
         onRegionChange: function() {},
         formatValue: function(value) {
@@ -194,7 +192,6 @@ ocean.dsConf = {
         }, 
         onVariableChange: function(){
             selectMonthsForNearRealTimeDatasets();
-            resetPointClick();
         },
         onRegionChange: function() {},
         formatValue: function(value) {
@@ -260,7 +257,6 @@ ocean.dsConf = {
             disablePointClick();
         },
         onVariableChange: function(){
-            resetPointClick();
         },
         onRegionChange: function() {},
         formatValue: function(value) {
@@ -330,6 +326,7 @@ ocean.dsConf = {
                             overlayimg = overlayimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
                         }
                         updateMapTiles(data.map, data.mapimg, overlayimg);
+                        doPointClick();
                     }
 
                     //Sets the download image link for the datasets having slider option.
@@ -356,7 +353,6 @@ ocean.dsConf = {
         },
         onVariableChange: function() {
             updatePage();
-            resetPointClick();
         },
         onRegionChange: function() {
             this.updateDownloadImg();
@@ -563,7 +559,6 @@ ocean.dsConf = {
             disablePointClick();
         },
         onVariableChange: function() {
-            resetPointClick();
         },
         onRegionChange: function() {},
         formatValue: function(value) {
@@ -595,6 +590,7 @@ ocean.dsConf = {
                         data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
                       //  updateMap(data.mapimg);
                         updateMapTiles(data.map, data.mapimg);
+               ///         doPointClick();
                     }
 
                     //Sets the download image link for the datasets having slider option.
@@ -605,6 +601,7 @@ ocean.dsConf = {
                         data.mapimg = data.mapimg.replace(/_\d\d/, '_' + pad(this.getStep()[0] - 1, 2));
                      //   updateMap(data.mapimg);
                         updateMapTiles(data.map, data.mapimg);
+                        doPointClick();
                     }
                     //Sets the download image link for the datasets having slider option.
                     ocean.dataset.updateDownloadImg();
@@ -630,7 +627,6 @@ ocean.dsConf = {
         },
         onVariableChange: function() {
             updatePage();
-            resetPointClick();
         },
         onRegionChange: function() {
             this.updateDownloadImg();
@@ -701,6 +697,7 @@ ocean.dsConf = {
                             // updateMap(data.mapimg);
                             updateMapTiles(data.map, data.mapimg);
                         }
+                        doPointClick();
                     }
 
                     if (data.scale) {
@@ -731,7 +728,6 @@ ocean.dsConf = {
         },
         onVariableChange: function() {
             updatePage();
-            resetPointClick();
         },
         onRegionChange: function() {
             this.updateDownloadImg();
@@ -753,6 +749,7 @@ ocean.dsConf = {
     },
     currentforecast: {
         params: override(function (dataset) { return {
+                'step' : slider.getStep()[0] - 1
             };
         }),
         beforeSend: function() {
@@ -786,6 +783,7 @@ ocean.dsConf = {
                 slider.options.callback = function(x, y) {
                     if (data.mapimg) {
                         ocean.dataset.updateMapImg();
+                        doPointClick();
                     }
 
                     //Sets the download image link for the datasets having slider option.
@@ -803,10 +801,12 @@ ocean.dsConf = {
         },
         onSelect: function() {
             updatePage();
+            enablePointClick();
         },
         onDeselect: function() {
             resetMap();
             resetLegend();
+            disablePointClick();
         },
         onVariableChange: function() {
             updatePage();
@@ -956,7 +956,6 @@ ocean.dsConf = {
         onVariableChange: function(){
             resetMap();
             resetLegend();
-            resetPointClick();
         },
         onRegionChange: function() {},
         formatValue: function(value) {
@@ -995,7 +994,6 @@ ocean.dsConf = {
             resetMap();
             resetLegend();
             updateInfo(null, '');
-            resetPointClick();
         },
         onRegionChange: function() {
             resetMap();
@@ -1038,7 +1036,6 @@ ocean.dsConf = {
             disablePointClick();
         }, 
         onVariableChange: function(){
-            resetPointClick();
         },
         onRegionChange: function() {},
         formatValue: function(value) {
@@ -1073,7 +1070,6 @@ ocean.dsConf = {
         }, 
         onVariableChange: function(){
             updateDatasetForSST();
-            resetPointClick();
         },
         onRegionChange: function(){
             updateDatasetForSST();
@@ -1121,7 +1117,6 @@ ocean.dsConf = {
         },
         onVariableChange: function(){
             updateDatasetForSST();
-            resetPointClick();
         },
         onRegionChange: function(){
             resetMap();

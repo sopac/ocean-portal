@@ -84,6 +84,7 @@ $(function() {
 
     /* UI handlers */
     $('#submit').click(function () {
+        resetPointClick();
         updatePage();
 
         return false; /* don't propagate event */
@@ -730,11 +731,13 @@ function enablePointClick() {
 
 function disablePointClick() {
     map.off('contextmenu', pointClick);
-    map.closePopup(map.pointPopup);
+//    map.closePopup(map.pointPopup);
+    resetPointClick();
 }
 
 function resetPointClick() {
     map.closePopup(map.pointPopup);
+    ocean.dataset.clickLatLng = null;
 }
 
 function createPointPopup(){
@@ -744,9 +747,17 @@ function createPointPopup(){
 }
 
 function pointClick(e) {
+    ocean.dataset.clickLatLng = e.latlng;
+    doPointClick();
+}
+
+function doPointClick() {
+    if (! ocean.dataset.clickLatLng) {
+        return;
+    }
     var params = $.extend(ocean.dataset.params(), {
-            lat: e.latlng.lat,
-            lon: e.latlng.lng,
+            lat: ocean.dataset.clickLatLng.lat,
+            lon: ocean.dataset.clickLatLng.lng,
             plot: 'point'
         });
     $.ajax({
@@ -755,7 +766,7 @@ function pointClick(e) {
             dataType: 'json',
             beforeSend: function(jqXHR, settings) {
                 ocean.processing = true;
-                map.pointPopup.setLatLng(e.latlng)
+                map.pointPopup.setLatLng(ocean.dataset.clickLatLng)
                    .setContent('<p>...</p>')
                    .openOn(map);
                 paramscheck = ocean.dataset.beforeSend();
