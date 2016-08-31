@@ -442,14 +442,14 @@ def extract(**args):
     if variable == 'uv':
         if period == 'monthly':    
             input_data_file = os.path.join(server_config['dataDir']['bran'],
-                                           periodStr, 'u',
+                                           period, 'u',
                                            'u_%s_%s.nc4' % (yearStr, monthStr))
             lats, lons, zlevels, u = \
                 branPlotterNew.load_BRAN_data(input_data_file, 'u',
                                                   lat_min, lat_max,
                                                   lon_min, lon_max)
             input_data_file = os.path.join(server_config['dataDir']['bran'],
-                                           periodStr, 'v',
+                                           period, 'v',
                                            'v_%s_%s.nc4' % (yearStr, monthStr))
             lats, lons, zlevels, v = \
                 branPlotterNew.load_BRAN_data(input_data_file, 'v',
@@ -457,14 +457,14 @@ def extract(**args):
                                               lon_min, lon_max)
         else:
             input_data_file = os.path.join(server_config['dataDir']['bran'],
-                                               'averages', periodStr, 'u',
+                                               'averages', period, 'u',
                                                BRAN_VERSION + '_%smthavg_%s_%s.nc4' % (monthInt, months[0].strftime('%Y%m'), months[-1].strftime('%Y%m')))
             lats, lons, zlevels, u = \
                 branPlotterNew.load_BRAN_data(input_data_file, 'u',
                                               lat_min, lat_max,
                                               lon_min, lon_max)
             input_data_file = os.path.join(server_config['dataDir']['bran'],
-                                               'averages', periodStr, 'v',
+                                               'averages', period, 'v',
                                                BRAN_VERSION + '_%smthavg_%s_%s.nc4' % (monthInt, months[0].strftime('%Y%m'), months[-1].strftime('%Y%m')))
             lats, lons, zlevels, v = \
                 branPlotterNew.load_BRAN_data(input_data_file, 'v',
