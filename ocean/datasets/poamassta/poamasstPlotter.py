@@ -23,6 +23,8 @@ except ImportError:
     from mpl_toolkits.axes_grid import make_axes_locatable
 
 from ocean.util.pngcrush import pngcrush
+from ocean.util.gdalprocess import gdal_process
+
 from ocean.config.regionConfig import regions
 #GAS for smoothing array
 from scipy.signal import convolve2d
