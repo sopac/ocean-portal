@@ -78,7 +78,7 @@ class Extractor():
         # extract a square grid of points size 2r x 2r
         for latIndex in range(latInsertIndex - self._RADIUS,
                               latInsertIndex + self._RADIUS + 1):
-            if latIndex < 0 or latIndex > len(lats):
+            if latIndex < 0 or latIndex >= len(lats):
                 # There is no need to wrap the lat, therefore skip till the
                 # index is in range
                 pass

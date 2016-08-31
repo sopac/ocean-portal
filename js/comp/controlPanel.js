@@ -767,8 +767,9 @@ function doPointClick() {
             beforeSend: function(jqXHR, settings) {
                 ocean.processing = true;
                 if (map.pointPopup._isOpen) {
-                    map.pointPopup.setContent('<p>updating...</p>');
-                    map.pointPopup.update();
+                    map.pointPopup.setContent('<p>updating...</p>')
+                                  .setLatLng(ocean.dataset.clickLatLng)
+                                  .update();
                 }
                 else {
                     map.pointPopup.setLatLng(ocean.dataset.clickLatLng)
