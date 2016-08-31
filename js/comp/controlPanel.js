@@ -766,9 +766,15 @@ function doPointClick() {
             dataType: 'json',
             beforeSend: function(jqXHR, settings) {
                 ocean.processing = true;
-                map.pointPopup.setLatLng(ocean.dataset.clickLatLng)
-                   .setContent('<p>...</p>')
-                   .openOn(map);
+                if (map.pointPopup._isOpen) {
+                    map.pointPopup.setContent('<p>updating...</p>');
+                    map.pointPopup.update();
+                }
+                else {
+                    map.pointPopup.setLatLng(ocean.dataset.clickLatLng)
+                       .setContent('<p>updating...</p>')
+                       .openOn(map);
+                }
                 paramscheck = ocean.dataset.beforeSend();
                 if (!paramscheck) {
                     ocean.processing = false;

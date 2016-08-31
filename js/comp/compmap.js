@@ -97,7 +97,13 @@ function createMap () {
         zoomAnimation: true,
         crs: L.CRS.EPSG4326
     });
-   
+
+    map.on('popupclose', function(e) {
+        if (ocean.dataset && ocean.dataset.clickLatLng) {
+            ocean.dataset.clickLatLng = null;
+        } 
+    });
+
     ocean.bathymetryLayer = L.tileLayer.wms("cgi/map.py?map=bathymetry", {
        layers: 'bathymetry,land',
        format: 'image/png',
