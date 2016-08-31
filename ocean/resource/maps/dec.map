@@ -54,7 +54,7 @@ MAP
         END
 
         CLASS
-            EXPRESSION ([DN]==43)
+            EXPRESSION ([DN]==42)
 
             STYLE
                 COLOR "#ca4842"
@@ -86,7 +86,7 @@ MAP
         END
 
         CLASS
-            EXPRESSION ([DN]==212)
+            EXPRESSION ([DN]==213)
 
             STYLE
                 COLOR "#3884bb"
