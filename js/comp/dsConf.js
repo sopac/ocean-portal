@@ -377,6 +377,7 @@ ocean.dsConf = {
         },
         onVariableChange: function() {
             updatePage();
+            resetPointClick();
         },
         onRegionChange: function() {
             this.updateDownloadImg();
