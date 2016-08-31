@@ -71,7 +71,13 @@ ocean.dsConf = {
             }
         },
         onSelect: function() {
-            enablePointClick();
+            if (ocean.variable == 'sstdec') {
+                disablePointClick();
+            }
+            else {
+                enablePointClick();
+            }
+           // enablePointClick();
         },
         onDeselect: function() {
             resetMap();
@@ -80,6 +86,12 @@ ocean.dsConf = {
         }, 
         onVariableChange: function(){
             selectMonthsForNearRealTimeDatasets();
+            if (ocean.variable == 'sstdec') {
+                disablePointClick();
+            }
+            else {
+                enablePointClick();
+            }
         },
         onRegionChange: function() {},
         formatValue: function(value) {
@@ -122,7 +134,13 @@ ocean.dsConf = {
             }
         },
         onSelect: function() {
-            enablePointClick();
+            if (ocean.variable == 'sstdec') {
+                disablePointClick();
+            }
+            else {
+                enablePointClick();
+            }
+           // enablePointClick();
         },
         onDeselect: function() {
             resetMap();
@@ -131,6 +149,12 @@ ocean.dsConf = {
         }, 
         onVariableChange: function(){
             selectMonthsForNearRealTimeDatasets();
+            if (ocean.variable == 'sstdec') {
+                disablePointClick();
+            }
+            else {
+                enablePointClick();
+            }
         },
         onRegionChange: function() {},
         formatValue: function(value) {
