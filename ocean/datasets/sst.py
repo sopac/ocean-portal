@@ -170,7 +170,7 @@ class SST(Dataset):
                     response['map'] = 'coral_outlook'
                 elif params['variable'] == 'mursst':
                     response['map'] = 'mur'
-                    responts['front'] = os.path.join(serverCfg['baseURL'],
+                    response['front'] = os.path.join(serverCfg['baseURL'],
                                                      serverCfg['rasterURL'],
                                                      fileName) + EXTRA_FILES['map'] + EXTRA_FILES['front']
                 else:

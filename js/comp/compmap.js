@@ -144,6 +144,13 @@ function createMap () {
        continuousWorld: true
     }); 
 
+    ocean.frontOverlayLayer = L.tileLayer.wms("cgi/map.py?map=result", {
+       layers: 'plot',
+       format: 'image/png',
+       transparent: true,
+       zIndex: 920
+    }); 
+
     ocean.resultOverlay2Layer = L.tileLayer.wms("cgi/map.py?map=result", {
        layers: 'plot',
        format: 'image/png',
@@ -246,12 +253,18 @@ function updateMap(data, bounds) {
     });
 }
 
-function updateMapTiles(mapname, mapimg, overlayimg) {
+function updateMapTiles(mapname, mapimg, overlayimg, overlaymap) {
     ocean.resultLayer.setUrl('cgi/map.py?map=' + mapname + '&mapimg=' + mapimg);
     ocean.overlayGroup.addLayer(ocean.resultLayer);
     if (overlayimg) {
-        ocean.resultOverlayLayer.setUrl('cgi/map.py?map=grey&mapimg=' + overlayimg);
-        ocean.overlayGroup.addLayer(ocean.resultOverlayLayer);
+        if (overlaymap) {
+            ocean.frontOverlayLayer.setUrl('cgi/map.py?map=' + overlaymap + '&mapimg=' + overlayimg);
+            ocean.overlayGroup.addLayer(ocean.frontOverlayLayer);
+        }
+        else {
+            ocean.resultOverlayLayer.setUrl('cgi/map.py?map=grey&mapimg=' + overlayimg);
+            ocean.overlayGroup.addLayer(ocean.resultOverlayLayer);
+        }
     }
     ocean.greylandLayer.setOpacity(1.0);
     ocean.bathymetryLayer.setOpacity(0.0);

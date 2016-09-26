@@ -6,6 +6,7 @@
 # Authors: Sheng Guo <s.guo@bom.gov.au>
 
 import os
+import shutil
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -23,6 +24,7 @@ from ocean.plotter import Plotter, COMMON_FILES, from_levels_and_colors, guess_r
 from ocean.config import regionConfig
 from ocean.config.regionConfig import regions
 from ocean.util.pngcrush import pngcrush
+from ocean.util.gdalprocess import gdal_process
  
 class FrontPlotter(Plotter):
 
@@ -308,24 +310,28 @@ class FrontPlotter(Plotter):
 
             #plot front
             baseName = os.path.splitext(region['output_filename'])[0]
-            plt.clf()
+#            plt.clf()
             m.drawmapboundary(linewidth=0.0)
             if shapefile is not None:
                 if os.path.exists(shapefile + ".shp"):
+                    shutil.copyfile(shapefile + '.shp', baseName + '_front.shp')
+                    shutil.copyfile(shapefile + '.shx', baseName + '_front.shx')
+                    shutil.copyfile(shapefile + '.dbf', baseName + '_front.dbf')
+
                     front_info = m.readshapefile(shapefile, 'front')
 		marker = '_'
 		if hasattr(m, 'front'):
 		    for front in m.front:
-		    	m.plot(front[0] if front[0] > 0 else front[0] +360, front[1], color='k', marker=marker, markersize=1, markeredgewidth=1)
+		    	m.plot(front[0] if front[0] > 0 else front[0] +360, front[1], color='k', marker=marker, markersize=1, antialiased=False)
                 frontFile = baseName + '_front.png'
                 plt.savefig(frontFile, dpi=120,
                             bbox_inches='tight', pad_inches=0.0, transparent=True)
                 # generate shape file
-                gdal_process(frontFile, region['lon_min'],
-                                        region['lat_max'],
-                                        region['lon_max'],
-                                        region['lat_min'])
-
+#                gdal_process(frontFile, region['lon_min'],
+#                                        region['lat_max'],
+#                                        region['lon_max'],
+#                                        region['lat_min'])
+#
                 pngcrush(frontFile)
             
     

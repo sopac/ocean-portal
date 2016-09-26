@@ -1121,7 +1121,7 @@ ocean.dsConf = {
                 setLegend(data.scale);
             }
             if (data.mapimg) {
-                updateMapTiles(data.map, data.mapimg, data.front);
+                updateMapTiles(data.map, data.mapimg, data.front, 'front');
 
 
                 //this.mapimg = data.mapimg;
